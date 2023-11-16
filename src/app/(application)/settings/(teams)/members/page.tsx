@@ -1,3 +1,4 @@
+import { TeamAddMembersCard } from "@/components/cards/teams/team-add-members";
 import { MemberManager } from "@/components/memberManager";
 import { Separator } from "@/components/ui/separator";
 
@@ -11,7 +12,10 @@ export default function TeamMembersPage() {
 				</p>
 			</div>
 			<Separator />
-			<MemberManager />
+			<div className="space-y-14">
+				<TeamAddMembersCard />
+				<MemberManager />
+			</div>
 		</div>
 	);
 }

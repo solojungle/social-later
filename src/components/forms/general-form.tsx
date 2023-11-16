@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { TeamAvatarCard } from "@/components/cards/team-avatar";
-import { TeamLeaveCard } from "@/components/cards/team-leave";
-import { TeamNameCard } from "@/components/cards/team-name";
-import { TeamUrlCard } from "@/components/cards/team-url";
+import { TeamAvatarCard } from "@/components/cards/teams/team-avatar";
+import { TeamLeaveCard } from "@/components/cards/teams/team-leave";
+import { TeamNameCard } from "@/components/cards/teams/team-name";
+import { TeamUrlCard } from "@/components/cards/teams/team-url";
 import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 

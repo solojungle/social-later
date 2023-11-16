@@ -9,19 +9,19 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-interface TeamCardBaseProps {
+interface SettingsCardBaseProps {
 	content: any;
 	title: string;
 	description: string;
 	footerSubtitle: string;
 }
 
-export function TeamCardBase({
+export function SettingsCardBase({
 	content,
 	title,
 	description,
 	footerSubtitle,
-}: TeamCardBaseProps) {
+}: SettingsCardBaseProps) {
 	return (
 		<Card>
 			<CardHeader>

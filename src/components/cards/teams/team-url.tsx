@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { TeamCardBase } from "./team-card-base";
+import { SettingsCardBase } from "../settings-card-base";
 
 export const teamUrlFormSchema = z.object({
 	url: z
@@ -30,7 +30,7 @@ interface TeamUrlCardProps {
 
 export function TeamUrlCard({ formControl }: TeamUrlCardProps) {
 	return (
-		<TeamCardBase
+		<SettingsCardBase
 			title="Team URL"
 			description="This is your team's URL namespace. You can inspect your projects, check out recent activity, or configure settings to your liking."
 			footerSubtitle="Please use 48 characters at maximum."

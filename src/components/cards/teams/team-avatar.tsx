@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { TeamCardBase } from "./team-card-base";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { SettingsCardBase } from "../settings-card-base";
 
 export const teamAvatarFormSchema = z.object({
 	avatar: z
@@ -32,7 +32,7 @@ interface TeamAvatarCardProps {
 
 export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
 	return (
-		<TeamCardBase
+		<SettingsCardBase
 			title="Team Avatar"
 			description="This is your team's avatar. Click to upload a custom one from
 		your files."

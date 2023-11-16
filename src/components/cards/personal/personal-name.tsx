@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { TeamCardBase } from "./team-card-base";
+import { SettingsCardBase } from "../settings-card-base";
 
 export const teamUrlFormSchema = z.object({
 	name: z
@@ -24,15 +24,15 @@ export const teamUrlFormSchema = z.object({
 		}),
 });
 
-interface TeamNameCardProps {
+interface PersonalNameCardProps {
 	formControl: Control<any, any>;
 }
 
-export function TeamNameCard({ formControl }: TeamNameCardProps) {
+export function PersonalNameCard({ formControl }: PersonalNameCardProps) {
 	return (
-		<TeamCardBase
-			title="Team Name"
-			description="This is your team's name visible name within this app. For example, the name of your company or department."
+		<SettingsCardBase
+			title="Display Name"
+			description="Please enter your full name, or a display name you are comfortable with."
 			footerSubtitle="Please use 32 characters at maximum."
 			content={
 				<FormField
@@ -41,7 +41,7 @@ export function TeamNameCard({ formControl }: TeamNameCardProps) {
 					render={({ field }) => (
 						<FormItem className="w-full">
 							<FormControl>
-								<Input placeholder="Your team's name" {...field} />
+								<Input placeholder="Your display name" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
