@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 
 interface SettingsCardBaseProps {
 	content: any;
-	title: string;
+	title?: string;
 	description?: string;
 	buttonContent?: string;
 	footerSubtitle: string;
@@ -27,7 +27,7 @@ export function SettingsCardBase({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className="mb-2">{title}</CardTitle>
+				{title && <CardTitle className="mb-2">{title}</CardTitle>}
 				{description && <CardDescription>{description}</CardDescription>}
 			</CardHeader>
 			<CardContent className="flex items-center justify-between">
