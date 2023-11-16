@@ -1,3 +1,4 @@
+import { BillingForm } from "@/components/forms/billing-form";
 import { Separator } from "@/components/ui/separator";
 
 export default function BillingPage() {
@@ -11,6 +12,7 @@ export default function BillingPage() {
 				</p>
 			</div>
 			<Separator />
+			<BillingForm />
 		</div>
 	);
 }

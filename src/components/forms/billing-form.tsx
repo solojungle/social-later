@@ -7,11 +7,9 @@ import * as z from "zod";
 import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 
-import { PersonalAvatarCard } from "../cards/personal/personal-avatar";
-import { PersonalNameCard } from "../cards/personal/personal-name";
-import { PersonalUsernameCard } from "../cards/personal/personal-username";
+import { TeamPaymentMethod } from "../cards/teams/team-payment-method";
 
-const accountFormSchema = z.object({
+const BillingFormSchema = z.object({
 	name: z
 		.string()
 		.min(2, {
@@ -36,21 +34,21 @@ const accountFormSchema = z.object({
 	}),
 });
 
-type AccountFormValues = z.infer<typeof accountFormSchema>;
+type BillingFormValues = z.infer<typeof BillingFormSchema>;
 
 // This can come from your database or API.
-const defaultValues: Partial<AccountFormValues> = {
+const defaultValues: Partial<BillingFormValues> = {
 	// name: "Your name",
 	// dob: new Date("2023-01-23"),
 };
 
-export function AccountForm() {
-	const form = useForm<AccountFormValues>({
-		resolver: zodResolver(accountFormSchema),
+export function BillingForm() {
+	const form = useForm<BillingFormValues>({
+		resolver: zodResolver(BillingFormSchema),
 		defaultValues,
 	});
 
-	function onSubmit(data: AccountFormValues) {
+	function onSubmit(data: BillingFormValues) {
 		toast({
 			title: "You submitted the following values:",
 			description: (
@@ -64,9 +62,7 @@ export function AccountForm() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-				<PersonalAvatarCard formControl={form.control} />
-				<PersonalNameCard formControl={form.control} />
-				<PersonalUsernameCard formControl={form.control} />
+				<TeamPaymentMethod formControl={form.control} />
 			</form>
 		</Form>
 	);

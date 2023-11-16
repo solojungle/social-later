@@ -29,10 +29,6 @@ const sidebarNavItems = [
 		href: "/settings/account",
 	},
 	{
-		title: "Appearance",
-		href: "/settings/appearance",
-	},
-	{
 		title: "Notifications",
 		href: "/settings/notifications",
 	},
@@ -65,7 +61,9 @@ export default async function Home() {
 			<div className="hidden space-y-6 p-10 pb-16 md:block">
 				<div className="space-y-0.5">
 					<h2 className="text-2xl font-bold tracking-tight">Publish</h2>
-					<p className="text-muted-foreground">Tools to help you to create posts.</p>
+					<p className="text-muted-foreground">
+						Tools to help you to create posts.
+					</p>
 				</div>
 				<Separator className="my-6" />
 				<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
@@ -79,8 +77,8 @@ export default async function Home() {
 									<DialogHeader>
 										<DialogTitle>Are you sure absolutely sure?</DialogTitle>
 										<DialogDescription>
-											This action cannot be undone. This will permanently delete your
-											account and remove your data from our servers.
+											This action cannot be undone. This will permanently delete
+											your account and remove your data from our servers.
 										</DialogDescription>
 									</DialogHeader>
 									<div>
@@ -104,7 +102,9 @@ export default async function Home() {
 														</SelectItem>
 														<SelectItem value="pro">
 															<span className="font-medium">Pro</span> -{" "}
-															<span className="text-muted-foreground">$9/month per user</span>
+															<span className="text-muted-foreground">
+																$9/month per user
+															</span>
 														</SelectItem>
 													</SelectContent>
 												</Select>
