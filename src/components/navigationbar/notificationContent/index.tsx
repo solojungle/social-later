@@ -1,0 +1,74 @@
+import { AlertTriangle } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+
+const notifs = [
+	{
+		id: 1,
+		type: "error",
+		message:
+			"Error message appears on page when updating / saving pages (no rhyme or reason to when it happens).",
+		date: "Just now",
+	},
+	{
+		id: 2,
+		type: "error",
+		message:
+			"Error message appears on page when updating / saving pages (no rhyme or reason to when it happens).",
+		date: "1d ago",
+	},
+	{
+		id: 3,
+		type: "error",
+		message:
+			"Error message appears on page when updating / saving pages (no rhyme or reason to when it happens).",
+		date: "100d ago",
+	},
+	{
+		id: 4,
+		type: "error",
+		message:
+			"Error message appears on page when updating / saving pages (no rhyme or reason to when it happens).",
+		date: "1y ago",
+	},
+];
+
+interface NotificationContentProps extends React.HTMLAttributes<HTMLElement> {
+	showDot?: boolean;
+}
+
+export function NotificationContent({
+	className,
+	...props
+}: NotificationContentProps) {
+	return (
+		<div className={cn("", className)} {...props}>
+			<h2 className="font-medium tracking-tight">Inbox</h2>
+			<Separator className="my-2" />
+			<ScrollArea className="h-[500px] rounded-md">
+				<ul className="space-y-4 divide-y divide-border">
+					{notifs.map((e) => {
+						return (
+							<li key={e.id} className="flex items-start justify-center py-2">
+								<div>
+									<AlertTriangle className="h-10 w-10" />
+								</div>
+								<div className="ml-3 flex flex-col text-xs">
+									<span className="mb-1">{e.message}</span>
+									<span className="text-muted-foreground">{e.date}</span>
+								</div>
+							</li>
+						);
+					})}
+				</ul>
+			</ScrollArea>
+			<Separator className="my-2" />
+			<Button className="w-full" variant="ghost">
+				Clear all
+			</Button>
+		</div>
+	);
+}
