@@ -1,5 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { NotificationButton } from "./notificationButton";
+// import { NotificationButton } from "./notificationButton";
 import { NotificationContent } from "./notificationContent";
 import TeamSwitcher from "./teamSwitcher";
 import { TextLinks } from "./textLinks";
@@ -12,7 +13,7 @@ export function NavigationBar() {
 			<TextLinks className="mx-6" />
 			<div className="ml-auto flex items-center space-x-4">
 				<Popover>
-					<PopoverTrigger>
+					<PopoverTrigger asChild>
 						<NotificationButton showDot />
 					</PopoverTrigger>
 					<PopoverContent
