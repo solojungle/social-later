@@ -1,4 +1,4 @@
-import { ContinueWithBase } from '..';
+import { ContinueWithBase } from "..";
 
 export const ContinueWithGoogle = (props: Record<string, any>) => {
 	return (
