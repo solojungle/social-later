@@ -63,7 +63,7 @@ export function BillingForm() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-				<TeamPaymentMethodCard formControl={form.control} />
+				<TeamPaymentMethodCard />
 				<TeamPaymentPlanCard />
 			</form>
 		</Form>
