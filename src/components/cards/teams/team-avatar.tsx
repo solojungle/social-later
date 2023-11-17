@@ -42,7 +42,7 @@ export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
 					<FormField
 						control={formControl}
 						name="avatar"
-						render={({ field }) => (
+						render={() => (
 							<FormItem>
 								<FormLabel>File Upload</FormLabel>
 								<FormControl>

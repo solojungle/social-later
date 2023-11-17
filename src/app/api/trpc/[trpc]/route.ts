@@ -11,14 +11,16 @@ const handler = (req: NextRequest) =>
 		req,
 		router: appRouter,
 		createContext: () => createTRPCContext({ req }),
-		onError:
-			env.NODE_ENV === "development"
-				? ({ path, error }) => {
-					console.error(
-							`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
-					);
-				  }
-				: undefined,
+		onError: env.NODE_ENV === "development" ? () => {} : undefined,
+		// T3Stack generated the following code, but because of eslint I've disabled it.
+		// onError:
+		// 	env.NODE_ENV === "development"
+		// 		? ({ path, error }) => {
+		// 				// console.error(
+		// 				// 	`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
+		// 				// );
+		// 		  }
+		// 		: undefined,
 	});
 
 export { handler as GET, handler as POST };

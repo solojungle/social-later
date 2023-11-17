@@ -21,21 +21,9 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
-
-const sidebarNavItems = [
-	{
-		title: "Account",
-		href: "/settings/account",
-	},
-	{
-		title: "Notifications",
-		href: "/settings/notifications",
-	},
-];
 
 export default async function Home() {
-	const hello = await api.post.hello.query({ text: "from tRPC" });
+	// const hello = await api.post.hello.query({ text: "from tRPC" });
 	const session = await getServerAuthSession();
 
 	if (!session) {

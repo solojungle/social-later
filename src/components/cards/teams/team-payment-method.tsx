@@ -1,7 +1,6 @@
 "use client";
 
 import { CheckCircle2, MoreHorizontal } from "lucide-react";
-import { Control } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,10 +13,6 @@ import {
 } from "@/components/ui/table";
 
 import { SettingsCardBase } from "../settings-card-base";
-
-interface TeamPaymentMethodProps {
-	formControl: Control<any, any>;
-}
 
 const data = [
 	{
@@ -43,7 +38,7 @@ const data = [
 	},
 ];
 
-export function TeamPaymentMethodCard({ formControl }: TeamPaymentMethodProps) {
+export function TeamPaymentMethodCard() {
 	if (data.length < 1) {
 		return (
 			<SettingsCardBase

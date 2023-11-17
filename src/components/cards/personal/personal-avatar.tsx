@@ -42,7 +42,7 @@ export function PersonalAvatarCard({ formControl }: PersonalAvatarCardProps) {
 					<FormField
 						control={formControl}
 						name="avatar"
-						render={({ field }) => (
+						render={() => (
 							<FormItem>
 								<FormLabel>File Upload</FormLabel>
 								<FormControl>
