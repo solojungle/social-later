@@ -76,8 +76,8 @@ type TeamSwitcherProps = PopoverTriggerProps;
 export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 	const [open, setOpen] = React.useState(false);
 	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-	const [selectedTeam, setSelectedTeam] = React.useState<Team>(
-		groups[0].teams[0],
+	const [selectedTeam, setSelectedTeam] = React.useState<Team | undefined>(
+		groups[0]?.teams[0],
 	);
 
 	return (
@@ -93,12 +93,12 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 					>
 						<Avatar className="mr-2 h-5 w-5">
 							<AvatarImage
-								src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
-								alt={selectedTeam.label}
+								src={`https://avatar.vercel.sh/${selectedTeam?.value}.png`}
+								alt={selectedTeam?.label}
 							/>
 							<AvatarFallback>SC</AvatarFallback>
 						</Avatar>
-						{selectedTeam.label}
+						{selectedTeam?.label}
 						<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
@@ -129,7 +129,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 											<CheckIcon
 												className={cn(
 													"ml-auto h-4 w-4",
-													selectedTeam.value === team.value
+													selectedTeam?.value === team.value
 														? "opacity-100"
 														: "opacity-0",
 												)}

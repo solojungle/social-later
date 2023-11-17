@@ -48,7 +48,7 @@ export function TextLinks({
 				href="/settings/account"
 				className={cn(
 					"transition-colors hover:text-foreground/80",
-					pathname === "/settings/account"
+					pathname?.startsWith("/settings/account")
 						? "text-foreground"
 						: "text-foreground/60",
 				)}

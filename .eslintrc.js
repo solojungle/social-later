@@ -50,6 +50,7 @@ module.exports = {
   ignorePatterns: [
     ".eslintrc.js",
     "webpack.config.js",
+		"src/components/ui/*",
     "build/",
     "node_modules/",
     ".vscode/"

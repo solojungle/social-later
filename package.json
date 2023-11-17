@@ -6,12 +6,12 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "next build",
+    "build": "doppler run -- next build",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "dev": "doppler run -- next dev",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "lint": "doppler run -- next lint",
     "start": "next start"
   },
   "dependencies": {
