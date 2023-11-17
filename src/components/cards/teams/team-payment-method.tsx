@@ -1,8 +1,9 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, MoreHorizontal } from "lucide-react";
 import { Control } from "react-hook-form";
 
+import { Button } from "@/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -42,7 +43,7 @@ const data = [
 	},
 ];
 
-export function TeamPaymentMethod({ formControl }: TeamPaymentMethodProps) {
+export function TeamPaymentMethodCard({ formControl }: TeamPaymentMethodProps) {
 	if (data.length < 1) {
 		return (
 			<SettingsCardBase
@@ -65,8 +66,8 @@ export function TeamPaymentMethod({ formControl }: TeamPaymentMethodProps) {
 			content={
 				<Table>
 					<TableHeader>
-						<TableRow className="uppercase">
-							<TableHead className="w-[100px]">Brand</TableHead>
+						<TableRow className="text-xs uppercase">
+							<TableHead>Brand</TableHead>
 							<TableHead>Default</TableHead>
 							<TableHead>Type</TableHead>
 							<TableHead>Number (last 4)</TableHead>
@@ -83,6 +84,11 @@ export function TeamPaymentMethod({ formControl }: TeamPaymentMethodProps) {
 								<TableCell>{card.type}</TableCell>
 								<TableCell>{card.last4}</TableCell>
 								<TableCell>{card.expires}</TableCell>
+								<TableCell className="w-[0]">
+									<Button size="icon" variant="outline">
+										<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+									</Button>
+								</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

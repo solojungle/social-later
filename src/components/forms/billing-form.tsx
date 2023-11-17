@@ -7,7 +7,8 @@ import * as z from "zod";
 import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 
-import { TeamPaymentMethod } from "../cards/teams/team-payment-method";
+import { TeamPaymentMethodCard } from "../cards/teams/team-payment-method";
+import { TeamPaymentPlanCard } from "../cards/teams/team-plan";
 
 const BillingFormSchema = z.object({
 	name: z
@@ -62,7 +63,8 @@ export function BillingForm() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-				<TeamPaymentMethod formControl={form.control} />
+				<TeamPaymentMethodCard formControl={form.control} />
+				<TeamPaymentPlanCard />
 			</form>
 		</Form>
 	);
