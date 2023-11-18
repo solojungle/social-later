@@ -1,7 +1,7 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import {
-	type DefaultSession,
 	getServerSession,
+	type DefaultSession,
 	type NextAuthOptions,
 } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
@@ -61,6 +61,7 @@ export const authOptions: NextAuthOptions = {
 		 * @see https://next-auth.js.org/providers/github
 		 */
 	],
+	secret: env.NEXTAUTH_SECRET,
 };
 
 /**
