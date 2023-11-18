@@ -18,7 +18,6 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-	CommandSeparator,
 } from "../../ui/command";
 import {
 	Dialog,
@@ -139,7 +138,6 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 								</CommandGroup>
 							))}
 						</CommandList>
-						<CommandSeparator />
 						<CommandList>
 							<CommandGroup>
 								<DialogTrigger asChild>
