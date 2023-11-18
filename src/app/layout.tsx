@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
-import { SiteHeader } from "@/components/siteHeader";
 import { TRPCReactProvider } from "@/trpc/react";
 
 const inter = Inter({
@@ -25,7 +24,6 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`font-sans ${inter.variable}`}>
-				<SiteHeader />
 				<TRPCReactProvider cookies={cookies().toString()}>
 					{children}
 				</TRPCReactProvider>
