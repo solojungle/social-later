@@ -1,6 +1,5 @@
 "use client";
 
-import { Control } from "react-hook-form";
 import * as z from "zod";
 
 import { Label } from "@/components/ui/label";
@@ -19,11 +18,7 @@ export const Personal2FAFormSchema = z.object({
 		}),
 });
 
-interface Personal2FACardProps {
-	formControl: Control<any, any>;
-}
-
-export function Personal2FACard({ formControl }: Personal2FACardProps) {
+export function Personal2FACard() {
 	return (
 		<SettingsCardBase
 			title="Two-Step Verification"

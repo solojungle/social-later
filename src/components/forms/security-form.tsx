@@ -62,7 +62,7 @@ export function SecurityForm() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-				<Personal2FACard formControl={form.control} />
+				<Personal2FACard />
 			</form>
 		</Form>
 	);
