@@ -27,6 +27,8 @@ export default async function Home() {
 	// const hello = await api.post.hello.query({ text: "from tRPC" });
 	const session = await getServerAuthSession();
 
+	console.log(session);
+
 	if (!session) {
 		return (
 			<main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
@@ -62,7 +64,7 @@ export default async function Home() {
 							<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 								<Dialog>
 									<DialogTrigger>
-										<Button className="w-full">Create Post</Button>
+										{/* <Button className="w-full">Create Post</Button> */}
 									</DialogTrigger>
 									<DialogContent>
 										<DialogHeader>
