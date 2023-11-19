@@ -11,6 +11,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useTeamStore } from "@/stores/teams";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
@@ -31,6 +32,8 @@ interface TeamAvatarCardProps {
 }
 
 export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
+	const { selectedTeam } = useTeamStore();
+
 	return (
 		<SettingsCardBase
 			title="Team Avatar"
@@ -53,11 +56,10 @@ export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
 						)}
 					/>
 					<Avatar className="mr-2 h-20 w-20">
-						<AvatarImage
-							src="https://avatar.vercel.sh/squirt.png"
-							alt="label"
-						/>
-						<AvatarFallback>SC</AvatarFallback>
+						<AvatarImage src={selectedTeam?.avatar} alt={selectedTeam?.name} />
+						<AvatarFallback>
+							{selectedTeam?.avatarFallbackInitials}
+						</AvatarFallback>
 					</Avatar>
 				</>
 			}

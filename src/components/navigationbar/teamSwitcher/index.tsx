@@ -41,24 +41,6 @@ import {
 	SelectValue,
 } from "../../ui/select";
 
-const groups = [
-	{
-		label: "Teams",
-		teams: [
-			{
-				label: "Acme Inc.",
-				value: "acme-inc",
-			},
-			{
-				label: "Monsters Inc.",
-				value: "monsters",
-			},
-		],
-	},
-];
-
-type Team = (typeof groups)[number]["teams"][number];
-
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 	typeof PopoverTrigger
 >;
@@ -71,8 +53,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 
 	const { avatar, avatarFallbackInitials, name } = useUserStore();
 
-	const { teams, currentTeam } = useTeamStore();
-	const selectedTeamData = teams.find((team) => team.id === currentTeam);
+	const { teams, selectedTeam } = useTeamStore();
 
 	return (
 		<Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -83,18 +64,21 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						role="combobox"
 						aria-expanded={open}
 						aria-label="Select a team"
-						className={cn("w-[200px] justify-between", className)}
+						className={cn(
+							"w-[200px] justify-between overflow-hidden truncate",
+							className,
+						)}
 					>
 						<Avatar className="mr-2 h-5 w-5">
 							<AvatarImage
-								src={selectedTeamData?.avatar}
-								alt={selectedTeamData?.name}
+								src={selectedTeam?.avatar}
+								alt={selectedTeam?.name}
 							/>
 							<AvatarFallback>
-								{selectedTeamData?.avatarFallbackInitials}
+								{selectedTeam?.avatarFallbackInitials}
 							</AvatarFallback>
 						</Avatar>
-						{selectedTeamData?.name}
+						{selectedTeam?.name}
 						<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
@@ -120,44 +104,38 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 									<CheckIcon
 										className={cn(
 											"ml-auto h-4 w-4",
-											selectedTeamData?.name === name
-												? "opacity-100"
-												: "opacity-0",
+											selectedTeam?.name === name ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>
 							</CommandGroup>
-
-							{groups.map((group) => (
-								<CommandGroup key={group.label} heading={group.label}>
-									{group.teams.map((team) => (
-										<CommandItem
-											key={team.value}
-											onSelect={() => {
-												setOpen(false);
-											}}
-											className="text-sm"
-										>
-											<Avatar className="mr-2 h-5 w-5">
-												<AvatarImage
-													src={`https://avatar.vercel.sh/${team.value}.png`}
-													alt={team.label}
-												/>
-												<AvatarFallback>SC</AvatarFallback>
-											</Avatar>
-											{team.label}
-											<CheckIcon
-												className={cn(
-													"ml-auto h-4 w-4",
-													selectedTeamData?.name === team.value
-														? "opacity-100"
-														: "opacity-0",
-												)}
-											/>
-										</CommandItem>
-									))}
-								</CommandGroup>
-							))}
+							<CommandGroup key="teams" heading="Teams">
+								{teams.map((team) => (
+									<CommandItem
+										key={team.id}
+										onSelect={() => {
+											setOpen(false);
+										}}
+										className="text-sm"
+									>
+										<Avatar className="mr-2 h-5 w-5">
+											<AvatarImage src={team.avatar} alt={team.name} />
+											<AvatarFallback>
+												{team.avatarFallbackInitials}
+											</AvatarFallback>
+										</Avatar>
+										{team.name}
+										<CheckIcon
+											className={cn(
+												"ml-auto h-4 w-4",
+												selectedTeam?.name === team.name
+													? "opacity-100"
+													: "opacity-0",
+											)}
+										/>
+									</CommandItem>
+								))}
+							</CommandGroup>
 						</CommandList>
 						<CommandList>
 							<CommandGroup>

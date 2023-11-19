@@ -9,7 +9,12 @@ interface TeamState {
 			avatarFallbackInitials: string;
 		},
 	];
-	currentTeam: string;
+	selectedTeam: {
+		id: string;
+		name: string;
+		avatar: string;
+		avatarFallbackInitials: string;
+	};
 }
 
 interface TeamStore extends TeamState {
@@ -20,12 +25,18 @@ export const useTeamStore = create<TeamStore>()((set) => ({
 	teams: [
 		{
 			id: "1",
-			name: "Ali Awari",
+			name: "Awari Industries",
 			avatar:
 				"https://vercel.com/api/www/avatar/8qz8aKrYCnaP9N23rC7jgnLmr?&s=160",
 			avatarFallbackInitials: "AA",
 		},
 	],
-	currentTeam: "1",
+	selectedTeam: {
+		id: "1",
+		name: "Awari Industries",
+		avatar:
+			"https://vercel.com/api/www/avatar/8qz8aKrYCnaP9N23rC7jgnLmr?&s=160",
+		avatarFallbackInitials: "AA",
+	},
 	updateTeamInfo: (data) => set(data),
 }));
