@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { useUserStore } from "@/stores/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { buttonVariants } from "../ui/button";
@@ -25,6 +26,8 @@ export function Sidebar({
 	accountItems,
 	...props
 }: SidebarNavProps) {
+	const { avatar, avatarFallbackInitials, name } = useUserStore();
+
 	const pathname = usePathname();
 
 	return (
@@ -68,11 +71,8 @@ export function Sidebar({
 			<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 				<div className="mb-2 flex items-center">
 					<Avatar className="h-4 w-4">
-						<AvatarImage
-							src="https://avatar.vercel.sh/solojungle.png"
-							alt="Selected team Label"
-						/>
-						<AvatarFallback>SC</AvatarFallback>
+						<AvatarImage src={avatar} alt={name} />
+						<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
 					</Avatar>
 					<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
 						Account

@@ -11,6 +11,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useUserStore } from "@/stores/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
@@ -31,6 +32,8 @@ interface PersonalAvatarCardProps {
 }
 
 export function PersonalAvatarCard({ formControl }: PersonalAvatarCardProps) {
+	const { avatar, avatarFallbackInitials, name } = useUserStore();
+
 	return (
 		<SettingsCardBase
 			title="Avatar"
@@ -53,11 +56,8 @@ export function PersonalAvatarCard({ formControl }: PersonalAvatarCardProps) {
 						)}
 					/>
 					<Avatar className="mr-2 h-20 w-20">
-						<AvatarImage
-							src="https://avatar.vercel.sh/squirt.png"
-							alt="label"
-						/>
-						<AvatarFallback>SC</AvatarFallback>
+						<AvatarImage src={avatar} alt={name} />
+						<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
 					</Avatar>
 				</>
 			}

@@ -14,18 +14,18 @@ import {
 	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUserStore } from "@/stores/user";
 
 export function UserMenu() {
+	const { email, name, avatar, avatarFallbackInitials } = useUserStore();
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" className="relative h-8 w-8 rounded-full">
 					<Avatar className="h-8 w-8">
-						<AvatarImage
-							src="https://avatar.vercel.sh/solojungle.png"
-							alt="@shadcn"
-						/>
-						<AvatarFallback>SC</AvatarFallback>
+						<AvatarImage src={avatar} alt={name} />
+						<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
 					</Avatar>
 				</Button>
 			</DropdownMenuTrigger>
@@ -37,9 +37,9 @@ export function UserMenu() {
 			>
 				<DropdownMenuLabel className="font-normal">
 					<div className="flex flex-col space-y-1">
-						<p className="text-sm font-medium leading-none">shadcn</p>
+						<p className="text-sm font-medium leading-none">{name}</p>
 						<p className="text-xs leading-none text-muted-foreground">
-							m@example.com
+							{email}
 						</p>
 					</div>
 				</DropdownMenuLabel>
