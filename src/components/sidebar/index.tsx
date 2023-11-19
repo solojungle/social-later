@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { useTeamStore } from "@/stores/teams";
 import { useUserStore } from "@/stores/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -27,6 +28,9 @@ export function Sidebar({
 	...props
 }: SidebarNavProps) {
 	const { avatar, avatarFallbackInitials, name } = useUserStore();
+	const { teams, currentTeam } = useTeamStore();
+
+	const currentTeamData = teams.find((team) => team.id === currentTeam);
 
 	const pathname = usePathname();
 
@@ -42,10 +46,12 @@ export function Sidebar({
 				<div className="mb-2 flex items-center">
 					<Avatar className="h-4 w-4">
 						<AvatarImage
-							src="https://avatar.vercel.sh/personal.png"
-							alt="Selected team Label"
+							src={currentTeamData?.avatar}
+							alt={currentTeamData?.name}
 						/>
-						<AvatarFallback>SC</AvatarFallback>
+						<AvatarFallback>
+							{currentTeamData?.avatarFallbackInitials}
+						</AvatarFallback>
 					</Avatar>
 					<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
 						Team

@@ -9,6 +9,8 @@ import * as React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useTeamStore } from "@/stores/teams";
+import { useUserStore } from "@/stores/user";
 
 import { Button } from "../../ui/button";
 import {
@@ -41,15 +43,6 @@ import {
 
 const groups = [
 	{
-		label: "Personal Account",
-		teams: [
-			{
-				label: "Alicia Koch",
-				value: "personal",
-			},
-		],
-	},
-	{
 		label: "Teams",
 		teams: [
 			{
@@ -75,9 +68,11 @@ type TeamSwitcherProps = PopoverTriggerProps;
 export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 	const [open, setOpen] = React.useState(false);
 	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-	const [selectedTeam, setSelectedTeam] = React.useState<Team | undefined>(
-		groups[0]?.teams[0],
-	);
+
+	const { avatar, avatarFallbackInitials, name } = useUserStore();
+
+	const { teams, currentTeam } = useTeamStore();
+	const selectedTeamData = teams.find((team) => team.id === currentTeam);
 
 	return (
 		<Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -92,12 +87,14 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 					>
 						<Avatar className="mr-2 h-5 w-5">
 							<AvatarImage
-								src={`https://avatar.vercel.sh/${selectedTeam?.value}.png`}
-								alt={selectedTeam?.label}
+								src={selectedTeamData?.avatar}
+								alt={selectedTeamData?.name}
 							/>
-							<AvatarFallback>SC</AvatarFallback>
+							<AvatarFallback>
+								{selectedTeamData?.avatarFallbackInitials}
+							</AvatarFallback>
 						</Avatar>
-						{selectedTeam?.label}
+						{selectedTeamData?.name}
 						<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
@@ -106,13 +103,37 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						<CommandList>
 							<CommandInput placeholder="Find team..." />
 							<CommandEmpty>No team found.</CommandEmpty>
+
+							<CommandGroup key="personal" heading="Personal Account">
+								<CommandItem
+									key={name}
+									onSelect={() => {
+										setOpen(false);
+									}}
+									className="text-sm"
+								>
+									<Avatar className="mr-2 h-5 w-5">
+										<AvatarImage src={avatar} alt={name} />
+										<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
+									</Avatar>
+									{name}
+									<CheckIcon
+										className={cn(
+											"ml-auto h-4 w-4",
+											selectedTeamData?.name === name
+												? "opacity-100"
+												: "opacity-0",
+										)}
+									/>
+								</CommandItem>
+							</CommandGroup>
+
 							{groups.map((group) => (
 								<CommandGroup key={group.label} heading={group.label}>
 									{group.teams.map((team) => (
 										<CommandItem
 											key={team.value}
 											onSelect={() => {
-												setSelectedTeam(team);
 												setOpen(false);
 											}}
 											className="text-sm"
@@ -128,7 +149,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 											<CheckIcon
 												className={cn(
 													"ml-auto h-4 w-4",
-													selectedTeam?.value === team.value
+													selectedTeamData?.name === team.value
 														? "opacity-100"
 														: "opacity-0",
 												)}
