@@ -10,6 +10,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useTeamStore } from "@/stores/teams";
 
 import { SettingsCardBase } from "../settings-card-base";
 
@@ -29,6 +30,8 @@ interface TeamNameCardProps {
 }
 
 export function TeamNameCard({ formControl }: TeamNameCardProps) {
+	const { selectedTeam } = useTeamStore();
+
 	return (
 		<SettingsCardBase
 			title="Team Name"
@@ -41,7 +44,11 @@ export function TeamNameCard({ formControl }: TeamNameCardProps) {
 					render={({ field }) => (
 						<FormItem className="w-full">
 							<FormControl>
-								<Input placeholder="Your team's name" {...field} />
+								<Input
+									placeholder="Your team's name"
+									defaultValue={selectedTeam.name}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
