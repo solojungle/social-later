@@ -1,12 +1,21 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { useTeamStore } from "@/stores/teams";
 
 export function TextLinks({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLElement>) {
-	const pathname = "";
+	const { selectedTeam } = useTeamStore();
+	const pathname = usePathname();
+	const settingsUrl =
+		selectedTeam.type === "personal"
+			? "/settings"
+			: `/teams/${selectedTeam.url}/settings`;
 
 	return (
 		<nav
@@ -45,10 +54,10 @@ export function TextLinks({
 				Engagement
 			</Link>
 			<Link
-				href="/settings"
+				href={settingsUrl}
 				className={cn(
 					"transition-colors hover:text-foreground/80",
-					pathname?.startsWith("/settings")
+					pathname?.startsWith(settingsUrl)
 						? "text-foreground"
 						: "text-foreground/60",
 				)}

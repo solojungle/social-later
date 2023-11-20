@@ -53,7 +53,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 	const [open, setOpen] = React.useState(false);
 	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
-	const { avatar, avatarFallbackInitials, name, url, type } = useUserStore();
+	const { avatar, avatarFallbackInitials, name, type } = useUserStore();
 	const { teams, selectedTeam, updateSelectedTeam } = useTeamStore();
 
 	// Faciliate keeping the current URL when switching businesses
