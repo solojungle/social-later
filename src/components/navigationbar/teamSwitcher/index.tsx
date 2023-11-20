@@ -41,6 +41,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../../ui/select";
+import { handleLinkClick } from "./utils";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 	typeof PopoverTrigger
@@ -52,7 +53,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 	const [open, setOpen] = React.useState(false);
 	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
-	const { avatar, avatarFallbackInitials, name } = useUserStore();
+	const { avatar, avatarFallbackInitials, name, url, type } = useUserStore();
 	const { teams, selectedTeam, updateSelectedTeam } = useTeamStore();
 
 	// Faciliate keeping the current URL when switching businesses
@@ -100,10 +101,23 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 										updateSelectedTeam({
 											name,
 											avatar,
+											url: "",
+											type,
 											avatarFallbackInitials,
 										});
 										setOpen(false);
-										router.push("/settings");
+
+										if (selectedTeam.type !== "personal") {
+											router.push(
+												handleLinkClick({
+													selectedAccountType: selectedTeam.type,
+													incomingAccountType: "personal",
+													pathName,
+													teamUrl: "",
+													id,
+												}),
+											);
+										}
 									}}
 									className="text-sm"
 								>
@@ -128,12 +142,22 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 											updateSelectedTeam({
 												id: team.id,
 												name: team.name,
+												url: team.url,
+												type: team.type,
 												avatar: team.avatar,
 												avatarFallbackInitials: team.avatarFallbackInitials,
 											});
 
 											setOpen(false);
-											router.push(pathName.replace(`/${id}`, `/${team.name}`));
+											router.push(
+												handleLinkClick({
+													selectedAccountType: selectedTeam.type,
+													incomingAccountType: "team",
+													pathName,
+													teamUrl: team.url,
+													id,
+												}),
+											);
 										}}
 										className="text-sm"
 									>
