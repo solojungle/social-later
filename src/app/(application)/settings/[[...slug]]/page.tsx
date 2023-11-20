@@ -1,14 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { AccountForm } from "@/components/forms/account-form";
 import { Separator } from "@/components/ui/separator";
 
 export default function SettingsAccountPage() {
 	const router = useRouter();
+	const pathname = usePathname();
 
-	router.replace("/settings");
+	if (pathname !== "/settings") {
+		router.replace("/settings");
+	}
 
 	return (
 		<div className="space-y-6">
