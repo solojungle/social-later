@@ -42,7 +42,8 @@ export function TextLinks({
 			>
 				Analytics
 			</Link>
-			<Link
+			{/* Reducing scope for now */}
+			{/* <Link
 				href="/engagement"
 				className={cn(
 					"transition-colors hover:text-foreground/80",
@@ -52,7 +53,7 @@ export function TextLinks({
 				)}
 			>
 				Engagement
-			</Link>
+			</Link> */}
 			<Link
 				href={settingsUrl}
 				className={cn(
