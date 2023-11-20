@@ -5,6 +5,7 @@ import {
 	CheckIcon,
 	PlusCircledIcon,
 } from "@radix-ui/react-icons";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -52,8 +53,12 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
 	const { avatar, avatarFallbackInitials, name } = useUserStore();
+	const { teams, selectedTeam, updateSelectedTeam } = useTeamStore();
 
-	const { teams, selectedTeam } = useTeamStore();
+	// Faciliate keeping the current URL when switching businesses
+	const router = useRouter();
+	const { id } = useParams();
+	const pathName = usePathname();
 
 	return (
 		<Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -92,7 +97,13 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 								<CommandItem
 									key={name}
 									onSelect={() => {
+										updateSelectedTeam({
+											name,
+											avatar,
+											avatarFallbackInitials,
+										});
 										setOpen(false);
+										router.push("/settings");
 									}}
 									className="text-sm"
 								>
@@ -114,7 +125,15 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 									<CommandItem
 										key={team.id}
 										onSelect={() => {
+											updateSelectedTeam({
+												id: team.id,
+												name: team.name,
+												avatar: team.avatar,
+												avatarFallbackInitials: team.avatarFallbackInitials,
+											});
+
 											setOpen(false);
+											router.push(pathName.replace(`/${id}`, `/${team.name}`));
 										}}
 										className="text-sm"
 									>
