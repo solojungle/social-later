@@ -29,7 +29,7 @@ export default function SettingsLayout({
 	const teamNavItems = [
 		{
 			title: "General",
-			href: `/teams/${id}/settings/`,
+			href: `/teams/${id}/settings`,
 		},
 		{
 			title: "Billing",

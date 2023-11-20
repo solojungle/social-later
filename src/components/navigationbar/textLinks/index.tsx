@@ -45,10 +45,10 @@ export function TextLinks({
 				Engagement
 			</Link>
 			<Link
-				href="/settings/account"
+				href="/settings"
 				className={cn(
 					"transition-colors hover:text-foreground/80",
-					pathname?.startsWith("/settings/account")
+					pathname?.startsWith("/settings")
 						? "text-foreground"
 						: "text-foreground/60",
 				)}

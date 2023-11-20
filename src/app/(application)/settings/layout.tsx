@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const accountNavItems = [
 	{
 		title: "Account",
-		href: "/settings/account",
+		href: "/settings",
 	},
 	{
 		title: "Notifications",
@@ -20,21 +20,6 @@ const accountNavItems = [
 	{
 		title: "Security",
 		href: "/settings/security",
-	},
-];
-
-const teamNavItems = [
-	{
-		title: "General",
-		href: "/settings/general",
-	},
-	{
-		title: "Billing",
-		href: "/settings/billing",
-	},
-	{
-		title: "Members",
-		href: "/settings/members",
 	},
 ];
 
