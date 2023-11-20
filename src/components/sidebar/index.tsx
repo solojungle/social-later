@@ -11,11 +11,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { buttonVariants } from "../ui/button";
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
-	teamItems: {
+	teamItems?: {
 		href: string;
 		title: string;
 	}[];
-	accountItems: {
+	accountItems?: {
 		href: string;
 		title: string;
 	}[];
@@ -40,20 +40,23 @@ export function Sidebar({
 			)}
 			{...props}
 		>
-			<div className="mb-4 flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-				<div className="mb-2 flex items-center">
-					<Avatar className="h-4 w-4">
-						<AvatarImage src={selectedTeam?.avatar} alt={selectedTeam?.name} />
-						<AvatarFallback>
-							{selectedTeam?.avatarFallbackInitials}
-						</AvatarFallback>
-					</Avatar>
-					<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
-						Team
-					</h2>
-				</div>
-				{teamItems?.length > 0 &&
-					teamItems.map((item) => (
+			{teamItems && (
+				<div className="mb-4 flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+					<div className="mb-2 flex items-center">
+						<Avatar className="h-4 w-4">
+							<AvatarImage
+								src={selectedTeam?.avatar}
+								alt={selectedTeam?.name}
+							/>
+							<AvatarFallback>
+								{selectedTeam?.avatarFallbackInitials}
+							</AvatarFallback>
+						</Avatar>
+						<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
+							Team
+						</h2>
+					</div>
+					{teamItems.map((item) => (
 						<Link
 							key={item.href}
 							href={item.href}
@@ -68,7 +71,8 @@ export function Sidebar({
 							{item.title}
 						</Link>
 					))}
-			</div>
+				</div>
+			)}
 			<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 				<div className="mb-2 flex items-center">
 					<Avatar className="h-4 w-4">
@@ -79,7 +83,8 @@ export function Sidebar({
 						Account
 					</h2>
 				</div>
-				{accountItems?.length > 0 &&
+				{accountItems &&
+					accountItems?.length > 0 &&
 					accountItems.map((item) => (
 						<Link
 							key={item.href}
