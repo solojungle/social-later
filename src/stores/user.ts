@@ -18,7 +18,7 @@ export const useUserStore = create<UserStore>()((set) => ({
 	email: "ali@seriesfi.com",
 	url: "solojungle",
 	type: "personal",
-	avatar: "https://vercel.com/api/www/avatar/8qz8aKrYCnaP9NwrC7jgnLmr?&s=160",
+	avatar: "https://avatar.vercel.sh/solojungle?&s=160",
 	avatarFallbackInitials: "AA",
 	updateUserInfo: (data) => set(data),
 }));

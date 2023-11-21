@@ -2,6 +2,10 @@ import { create } from "zustand";
 
 import { api } from "@/trpc/react";
 
+import { useUserStore } from "./user";
+
+const currentUser = useUserStore.getState();
+
 interface TeamState {
 	teams: any[];
 	// teams: {
@@ -30,12 +34,11 @@ interface TeamStore extends TeamState {
 export const useTeamStore = create<TeamStore>()((set) => ({
 	teams: [],
 	selectedTeam: {
-		id: "1",
-		name: "Awari Industries",
-		url: "awariinc",
-		type: "team",
-		avatar: "https://avatar.vercel.sh/Awari?&s=160",
-		avatarFallbackInitials: "AA",
+		name: currentUser.name,
+		url: currentUser.url,
+		type: currentUser.type,
+		avatar: currentUser.avatar,
+		avatarFallbackInitials: currentUser.avatarFallbackInitials,
 	},
 	updateSelectedTeam: (team) => set(() => ({ selectedTeam: team })),
 	setTeams: async () => {
