@@ -31,7 +31,7 @@ export function TextLinks({
 			>
 				Publish
 			</Link>
-			<Link
+			{/* <Link
 				href="/analytics"
 				className={cn(
 					"transition-colors hover:text-foreground/80",
@@ -41,7 +41,7 @@ export function TextLinks({
 				)}
 			>
 				Analytics
-			</Link>
+			</Link> */}
 			{/* Reducing scope for now */}
 			{/* <Link
 				href="/engagement"

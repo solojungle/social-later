@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { SiteHeader } from "@/components/siteHeader";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +19,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import LandingPage from "@/landing";
 import { getServerAuthSession } from "@/server/auth";
 
 export default async function Home() {
@@ -29,19 +28,9 @@ export default async function Home() {
 
 	if (!session) {
 		return (
-			<main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-				<h1 className="mb-10">
-					You are not logged in, so we will show you a landing page instead.
-				</h1>
-				<div>
-					<Link
-						href="/login"
-						className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-					>
-						Log in
-					</Link>
-				</div>
-			</main>
+			<div className="w-full">
+				<LandingPage />;
+			</div>
 		);
 	}
 
