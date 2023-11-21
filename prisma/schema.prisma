@@ -15,6 +15,14 @@ datasource db {
   relationMode = "prisma"
 }
 
+model Team {
+  id      String @id @default(cuid())
+  name    String
+  url     String
+  avatar  String
+  members User[]
+}
+
 model Post {
   id          Int      @id @default(autoincrement())
   name        String
@@ -68,6 +76,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
+  team          Team?     @relation(fields: [teamId], references: [id])
+  teamId        String?
 }
 
 model VerificationToken {
