@@ -10,6 +10,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useUserStore } from "@/stores/user";
 
 import { SettingsCardBase } from "../settings-card-base";
 
@@ -31,6 +32,8 @@ interface PersonalUsernameCardProps {
 export function PersonalUsernameCard({
 	formControl,
 }: PersonalUsernameCardProps) {
+	const { url } = useUserStore();
+
 	return (
 		<SettingsCardBase
 			title="Username"
@@ -43,7 +46,11 @@ export function PersonalUsernameCard({
 					render={({ field }) => (
 						<FormItem className="w-full">
 							<FormControl>
-								<Input placeholder="Your username" {...field} />
+								<Input
+									placeholder="Your username"
+									{...field}
+									defaultValue={url}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
