@@ -53,30 +53,39 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Team {
-  id      String @id @default(cuid())
-  name    String
-  url     String @default(nanoid())
-  image   String
-  members User[]
-}
-
 enum UserRole {
   OWNER
   MEMBER
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
-  role          UserRole  @default(MEMBER)
+  role          UserRole     @default(MEMBER)
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
-  teams         Team[]
+  teams         UserOnTeam[]
+}
+
+model Team {
+  id      String       @id @default(cuid())
+  name    String
+  url     String       @default(nanoid())
+  image   String
+  members UserOnTeam[]
+}
+
+model UserOnTeam {
+  user   User   @relation(fields: [userId], references: [id])
+  team   Team   @relation(fields: [teamId], references: [id])
+  userId String
+  teamId String
+
+  @@id([userId, teamId])
 }
 
 model VerificationToken {
