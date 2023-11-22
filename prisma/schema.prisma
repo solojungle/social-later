@@ -56,7 +56,7 @@ model Session {
 model Team {
   id      String @id @default(cuid())
   name    String
-  url     String
+  url     String @default(nanoid())
   image   String
   members User[]
 }

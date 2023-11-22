@@ -7,16 +7,15 @@ export const teamRouter = createTRPCRouter({
 		.input(
 			z.object({
 				name: z.string().min(1),
-				url: z.string(),
-				image: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
 			return ctx.db.team.create({
 				data: {
 					name: input.name,
-					url: input.url,
-					image: input.image,
+					image: `https://avatar.vercel.sh/${Math.floor(
+						Math.random() * 10,
+					)}.png`,
 				},
 			});
 		}),
