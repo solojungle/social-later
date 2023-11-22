@@ -26,21 +26,12 @@ import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
 } from "../../ui/dialog";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../../ui/select";
+import TeamSwitcherModal from "./modal";
 import { handleLinkClick } from "./utils";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
@@ -93,7 +84,6 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						<CommandList>
 							<CommandInput placeholder="Find team..." />
 							<CommandEmpty>No team found.</CommandEmpty>
-
 							<CommandGroup key="personal" heading="Personal Account">
 								<CommandItem
 									key={name}
@@ -205,42 +195,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						Add a new team to manage products and customers.
 					</DialogDescription>
 				</DialogHeader>
-				<div>
-					<div className="space-y-4 py-2 pb-4">
-						<div className="space-y-2">
-							<Label htmlFor="name">Team name</Label>
-							<Input id="name" placeholder="Acme Inc." />
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="plan">Subscription plan</Label>
-							<Select>
-								<SelectTrigger>
-									<SelectValue placeholder="Select a plan" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="free">
-										<span className="font-medium">Free</span> -{" "}
-										<span className="text-muted-foreground">
-											Trial for two weeks
-										</span>
-									</SelectItem>
-									<SelectItem value="pro">
-										<span className="font-medium">Pro</span> -{" "}
-										<span className="text-muted-foreground">
-											$9/month per user
-										</span>
-									</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-					</div>
-				</div>
-				<DialogFooter>
-					<Button variant="outline" onClick={() => setShowNewTeamDialog(false)}>
-						Cancel
-					</Button>
-					<Button type="submit">Continue</Button>
-				</DialogFooter>
+				<TeamSwitcherModal setShowNewTeamDialog={setShowNewTeamDialog} />
 			</DialogContent>
 		</Dialog>
 	);

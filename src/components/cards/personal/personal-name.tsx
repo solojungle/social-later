@@ -14,7 +14,7 @@ import { useUserStore } from "@/stores/user";
 
 import { SettingsCardBase } from "../settings-card-base";
 
-export const teamUrlFormSchema = z.object({
+export const PersonalNameFormSchema = z.object({
 	name: z
 		.string()
 		.min(1, {
