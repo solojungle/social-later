@@ -33,7 +33,6 @@ export default function TeamSwitcherModal({
 	setShowNewTeamDialog,
 }: TeamSwitcherModalProps) {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-
 	const { toast } = useToast();
 
 	const createTeam = api.team.create.useMutation();
@@ -43,10 +42,12 @@ export default function TeamSwitcherModal({
 		defaultValues,
 	});
 
-	function onSubmit(data: TeamCreationFormValues) {
+	async function onSubmit(data: TeamCreationFormValues) {
 		try {
 			setIsLoading(true);
-			createTeam.mutate(data);
+			// createTeam.mutate({
+			// 	name: data.name,
+			// });
 			toast({
 				title: `Successfully created your team!`,
 				description: `To view your new team, click on the team switcher.`,

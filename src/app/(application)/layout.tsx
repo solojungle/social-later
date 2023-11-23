@@ -17,7 +17,7 @@ export default function ApplicationLayout({
 	return (
 		<>
 			<SiteHeader />
-			<div className="h-screen">{children}</div>;
+			<div className="h-screen">{children}</div>
 		</>
 	);
 }

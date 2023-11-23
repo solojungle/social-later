@@ -1,7 +1,5 @@
 import { create } from "zustand";
 
-import { api } from "@/trpc/react";
-
 import { useUserStore } from "./user";
 
 const currentUser = useUserStore.getState();
@@ -28,7 +26,6 @@ interface TeamState {
 
 interface TeamStore extends TeamState {
 	updateSelectedTeam: (team: TeamState["selectedTeam"]) => void;
-	setTeams: (teams: any) => void;
 }
 
 export const useTeamStore = create<TeamStore>()((set) => ({
@@ -41,14 +38,4 @@ export const useTeamStore = create<TeamStore>()((set) => ({
 		avatarFallbackInitials: currentUser.avatarFallbackInitials,
 	},
 	updateSelectedTeam: (team) => set(() => ({ selectedTeam: team })),
-	setTeams: async () => {
-		// Use tRPC or another method to fetch data from the database
-		const { data } = api.user.getUserAndTeam.useQuery();
-
-		if (!data) {
-			return set({ teams: [] });
-		}
-
-		return set({ teams: data.teams });
-	},
 }));

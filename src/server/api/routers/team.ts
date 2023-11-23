@@ -16,6 +16,15 @@ export const teamRouter = createTRPCRouter({
 					image: `https://avatar.vercel.sh/${Math.floor(
 						Math.random() * 10,
 					)}.png`,
+					members: {
+						create: {
+							user: {
+								connect: {
+									id: ctx.session.user.id,
+								},
+							},
+						},
+					},
 				},
 			});
 		}),

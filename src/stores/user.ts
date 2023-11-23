@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 interface UserState {
+	id: string;
 	name: string;
 	email: string;
 	url: string;
@@ -10,15 +11,19 @@ interface UserState {
 }
 
 interface UserStore extends UserState {
-	updateUserInfo: (data: Partial<UserState>) => void;
+	// updateName: (name: UserState["name"]) => void;
 }
 
+const defaultValues: UserState = {
+	id: "",
+	name: "",
+	email: "",
+	url: "",
+	type: "",
+	avatar: "",
+	avatarFallbackInitials: "",
+};
+
 export const useUserStore = create<UserStore>()((set) => ({
-	name: "Ali Awari",
-	email: "ali@seriesfi.com",
-	url: "solojungle",
-	type: "personal",
-	avatar: "https://avatar.vercel.sh/solojungle?&s=160",
-	avatarFallbackInitials: "AA",
-	updateUserInfo: (data) => set(data),
+	...defaultValues,
 }));
