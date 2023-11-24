@@ -44,7 +44,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 	const [open, setOpen] = React.useState(false);
 	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
-	const { avatar, avatarFallbackInitials, name, type } = useUserStore();
+	const { image, imageFallbackInitials, name, type } = useUserStore();
 	const { teams, selectedTeam, updateSelectedTeam } = useTeamStore();
 
 	// Faciliate keeping the current URL when switching businesses
@@ -67,12 +67,9 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						)}
 					>
 						<Avatar className="mr-2 h-5 w-5">
-							<AvatarImage
-								src={selectedTeam?.avatar}
-								alt={selectedTeam?.name}
-							/>
+							<AvatarImage src={selectedTeam.image} alt={selectedTeam.name} />
 							<AvatarFallback>
-								{selectedTeam?.avatarFallbackInitials}
+								{selectedTeam?.imageFallbackInitials}
 							</AvatarFallback>
 						</Avatar>
 						{selectedTeam?.name}
@@ -89,11 +86,12 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 									key={name}
 									onSelect={() => {
 										updateSelectedTeam({
+											id: "",
 											name,
-											avatar,
+											image,
 											url: "",
 											type,
-											avatarFallbackInitials,
+											imageFallbackInitials,
 										});
 										setOpen(false);
 
@@ -112,8 +110,8 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 									className="text-sm"
 								>
 									<Avatar className="mr-2 h-5 w-5">
-										<AvatarImage src={avatar} alt={name} />
-										<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
+										<AvatarImage src={image} alt={name} />
+										<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
 									</Avatar>
 									{name}
 									<CheckIcon
@@ -134,8 +132,8 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 												name: team.name,
 												url: team.url,
 												type: team.type,
-												avatar: team.avatar,
-												avatarFallbackInitials: team.avatarFallbackInitials,
+												image: team.image,
+												imageFallbackInitials: team.imageFallbackInitials,
 											});
 
 											setOpen(false);
@@ -152,9 +150,9 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 										className="text-sm"
 									>
 										<Avatar className="mr-2 h-5 w-5">
-											<AvatarImage src={team.avatar} alt={team.name} />
+											<AvatarImage src={team.image} alt={team.name} />
 											<AvatarFallback>
-												{team.avatarFallbackInitials}
+												{team.imageFallbackInitials}
 											</AvatarFallback>
 										</Avatar>
 										{team.name}

@@ -1,41 +1,22 @@
 import { create } from "zustand";
 
-import { useUserStore } from "./user";
-
-const currentUser = useUserStore.getState();
+import { teamDefaultValues, TeamSchemaValues } from "@/schemas/team-schema";
 
 interface TeamState {
-	teams: any[];
-	// teams: {
-	// 	id?: string;
-	// 	name: string;
-	// 	url: string;
-	// 	type: string;
-	// 	avatar: string;
-	// 	avatarFallbackInitials: string;
-	// }[];
-	selectedTeam: {
-		id?: string;
-		name: string;
-		url: string;
-		type: string;
-		avatar: string;
-		avatarFallbackInitials: string;
-	};
+	teams: TeamSchemaValues[];
+	selectedTeam: TeamSchemaValues;
 }
 
 interface TeamStore extends TeamState {
 	updateSelectedTeam: (team: TeamState["selectedTeam"]) => void;
 }
 
-export const useTeamStore = create<TeamStore>()((set) => ({
+const defaultValues = {
 	teams: [],
-	selectedTeam: {
-		name: currentUser.name,
-		url: currentUser.url,
-		type: currentUser.type,
-		avatar: currentUser.avatar,
-		avatarFallbackInitials: currentUser.avatarFallbackInitials,
-	},
+	selectedTeam: teamDefaultValues,
+};
+
+export const useTeamStore = create<TeamStore>()((set) => ({
+	...defaultValues,
 	updateSelectedTeam: (team) => set(() => ({ selectedTeam: team })),
 }));

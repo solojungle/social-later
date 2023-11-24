@@ -15,19 +15,19 @@ export const userRouter = createTRPCRouter({
 		}
 		return user;
 	}),
-	getUserAndTeam: protectedProcedure.query(async ({ ctx }) => {
-		const user = await ctx.db.userOnTeam.findMany({
+	getTeams: protectedProcedure.query(async ({ ctx }) => {
+		const teams = await ctx.db.userOnTeam.findMany({
 			where: { userId: ctx.session.user.id },
 			select: {
 				team: true,
 			},
 		});
-		if (!user) {
+		if (!teams) {
 			throw new TRPCError({
 				code: "NOT_FOUND",
-				message: `No user with id '${ctx.session.user.id}'`,
+				message: `No teams belong to user with id '${ctx.session.user.id}'`,
 			});
 		}
-		return user;
+		return teams;
 	}),
 });
