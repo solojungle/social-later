@@ -1,6 +1,9 @@
 import { create } from "zustand";
 
-import { teamDefaultValues, TeamSchemaValues } from "@/schemas/team-schema";
+import {
+	TeamSchemaValues,
+	teamStoreDefaultValues,
+} from "@/schemas/team-schema";
 
 interface TeamState {
 	teams: TeamSchemaValues[];
@@ -13,7 +16,7 @@ interface TeamStore extends TeamState {
 
 const defaultValues = {
 	teams: [],
-	selectedTeam: teamDefaultValues,
+	selectedTeam: teamStoreDefaultValues,
 };
 
 export const useTeamStore = create<TeamStore>()((set) => ({

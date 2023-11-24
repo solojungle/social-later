@@ -31,7 +31,7 @@ interface TeamAvatarCardProps {
 	formControl: Control<any, any>;
 }
 
-export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
+export function TeamAvatarCard() {
 	const { selectedTeam } = useTeamStore();
 
 	return (
@@ -43,7 +43,7 @@ export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
 			content={
 				<>
 					<FormField
-						control={formControl}
+						control={}
 						name="image"
 						render={() => (
 							<FormItem>

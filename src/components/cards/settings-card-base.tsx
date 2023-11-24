@@ -39,7 +39,7 @@ export function SettingsCardBase({
 					<span className="text-sm text-muted-foreground">
 						{footerSubtitle}
 					</span>
-					<Button>{buttonContent}</Button>
+					<Button type="submit">{buttonContent}</Button>
 				</CardFooter>
 			</div>
 		</Card>

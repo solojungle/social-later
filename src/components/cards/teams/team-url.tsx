@@ -28,7 +28,7 @@ interface TeamUrlCardProps {
 	formControl: Control<any, any>;
 }
 
-export function TeamUrlCard({ formControl }: TeamUrlCardProps) {
+export function TeamUrlCard() {
 	return (
 		<SettingsCardBase
 			title="Team URL"
