@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
 
 export const teamAvatarFormSchema = z.object({
-	avatar: z
+	image: z
 		.string()
 		.min(1, {
 			message: "Name must be at least 1 characters.",
@@ -44,7 +44,7 @@ export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
 				<>
 					<FormField
 						control={formControl}
-						name="avatar"
+						name="image"
 						render={() => (
 							<FormItem>
 								<FormLabel>File Upload</FormLabel>
@@ -56,9 +56,9 @@ export function TeamAvatarCard({ formControl }: TeamAvatarCardProps) {
 						)}
 					/>
 					<Avatar className="mr-2 h-20 w-20">
-						<AvatarImage src={selectedTeam?.avatar} alt={selectedTeam?.name} />
+						<AvatarImage src={selectedTeam.image} alt={selectedTeam.name} />
 						<AvatarFallback>
-							{selectedTeam?.avatarFallbackInitials}
+							{selectedTeam.imageFallbackInitials}
 						</AvatarFallback>
 					</Avatar>
 				</>

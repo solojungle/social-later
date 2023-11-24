@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
 
 export const PersonalAvatarFormSchema = z.object({
-	avatar: z
+	image: z
 		.string()
 		.min(1, {
 			message: "Name must be at least 1 characters.",
@@ -30,7 +30,7 @@ interface PersonalAvatarCardProps {
 }
 
 export function PersonalAvatarCard({ formControl }: PersonalAvatarCardProps) {
-	const { avatar, avatarFallbackInitials, name } = useUserStore();
+	const { image, imageFallbackInitials, name } = useUserStore();
 
 	return (
 		<SettingsCardBase
@@ -42,7 +42,7 @@ export function PersonalAvatarCard({ formControl }: PersonalAvatarCardProps) {
 				<>
 					<FormField
 						control={formControl}
-						name="avatar"
+						name="image"
 						render={() => (
 							<FormItem>
 								<FormLabel>File Upload</FormLabel>
@@ -54,8 +54,8 @@ export function PersonalAvatarCard({ formControl }: PersonalAvatarCardProps) {
 						)}
 					/>
 					<Avatar className="mr-2 h-20 w-20">
-						<AvatarImage src={avatar} alt={name} />
-						<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
+						<AvatarImage src={image} alt={name} />
+						<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
 					</Avatar>
 				</>
 			}

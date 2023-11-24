@@ -17,15 +17,15 @@ import {
 import { useUserStore } from "@/stores/user";
 
 export function UserMenu() {
-	const { email, name, avatar, avatarFallbackInitials } = useUserStore();
+	const { email, name, image, imageFallbackInitials } = useUserStore();
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" className="relative h-8 w-8 rounded-full">
 					<Avatar className="h-8 w-8">
-						<AvatarImage src={avatar} alt={name} />
-						<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
+						<AvatarImage src={image} alt={name} />
+						<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
 					</Avatar>
 				</Button>
 			</DropdownMenuTrigger>

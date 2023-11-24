@@ -7,8 +7,16 @@ export async function SiteHeader() {
 	const userData = await api.user.getUser.query();
 	const teamsData = await api.user.getTeams.query();
 
-	// Now we will pull every "team" value from the teams array and put it into a new array that does not have the "team" key
 	const teamsArray = teamsData.map((team) => team.team);
+
+	// Now create a new teams array that has the properties: type, and imageFallbackInitials
+	const teamsArrayWithProperties = teamsArray.map((team) => {
+		return {
+			...team,
+			type: "team",
+			imageFallbackInitials: "TT",
+		};
+	});
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -18,7 +26,7 @@ export async function SiteHeader() {
 					imageFallbackInitials: "AA",
 					type: "personal",
 				}}
-				teams={...teamsArray}
+				teams={...teamsArrayWithProperties}
 			/>
 			<NavigationBar />
 		</header>
