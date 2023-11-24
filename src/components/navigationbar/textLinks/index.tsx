@@ -23,7 +23,7 @@ export function TextLinks({
 			{...props}
 		>
 			<Link
-				href="/"
+				href="/publish"
 				className={cn(
 					"transition-colors hover:text-foreground/80",
 					pathname?.endsWith("/") ? "text-foreground" : "text-foreground/60",

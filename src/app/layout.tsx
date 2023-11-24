@@ -22,9 +22,6 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	// const data = await api.user.getUser.query();
-	// // getServerAuthSession().then((session) => {});
-
 	return (
 		<html lang="en">
 			<body className={`font-sans ${inter.variable}`}>
