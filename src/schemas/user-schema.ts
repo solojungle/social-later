@@ -3,11 +3,11 @@ import { z } from "zod";
 // Define Zod schema for team
 export const UserSchema = z.object({
 	id: z.string(),
-	name: z.string().optional(),
-	email: z.string().email().optional(),
+	name: z.string().nullish(),
+	email: z.string().email().nullish(),
 	url: z.string(),
 	type: z.string(),
-	image: z.string().optional(),
+	image: z.string().nullish(),
 	imageFallbackInitials: z.string(),
 });
 

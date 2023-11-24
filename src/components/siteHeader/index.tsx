@@ -7,8 +7,6 @@ export async function SiteHeader() {
 	const userData = await api.user.getUser.query();
 	const teamsData = await api.user.getTeams.query();
 
-	console.log(userData);
-
 	// Now we will pull every "team" value from the teams array and put it into a new array that does not have the "team" key
 	const teamsArray = teamsData.map((team) => team.team);
 
