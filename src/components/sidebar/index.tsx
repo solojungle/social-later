@@ -27,7 +27,7 @@ export function Sidebar({
 	accountItems,
 	...props
 }: SidebarNavProps) {
-	const { avatar, avatarFallbackInitials, name } = useUserStore();
+	const { image, imageFallbackInitials, name } = useUserStore();
 	const { selectedTeam } = useTeamStore();
 
 	const pathname = usePathname();
@@ -44,12 +44,9 @@ export function Sidebar({
 				<div className="mb-4 flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 					<div className="mb-2 flex items-center">
 						<Avatar className="h-4 w-4">
-							<AvatarImage
-								src={selectedTeam?.avatar}
-								alt={selectedTeam?.name}
-							/>
+							<AvatarImage src={selectedTeam.image} alt={selectedTeam.name} />
 							<AvatarFallback>
-								{selectedTeam?.avatarFallbackInitials}
+								{selectedTeam?.imageFallbackInitials}
 							</AvatarFallback>
 						</Avatar>
 						<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
@@ -76,8 +73,8 @@ export function Sidebar({
 			<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 				<div className="mb-2 flex items-center">
 					<Avatar className="h-4 w-4">
-						<AvatarImage src={avatar} alt={name} />
-						<AvatarFallback>{avatarFallbackInitials}</AvatarFallback>
+						<AvatarImage src={image} alt={name} />
+						<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
 					</Avatar>
 					<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
 						Account
