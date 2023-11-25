@@ -1,5 +1,3 @@
-"use client";
-
 import { TeamAvatarCard } from "@/components/cards/teams/team-avatar";
 import { TeamLeaveCard } from "@/components/cards/teams/team-leave";
 import { TeamNameCard } from "@/components/cards/teams/team-name";

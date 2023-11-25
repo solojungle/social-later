@@ -13,7 +13,7 @@ export const UserSchema = z.object({
 
 export type UserSchemaValues = z.infer<typeof UserSchema>;
 
-export const userDefaultValues: UserSchemaValues = {
+export const userStoreDefaultValues: UserSchemaValues = {
 	id: "",
 	name: "",
 	email: "",
