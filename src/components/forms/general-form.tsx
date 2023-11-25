@@ -1,16 +1,16 @@
 "use client";
 
+import { TeamAvatarCard } from "@/components/cards/teams/team-avatar";
+import { TeamLeaveCard } from "@/components/cards/teams/team-leave";
 import { TeamNameCard } from "@/components/cards/teams/team-name";
 import { TeamUrlCard } from "@/components/cards/teams/team-url";
-
-import { TeamLeaveCard } from "../cards/teams/team-leave";
 
 export function GeneralTeamForm() {
 	return (
 		<>
 			<TeamNameCard />
 			<TeamUrlCard />
-			{/* <TeamAvatarCard /> */}
+			<TeamAvatarCard />
 			<TeamLeaveCard />
 		</>
 	);
