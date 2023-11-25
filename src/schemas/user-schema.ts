@@ -3,7 +3,15 @@ import { z } from "zod";
 // Define Zod schema for team
 export const UserSchema = z.object({
 	id: z.string(),
-	name: z.string().nullish(),
+	name: z
+		.string()
+		.min(1, {
+			message: "Name must be at least 1 characters.",
+		})
+		.max(32, {
+			message: "Name must not be longer than 32 characters.",
+		})
+		.nullish(),
 	email: z.string().email().nullish(),
 	url: z.string(),
 	type: z.string(),
