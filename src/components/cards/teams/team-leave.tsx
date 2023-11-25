@@ -22,7 +22,7 @@ export function TeamLeaveCard() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex items-center justify-between" />
-			<div className="rounded-b-lg bg-red-100">
+			<div className="rounded-b-xl bg-red-100">
 				<Separator className="my-2 bg-destructive" />
 				<CardFooter className="flex justify-end pb-2">
 					<Button variant="destructive">Leave Team</Button>

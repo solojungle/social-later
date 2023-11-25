@@ -33,7 +33,7 @@ export function SettingsCardBase({
 			<CardContent className="flex items-center justify-between">
 				{content}
 			</CardContent>
-			<div className="rounded-b-lg bg-muted">
+			<div className="rounded-b-xl bg-muted">
 				<Separator className="my-2" />
 				<CardFooter className="flex justify-between pb-2">
 					<span className="text-sm text-muted-foreground">
