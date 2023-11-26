@@ -4,18 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import { useTeamStore } from "@/stores/teams";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 
 export function TextLinks({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLElement>) {
-	const { selectedTeam } = useTeamStore();
+	const { type, url } = useSelectedTeamStore();
 	const pathname = usePathname();
 	const settingsUrl =
-		selectedTeam.type === "personal"
-			? "/settings"
-			: `/teams/${selectedTeam.url}/settings`;
+		type === "personal" ? "/settings" : `/teams/${url}/settings`;
 
 	return (
 		<nav

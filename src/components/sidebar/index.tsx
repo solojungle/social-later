@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import { useTeamStore } from "@/stores/teams";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -28,7 +28,11 @@ export function Sidebar({
 	...props
 }: SidebarNavProps) {
 	const { image, imageFallbackInitials, name } = useUserStore();
-	const { selectedTeam } = useTeamStore();
+	const {
+		image: selectedTeamImage,
+		name: selectedTeamName,
+		imageFallbackInitials: selectedImageFallbackInitials,
+	} = useSelectedTeamStore();
 
 	const pathname = usePathname();
 
@@ -44,10 +48,8 @@ export function Sidebar({
 				<div className="mb-4 flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 					<div className="mb-2 flex items-center">
 						<Avatar className="h-4 w-4">
-							<AvatarImage src={selectedTeam.image} alt={selectedTeam.name} />
-							<AvatarFallback>
-								{selectedTeam?.imageFallbackInitials}
-							</AvatarFallback>
+							<AvatarImage src={selectedTeamImage} alt={selectedTeamName} />
+							<AvatarFallback>{selectedImageFallbackInitials}</AvatarFallback>
 						</Avatar>
 						<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
 							Team

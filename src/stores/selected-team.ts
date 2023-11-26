@@ -1,0 +1,21 @@
+import { create } from "zustand";
+
+import { TeamSchemaValues } from "@/schemas/team/team-schema";
+
+interface SelectedTeamStore extends TeamSchemaValues {
+	setName: (name: TeamSchemaValues["name"]) => void;
+}
+
+const defaultValues = {
+	id: "",
+	name: "",
+	url: "",
+	type: "",
+	image: "",
+	imageFallbackInitials: "",
+};
+
+export const useSelectedTeamStore = create<SelectedTeamStore>()((set) => ({
+	...defaultValues,
+	setName: (name) => set(() => ({ name })),
+}));

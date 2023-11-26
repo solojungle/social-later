@@ -14,16 +14,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { TeamSchema, TeamSchemaValues } from "@/schemas/team/team-schema";
-import { useTeamStore } from "@/stores/teams";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamAvatarCard() {
-	const { selectedTeam } = useTeamStore();
+	const { image, name, imageFallbackInitials } = useSelectedTeamStore();
 
 	const defaultValues = {
-		image: selectedTeam.image,
+		image,
 	};
 
 	const form = useForm<TeamSchemaValues>({
@@ -66,10 +66,8 @@ export function TeamAvatarCard() {
 								)}
 							/>
 							<Avatar className="mr-2 h-20 w-20">
-								<AvatarImage src={selectedTeam.image} alt={selectedTeam.name} />
-								<AvatarFallback>
-									{selectedTeam.imageFallbackInitials}
-								</AvatarFallback>
+								<AvatarImage src={image} alt={name} />
+								<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
 							</Avatar>
 						</>
 					}

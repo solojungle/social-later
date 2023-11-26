@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { UserSchema, UserSchemaValues } from "@/schemas/user/user-schema";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
@@ -20,6 +21,7 @@ import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalNameCard() {
 	const { name, setName } = useUserStore();
+	const { setName: setSelectedTeamsName } = useSelectedTeamStore();
 
 	const updateUser = api.user.updateUser.useMutation();
 
@@ -40,6 +42,9 @@ export function PersonalNameCard() {
 
 		// Update local state
 		setName(data.name);
+
+		// Update selected team name
+		setSelectedTeamsName(data.name);
 
 		toast({
 			title: "You submitted the following values:",

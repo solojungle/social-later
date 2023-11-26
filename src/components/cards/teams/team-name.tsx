@@ -13,15 +13,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { TeamSchema, TeamSchemaValues } from "@/schemas/team/team-schema";
-import { useTeamStore } from "@/stores/teams";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamNameCard() {
-	const { selectedTeam } = useTeamStore();
+	const { name } = useSelectedTeamStore();
 
 	const defaultValues = {
-		name: selectedTeam.name,
+		name,
 	};
 
 	const form = useForm<TeamSchemaValues>({

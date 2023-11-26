@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { TeamSchemaValues } from "@/schemas/team/team-schema";
 import { UserSchemaValues } from "@/schemas/user/user-schema";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamStore } from "@/stores/teams";
 import { useUserStore } from "@/stores/user";
 
@@ -19,7 +20,7 @@ export function StoreInitializer({
 	useEffect(() => {
 		if (!isInitialized.current) {
 			useUserStore.setState(user);
-			useTeamStore.setState({ selectedTeam: user });
+			useSelectedTeamStore.setState(user);
 			useTeamStore.setState({ teams });
 			isInitialized.current = true;
 		}
