@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { TeamSchema, TeamSchemaValues } from "@/schemas/team-schema";
+import { TeamSchema, TeamSchemaValues } from "@/schemas/team/team-schema";
 import { useTeamStore } from "@/stores/teams";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { UserSchema, UserSchemaValues } from "@/schemas/user-schema";
+import { UserSchema, UserSchemaValues } from "@/schemas/user/user-schema";
 import { useUserStore } from "@/stores/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";

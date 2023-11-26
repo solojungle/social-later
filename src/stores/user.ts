@@ -3,7 +3,7 @@ import { create } from "zustand";
 import {
 	UserSchemaValues,
 	userStoreDefaultValues,
-} from "@/schemas/user-schema";
+} from "@/schemas/user/user-schema";
 
 interface UserStore extends UserSchemaValues {
 	// updateName: (name: UserState["name"]) => void;

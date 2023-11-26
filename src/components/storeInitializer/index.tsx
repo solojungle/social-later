@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-import { TeamSchemaValues } from "@/schemas/team-schema";
-import { UserSchemaValues } from "@/schemas/user-schema";
+import { TeamSchemaValues } from "@/schemas/team/team-schema";
+import { UserSchemaValues } from "@/schemas/user/user-schema";
 import { useTeamStore } from "@/stores/teams";
 import { useUserStore } from "@/stores/user";
 

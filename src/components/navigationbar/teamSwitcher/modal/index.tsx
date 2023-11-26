@@ -22,7 +22,7 @@ import {
 	defaultValues,
 	teamCreationFormSchema,
 	TeamCreationFormValues,
-} from "@/schemas/team-creation-schema";
+} from "@/schemas/team/team-creation-schema";
 import { api } from "@/trpc/react";
 
 type TeamSwitcherModalProps = {

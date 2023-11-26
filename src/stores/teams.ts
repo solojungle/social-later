@@ -3,7 +3,7 @@ import { create } from "zustand";
 import {
 	TeamSchemaValues,
 	teamStoreDefaultValues,
-} from "@/schemas/team-schema";
+} from "@/schemas/team/team-schema";
 
 interface TeamState {
 	teams: TeamSchemaValues[];

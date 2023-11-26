@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
+import { userUpdateSchema } from "@/schemas/user/user-update-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
@@ -32,17 +33,19 @@ export const userRouter = createTRPCRouter({
 		return teams;
 	}),
 
-	updateUser: protectedProcedure.mutation(async ({ ctx, input }) => {
-		const user = await ctx.db.user.update({
-			where: { id: ctx.session.user.id },
-			data: input,
-		});
-		if (!user) {
-			throw new TRPCError({
-				code: "NOT_FOUND",
-				message: `No user with id '${ctx.session.user.id}'`,
+	updateUser: protectedProcedure
+		.input(userUpdateSchema)
+		.mutation(async ({ ctx, input }) => {
+			const user = await ctx.db.user.update({
+				where: { id: ctx.session.user.id },
+				data: input,
 			});
-		}
-		return user;
-	}),
+			if (!user) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `No user with id '${ctx.session.user.id}'`,
+				});
+			}
+			return user;
+		}),
 });
