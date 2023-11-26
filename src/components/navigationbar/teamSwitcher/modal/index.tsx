@@ -45,9 +45,9 @@ export default function TeamSwitcherModal({
 	async function onSubmit(data: TeamCreationFormValues) {
 		try {
 			setIsLoading(true);
-			// createTeam.mutate({
-			// 	name: data.name,
-			// });
+			createTeam.mutate({
+				name: data.name,
+			});
 			toast({
 				title: `Successfully created your team!`,
 				description: `To view your new team, click on the team switcher.`,

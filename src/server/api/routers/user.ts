@@ -15,6 +15,7 @@ export const userRouter = createTRPCRouter({
 		}
 		return user;
 	}),
+
 	getTeams: protectedProcedure.query(async ({ ctx }) => {
 		const teams = await ctx.db.userOnTeam.findMany({
 			where: { userId: ctx.session.user.id },
@@ -29,5 +30,19 @@ export const userRouter = createTRPCRouter({
 			});
 		}
 		return teams;
+	}),
+
+	updateUser: protectedProcedure.mutation(async ({ ctx, input }) => {
+		const user = await ctx.db.user.update({
+			where: { id: ctx.session.user.id },
+			data: input,
+		});
+		if (!user) {
+			throw new TRPCError({
+				code: "NOT_FOUND",
+				message: `No user with id '${ctx.session.user.id}'`,
+			});
+		}
+		return user;
 	}),
 });
