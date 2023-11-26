@@ -19,7 +19,7 @@ import { api } from "@/trpc/react";
 import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalNameCard() {
-	const { name } = useUserStore();
+	const { name, setName } = useUserStore();
 
 	const updateUser = api.user.updateUser.useMutation();
 
@@ -39,9 +39,7 @@ export function PersonalNameCard() {
 		});
 
 		// Update local state
-		// useUserStore.getState().setName({
-		// 	name: data.name,
-		// });
+		setName(data.name);
 
 		toast({
 			title: "You submitted the following values:",
