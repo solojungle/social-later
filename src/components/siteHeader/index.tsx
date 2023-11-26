@@ -18,15 +18,17 @@ export async function SiteHeader() {
 		};
 	});
 
+	const userWithProperties = {
+		...userData,
+		type: "personal",
+		imageFallbackInitials: "AA",
+	};
+
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<StoreInitializer
-				user={{
-					...userData,
-					imageFallbackInitials: "AA",
-					type: "personal",
-				}}
-				teams={...teamsArrayWithProperties}
+				user={{ ...userWithProperties }}
+				teams={teamsArrayWithProperties}
 			/>
 			<NavigationBar />
 		</header>
