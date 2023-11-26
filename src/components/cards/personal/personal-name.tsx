@@ -14,15 +14,20 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { UserSchema, UserSchemaValues } from "@/schemas/user/user-schema";
 import { useUserStore } from "@/stores/user";
+import { api } from "@/trpc/react";
 
 import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalNameCard() {
 	const { name } = useUserStore();
 
+	const updateUser = api.user.updateUser.useMutation();
+
 	const defaultValues = {
 		name,
 	};
+
+	console.log(defaultValues);
 
 	const form = useForm<UserSchemaValues>({
 		resolver: zodResolver(UserSchema.pick({ name: true })),
@@ -30,6 +35,8 @@ export function PersonalNameCard() {
 	});
 
 	function onSubmit(data: UserSchemaValues) {
+		updateUser.mutateAsync(data);
+
 		toast({
 			title: "You submitted the following values:",
 			description: (

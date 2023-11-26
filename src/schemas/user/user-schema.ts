@@ -10,12 +10,11 @@ export const UserSchema = z.object({
 		})
 		.max(32, {
 			message: "Name must not be longer than 32 characters.",
-		})
-		.nullish(),
-	email: z.string().email().nullish(),
+		}),
+	email: z.string().email(),
 	url: z.string(),
 	type: z.string(),
-	image: z.string().nullish(),
+	image: z.string(),
 	imageFallbackInitials: z.string(),
 });
 
