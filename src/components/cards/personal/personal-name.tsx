@@ -27,15 +27,21 @@ export function PersonalNameCard() {
 		name,
 	};
 
-	console.log(defaultValues);
-
 	const form = useForm<UserSchemaValues>({
 		resolver: zodResolver(UserSchema.pick({ name: true })),
 		defaultValues,
 	});
 
 	function onSubmit(data: UserSchemaValues) {
-		updateUser.mutateAsync(data);
+		// Make database call
+		updateUser.mutateAsync({
+			name: data.name,
+		});
+
+		// Update local state
+		// useUserStore.getState().setName({
+		// 	name: data.name,
+		// });
 
 		toast({
 			title: "You submitted the following values:",

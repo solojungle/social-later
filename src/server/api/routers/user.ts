@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { userUpdateSchema } from "@/schemas/user/user-update-schema";
+import { UserSchema } from "@/schemas/user/user-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
@@ -44,7 +44,7 @@ export const userRouter = createTRPCRouter({
 	}),
 
 	updateUser: protectedProcedure
-		.input(userUpdateSchema)
+		.input(UserSchema.partial())
 		.mutation(async ({ ctx, input }) => {
 			const user = await ctx.db.user.update({
 				where: { id: ctx.session.user.id },
