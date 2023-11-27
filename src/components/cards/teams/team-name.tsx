@@ -14,11 +14,16 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { TeamSchema, TeamSchemaValues } from "@/schemas/team/team-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamStore } from "@/stores/teams";
+import { api } from "@/trpc/react";
 
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamNameCard() {
-	const { name } = useSelectedTeamStore();
+	const { name, id, setName } = useSelectedTeamStore();
+	const { updateTeamName } = useTeamStore();
+
+	const updateTeam = api.team.update.useMutation();
 
 	const defaultValues = {
 		name,
@@ -30,6 +35,18 @@ export function TeamNameCard() {
 	});
 
 	function onSubmit(data: TeamSchemaValues) {
+		// Update the team name in the database
+		updateTeam.mutate({
+			id,
+			name: data.name,
+		});
+
+		// Update the team name in the list of teams
+		updateTeamName(id, data.name);
+
+		// Update selected team name
+		setName(data.name);
+
 		toast({
 			title: "You submitted the following values:",
 			description: (

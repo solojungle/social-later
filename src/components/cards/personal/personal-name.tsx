@@ -36,7 +36,7 @@ export function PersonalNameCard() {
 
 	function onSubmit(data: UserSchemaValues) {
 		// Make database call
-		updateUser.mutateAsync({
+		updateUser.mutate({
 			name: data.name,
 		});
 

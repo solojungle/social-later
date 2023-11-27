@@ -23,4 +23,21 @@ export const teamRouter = createTRPCRouter({
 				},
 			});
 		}),
+
+	update: protectedProcedure
+		.input(
+			TeamSchema.partial({
+				name: true,
+				url: true,
+				type: true,
+				image: true,
+				imageFallbackInitials: true,
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			return ctx.db.team.update({
+				where: { id: input.id },
+				data: input,
+			});
+		}),
 });
