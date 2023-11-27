@@ -12,7 +12,14 @@ export const UserSchema = z.object({
 			message: "Name must not be longer than 32 characters.",
 		}),
 	email: z.string().email(),
-	url: z.string(),
+	url: z
+		.string()
+		.min(1, {
+			message: "Name must be at least 1 characters.",
+		})
+		.max(48, {
+			message: "Name must not be longer than 48 characters.",
+		}),
 	type: z.string(),
 	image: z.string(),
 	imageFallbackInitials: z.string(),
