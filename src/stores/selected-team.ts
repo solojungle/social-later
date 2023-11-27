@@ -4,6 +4,7 @@ import { TeamSchemaValues } from "@/schemas/team/team-schema";
 
 interface SelectedTeamStore extends TeamSchemaValues {
 	setName: (name: TeamSchemaValues["name"]) => void;
+	setUrl: (url: TeamSchemaValues["url"]) => void;
 }
 
 const defaultValues = {
@@ -18,4 +19,5 @@ const defaultValues = {
 export const useSelectedTeamStore = create<SelectedTeamStore>()((set) => ({
 	...defaultValues,
 	setName: (name) => set(() => ({ name })),
+	setUrl: (url) => set(() => ({ url })),
 }));

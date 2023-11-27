@@ -13,12 +13,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { UserSchema, UserSchemaValues } from "@/schemas/user/user-schema";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
+import { api } from "@/trpc/react";
 
 import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalUsernameCard() {
-	const { url } = useUserStore();
+	const { url, setUrl } = useUserStore();
+	const { setUrl: setSelectedTeamsUrl } = useSelectedTeamStore();
+
+	const updateUser = api.user.updateUser.useMutation();
 
 	const defaultValues = {
 		url,
@@ -30,6 +35,17 @@ export function PersonalUsernameCard() {
 	});
 
 	function onSubmit(data: UserSchemaValues) {
+		// Make database call
+		updateUser.mutateAsync({
+			url: data.url,
+		});
+
+		// Update local state
+		setUrl(data.url);
+
+		// Update selected team url
+		setSelectedTeamsUrl(data.url);
+
 		toast({
 			title: "You submitted the following values:",
 			description: (
