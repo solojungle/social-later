@@ -6,7 +6,9 @@ interface TeamState {
 	teams: TeamSchemaValues[];
 }
 
-interface TeamStore extends TeamState {}
+interface TeamStore extends TeamState {
+	addTeam: (team: TeamSchemaValues) => void;
+}
 
 const defaultValues = {
 	teams: [],
@@ -14,4 +16,5 @@ const defaultValues = {
 
 export const useTeamStore = create<TeamStore>()((set) => ({
 	...defaultValues,
+	addTeam: (team) => set((state) => ({ teams: [...state.teams, team] })),
 }));

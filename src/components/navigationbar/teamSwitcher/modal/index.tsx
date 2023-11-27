@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -18,11 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import {
-	defaultValues,
-	teamCreationFormSchema,
-	TeamCreationFormValues,
-} from "@/schemas/team/team-creation-schema";
+import { TeamSchema, TeamSchemaValues } from "@/schemas/team/team-schema";
+import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
 
 type TeamSwitcherModalProps = {
@@ -35,19 +30,35 @@ export default function TeamSwitcherModal({
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { toast } = useToast();
 
-	const createTeam = api.team.create.useMutation();
+	const { addTeam } = useTeamStore();
 
-	const form = useForm<TeamCreationFormValues>({
-		resolver: zodResolver(teamCreationFormSchema),
+	const createTeam = api.team.create.useMutation({
+		onSuccess: (data) => {
+			addTeam({
+				...data,
+				type: "team",
+				imageFallbackInitials: "TT",
+			});
+		},
+	});
+
+	const defaultValues: Partial<TeamSchemaValues> = {
+		name: "",
+	};
+
+	const form = useForm<TeamSchemaValues>({
+		resolver: zodResolver(TeamSchema.pick({ name: true })),
 		defaultValues,
 	});
 
-	async function onSubmit(data: TeamCreationFormValues) {
+	async function onSubmit(data: TeamSchemaValues) {
 		try {
 			setIsLoading(true);
+
 			createTeam.mutate({
 				name: data.name,
 			});
+
 			toast({
 				title: `Successfully created your team!`,
 				description: `To view your new team, click on the team switcher.`,
