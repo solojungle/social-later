@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import {
@@ -22,6 +23,7 @@ import { SettingsCardBase } from "../settings-card-base";
 export function TeamUrlCard() {
 	const { url, setUrl, id } = useSelectedTeamStore();
 	const { updateTeamUrl } = useTeamStore();
+	const router = useRouter();
 
 	const updateTeam = api.team.update.useMutation();
 
@@ -46,6 +48,9 @@ export function TeamUrlCard() {
 
 		// Update the selected team url
 		setUrl(data.url);
+
+		// Change the url in the browser, by change :id in "/teams/:id/settings" to the new url
+		router.replace(`/teams/${data.url}/settings`);
 
 		toast({
 			title: "You submitted the following values:",
