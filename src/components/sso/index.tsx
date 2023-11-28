@@ -13,7 +13,7 @@ export const ContinueWithBase = ({
 }: ContinueWithBaseProps) => {
 	return (
 		<Button variant="outline" type="button" {...props}>
-			<img className="h-8 w-8" alt="Single sign on with google" src={icon} />
+			<img className="h-7 w-7" alt="Single sign on with google" src={icon} />
 			<span className="flex h-8 grow items-center justify-center">{text}</span>
 		</Button>
 	);
