@@ -14,11 +14,16 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { TeamSchema, TeamSchemaValues } from "@/schemas/team/team-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamStore } from "@/stores/teams";
+import { api } from "@/trpc/react";
 
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamUrlCard() {
-	const { url } = useSelectedTeamStore();
+	const { url, setUrl, id } = useSelectedTeamStore();
+	const { updateTeamUrl } = useTeamStore();
+
+	const updateTeam = api.team.update.useMutation();
 
 	const defaultValues = {
 		url,
@@ -30,6 +35,18 @@ export function TeamUrlCard() {
 	});
 
 	function onSubmit(data: TeamSchemaValues) {
+		// Make database call
+		updateTeam.mutate({
+			id,
+			url: data.url,
+		});
+
+		// Update the team url in the list of teams
+		updateTeamUrl(id, data.url);
+
+		// Update the selected team url
+		setUrl(data.url);
+
 		toast({
 			title: "You submitted the following values:",
 			description: (
