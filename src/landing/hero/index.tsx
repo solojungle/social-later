@@ -2,19 +2,19 @@ import { Button } from "@/components/ui/button";
 
 export default function Hero() {
 	return (
-		<section className="w-full bg-[url('/backgrounds/gradient.jpg')] bg-auto bg-center bg-no-repeat p-20">
+		<section className="w-full bg-[url('/backgrounds/gradient.jpg')] bg-cover bg-center bg-no-repeat p-20">
 			<div>
-				<h2 className="text-7xl font-bold">
+				<h2 className="mb-5 text-5xl font-bold sm:text-7xl">
 					Deploy to the cloud with confidence
 				</h2>
-				<p className="text-lg">
+				<p className="mb-10 text-lg">
 					Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem
 					cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat
 					aliqua.
 				</p>
 			</div>
 			<div>
-				<Button>Get Started</Button>
+				<Button>Start for free</Button>
 			</div>
 		</section>
 	);
