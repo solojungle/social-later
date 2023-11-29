@@ -5,7 +5,7 @@ import StripePricingTable from "./stripe";
 
 export default async function LandingPage() {
 	return (
-		<main className="container min-h-screen">
+		<main className="mb-14 min-h-screen">
 			<NavigationMenuDemo />
 			<div className="mb-10">
 				<Hero />
