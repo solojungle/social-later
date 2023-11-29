@@ -74,7 +74,7 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationMenuDemo() {
 	return (
-		<div className="flex w-full justify-end py-2">
+		<div className="flex w-full justify-end py-1">
 			<Link
 				href="/login"
 				className={cn(
