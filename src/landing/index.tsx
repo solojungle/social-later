@@ -11,12 +11,17 @@ export default async function LandingPage() {
 				<Hero />
 			</div>
 			<div className="mb-10">
-				<h2 className="mb-2 text-xs font-semibold uppercase">
+				<h2 className="mb-2 text-center text-xs font-semibold uppercase">
 					Trusted by thousands of companies
 				</h2>
 				<Marquee />
 			</div>
-			<StripePricingTable />
+			<div>
+				<h2 className="text-md mb-5 text-center font-semibold uppercase">
+					Pricing
+				</h2>
+				<StripePricingTable />
+			</div>
 		</main>
 	);
 }

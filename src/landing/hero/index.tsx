@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 export default function Hero() {
 	return (
 		<section className="w-full bg-[url('/backgrounds/gradient.jpg')] bg-cover bg-center bg-no-repeat p-20">
-			<div>
+			<div className="h-full w-full">
 				<h2 className="mb-5 text-5xl font-bold sm:text-7xl">
 					Deploy to the cloud with confidence
 				</h2>
