@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 
@@ -74,7 +74,25 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationMenuDemo() {
 	return (
-		<div className="flex w-full justify-end py-1">
+		<div className="flex w-full items-center justify-between py-1">
+			<div className="flex items-center gap-12">
+				<a href="https://aliawari.com/">
+					<span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
+						aliawari.com
+					</span>
+				</a>
+				<div className="flex items-center">
+					<Button variant="link">
+						<Link href="/">Platform</Link>
+					</Button>
+					<Button variant="link">
+						<Link href="/">Pricing</Link>
+					</Button>
+					<Button variant="link">
+						<Link href="/">FAQ</Link>
+					</Button>
+				</div>
+			</div>
 			<Link
 				href="/login"
 				className={cn(
