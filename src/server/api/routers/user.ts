@@ -58,4 +58,40 @@ export const userRouter = createTRPCRouter({
 			}
 			return user;
 		}),
+
+	// modifyUserRole: protectedProcedure
+	// 	.input({
+	// 		teamId: TeamSchema.pick({ id: true }),
+	// 		userId: UserSchema.pick({ id: true }),
+	// 		role: UserSchema.pick({ role: true }),
+	// 	})
+	// 	.mutation(async ({ ctx, input }) => {
+	// 		// Check if the current user has the necessary permissions to modify roles (you may customize this part)
+	// 		const userOnTeam = await ctx.db.userOnTeam.findUnique({
+	// 			where: { userId: ctx.session.user.id, teamId: input.teamId },
+	// 		});
+
+	// 		if (!userOnTeam || userOnTeam.role !== "OWNER") {
+	// 			throw new TRPCError({
+	// 				code: "UNAUTHORIZED",
+	// 				message:
+	// 					"You do not have permission to modify user roles for this team.",
+	// 			});
+	// 		}
+
+	// 		// Update the user's role for the specified team
+	// 		const updatedUserOnTeam = await ctx.db.userOnTeam.update({
+	// 			where: { userId: input.userId, teamId: input.teamId },
+	// 			data: { role: input.role },
+	// 		});
+
+	// 		if (!updatedUserOnTeam) {
+	// 			throw new TRPCError({
+	// 				code: "NOT_FOUND",
+	// 				message: `No user with id '${input.userId}' in team with id '${input.teamId}'`,
+	// 			});
+	// 		}
+
+	// 		return updatedUserOnTeam;
+	// 	}),
 });

@@ -20,6 +20,7 @@ export const teamRouter = createTRPCRouter({
 									id: ctx.session.user.id,
 								},
 							},
+							role: "OWNER",
 						},
 					},
 				},
