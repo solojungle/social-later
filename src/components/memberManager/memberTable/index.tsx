@@ -17,8 +17,8 @@ export function MembersTable() {
 	const members = selectedTeamData ?? [];
 
 	return (
-		<Table className="w-full border">
-			<div className="flex w-full items-center justify-between bg-muted px-4 py-2 pr-5">
+		<Table className="w-full">
+			<div className="flex w-full items-center justify-between rounded-lg border bg-muted px-4 py-2 pr-5">
 				<div className="flex items-center">
 					<Checkbox className="mr-4" />
 					<span>Select all</span>
@@ -31,7 +31,7 @@ export function MembersTable() {
 				{members.map((t) => {
 					return (
 						<TableRow key={t.email}>
-							<TableCell>
+							<TableCell className="rounded-lg">
 								<div className="flex items-center justify-between pr-5">
 									<div className="flex items-center">
 										<Checkbox className="ml-2 mr-4" />
