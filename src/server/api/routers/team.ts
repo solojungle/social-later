@@ -72,6 +72,7 @@ export const teamRouter = createTRPCRouter({
 					name: member.user.name ?? "",
 					email: member.user.email ?? "",
 					image: member.user.image ?? "",
+					role: member.user.role.toLowerCase(), // Capitalize only changes the first letter, so we need to lowercase it beforehand
 				};
 			});
 
