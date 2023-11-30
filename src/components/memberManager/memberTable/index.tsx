@@ -21,7 +21,7 @@ export function MembersTable() {
 			<div className="flex w-full items-center justify-between rounded-lg border bg-muted px-4 py-2 pr-5">
 				<div className="flex items-center">
 					<Checkbox className="mr-4" />
-					<span>Select all</span>
+					<span className="text-muted-foreground">Select all</span>
 				</div>
 				<Button size="icon" variant="ghost">
 					<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
@@ -47,7 +47,9 @@ export function MembersTable() {
 										</div>
 									</div>
 									<div className="flex items-center">
-										<span className="mr-6 text-muted-foreground">{t.role}</span>
+										<span className="mr-6 capitalize text-muted-foreground">
+											{t.role}
+										</span>
 										<Button variant="secondary">Manage Role</Button>
 									</div>
 								</div>
