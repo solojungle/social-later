@@ -57,26 +57,22 @@ export const teamRouter = createTRPCRouter({
 									name: true,
 									email: true,
 									image: true,
-									role: true,
 								},
 							},
+							role: true, // Include the role field from UserOnTeam
 						},
 					},
 				},
 			});
 
-			// Remove the null values from the array
-			const formattedMembers = data?.members.map((member) => {
-				return {
-					...member.user,
-					name: member.user.name ?? "",
-					email: member.user.email ?? "",
-					image: member.user.image ?? "",
-					role: member.user.role.toLowerCase(), // Capitalize only changes the first letter, so we need to lowercase it beforehand
-				};
-			});
-
-			return formattedMembers;
+			return data?.members
+				.filter((member) => member.user !== null)
+				.map((member) => {
+					return {
+						...member.user,
+						role: member.role.toLowerCase(),
+					};
+				});
 		}),
 
 	// TODO: Infer the id, and userId from their respective schemas
