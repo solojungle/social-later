@@ -40,4 +40,46 @@ export const teamRouter = createTRPCRouter({
 				data: input,
 			});
 		}),
+
+	getMembers: protectedProcedure
+		.input(TeamSchema.pick({ id: true }))
+		.query(async ({ ctx, input }) => {
+			return ctx.db.team.findUnique({
+				where: { id: input.id },
+				select: {
+					members: {
+						select: {
+							user: {
+								select: {
+									id: true,
+									name: true,
+									email: true,
+									image: true,
+									role: true,
+								},
+							},
+						},
+					},
+				},
+			});
+		}),
+
+	addMember: protectedProcedure
+		.input(TeamSchema.pick({ id: true, userId: true }))
+		.mutation(async ({ ctx, input }) => {
+			return ctx.db.team.update({
+				where: { id: input.id },
+				data: {
+					members: {
+						create: {
+							user: {
+								connect: {
+									id: input.userId,
+								},
+							},
+						},
+					},
+				},
+			});
+		}),
 });
