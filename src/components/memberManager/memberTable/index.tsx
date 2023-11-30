@@ -34,7 +34,7 @@ export function MembersTable() {
 							<TableCell>
 								<div className="flex items-center justify-between pr-5">
 									<div className="flex items-center">
-										<Checkbox className="mr-4" />
+										<Checkbox className="ml-2 mr-4" />
 										<Avatar className="mr-4 h-8 w-8">
 											<AvatarImage src={t.image} alt="label" />
 											<AvatarFallback>SC</AvatarFallback>
