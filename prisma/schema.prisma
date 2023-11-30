@@ -70,14 +70,16 @@ model User {
   sessions      Session[]
   posts         Post[]
   teams         UserOnTeam[]
+  invitation    Invitation[]
 }
 
 model Team {
-  id      String       @id @default(cuid())
-  name    String
-  url     String       @default(nanoid())
-  image   String
-  members UserOnTeam[]
+  id         String       @id @default(cuid())
+  name       String
+  url        String       @default(nanoid())
+  image      String
+  members    UserOnTeam[]
+  invitation Invitation[]
 }
 
 model UserOnTeam {
@@ -95,4 +97,19 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Invitation {
+  id          String    @id @default(cuid())
+  email       String
+  token       String    @unique
+  expires     DateTime
+  acceptedAt  DateTime?
+  role        UserRole
+  team        Team      @relation(fields: [teamId], references: [id])
+  teamId      String
+  invitedBy   User      @relation(fields: [invitedById], references: [id])
+  invitedById String
+
+  @@unique([email, teamId])
 }
