@@ -86,10 +86,10 @@ export function NavigationMenuDemo() {
 						<Link href="/">Platform</Link>
 					</Button>
 					<Button variant="link">
-						<Link href="/">Pricing</Link>
+						<Link href="#pricing">Pricing</Link>
 					</Button>
 					<Button variant="link">
-						<Link href="/">FAQ</Link>
+						<Link href="#faq">FAQ</Link>
 					</Button>
 				</div>
 			</div>

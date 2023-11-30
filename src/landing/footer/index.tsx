@@ -13,12 +13,12 @@ export default function Footer() {
 					</a>
 					<ul className="mb-6 flex flex-wrap items-center text-sm font-medium text-white sm:mb-0">
 						<li>
-							<a href="#" className="me-4 hover:underline md:me-6">
+							<a href="/privacy" className="me-4 hover:underline md:me-6">
 								Privacy Policy
 							</a>
 						</li>
 						<li>
-							<a href="#" className="me-4 hover:underline md:me-6">
+							<a href="/terms" className="me-4 hover:underline md:me-6">
 								Terms of Service
 							</a>
 						</li>

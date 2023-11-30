@@ -1,3 +1,4 @@
+import { AccordionFAQ } from "./faq";
 import Hero from "./hero";
 import Marquee from "./marquee";
 import { NavigationMenuDemo } from "./navigationBar";
@@ -16,11 +17,19 @@ export default async function LandingPage() {
 					<Marquee />
 				</div>
 			</div>
-			<div>
+			<div id="pricing" className="min-h-screen p-5">
 				<h2 className="text-md mb-5 text-center font-semibold uppercase">
 					Pricing
 				</h2>
 				<StripePricingTable />
+			</div>
+			<div id="faq" className="min-h-screen p-5">
+				<h2 className="text-md mb-5 text-center font-semibold uppercase">
+					FAQ
+				</h2>
+				<div className="container mx-auto max-w-xl">
+					<AccordionFAQ />
+				</div>
 			</div>
 		</main>
 	);
