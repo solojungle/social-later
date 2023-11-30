@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { TeamSchema } from "@/schemas/team/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
@@ -44,7 +46,7 @@ export const teamRouter = createTRPCRouter({
 	getMembers: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {
-			return ctx.db.team.findUnique({
+			const data = await ctx.db.team.findUnique({
 				where: { id: input.id },
 				select: {
 					members: {
@@ -62,10 +64,28 @@ export const teamRouter = createTRPCRouter({
 					},
 				},
 			});
+
+			// Remove the null values from the array
+			const formattedMembers = data?.members.map((member) => {
+				return {
+					...member.user,
+					name: member.user.name ?? "",
+					email: member.user.email ?? "",
+					image: member.user.image ?? "",
+				};
+			});
+
+			return formattedMembers;
 		}),
 
+	// TODO: Infer the id, and userId from their respective schemas
 	addMember: protectedProcedure
-		.input(TeamSchema.pick({ id: true, userId: true }))
+		.input(
+			z.object({
+				id: z.string(),
+				userId: z.string(),
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
 			return ctx.db.team.update({
 				where: { id: input.id },
