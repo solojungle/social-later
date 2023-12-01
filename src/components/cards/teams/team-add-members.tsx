@@ -11,13 +11,13 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import {
 	InvitationSchema,
 	InvitationSchemaValues,
 } from "@/schemas/invitation/invitation-schema";
 
-import { Input } from "../../ui/input";
 import {
 	Select,
 	SelectContent,
@@ -34,7 +34,7 @@ export function TeamAddMembersCard() {
 	};
 
 	const form = useForm<InvitationSchemaValues>({
-		resolver: zodResolver(InvitationSchema.pick({ email: true })),
+		resolver: zodResolver(InvitationSchema.pick({ email: true, role: true })),
 		defaultValues,
 	});
 
@@ -86,7 +86,7 @@ export function TeamAddMembersCard() {
 											defaultValue={field.value}
 										>
 											<FormControl>
-												<SelectTrigger className="m-0" id="role">
+												<SelectTrigger id="role">
 													<SelectValue placeholder="Member Role" />
 												</SelectTrigger>
 											</FormControl>
