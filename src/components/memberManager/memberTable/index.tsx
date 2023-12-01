@@ -37,7 +37,10 @@ export function MembersTable() {
 							<TableCell className="rounded-lg">
 								<div className="flex items-center justify-between pr-5">
 									<div className="flex items-center">
-										<Checkbox className="ml-2 mr-4" />
+										<Checkbox
+											className="ml-2 mr-4"
+											disabled={t.email === userEmail}
+										/>
 										<Avatar className="mr-4 h-8 w-8">
 											<AvatarImage src={t.image} alt="label" />
 											<AvatarFallback>SC</AvatarFallback>

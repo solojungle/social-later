@@ -10,7 +10,7 @@ export function MemberManager() {
 				<TabsTrigger value="members">Team Members</TabsTrigger>
 				<TabsTrigger value="invites">Pending Invitations</TabsTrigger>
 			</TabsList>
-			<TabsContent value="members">
+			<TabsContent value="members" className="mb-72">
 				<FacetedFilter />
 				<MembersTable />
 			</TabsContent>
