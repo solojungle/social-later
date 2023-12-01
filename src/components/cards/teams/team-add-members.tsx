@@ -1,9 +1,23 @@
 "use client";
 
-import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
+import {
+	InvitationSchema,
+	InvitationSchemaValues,
+} from "@/schemas/invitation/invitation-schema";
 
 import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
 import {
 	Select,
 	SelectContent,
@@ -13,43 +27,82 @@ import {
 } from "../../ui/select";
 import { SettingsCardBase } from "../settings-card-base";
 
-export const TeamAddMembersFormSchema = z.object({
-	avatar: z
-		.string()
-		.min(1, {
-			message: "Name must be at least 1 characters.",
-		})
-		.max(32, {
-			message: "Name must not be longer than 32 characters.",
-		}),
-});
-
 export function TeamAddMembersCard() {
+	const defaultValues = {
+		email: "",
+		role: "member",
+	};
+
+	const form = useForm<InvitationSchemaValues>({
+		resolver: zodResolver(InvitationSchema.pick({ email: true })),
+		defaultValues,
+	});
+
+	function onSubmit(data: InvitationSchemaValues) {
+		toast({
+			title: "You submitted the following values:",
+			description: (
+				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
+				</pre>
+			),
+		});
+	}
+
 	return (
-		<SettingsCardBase
-			description="Invite new members by email address."
-			footerSubtitle="An email will be sent to the recipient."
-			buttonContent="Invite"
-			content={
-				<div className="flex w-full items-center justify-between space-x-2">
-					<div className="w-full">
-						<Label htmlFor="email">Email Address</Label>
-						<Input id="email" placeholder="jane@example.com" />
-					</div>
-					<div className="w-full">
-						<Label htmlFor="role">Role</Label>
-						<Select defaultValue="member">
-							<SelectTrigger>
-								<SelectValue placeholder="Member Role" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="member">Member</SelectItem>
-								<SelectItem value="owner">Owner</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
-			}
-		/>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<SettingsCardBase
+					description="Invite new members by email address."
+					footerSubtitle="An email will be sent to the recipient."
+					buttonContent="Invite"
+					content={
+						<div className="flex w-full items-start justify-between space-x-2">
+							<FormField
+								control={form.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem className="w-full">
+										<FormLabel htmlFor="email">Email Address</FormLabel>
+										<FormControl>
+											<Input
+												id="email"
+												placeholder="jane@example.com"
+												{...field}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="role"
+								render={({ field }) => (
+									<FormItem className="w-full">
+										<FormLabel htmlFor="role">Role</FormLabel>
+										<Select
+											onValueChange={field.onChange}
+											defaultValue={field.value}
+										>
+											<FormControl>
+												<SelectTrigger className="m-0" id="role">
+													<SelectValue placeholder="Member Role" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectItem value="member">Member</SelectItem>
+												<SelectItem value="owner">Owner</SelectItem>
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+					}
+				/>
+			</form>
+		</Form>
 	);
 }

@@ -5,8 +5,9 @@ export const InvitationSchema = z.object({
 	id: z.string(),
 	email: z.string().email(),
 	token: z.string(),
+	role: z.string(),
 	expires: z.string(),
 	acceptedAt: z.string().nullable(),
 });
 
-export type InvitationSchemaSchemaValues = z.infer<typeof InvitationSchema>;
+export type InvitationSchemaValues = z.infer<typeof InvitationSchema>;
