@@ -72,6 +72,9 @@ export const teamRouter = createTRPCRouter({
 					return {
 						...member.user,
 						role: member.role.toLowerCase(),
+						name: member.user.name ?? "",
+						email: member.user.email ?? "",
+						image: member.user.image ?? "",
 					};
 				});
 		}),
