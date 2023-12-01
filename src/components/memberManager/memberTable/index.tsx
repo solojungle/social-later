@@ -7,9 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 export function MembersTable() {
+	const { email: userEmail } = useUserStore();
+
 	const { id } = useSelectedTeamStore();
 
 	const { data: selectedTeamData } = api.team.getMembers.useQuery({ id });
@@ -50,7 +53,12 @@ export function MembersTable() {
 										<span className="mr-6 capitalize text-muted-foreground">
 											{t.role}
 										</span>
-										<Button variant="secondary">Manage Role</Button>
+										<Button
+											disabled={t.email === userEmail}
+											variant="secondary"
+										>
+											Manage Role
+										</Button>
 									</div>
 								</div>
 							</TableCell>
