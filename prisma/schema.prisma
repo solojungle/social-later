@@ -111,6 +111,4 @@ model Invitation {
   teamId      String
   invitedBy   User     @relation(fields: [invitedById], references: [id])
   invitedById String
-
-  @@unique([email, teamId])
 }

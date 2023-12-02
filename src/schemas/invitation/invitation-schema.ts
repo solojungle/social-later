@@ -8,7 +8,9 @@ export const InvitationSchema = z.object({
 	token: z.string(),
 	role: z.nativeEnum(UserRole),
 	expires: z.string(),
-	acceptedAt: z.string().nullable(),
+	hasExpired: z.boolean(),
+	hasAccepted: z.boolean(),
+	invitedById: z.string(),
 });
 
 export type InvitationSchemaValues = z.infer<typeof InvitationSchema>;

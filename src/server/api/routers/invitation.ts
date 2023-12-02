@@ -6,7 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 export const invitationRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(
-			InvitationSchema.extend({
+			InvitationSchema.pick({ email: true, role: true }).extend({
 				teamId: z.string(),
 			}),
 		)
@@ -34,16 +34,27 @@ export const invitationRouter = createTRPCRouter({
 			}
 
 			// 2. Check if the user being invited is already a member of the team
-			const isUserAlreadyMember = await ctx.db.userOnTeam.findFirst({
+
+			// Check if the user already has an account
+			const isUserAlreadySignedUp = await ctx.db.user.findFirst({
 				where: {
-					teamId,
-					userId: ctx.session.user.id,
+					email,
 				},
 			});
 
-			const isUserAlreadyMemberOfTeam = isUserAlreadyMember !== null;
-			if (isUserAlreadyMemberOfTeam) {
-				throw new Error("User is already a member of this team");
+			if (isUserAlreadySignedUp !== null) {
+				// Check if the user is already a member of the team
+				const isUserAlreadyMember = await ctx.db.userOnTeam.findFirst({
+					where: {
+						teamId,
+						userId: isUserAlreadySignedUp.id,
+					},
+				});
+
+				const isUserAlreadyMemberOfTeam = isUserAlreadyMember !== null;
+				if (isUserAlreadyMemberOfTeam) {
+					throw new Error("User is already a member of this team");
+				}
 			}
 
 			// 3. Check if the user being invited has already been invited to the team
@@ -73,7 +84,7 @@ export const invitationRouter = createTRPCRouter({
 					teamId,
 					email,
 					role,
-					expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+					expires: new Date(new Date().setDate(new Date().getDate() + 30)), // 30 days
 					invitedById: ctx.session.user.id,
 				},
 			});
@@ -83,8 +94,4 @@ export const invitationRouter = createTRPCRouter({
 			// 6. Return the invitation
 			return invitation;
 		}),
-
-	update: protectedProcedure
-		.input(InvitationSchema)
-		.mutation(async ({ ctx, input }) => {}),
 });

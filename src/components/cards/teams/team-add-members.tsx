@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UserRole } from "@prisma/client";
 import { useForm } from "react-hook-form";
 
 import {
@@ -17,6 +18,7 @@ import {
 	InvitationSchema,
 	InvitationSchemaValues,
 } from "@/schemas/invitation/invitation-schema";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
 import {
@@ -31,9 +33,11 @@ import { SettingsCardBase } from "../settings-card-base";
 export function TeamAddMembersCard() {
 	const createInvitation = api.invitation.create.useMutation();
 
+	const { id: selectedTeamId } = useSelectedTeamStore();
+
 	const defaultValues = {
 		email: "",
-		role: "member",
+		role: UserRole.MEMBER,
 	};
 
 	const form = useForm<InvitationSchemaValues>({
@@ -42,6 +46,14 @@ export function TeamAddMembersCard() {
 	});
 
 	function onSubmit(data: InvitationSchemaValues) {
+		// Add teamId to the input
+		const input = {
+			...data,
+			teamId: selectedTeamId,
+		};
+
+		createInvitation.mutate(input);
+
 		toast({
 			title: "You submitted the following values:",
 			description: (
@@ -94,8 +106,8 @@ export function TeamAddMembersCard() {
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												<SelectItem value="member">Member</SelectItem>
-												<SelectItem value="owner">Owner</SelectItem>
+												<SelectItem value={UserRole.MEMBER}>Member</SelectItem>
+												<SelectItem value={UserRole.OWNER}>Owner</SelectItem>
 											</SelectContent>
 										</Select>
 										<FormMessage />
