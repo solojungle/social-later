@@ -103,7 +103,7 @@ model Invitation {
   id          String   @id @default(cuid())
   email       String
   token       String   @unique @default(nanoid())
-  expires     DateTime @default(dbgenerated("CURRENT_TIMESTAMP + INTERVAL 1 MONTH"))
+  expires     DateTime
   hasExpired  Boolean  @default(false)
   hasAccepted Boolean  @default(false)
   role        UserRole
