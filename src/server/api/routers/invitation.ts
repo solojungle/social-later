@@ -41,8 +41,10 @@ export const invitationRouter = createTRPCRouter({
 				},
 			});
 
-			// 3. Return the pending invitations
-			return pendingInvitations;
+			return pendingInvitations.map((invitation) => ({
+				...invitation,
+				role: invitation.role.toLowerCase(),
+			}));
 		}),
 
 	create: protectedProcedure

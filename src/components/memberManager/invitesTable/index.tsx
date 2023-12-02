@@ -9,51 +9,6 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-const data = [
-	{
-		name: "ali awari",
-		email: "ali@seriesfi.com",
-		role: "Owner",
-		avatar: "https://avatar.vercel.sh/solojungle.png",
-	},
-	{
-		name: "john awari",
-		email: "ali@seriesfi.com",
-		role: "Member",
-		avatar: "https://avatar.vercel.sh/shirt.png",
-	},
-	{
-		name: "ace awari",
-		email: "ali@seriesfi.com",
-		role: "Member",
-		avatar: "https://avatar.vercel.sh/aisad.png",
-	},
-	{
-		name: "back awari",
-		email: "ali@seriesfi.com",
-		role: "Owner",
-		avatar: "https://avatar.vercel.sh/xbbd.png",
-	},
-	{
-		name: "lack awari",
-		email: "ali@seriesfi.com",
-		role: "Member",
-		avatar: "https://avatar.vercel.sh/qwewqe.png",
-	},
-	{
-		name: "tack awari",
-		email: "ali@seriesfi.com",
-		role: "Member",
-		avatar: "https://avatar.vercel.sh/asdbha.png",
-	},
-	{
-		name: "frack awari",
-		email: "ali@seriesfi.com",
-		role: "Member",
-		avatar: "https://avatar.vercel.sh/ahsdnahs.png",
-	},
-];
-
 export function InvitesTable() {
 	const { id } = useSelectedTeamStore();
 
@@ -99,7 +54,9 @@ export function InvitesTable() {
 										</div>
 									</div>
 									<div className="flex items-center">
-										<span className="mr-4 text-muted-foreground">{t.role}</span>
+										<span className="mr-4 capitalize text-muted-foreground">
+											{t.role}
+										</span>
 										<Button size="icon" variant="ghost">
 											<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
 										</Button>
