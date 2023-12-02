@@ -28,45 +28,53 @@ export function InvitesTable() {
 					<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
 				</Button>
 			</div>
-			<TableBody>
-				{invitations.map((t) => {
-					return (
-						<TableRow key={t.email}>
-							<TableCell className="rounded-lg">
-								<div className="flex items-center justify-between pr-5">
-									<div className="flex items-center">
-										<Checkbox className="ml-2 mr-4" />
-										<Avatar className="mr-4 h-8 w-8">
-											<AvatarFallback>
-												{`${t.email[0]?.toUpperCase()}`}
-											</AvatarFallback>
-										</Avatar>
-										<div className="flex flex-col">
-											<div className="flex items-center">
-												<span className="mr-2 font-medium">
-													Pending Invitation
+			{invitations.length === 0 ? (
+				<TableBody>
+					<p className="py-4 text-center text-muted-foreground">
+						No pending invitations.
+					</p>
+				</TableBody>
+			) : (
+				<TableBody>
+					{invitations.map((t) => {
+						return (
+							<TableRow key={t.email}>
+								<TableCell className="rounded-lg">
+									<div className="flex items-center justify-between pr-5">
+										<div className="flex items-center">
+											<Checkbox className="ml-2 mr-4" />
+											<Avatar className="mr-4 h-8 w-8">
+												<AvatarFallback>
+													{`${t.email[0]?.toUpperCase()}`}
+												</AvatarFallback>
+											</Avatar>
+											<div className="flex flex-col">
+												<div className="flex items-center">
+													<span className="mr-2 font-medium">
+														Pending Invitation
+													</span>
+													<Mail className="h-4 w-4 text-muted-foreground" />
+												</div>
+												<span className="font-normal text-muted-foreground">
+													{t.email}
 												</span>
-												<Mail className="h-4 w-4 text-muted-foreground" />
 											</div>
-											<span className="font-normal text-muted-foreground">
-												{t.email}
+										</div>
+										<div className="flex items-center">
+											<span className="mr-6 capitalize text-muted-foreground">
+												{t.role}
 											</span>
+											<Button size="icon" variant="ghost">
+												<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+											</Button>
 										</div>
 									</div>
-									<div className="flex items-center">
-										<span className="mr-6 capitalize text-muted-foreground">
-											{t.role}
-										</span>
-										<Button size="icon" variant="ghost">
-											<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-										</Button>
-									</div>
-								</div>
-							</TableCell>
-						</TableRow>
-					);
-				})}
-			</TableBody>
+								</TableCell>
+							</TableRow>
+						);
+					})}
+				</TableBody>
+			)}
 		</Table>
 	);
 }
