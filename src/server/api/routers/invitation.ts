@@ -73,8 +73,15 @@ export const invitationRouter = createTRPCRouter({
 					teamId,
 					email,
 					role,
+					expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+					invitedById: ctx.session.user.id,
 				},
 			});
+
+			// 5. Send the invitation email
+
+			// 6. Return the invitation
+			return invitation;
 		}),
 
 	update: protectedProcedure
