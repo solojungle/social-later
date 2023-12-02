@@ -1,9 +1,13 @@
+"use client";
+
 import { Mail, MoreHorizontal } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { api } from "@/trpc/react";
 
 const data = [
 	{
@@ -51,6 +55,13 @@ const data = [
 ];
 
 export function InvitesTable() {
+	const { id } = useSelectedTeamStore();
+
+	const { data: pendingInvitesData } =
+		api.invitation.getPendingInvitations.useQuery({ id });
+
+	const invitations = pendingInvitesData ?? [];
+
 	return (
 		<Table className="w-full border">
 			<div className="flex w-full items-center justify-between bg-muted px-4 py-2 pr-5">
@@ -63,7 +74,7 @@ export function InvitesTable() {
 				</Button>
 			</div>
 			<TableBody>
-				{data.map((t) => {
+				{invitations.map((t) => {
 					return (
 						<TableRow key={t.email}>
 							<TableCell>
