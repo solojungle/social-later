@@ -1,9 +1,15 @@
+import { z } from "zod";
+
 import { InvitationSchema } from "@/schemas/invitation/invitation-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const invitationRouter = createTRPCRouter({
 	create: protectedProcedure
-		.input(InvitationSchema)
+		.input(
+			InvitationSchema.extend({
+				teamId: z.string(),
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
 			const { teamId, email, role } = input;
 
@@ -50,8 +56,25 @@ export const invitationRouter = createTRPCRouter({
 
 			const isUserAlreadyInvitedToTeam = isUserAlreadyInvited !== null;
 			if (isUserAlreadyInvitedToTeam) {
-				throw new Error("User is already invited to this team");
+				// First update the existing invitation to be expired, and then re-invite the user
+				await ctx.db.invitation.update({
+					where: {
+						id: isUserAlreadyInvited.id,
+					},
+					data: {
+						hasExpired: true,
+					},
+				});
 			}
+
+			// 4. Create the invitation
+			const invitation = await ctx.db.invitation.create({
+				data: {
+					teamId,
+					email,
+					role,
+				},
+			});
 		}),
 
 	update: protectedProcedure
