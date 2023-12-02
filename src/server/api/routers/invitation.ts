@@ -1,17 +1,14 @@
 import { z } from "zod";
 
 import { InvitationSchema } from "@/schemas/invitation/invitation-schema";
+import { TeamSchema } from "@/schemas/team/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const invitationRouter = createTRPCRouter({
 	getPendingInvitations: protectedProcedure
-		.input(
-			z.object({
-				teamId: z.string(),
-			}),
-		)
+		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {
-			const { teamId } = input;
+			const { id: teamId } = input;
 
 			// 1. Grab the information of the user submitting the form
 			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
