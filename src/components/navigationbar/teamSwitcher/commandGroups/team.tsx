@@ -60,7 +60,9 @@ export default function TeamCommandGroup({
 						<AvatarImage src={team.image} alt={team.name} />
 						<AvatarFallback>{team.imageFallbackInitials}</AvatarFallback>
 					</Avatar>
-					{team.name}
+					<span title={team.name} className="overflow-hidden truncate">
+						{team.name}
+					</span>
 					<CheckIcon
 						className={cn(
 							"ml-auto h-4 w-4",
