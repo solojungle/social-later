@@ -100,15 +100,16 @@ model VerificationToken {
 }
 
 model Invitation {
-  id          String    @id @default(cuid())
+  id          String   @id @default(cuid())
   email       String
-  token       String    @unique
+  token       String   @unique
   expires     DateTime
-  acceptedAt  DateTime?
+  hasExpired  Boolean  @default(false)
+  hasAccepted Boolean  @default(false)
   role        UserRole
-  team        Team      @relation(fields: [teamId], references: [id])
+  team        Team     @relation(fields: [teamId], references: [id])
   teamId      String
-  invitedBy   User      @relation(fields: [invitedById], references: [id])
+  invitedBy   User     @relation(fields: [invitedById], references: [id])
   invitedById String
 
   @@unique([email, teamId])

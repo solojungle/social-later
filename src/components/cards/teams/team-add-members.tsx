@@ -17,6 +17,7 @@ import {
 	InvitationSchema,
 	InvitationSchemaValues,
 } from "@/schemas/invitation/invitation-schema";
+import { api } from "@/trpc/react";
 
 import {
 	Select,
@@ -28,6 +29,8 @@ import {
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamAddMembersCard() {
+	const createInvitation = api.invitation.create.useMutation();
+
 	const defaultValues = {
 		email: "",
 		role: "member",
