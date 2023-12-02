@@ -14,7 +14,7 @@ export function MemberManager() {
 				<FacetedFilter />
 				<MembersTable />
 			</TabsContent>
-			<TabsContent value="invites">
+			<TabsContent value="invites" className="mb-72">
 				<FacetedFilter />
 				<InvitesTable />
 			</TabsContent>
