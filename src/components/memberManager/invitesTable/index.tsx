@@ -18,11 +18,11 @@ export function InvitesTable() {
 	const invitations = pendingInvitesData ?? [];
 
 	return (
-		<Table className="w-full border">
-			<div className="flex w-full items-center justify-between bg-muted px-4 py-2 pr-5">
+		<Table className="w-full">
+			<div className="flex w-full items-center justify-between rounded-lg border bg-muted px-4 py-2 pr-5">
 				<div className="flex items-center">
 					<Checkbox className="mr-4" />
-					<span>Select all</span>
+					<span className="text-muted-foreground">Select all</span>
 				</div>
 				<Button size="icon" variant="ghost">
 					<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
@@ -32,10 +32,10 @@ export function InvitesTable() {
 				{invitations.map((t) => {
 					return (
 						<TableRow key={t.email}>
-							<TableCell>
+							<TableCell className="rounded-lg">
 								<div className="flex items-center justify-between pr-5">
 									<div className="flex items-center">
-										<Checkbox className="mr-4" />
+										<Checkbox className="ml-2 mr-4" />
 										<Avatar className="mr-4 h-8 w-8">
 											<AvatarFallback>
 												{`${t.email[0]?.toUpperCase()}`}
@@ -54,7 +54,7 @@ export function InvitesTable() {
 										</div>
 									</div>
 									<div className="flex items-center">
-										<span className="mr-4 capitalize text-muted-foreground">
+										<span className="mr-6 capitalize text-muted-foreground">
 											{t.role}
 										</span>
 										<Button size="icon" variant="ghost">
