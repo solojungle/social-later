@@ -38,6 +38,24 @@ export const teamRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			// Check if the user is part of the team
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: input.id,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			// Check if the user is the owner of the team
+			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+			if (!isUserOwnerOfTeam) {
+				throw new Error("You are not an owner of this team");
+			}
+
 			return ctx.db.team.update({
 				where: { id: input.id },
 				data: input,
@@ -47,6 +65,18 @@ export const teamRouter = createTRPCRouter({
 	getMembers: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {
+			// Check if the user is part of the team
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: input.id,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
 			const data = await ctx.db.team.findUnique({
 				where: { id: input.id },
 				select: {
@@ -88,6 +118,24 @@ export const teamRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			// Check if the user is part of the team
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: input.id,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			// Check if the user is the owner of the team
+			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+			if (!isUserOwnerOfTeam) {
+				throw new Error("You are not an owner of this team");
+			}
+
 			return ctx.db.team.update({
 				where: { id: input.id },
 				data: {

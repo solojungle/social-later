@@ -4,6 +4,50 @@ import { InvitationSchema } from "@/schemas/invitation/invitation-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const invitationRouter = createTRPCRouter({
+	getPendingInvitations: protectedProcedure
+		.input(
+			z.object({
+				teamId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { teamId } = input;
+
+			// 1. Grab the information of the user submitting the form
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			// Check if the user is part of the team
+			const isUserMemberOfTeam = isUserPartOfTeam !== null;
+			if (!isUserMemberOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			// Check if the user is the owner of the team
+			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+			if (!isUserOwnerOfTeam) {
+				throw new Error("You are not an owner of this team");
+			}
+
+			// 2. Grab all the pending invitations for the team
+			const pendingInvitations = await ctx.db.invitation.findMany({
+				where: {
+					teamId,
+					hasExpired: false,
+					expires: {
+						gt: new Date(),
+					},
+				},
+			});
+
+			// 3. Return the pending invitations
+			return pendingInvitations;
+		}),
+
 	create: protectedProcedure
 		.input(
 			InvitationSchema.pick({ email: true, role: true }).extend({
