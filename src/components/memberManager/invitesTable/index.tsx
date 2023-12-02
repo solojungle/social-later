@@ -21,7 +21,7 @@ export function InvitesTable() {
 		<Table className="w-full">
 			<div className="flex w-full items-center justify-between rounded-lg border bg-muted px-4 py-2 pr-5">
 				<div className="flex items-center">
-					<Checkbox className="mr-4" />
+					<Checkbox disabled={invitations.length === 0} className="mr-4" />
 					<span className="text-muted-foreground">Select all</span>
 				</div>
 				<Button size="icon" variant="ghost">
