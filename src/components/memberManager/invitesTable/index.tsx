@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import { TableCellActions } from "./dropdown";
+
 export function InvitesTable() {
 	const { id } = useSelectedTeamStore();
 
@@ -64,9 +66,7 @@ export function InvitesTable() {
 											<span className="mr-6 capitalize text-muted-foreground">
 												{t.role}
 											</span>
-											<Button size="icon" variant="ghost">
-												<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-											</Button>
+											<TableCellActions />
 										</div>
 									</div>
 								</TableCell>
