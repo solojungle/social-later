@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -22,13 +23,27 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamStore } from "@/stores/teams";
+import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 export function TeamDeleteCard() {
 	const [open, setIsOpen] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	const router = useRouter();
 
-	const updateTeam = api.team.update.useMutation();
+	const { id: selectedTeamId } = useSelectedTeamStore();
+	const user = useUserStore();
+	const { removeTeam } = useTeamStore();
+
+	const deleteTeam = api.team.delete.useMutation({
+		onSuccess: () => {
+			removeTeam(selectedTeamId);
+			useSelectedTeamStore.setState(user);
+			router.replace(`/settings`);
+		},
+	});
 
 	return (
 		<>
@@ -70,6 +85,10 @@ export function TeamDeleteCard() {
 							variant="destructive"
 							onClick={() => {
 								setShowDeleteDialog(false);
+
+								deleteTeam.mutate({
+									id: selectedTeamId,
+								});
 
 								toast({
 									description: "This team has been deleted.",

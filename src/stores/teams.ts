@@ -8,6 +8,7 @@ interface TeamState {
 
 interface TeamStore extends TeamState {
 	addTeam: (team: TeamSchemaValues) => void;
+	removeTeam: (teamId: string) => void;
 	updateTeamName: (teamId: string, name: string) => void;
 	updateTeamUrl: (teamId: string, url: string) => void;
 }
@@ -19,6 +20,10 @@ const defaultValues = {
 export const useTeamStore = create<TeamStore>()((set) => ({
 	...defaultValues,
 	addTeam: (team) => set((state) => ({ teams: [...state.teams, team] })),
+	removeTeam: (teamId) =>
+		set((state) => ({
+			teams: state.teams.filter((team) => team.id !== teamId),
+		})),
 	updateTeamName: (teamId, name) =>
 		set((state) => ({
 			teams: state.teams.map((team) =>

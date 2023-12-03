@@ -83,7 +83,7 @@ enum UserRole {
 
 model UserOnTeam {
   user   User     @relation(fields: [userId], references: [id])
-  team   Team     @relation(fields: [teamId], references: [id])
+  team   Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   role   UserRole @default(MEMBER)
   userId String
   teamId String
