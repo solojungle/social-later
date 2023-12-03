@@ -102,13 +102,15 @@ model VerificationToken {
 model Invitation {
   id          String   @id @default(cuid())
   email       String
-  token       String   @unique @default(nanoid())
+  token       String   @default(nanoid())
   expires     DateTime
   hasExpired  Boolean  @default(false)
   hasAccepted Boolean  @default(false)
   role        UserRole
-  team        Team     @relation(fields: [teamId], references: [id])
+  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId      String
   invitedBy   User     @relation(fields: [invitedById], references: [id])
   invitedById String
+
+  @@unique([teamId, token])
 }
