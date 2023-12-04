@@ -77,7 +77,7 @@ export function TeamPaymentMethodCard() {
 									{card.default === true && <CheckCircle2 />}
 								</TableCell>
 								<TableCell>{card.type}</TableCell>
-								<TableCell>{card.last4}</TableCell>
+								<TableCell>•••• {card.last4}</TableCell>
 								<TableCell>{card.expires}</TableCell>
 								<TableCell className="w-[0]">
 									<Button size="icon" variant="outline">
