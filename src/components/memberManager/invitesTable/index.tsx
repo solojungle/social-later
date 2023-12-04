@@ -7,11 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useInvitationsStore } from "@/stores/invitations";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { TableCellActions } from "./dropdown";
 
 export function InvitesTable() {
 	const { invitations } = useInvitationsStore();
+
+	const { id: selectedTeamId } = useSelectedTeamStore();
 
 	return (
 		<Table className="w-full">
@@ -60,7 +63,10 @@ export function InvitesTable() {
 											<span className="mr-6 capitalize text-muted-foreground">
 												{t.role}
 											</span>
-											<TableCellActions />
+											<TableCellActions
+												invitationId={t.id}
+												teamId={selectedTeamId}
+											/>
 										</div>
 									</div>
 								</TableCell>

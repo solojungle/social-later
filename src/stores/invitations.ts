@@ -8,7 +8,7 @@ interface InvitationState {
 
 interface InvitationsStore extends InvitationState {
 	addInvitation: (invitation: AlternativeInvitationSchemaValues) => void;
-	removeInvitation: (invitation: AlternativeInvitationSchemaValues) => void;
+	removeInvitation: (id: string) => void;
 }
 
 const defaultValues = {
@@ -42,8 +42,8 @@ export const useInvitationsStore = create<InvitationsStore>()((set) => ({
 
 			return { invitations: [...state.invitations, updatedInvitation] };
 		}),
-	removeInvitation: (invitation) =>
+	removeInvitation: (id) =>
 		set((state) => ({
-			invitations: state.invitations.filter((inv) => inv.id !== invitation.id),
+			invitations: state.invitations.filter((inv) => inv.id !== id),
 		})),
 }));

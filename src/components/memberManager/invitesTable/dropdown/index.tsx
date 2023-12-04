@@ -18,9 +18,31 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
+import { useInvitationsStore } from "@/stores/invitations";
+import { api } from "@/trpc/react";
 
-export function TableCellActions() {
+interface TableCellActionsProps {
+	invitationId: string;
+	teamId: string;
+}
+
+export function TableCellActions({
+	invitationId,
+	teamId,
+}: TableCellActionsProps) {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+	const { removeInvitation } = useInvitationsStore();
+
+	const deleteInvite = api.invitation.delete.useMutation({
+		onSuccess(input) {
+			removeInvitation(input.id);
+
+			toast({
+				description: "This invite has been deleted.",
+			});
+		},
+	});
 
 	return (
 		<>
@@ -58,8 +80,10 @@ export function TableCellActions() {
 							variant="destructive"
 							onClick={() => {
 								setShowDeleteDialog(false);
-								toast({
-									description: "This invite has been deleted.",
+
+								deleteInvite.mutate({
+									teamId,
+									invitationId,
 								});
 							}}
 						>

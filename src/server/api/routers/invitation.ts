@@ -5,6 +5,46 @@ import { TeamSchema } from "@/schemas/team/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const invitationRouter = createTRPCRouter({
+	delete: protectedProcedure
+		.input(
+			z.object({
+				teamId: z.string(),
+				invitationId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { teamId, invitationId } = input;
+
+			// 1. Grab the information of the user submitting the form
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			// Check if the user is part of the team
+			const isUserMemberOfTeam = isUserPartOfTeam !== null;
+			if (!isUserMemberOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			// Check if the user is the owner of the team
+			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+			if (!isUserOwnerOfTeam) {
+				throw new Error("You are not an owner of this team");
+			}
+
+			// 2. Delete the invitation
+			const deletedInvitation = await ctx.db.invitation.delete({
+				where: {
+					id: invitationId,
+				},
+			});
+
+			return deletedInvitation;
+		}),
+
 	getPendingInvitations: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {
