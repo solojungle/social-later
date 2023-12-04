@@ -12,6 +12,6 @@ const defaultValues = {
 	members: [],
 };
 
-export const useTeamMembersStore = create<TeamMembersStore>()((set) => ({
+export const useTeamMembersStore = create<TeamMembersStore>()(() => ({
 	...defaultValues,
 }));

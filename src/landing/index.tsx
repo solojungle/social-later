@@ -18,13 +18,13 @@ export default async function LandingPage() {
 				</div>
 			</div>
 			<div id="pricing" className="min-h-screen p-5">
-				<h2 className="text-md mb-5 text-center font-semibold uppercase">
+				<h2 className="mb-5 text-center text-base font-semibold uppercase">
 					Pricing
 				</h2>
 				<StripePricingTable />
 			</div>
 			<div id="faq" className="min-h-screen p-5">
-				<h2 className="text-md mb-5 text-center font-semibold uppercase">
+				<h2 className="mb-5 text-center text-base font-semibold uppercase">
 					FAQ
 				</h2>
 				<div className="container mx-auto max-w-xl">

@@ -29,7 +29,6 @@ import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 export function TeamDeleteCard() {
-	const [open, setIsOpen] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 	const router = useRouter();
 

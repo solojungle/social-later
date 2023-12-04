@@ -1,14 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 
 export default function InvitesPage() {
-	const params = useSearchParams();
-
-	console.log(params.get("team"));
-	console.log(params.get("token"));
+	// const params = useSearchParams();
 
 	return (
 		<div className="space-y-6">
