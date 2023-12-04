@@ -1,4 +1,4 @@
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -20,7 +20,6 @@ import {
 import { toast } from "@/components/ui/use-toast";
 
 export function TableCellActions() {
-	const [open, setIsOpen] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	return (
@@ -35,8 +34,9 @@ export function TableCellActions() {
 				<DropdownMenuContent align="end">
 					<DropdownMenuItem
 						onSelect={() => setShowDeleteDialog(true)}
-						className="text-red-600"
+						className="text-destructive"
 					>
+						<Trash2 className="mr-1 h-4 w-4" />
 						<span>Delete invite</span>
 					</DropdownMenuItem>
 				</DropdownMenuContent>

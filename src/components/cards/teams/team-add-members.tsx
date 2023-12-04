@@ -18,6 +18,7 @@ import {
 	InvitationSchema,
 	InvitationSchemaValues,
 } from "@/schemas/invitation/invitation-schema";
+import { useInvitationsStore } from "@/stores/invitations";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -31,8 +32,12 @@ import {
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamAddMembersCard() {
+	const { addInvitation } = useInvitationsStore();
+
 	const createInvitation = api.invitation.create.useMutation({
-		onSuccess: () => {
+		onSuccess: (input) => {
+			addInvitation(input);
+
 			toast({
 				title: "Invitation sent!",
 				description: "The invitation has been sent to the recipient.",
