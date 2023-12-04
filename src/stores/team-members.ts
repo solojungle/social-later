@@ -1,17 +1,17 @@
 import { create } from "zustand";
 
-import { InvitationSchemaValues } from "@/schemas/invitation/invitation-schema";
+import { TeamMembersSchemaValues } from "@/schemas/user/user-schema";
 
-interface InvitationState {
-	invitations: InvitationSchemaValues[];
+interface TeamMembersState {
+	members: TeamMembersSchemaValues[];
 }
 
-interface InvitationsStore extends InvitationState {}
+interface TeamMembersStore extends TeamMembersState {}
 
 const defaultValues = {
-	invitations: [],
+	members: [],
 };
 
-export const useTeamMembersStore = create<InvitationsStore>()((set) => ({
+export const useTeamMembersStore = create<TeamMembersStore>()((set) => ({
 	...defaultValues,
 }));

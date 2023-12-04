@@ -36,3 +36,14 @@ export const userStoreDefaultValues: UserSchemaValues = {
 	image: "",
 	imageFallbackInitials: "",
 };
+
+export const TeamMembers = UserSchema.pick({
+	id: true,
+	name: true,
+	email: true,
+	image: true,
+}).extend({
+	role: z.string(),
+});
+
+export type TeamMembersSchemaValues = z.infer<typeof TeamMembers>;

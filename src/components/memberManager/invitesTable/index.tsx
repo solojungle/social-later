@@ -6,18 +6,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useSelectedTeamStore } from "@/stores/selected-team";
-import { api } from "@/trpc/react";
+import { useInvitationsStore } from "@/stores/invitations";
 
 import { TableCellActions } from "./dropdown";
 
 export function InvitesTable() {
-	const { id } = useSelectedTeamStore();
-
-	const { data: pendingInvitesData } =
-		api.invitation.getPendingInvitations.useQuery({ id });
-
-	const invitations = pendingInvitesData ?? [];
+	const { invitations } = useInvitationsStore();
 
 	return (
 		<Table className="w-full">

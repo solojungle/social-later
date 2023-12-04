@@ -7,10 +7,19 @@ export const InvitationSchema = z.object({
 	email: z.string().email(),
 	token: z.string(),
 	role: z.nativeEnum(UserRole),
-	expires: z.string(),
+	expires: z.date(),
 	hasExpired: z.boolean(),
 	hasAccepted: z.boolean(),
 	invitedById: z.string(),
 });
 
+export const AlternativeInvitationSchema = InvitationSchema.omit({
+	role: true,
+}).extend({ role: z.string() });
+
 export type InvitationSchemaValues = z.infer<typeof InvitationSchema>;
+
+// Used when role is a string
+export type AlternativeInvitationSchemaValues = z.infer<
+	typeof AlternativeInvitationSchema
+>;

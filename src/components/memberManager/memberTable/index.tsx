@@ -6,18 +6,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
-import { api } from "@/trpc/react";
 
 export function MembersTable() {
 	const { email: userEmail } = useUserStore();
 
-	const { id } = useSelectedTeamStore();
-
-	const { data: selectedTeamData } = api.team.getMembers.useQuery({ id });
-
-	const members = selectedTeamData ?? [];
+	const { members } = useTeamMembersStore();
 
 	return (
 		<Table className="w-full">

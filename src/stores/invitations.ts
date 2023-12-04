@@ -1,12 +1,15 @@
 import { create } from "zustand";
 
-import { InvitationSchemaValues } from "@/schemas/invitation/invitation-schema";
+import { AlternativeInvitationSchemaValues } from "@/schemas/invitation/invitation-schema";
 
 interface InvitationState {
-	invitations: InvitationSchemaValues[];
+	invitations: AlternativeInvitationSchemaValues[];
 }
 
-interface InvitationsStore extends InvitationState {}
+interface InvitationsStore extends InvitationState {
+	addInvitation: (invitation: AlternativeInvitationSchemaValues) => void;
+	removeInvitation: (invitation: AlternativeInvitationSchemaValues) => void;
+}
 
 const defaultValues = {
 	invitations: [],
@@ -14,4 +17,10 @@ const defaultValues = {
 
 export const useInvitationsStore = create<InvitationsStore>()((set) => ({
 	...defaultValues,
+	addInvitation: (invitation) =>
+		set((state) => ({ invitations: [...state.invitations, invitation] })),
+	removeInvitation: (invitation) =>
+		set((state) => ({
+			invitations: state.invitations.filter((inv) => inv.id !== invitation.id),
+		})),
 }));
