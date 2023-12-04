@@ -52,7 +52,7 @@ export function InvitesTable() {
 													<Mail className="h-4 w-4 text-muted-foreground" />
 												</div>
 												<span className="font-normal text-muted-foreground">
-													{t.email}
+													{t.email.toLowerCase()}
 												</span>
 											</div>
 										</div>
