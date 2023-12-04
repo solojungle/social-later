@@ -100,7 +100,7 @@ export const invitationRouter = createTRPCRouter({
 			}
 
 			// 3. Check if the user being invited has already been invited to the team
-			const isUserAlreadyInvited = await ctx.db.invitation.findFirst({
+			const isUserAlreadyInvited = await ctx.db.invitation.findMany({
 				where: {
 					teamId,
 					email,
@@ -108,12 +108,14 @@ export const invitationRouter = createTRPCRouter({
 				},
 			});
 
-			const isUserAlreadyInvitedToTeam = isUserAlreadyInvited !== null;
+			// First update all existing invitations to be expired
+			const isUserAlreadyInvitedToTeam = isUserAlreadyInvited.length > 0;
 			if (isUserAlreadyInvitedToTeam) {
-				// First update the existing invitation to be expired, and then re-invite the user
-				await ctx.db.invitation.update({
+				await ctx.db.invitation.updateMany({
 					where: {
-						id: isUserAlreadyInvited.id,
+						teamId,
+						email,
+						hasExpired: false,
 					},
 					data: {
 						hasExpired: true,
