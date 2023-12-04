@@ -2,6 +2,7 @@
 
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import * as React from "react";
+import { useState } from "react";
 
 import {
 	Command,
@@ -32,8 +33,8 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 type TeamSwitcherProps = PopoverTriggerProps;
 
 export default function TeamSwitcher({ className }: TeamSwitcherProps) {
-	const [open, setOpen] = React.useState(false);
-	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
+	const [open, setOpen] = useState(false);
+	const [showNewTeamDialog, setShowNewTeamDialog] = useState(false);
 
 	return (
 		<Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
