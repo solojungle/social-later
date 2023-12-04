@@ -31,7 +31,14 @@ import {
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamAddMembersCard() {
-	const createInvitation = api.invitation.create.useMutation();
+	const createInvitation = api.invitation.create.useMutation({
+		onSuccess: () => {
+			toast({
+				title: "Invitation sent!",
+				description: "The invitation has been sent to the recipient.",
+			});
+		},
+	});
 
 	const { id: selectedTeamId } = useSelectedTeamStore();
 
@@ -53,15 +60,6 @@ export function TeamAddMembersCard() {
 		};
 
 		createInvitation.mutate(input);
-
-		toast({
-			title: "You submitted the following values:",
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
-		});
 	}
 
 	return (

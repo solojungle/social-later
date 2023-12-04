@@ -22,6 +22,7 @@ export default function TeamMembersPage() {
 	});
 
 	useEffect(() => {
+		if (!members || !invitations) return;
 		useTeamMembersStore.setState({ members });
 		useInvitationsStore.setState({ invitations });
 	}, [members, invitations]);
