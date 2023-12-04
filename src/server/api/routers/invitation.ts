@@ -77,7 +77,6 @@ export const invitationRouter = createTRPCRouter({
 			}
 
 			// 2. Check if the user being invited is already a member of the team
-
 			// Check if the user already has an account
 			const isUserAlreadySignedUp = await ctx.db.user.findFirst({
 				where: {
@@ -105,6 +104,7 @@ export const invitationRouter = createTRPCRouter({
 				where: {
 					teamId,
 					email,
+					hasExpired: false,
 				},
 			});
 
