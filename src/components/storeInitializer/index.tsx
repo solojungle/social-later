@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import { TeamSchemaValues } from "@/schemas/team/team-schema";
@@ -17,14 +18,30 @@ export function StoreInitializer({
 }) {
 	const isInitialized = useRef(false);
 
+	const params = useParams();
+
 	useEffect(() => {
 		if (!isInitialized.current) {
 			useUserStore.setState(user);
-			useSelectedTeamStore.setState(user);
+
+			if (params.id) {
+				const selectedTeam = teams.find((team) => team.url === params.id);
+
+				// Redirect them to settings if they are not a member of the team
+				if (!selectedTeam) {
+					window.location.href = "/settings";
+					return;
+				}
+
+				useSelectedTeamStore.setState(selectedTeam || user);
+			} else {
+				useSelectedTeamStore.setState(user);
+			}
+
 			useTeamStore.setState({ teams });
 			isInitialized.current = true;
 		}
-	}, [user, teams]);
+	}, [user, teams, params.id]);
 
 	return null;
 }
