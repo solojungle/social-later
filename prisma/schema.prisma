@@ -82,7 +82,7 @@ model CustomerInfo {
   stripeCustomerId         String?
   stripeSubscriptionId     String?
   stripeSubscriptionStatus StripeSubscriptionStatus?
-  team                     Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team                     Team                      @relation(fields: [teamId], references: [id])
   teamId                   String
 }
 
