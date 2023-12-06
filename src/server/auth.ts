@@ -50,6 +50,9 @@ export const authOptions: NextAuthOptions = {
 			clientSecret: env.GOOGLE_CLIENT_SECRET,
 		}),
 	],
+	// This can be used to configure the behaviour of the JWT signing and verification.
+	// Like adding a stripe customer id to the user db model.
+	events: {},
 };
 
 /**

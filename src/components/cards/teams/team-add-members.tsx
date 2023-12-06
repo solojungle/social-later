@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/use-toast";
 import {
 	InvitationSchema,
 	InvitationSchemaValues,
-} from "@/schemas/invitation/invitation-schema";
+} from "@/schemas/invitation-schema";
 import { useInvitationsStore } from "@/stores/invitations";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";

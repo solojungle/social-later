@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { TeamSchema } from "@/schemas/team/team-schema";
+import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const teamRouter = createTRPCRouter({

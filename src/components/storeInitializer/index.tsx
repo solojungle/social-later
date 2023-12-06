@@ -3,8 +3,8 @@
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-import { TeamSchemaValues } from "@/schemas/team/team-schema";
-import { UserSchemaValues } from "@/schemas/user/user-schema";
+import { TeamSchemaValues } from "@/schemas/team-schema";
+import { UserSchemaValues } from "@/schemas/user-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamStore } from "@/stores/teams";
 import { useUserStore } from "@/stores/user";

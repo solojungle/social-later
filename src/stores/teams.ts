@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { TeamSchemaValues } from "@/schemas/team/team-schema";
+import { TeamSchemaValues } from "@/schemas/team-schema";
 
 interface TeamState {
 	teams: TeamSchemaValues[];

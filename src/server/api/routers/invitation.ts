@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { InvitationSchema } from "@/schemas/invitation/invitation-schema";
-import { TeamSchema } from "@/schemas/team/team-schema";
+import { InvitationSchema } from "@/schemas/invitation-schema";
+import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const invitationRouter = createTRPCRouter({

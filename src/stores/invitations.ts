@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { AlternativeInvitationSchemaValues } from "@/schemas/invitation/invitation-schema";
+import { AlternativeInvitationSchemaValues } from "@/schemas/invitation-schema";
 
 interface InvitationState {
 	invitations: AlternativeInvitationSchemaValues[];

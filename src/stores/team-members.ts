@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { TeamMembersSchemaValues } from "@/schemas/user/user-schema";
+import { TeamMembersSchemaValues } from "@/schemas/user-schema";
 
 interface TeamMembersState {
 	members: TeamMembersSchemaValues[];

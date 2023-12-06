@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { UserSchema } from "@/schemas/user/user-schema";
+import { UserSchema } from "@/schemas/user-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({

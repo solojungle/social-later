@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { TeamSchema, TeamSchemaValues } from "@/schemas/team/team-schema";
+import { TeamSchema, TeamSchemaValues } from "@/schemas/team-schema";
 import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
 
@@ -32,12 +32,19 @@ export default function TeamSwitcherModal({
 
 	const { addTeam } = useTeamStore();
 
+	const addCustomerInfo = api.customerInfo.create.useMutation();
+
 	const createTeam = api.team.create.useMutation({
 		onSuccess: (data) => {
 			addTeam({
 				...data,
 				type: "team",
 				imageFallbackInitials: "TT",
+			});
+
+			// Create customer on Stripe and append to team
+			addCustomerInfo.mutate({
+				teamId: data.id,
 			});
 		},
 	});
