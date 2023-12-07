@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,35 +11,19 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { api } from "@/trpc/react";
 
 import { SettingsCardBase } from "../settings-card-base";
 
-const data = [
-	{
-		brand: "Visa",
-		default: false,
-		type: "Credit",
-		last4: "1234",
-		expires: "8/2025",
-	},
-	{
-		brand: "Mastercard",
-		default: true,
-		type: "Debit",
-		last4: "4567",
-		expires: "8/2028",
-	},
-	{
-		brand: "Discover",
-		default: false,
-		type: "Prepaid",
-		last4: "8910",
-		expires: "8/2025",
-	},
-];
-
 export function TeamPaymentMethodCard() {
-	if (data.length < 1) {
+	const { id } = useSelectedTeamStore();
+
+	const { data } = api.stripe.getPaymentMethods.useQuery({
+		id,
+	});
+
+	if (!data || data.length === 0) {
 		return (
 			<SettingsCardBase
 				title="Payment Method"
@@ -74,11 +58,11 @@ export function TeamPaymentMethodCard() {
 							<TableRow key={card.brand}>
 								<TableCell>{card.brand}</TableCell>
 								<TableCell>
-									{card.default === true && <CheckCircle2 />}
+									{/* {card.default === true && <CheckCircle2 />} */}
 								</TableCell>
 								<TableCell>{card.type}</TableCell>
 								<TableCell>•••• {card.last4}</TableCell>
-								<TableCell>{card.expires}</TableCell>
+								<TableCell>{`${card.expMonth}/${card.expYear}`}</TableCell>
 								<TableCell className="w-[0]">
 									<Button size="icon" variant="outline">
 										<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
