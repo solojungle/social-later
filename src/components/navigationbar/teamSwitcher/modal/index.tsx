@@ -32,19 +32,12 @@ export default function TeamSwitcherModal({
 
 	const { addTeam } = useTeamStore();
 
-	const addCustomerInfo = api.customerInfo.create.useMutation();
-
 	const createTeam = api.team.create.useMutation({
 		onSuccess: (data) => {
 			addTeam({
 				...data,
 				type: "team",
 				imageFallbackInitials: "TT",
-			});
-
-			// Create customer on Stripe and append to team
-			addCustomerInfo.mutate({
-				teamId: data.id,
 			});
 		},
 	});

@@ -68,22 +68,15 @@ model User {
 }
 
 model Team {
-  id           String         @id @default(cuid())
-  name         String
-  url          String         @default(nanoid())
-  image        String
-  members      UserOnTeam[]
-  invitation   Invitation[]
-  customerInfo CustomerInfo[]
-}
-
-model CustomerInfo {
   id                       String                    @id @default(cuid())
+  name                     String
+  url                      String                    @default(nanoid())
+  image                    String
   stripeCustomerId         String?
   stripeSubscriptionId     String?
   stripeSubscriptionStatus StripeSubscriptionStatus?
-  team                     Team                      @relation(fields: [teamId], references: [id])
-  teamId                   String
+  members                  UserOnTeam[]
+  invitation               Invitation[]
 }
 
 enum StripeSubscriptionStatus {

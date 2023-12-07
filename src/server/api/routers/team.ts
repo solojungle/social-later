@@ -2,17 +2,22 @@ import { z } from "zod";
 
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { stripe } from "@/server/services/stripe/client";
 
 export const teamRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(TeamSchema.pick({ name: true }))
 		.mutation(async ({ ctx, input }) => {
+			// Just need the customer id from Stripe
+			const customer = await stripe.customers.create();
+
 			return ctx.db.team.create({
 				data: {
 					name: input.name,
 					image: `https://avatar.vercel.sh/${
 						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
 					}.png`,
+					stripeCustomerId: customer.id,
 					members: {
 						create: {
 							user: {
@@ -48,9 +53,19 @@ export const teamRouter = createTRPCRouter({
 				throw new Error("You are not an owner of this team");
 			}
 
-			return ctx.db.team.delete({
+			const deletedTeam = await ctx.db.team.delete({
 				where: { id: input.id },
 			});
+
+			const customerId = deletedTeam.stripeCustomerId;
+			if (!customerId || customerId === "") {
+				throw new Error("No customer id found");
+			}
+
+			// Now delete the customer from Stripe
+			await stripe.customers.del(customerId);
+
+			return deletedTeam;
 		}),
 
 	update: protectedProcedure
