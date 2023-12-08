@@ -14,6 +14,7 @@ interface SettingsCardBaseProps {
 	title?: string;
 	description?: string;
 	buttonContent?: string;
+	button?: any;
 	footerSubtitle: string;
 }
 
@@ -23,6 +24,7 @@ export function SettingsCardBase({
 	description,
 	buttonContent = "Save",
 	footerSubtitle,
+	button,
 }: SettingsCardBaseProps) {
 	return (
 		<Card>
@@ -39,7 +41,7 @@ export function SettingsCardBase({
 					<span className="text-sm text-muted-foreground">
 						{footerSubtitle}
 					</span>
-					<Button type="submit">{buttonContent}</Button>
+					{button || <Button type="submit">{buttonContent}</Button>}
 				</CardFooter>
 			</div>
 		</Card>

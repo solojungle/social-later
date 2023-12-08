@@ -14,7 +14,8 @@ import {
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import { SettingsCardBase } from "../settings-card-base";
+import { SettingsCardBase } from "../../settings-card-base";
+import { AddPaymentDialogTrigger } from "./dialogTrigger";
 
 export function TeamPaymentMethodCard() {
 	const { id } = useSelectedTeamStore();
@@ -33,7 +34,7 @@ export function TeamPaymentMethodCard() {
 					</span>
 				}
 				footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
-				buttonContent="Add new card"
+				button={<AddPaymentDialogTrigger />}
 			/>
 		);
 	}
@@ -74,7 +75,7 @@ export function TeamPaymentMethodCard() {
 				</Table>
 			}
 			footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
-			buttonContent="Add new card"
+			button={<AddPaymentDialogTrigger />}
 		/>
 	);
 }
