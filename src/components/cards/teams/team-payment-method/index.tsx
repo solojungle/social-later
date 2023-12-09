@@ -11,15 +11,16 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
 import { SettingsCardBase } from "../../settings-card-base";
 import { AddPaymentDialogTrigger } from "./dialogTrigger";
 
-export function TeamPaymentMethodCard() {
-	const { id } = useSelectedTeamStore();
+interface TeamPaymentMethodCardProps {
+	id: string;
+}
 
+export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 	const { data } = api.stripe.getPaymentMethods.useQuery({
 		id,
 	});
