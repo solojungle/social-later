@@ -18,10 +18,12 @@ export function AddPaymentDialogTrigger() {
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Add a Card</DialogTitle>
-					<DialogDescription>Add a payment method</DialogDescription>
-					<PaymentElement />
+					<DialogTitle>Add a Payment Method</DialogTitle>
+					<DialogDescription>
+						Please enter your card information below.
+					</DialogDescription>
 				</DialogHeader>
+				<PaymentElement />
 			</DialogContent>
 		</Dialog>
 	);
