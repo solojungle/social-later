@@ -1,4 +1,4 @@
-import { CardCvcElement } from "@stripe/react-stripe-js";
+import { PaymentElement } from "@stripe/react-stripe-js";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,7 @@ export function AddPaymentDialogTrigger() {
 				<DialogHeader>
 					<DialogTitle>Add a Card</DialogTitle>
 					<DialogDescription>Add a payment method</DialogDescription>
-					<CardCvcElement />
+					<PaymentElement />
 				</DialogHeader>
 			</DialogContent>
 		</Dialog>

@@ -1,5 +1,3 @@
-import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
 	Table,
@@ -12,17 +10,6 @@ import {
 } from "@/components/ui/table";
 
 import { SettingsCardBase } from "../settings-card-base";
-
-export const TeamPaymentPlanFormSchema = z.object({
-	avatar: z
-		.string()
-		.min(1, {
-			message: "Name must be at least 1 characters.",
-		})
-		.max(32, {
-			message: "Name must not be longer than 32 characters.",
-		}),
-});
 
 const data = [
 	{

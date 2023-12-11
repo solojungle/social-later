@@ -3,6 +3,30 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { stripe } from "@/server/services/stripe/client";
 
 export const stripeRouter = createTRPCRouter({
+	createSetupIntent: protectedProcedure
+		.input(TeamSchema.pick({ id: true }))
+		.query(async ({ ctx, input }) => {
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.id },
+			});
+
+			if (!team) {
+				throw new Error("Team not found");
+			}
+
+			if (!team.stripeCustomerId) {
+				throw new Error("No Stripe customer ID");
+			}
+
+			const resp = await stripe.setupIntents.create({
+				customer: team.stripeCustomerId,
+			});
+
+			return {
+				clientSecret: resp.client_secret,
+			};
+		}),
+
 	getPaymentMethods: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {
