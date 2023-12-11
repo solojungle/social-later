@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal } from "lucide-react";
+import { CheckCircle2, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -57,12 +57,10 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 					</TableHeader>
 					<TableBody>
 						{data.map((card) => (
-							<TableRow key={card.brand}>
-								<TableCell>{card.brand}</TableCell>
-								<TableCell>
-									{/* {card.default === true && <CheckCircle2 />} */}
-								</TableCell>
-								<TableCell>{card.type}</TableCell>
+							<TableRow key={card.id}>
+								<TableCell className="capitalize">{card.brand}</TableCell>
+								<TableCell>{data.length === 1 && <CheckCircle2 />}</TableCell>
+								<TableCell className="capitalize">{card.type}</TableCell>
 								<TableCell>•••• {card.last4}</TableCell>
 								<TableCell>{`${card.expMonth}/${card.expYear}`}</TableCell>
 								<TableCell className="w-[0]">
@@ -76,7 +74,7 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 				</Table>
 			}
 			footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
-			button={<AddPaymentDialogTrigger />}
+			button={<AddPaymentDialogTrigger teamId={id} />}
 		/>
 	);
 }
