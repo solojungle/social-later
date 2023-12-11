@@ -17,10 +17,10 @@ const accountNavItems = [
 		title: "Notifications",
 		href: "/settings/notifications",
 	},
-	{
-		title: "Security",
-		href: "/settings/security",
-	},
+	// {
+	// 	title: "Security",
+	// 	href: "/settings/security",
+	// },
 ];
 
 interface SettingsLayoutProps {

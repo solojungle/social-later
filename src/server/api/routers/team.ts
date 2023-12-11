@@ -8,16 +8,12 @@ export const teamRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(TeamSchema.pick({ name: true }))
 		.mutation(async ({ ctx, input }) => {
-			// Just need the customer id from Stripe
-			const customer = await stripe.customers.create();
-
-			return ctx.db.team.create({
+			const team = await ctx.db.team.create({
 				data: {
 					name: input.name,
 					image: `https://avatar.vercel.sh/${
 						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
 					}.png`,
-					stripeCustomerId: customer.id,
 					members: {
 						create: {
 							user: {
@@ -28,6 +24,21 @@ export const teamRouter = createTRPCRouter({
 							role: "OWNER",
 						},
 					},
+				},
+			});
+
+			const customer = await stripe.customers.create({
+				name: team.name,
+				metadata: {
+					teamId: team.id,
+				},
+			});
+
+			// Update the team with the customer id
+			return ctx.db.team.update({
+				where: { id: team.id },
+				data: {
+					stripeCustomerId: customer.id,
 				},
 			});
 		}),

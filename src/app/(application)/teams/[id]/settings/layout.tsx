@@ -39,10 +39,10 @@ export default function SettingsLayout({
 			title: "Members",
 			href: `/teams/${id}/settings/members`,
 		},
-		{
-			title: "Security",
-			href: `/teams/${id}/settings/security`,
-		},
+		// {
+		// 	title: "Security",
+		// 	href: `/teams/${id}/settings/security`,
+		// },
 	];
 
 	return (
