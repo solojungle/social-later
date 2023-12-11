@@ -35,7 +35,7 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 					</span>
 				}
 				footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
-				button={<AddPaymentDialogTrigger />}
+				button={<AddPaymentDialogTrigger teamId={id} />}
 			/>
 		);
 	}

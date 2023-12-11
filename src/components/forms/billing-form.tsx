@@ -1,11 +1,10 @@
 "use client";
 
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 
 import { env } from "@/env.mjs";
 import { useSelectedTeamStore } from "@/stores/selected-team";
-import { api } from "@/trpc/react";
 
 import { TeamPaymentMethodCard } from "../cards/teams/team-payment-method";
 import { TeamPaymentPlanCard } from "../cards/teams/team-plan";
@@ -26,19 +25,14 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
  * 	 SideNote: the reason persist sucks is we lose type safety and it might not work anyway with SSR
  */
 function Wrapper({ teamId }: { teamId: string }) {
-	const { data } = api.stripe.createSetupIntent.useQuery({
-		id: teamId,
-	});
-
-	if (!data?.clientSecret) {
-		return null;
-	}
+	/** Okay wow, you can just do this... */
+	const options: StripeElementsOptions = {
+		mode: "setup",
+		currency: "usd",
+	};
 
 	return (
-		<Elements
-			stripe={stripePromise}
-			options={{ clientSecret: data?.clientSecret }}
-		>
+		<Elements stripe={stripePromise} options={options}>
 			{Boolean(teamId) && <TeamPaymentMethodCard id={teamId} />}
 			<TeamPaymentPlanCard />
 		</Elements>

@@ -5,7 +5,7 @@ import { stripe } from "@/server/services/stripe/client";
 export const stripeRouter = createTRPCRouter({
 	createSetupIntent: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
-		.query(async ({ ctx, input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const team = await ctx.db.team.findUnique({
 				where: { id: input.id },
 			});
