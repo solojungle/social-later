@@ -45,8 +45,8 @@ export function Sidebar({
 			{...props}
 		>
 			{teamItems && (
-				<div className="mb-4 flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-					<div className="mb-2 flex items-center">
+				<div className="xs:mb-4 flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+					<div className="xs:mb-2 flex items-center">
 						<Avatar className="h-4 w-4">
 							<AvatarImage src={selectedTeamImage} alt={selectedTeamName} />
 							<AvatarFallback>{selectedImageFallbackInitials}</AvatarFallback>
@@ -73,7 +73,7 @@ export function Sidebar({
 				</div>
 			)}
 			<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-				<div className="mb-2 flex items-center">
+				<div className="xs:mb-2 flex items-center">
 					<Avatar className="h-4 w-4">
 						<AvatarImage src={image} alt={name} />
 						<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
