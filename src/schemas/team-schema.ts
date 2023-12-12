@@ -36,7 +36,9 @@ export const teamStoreDefaultValues: TeamSchemaValues = {
 };
 
 export const TeamCreationSchema = z.object({
-	name: z.string(),
+	name: z.string().min(1, {
+		message: "Name must be at least 1 characters.",
+	}),
 	subscription: z.string(),
 });
 
