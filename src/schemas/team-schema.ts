@@ -34,3 +34,10 @@ export const teamStoreDefaultValues: TeamSchemaValues = {
 	image: "",
 	imageFallbackInitials: "",
 };
+
+export const TeamCreationSchema = z.object({
+	name: z.string(),
+	subscription: z.string(),
+});
+
+export type TeamCreationSchemaValues = z.infer<typeof TeamCreationSchema>;

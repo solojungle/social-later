@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, PlaneIcon, RocketIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -15,8 +15,13 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
-import { TeamSchema, TeamSchemaValues } from "@/schemas/team-schema";
+import {
+	TeamCreationSchema,
+	TeamCreationSchemaValues,
+} from "@/schemas/team-schema";
 import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
 
@@ -24,7 +29,7 @@ type TeamSwitcherModalProps = {
 	setShowNewTeamDialog: any;
 };
 
-export default function TeamSwitcherModal({
+export default function CreateTeamModal({
 	setShowNewTeamDialog,
 }: TeamSwitcherModalProps) {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -37,31 +42,31 @@ export default function TeamSwitcherModal({
 			addTeam({
 				...data,
 				type: "team",
-				imageFallbackInitials: "TT",
-			});
-		},
-	});
-
-	const defaultValues: Partial<TeamSchemaValues> = {
-		name: "",
-	};
-
-	const form = useForm<TeamSchemaValues>({
-		resolver: zodResolver(TeamSchema.pick({ name: true })),
-		defaultValues,
-	});
-
-	async function onSubmit(data: TeamSchemaValues) {
-		try {
-			setIsLoading(true);
-
-			createTeam.mutate({
-				name: data.name,
+				imageFallbackInitials: "",
 			});
 
 			toast({
 				title: `Successfully created your team!`,
 				description: `To view your new team, click on the team switcher.`,
+			});
+		},
+	});
+
+	const defaultValues: TeamCreationSchemaValues = {
+		name: "",
+		subscription: "",
+	};
+
+	const form = useForm<TeamCreationSchemaValues>({
+		resolver: zodResolver(TeamCreationSchema),
+		defaultValues,
+	});
+
+	async function onSubmit(data: TeamCreationSchemaValues) {
+		try {
+			setIsLoading(true);
+			createTeam.mutate({
+				name: data.name,
 			});
 		} catch (error) {
 			toast({
@@ -79,7 +84,7 @@ export default function TeamSwitcherModal({
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 				<FormField
 					control={form.control}
 					name="name"
@@ -91,6 +96,61 @@ export default function TeamSwitcherModal({
 							</FormControl>
 							<FormDescription>
 								This is your team&apos;s display name.
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="subscription"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Subscription</FormLabel>
+							<FormControl>
+								<RadioGroup
+									defaultValue="card"
+									className="grid grid-cols-2 gap-4"
+								>
+									<div>
+										<RadioGroupItem
+											value="paypal"
+											id="paypal"
+											className="peer sr-only"
+										/>
+										<Label
+											htmlFor="paypal"
+											className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+										>
+											<PlaneIcon className="mb-3 h-7 w-7" />
+											<span className="mb-2">Standard</span>
+											<span className="text-xs text-muted-foreground">
+												$99.99 per month
+											</span>
+										</Label>
+									</div>
+									<div>
+										<RadioGroupItem
+											value="apple"
+											id="apple"
+											className="peer sr-only"
+										/>
+										<Label
+											htmlFor="apple"
+											className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+										>
+											<RocketIcon className="mb-3 h-7 w-7" />
+											<span className="mb-2">Agency</span>
+											<span className="text-xs text-muted-foreground">
+												$249.99 per month
+											</span>
+										</Label>
+									</div>
+								</RadioGroup>
+							</FormControl>
+							<FormDescription>
+								Creating a new team will not affect your Personal Account
+								(Hobby) or any of its projects.
 							</FormDescription>
 							<FormMessage />
 						</FormItem>
