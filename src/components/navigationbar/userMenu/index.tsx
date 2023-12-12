@@ -11,7 +11,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
-	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUserStore } from "@/stores/user";
@@ -45,25 +44,10 @@ export function UserMenu() {
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem>
-						Profile
-						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-					</DropdownMenuItem>
-					<DropdownMenuItem>
-						Billing
-						<DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-					</DropdownMenuItem>
-					<DropdownMenuItem>Teams</DropdownMenuItem>
-					<DropdownMenuItem>
-						Settings
-						<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-					</DropdownMenuItem>
+					<DropdownMenuItem>Settings</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => signOut()}>
-					Log out
-					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
