@@ -30,9 +30,11 @@ function TotalAmount() {
 
 export function PaymentModal({ onNext, onBack }: PaymentModalProps) {
 	return (
-		<div className="max-h-[70vh] space-y-4 overflow-y-scroll px-5">
+		<div className="max-h-[70vh] space-y-4 overflow-y-scroll px-5 pb-2">
 			<TotalAmount />
+			<Separator className="my-4" />
 			<AddressElement options={{ mode: "billing" }} />
+			<Separator className="my-4" />
 			<PaymentElement />
 			<DialogFooter className="flex flex-row !justify-between">
 				<Button type="button" variant="ghost">
