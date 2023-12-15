@@ -39,7 +39,9 @@ export const TeamCreationSchema = z.object({
 	name: z.string().min(1, {
 		message: "Name must be at least 1 characters.",
 	}),
-	subscription: z.string(),
+	subscription: z.string().min(1, {
+		message: "You must pick at least one option.",
+	}),
 });
 
 export type TeamCreationSchemaValues = z.infer<typeof TeamCreationSchema>;

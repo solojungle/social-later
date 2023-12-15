@@ -47,7 +47,11 @@ export default function CreateTeamModal({
 		defaultValues,
 	});
 
-	async function onSubmit(data: TeamCreationSchemaValues) {}
+	async function onSubmit(data: TeamCreationSchemaValues) {
+		// onClick={onNext}
+		console.log(data);
+		onNext();
+	}
 
 	return (
 		<Form {...form}>
@@ -76,8 +80,9 @@ export default function CreateTeamModal({
 							<FormLabel>Subscription</FormLabel>
 							<FormControl>
 								<RadioGroup
-									defaultValue="card"
 									className="grid grid-cols-2 gap-4"
+									onValueChange={field.onChange}
+									defaultValue={field.value}
 								>
 									<div>
 										<RadioGroupItem
@@ -131,7 +136,7 @@ export default function CreateTeamModal({
 					>
 						Cancel
 					</Button>
-					<Button type="button" disabled={isLoading} onClick={onNext}>
+					<Button type="submit" disabled={isLoading}>
 						{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 						Continue
 					</Button>
