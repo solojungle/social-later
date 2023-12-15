@@ -34,7 +34,7 @@ export function PaymentModal({ onNext, onBack }: PaymentModalProps) {
 			<TotalAmount />
 			<AddressElement options={{ mode: "billing" }} />
 			<PaymentElement />
-			<DialogFooter className="flex !justify-between">
+			<DialogFooter className="flex flex-row !justify-between">
 				<Button type="button" variant="ghost">
 					Cancel
 				</Button>
