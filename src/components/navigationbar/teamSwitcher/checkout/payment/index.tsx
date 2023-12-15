@@ -21,7 +21,7 @@ function TotalAmount() {
 			</div>
 			<Separator className="my-4" />
 			<div className="flex justify-between font-medium">
-				<p>Total</p>
+				<p>Due Today</p>
 				<p>$15.00</p>
 			</div>
 		</div>
