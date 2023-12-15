@@ -30,7 +30,7 @@ function TotalAmount() {
 
 export function PaymentModal({ onNext, onBack }: PaymentModalProps) {
 	return (
-		<div className="max-h-[80vh] space-y-4 overflow-y-scroll px-5">
+		<div className="max-h-[70vh] space-y-4 overflow-y-scroll px-5">
 			<TotalAmount />
 			<AddressElement options={{ mode: "billing" }} />
 			<PaymentElement />
