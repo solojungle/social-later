@@ -1,16 +1,86 @@
+/* eslint-disable indent */
+
 "use client";
 
-/**
- * This function will be called when the user clicks "Create Team" in the team switcher.
- * It will open the modal and start the checkout process, which involves the following steps:
- * 1. A multi-step checkout will open.
- * 2. The user will first be prompted to enter a team name and choose a subscription.
- * 3. After clicking next, the user will be prompted to enter their payment details the component provided by Stripe <PaymentElement />.
- * 4. As well as their billing address, it should be able to search instead of having to manually enter it.
- * 5. After clicking next, if the payment is successful, we will create the team.
- */
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
+
+import { env } from "@/env.mjs";
+import { useMultiStepCheckout } from "@/hooks/multi-step-checkout";
+
+import CreateTeamModal from "../modal";
+import { PaymentModal } from "./payment";
+
+const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export function Checkout() {
 	// Pass the pages to the multi-step checkout hook.
-	// const { step, nextStep, prevStep } = useMultiStepCheckout();
+
+	const { currentStep, nextStep, returnStep, formData } =
+		useMultiStepCheckout();
+
+	// const createTeam = api.team.create.useMutation({
+	// 	onSuccess: (data) => {
+	// 		addTeam({
+	// 			...data,
+	// 			type: "team",
+	// 			imageFallbackInitials: "",
+	// 		});
+
+	// 		toast({
+	// 			title: `Successfully created your team!`,
+	// 			description: `To view your new team, click on the team switcher.`,
+	// 		});
+	// 	},
+	// });
+
+	// async function onSubmit(data: TeamCreationSchemaValues) {
+	// 	try {
+	// 		setIsLoading(true);
+	// 		// createTeam.mutate({
+	// 		// 	name: data.name,
+	// 		// });
+	// 	} catch (error) {
+	// 		toast({
+	// 			title: "Uh oh! Something went wrong.",
+	// 			description: "There was a problem with your request.",
+	// 			variant: "destructive",
+	// 		});
+
+	// 		throw error;
+	// 	} finally {
+	// 		setIsLoading(false);
+	// 		setShowNewTeamDialog(false);
+	// 	}
+	// }
+
+	const options: StripeElementsOptions = {
+		mode: "subscription",
+		currency: "usd",
+		amount: 99,
+	};
+
+	function renderCurrentStep() {
+		switch (currentStep) {
+			case 0:
+				return (
+					<CreateTeamModal
+						key="0"
+						setShowNewTeamDialog={undefined}
+						onNext={nextStep}
+						onBack={returnStep}
+					/>
+				);
+			case 1:
+				return <PaymentModal key="1" onNext={nextStep} onBack={returnStep} />;
+			default:
+				return null;
+		}
+	}
+
+	return (
+		<Elements stripe={stripePromise} options={options}>
+			{renderCurrentStep()}
+		</Elements>
+	);
 }

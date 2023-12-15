@@ -22,35 +22,20 @@ import {
 	TeamCreationSchema,
 	TeamCreationSchemaValues,
 } from "@/schemas/team-schema";
-import { useTeamStore } from "@/stores/teams";
-import { api } from "@/trpc/react";
 
 type TeamSwitcherModalProps = {
 	setShowNewTeamDialog: any;
+	onNext: any;
+	onBack: any;
 };
 
 export default function CreateTeamModal({
 	setShowNewTeamDialog,
+	onNext,
+	onBack,
 }: TeamSwitcherModalProps) {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { toast } = useToast();
-
-	const { addTeam } = useTeamStore();
-
-	const createTeam = api.team.create.useMutation({
-		onSuccess: (data) => {
-			addTeam({
-				...data,
-				type: "team",
-				imageFallbackInitials: "",
-			});
-
-			toast({
-				title: `Successfully created your team!`,
-				description: `To view your new team, click on the team switcher.`,
-			});
-		},
-	});
 
 	const defaultValues: TeamCreationSchemaValues = {
 		name: "",
@@ -62,25 +47,7 @@ export default function CreateTeamModal({
 		defaultValues,
 	});
 
-	async function onSubmit(data: TeamCreationSchemaValues) {
-		try {
-			setIsLoading(true);
-			createTeam.mutate({
-				name: data.name,
-			});
-		} catch (error) {
-			toast({
-				title: "Uh oh! Something went wrong.",
-				description: "There was a problem with your request.",
-				variant: "destructive",
-			});
-
-			throw error;
-		} finally {
-			setIsLoading(false);
-			setShowNewTeamDialog(false);
-		}
-	}
+	async function onSubmit(data: TeamCreationSchemaValues) {}
 
 	return (
 		<Form {...form}>
@@ -164,7 +131,7 @@ export default function CreateTeamModal({
 					>
 						Cancel
 					</Button>
-					<Button type="submit" disabled={isLoading}>
+					<Button type="button" disabled={isLoading} onClick={onNext}>
 						{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 						Continue
 					</Button>

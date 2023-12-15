@@ -1,22 +1,17 @@
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 
-export function useMultiStepCheckout(steps: ReactElement[]) {
-	const [currentStep, setCurrentStep] = useState(0);
+export function useMultiStepCheckout(initialStep = 0) {
+	const [currentStep, setCurrentStep] = useState(initialStep);
+	const [formData, setFormData] = useState({});
 
-	function nextStep() {
-		if (currentStep === steps.length - 1) return;
-		setCurrentStep(currentStep + 1);
-	}
-
-	function prevStep() {
-		if (currentStep <= 0) return;
-		setCurrentStep(currentStep - 1);
-	}
-
-	return {
-		currentStep,
-		step: steps[currentStep],
-		nextStep,
-		prevStep,
+	const nextStep = (data: any) => {
+		setFormData((prevData) => ({ ...prevData, ...data }));
+		setCurrentStep((prevStep) => prevStep + 1);
 	};
+
+	const returnStep = () => {
+		setCurrentStep((prevStep) => prevStep - 1);
+	};
+
+	return { currentStep, nextStep, returnStep, formData };
 }

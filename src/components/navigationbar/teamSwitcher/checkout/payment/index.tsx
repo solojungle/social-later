@@ -1,35 +1,33 @@
 "use client";
 
-import {
-	AddressElement,
-	Elements,
-	PaymentElement,
-} from "@stripe/react-stripe-js";
-import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
+import { AddressElement, PaymentElement } from "@stripe/react-stripe-js";
 
-import { env } from "@/env.mjs";
+import { Button } from "@/components/ui/button";
+import { DialogFooter } from "@/components/ui/dialog";
 
-const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
-function Wrapper() {
-	return (
-		<div>
-			<PaymentElement />
-			<AddressElement options={{ mode: "billing" }} />
-		</div>
-	);
+interface PaymentModalProps {
+	onNext: any;
+	onBack: any;
 }
 
-export function PaymentModal() {
-	const options: StripeElementsOptions = {
-		mode: "subscription",
-		currency: "usd",
-		amount: 99,
-	};
-
+export function PaymentModal({ onNext, onBack }: PaymentModalProps) {
 	return (
-		<Elements stripe={stripePromise} options={options}>
-			<Wrapper />
-		</Elements>
+		<div className="space-y-4">
+			<PaymentElement />
+			<AddressElement options={{ mode: "billing" }} />
+			<DialogFooter className="flex !justify-between">
+				<Button type="button" variant="ghost">
+					Cancel
+				</Button>
+				<div className="space-x-2">
+					<Button type="button" variant="outline" onClick={onBack}>
+						Back
+					</Button>
+					<Button type="submit" onClick={onNext}>
+						Subscribe
+					</Button>
+				</div>
+			</DialogFooter>
+		</div>
 	);
 }

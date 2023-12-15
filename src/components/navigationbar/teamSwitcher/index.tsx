@@ -21,9 +21,9 @@ import {
 	DialogTrigger,
 } from "../../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { Checkout } from "./checkout";
 import PersonalCommandGroup from "./commandGroups/personal";
 import TeamCommandGroup from "./commandGroups/team";
-import CreateTeamModal from "./modal";
 import TeamSwitcherPopoverTrigger from "./trigger";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
@@ -73,7 +73,9 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						Add a new team to manage products and customers.
 					</DialogDescription>
 				</DialogHeader>
-				<CreateTeamModal setShowNewTeamDialog={setShowNewTeamDialog} />
+				{/* <CreateTeamModal setShowNewTeamDialog={setShowNewTeamDialog} /> */}
+				{/* <PaymentModal /> */}
+				<Checkout />
 			</DialogContent>
 		</Dialog>
 	);

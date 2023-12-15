@@ -83,7 +83,7 @@ export default async function PublishPage() {
 							</Dialog>
 						</div>
 					</aside>
-					<div className="flex-1 lg:max-w-2xl">hi there</div>
+					<div className="flex-1 lg:max-w-2xl">Publishing Stuff</div>
 				</div>
 			</div>
 		</main>
