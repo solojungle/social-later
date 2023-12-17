@@ -7,31 +7,39 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 
 interface PaymentModalProps {
-	onNext: any;
 	onBack: any;
+	formData: any;
 }
 
-function TotalAmount() {
+interface TotalAmountProps {
+	plan: string;
+	amount: number;
+}
+
+function TotalAmount({ amount, plan }: TotalAmountProps) {
 	return (
 		<div className="rounded-xl border bg-card p-3 text-sm text-card-foreground">
 			<h2 className="mb-2 font-medium">Your subscription</h2>
 			<div className="flex justify-between text-muted-foreground">
-				<p>Premium Plan</p>
-				<p>$15.00 billed monthly</p>
+				<p>{plan}</p>
+				<p>${amount} billed monthly</p>
 			</div>
 			<Separator className="my-4" />
 			<div className="flex justify-between font-medium">
 				<p>Due Today</p>
-				<p>$15.00</p>
+				<p>${amount}</p>
 			</div>
 		</div>
 	);
 }
 
-export function PaymentModal({ onNext, onBack }: PaymentModalProps) {
+export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 	return (
 		<div className="max-h-[70vh] space-y-4 overflow-y-scroll px-5 pb-2">
-			<TotalAmount />
+			<TotalAmount
+				amount={formData.subscription.price}
+				plan={formData.subscription.name}
+			/>
 			<Separator className="my-4" />
 			<AddressElement options={{ mode: "billing" }} />
 			<Separator className="my-4" />
@@ -44,7 +52,12 @@ export function PaymentModal({ onNext, onBack }: PaymentModalProps) {
 					<Button type="button" variant="outline" onClick={onBack}>
 						Back
 					</Button>
-					<Button type="submit" onClick={onNext}>
+					<Button
+						type="submit"
+						onClick={() => {
+							console.log("clicked");
+						}}
+					>
 						Subscribe
 					</Button>
 				</div>

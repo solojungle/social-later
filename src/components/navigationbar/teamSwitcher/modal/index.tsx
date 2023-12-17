@@ -1,6 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, PlaneIcon } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/components/ui/use-toast";
 import {
 	TeamCreationSchema,
 	TeamCreationSchemaValues,
@@ -31,7 +28,14 @@ type TeamSwitcherModalProps = {
 };
 
 interface ProductsSelectorProps {
-	products: any[];
+	products: {
+		id: string;
+		name: string;
+		image: string | undefined;
+		price: number;
+		priceId: string;
+		currency: string;
+	}[];
 	field: any;
 }
 
@@ -46,7 +50,7 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 				{products.map((product) => (
 					<div key={product.id}>
 						<RadioGroupItem
-							value={product.id}
+							value={product.priceId}
 							id={product.id}
 							className="peer sr-only"
 						/>
@@ -54,10 +58,14 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 							htmlFor={product.id}
 							className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
 						>
-							<PlaneIcon className="mb-3 h-7 w-7" />
+							<img
+								alt={product.name}
+								src={product.image}
+								className="mb-3 h-7 w-7"
+							/>
 							<span className="mb-2">{product.name}</span>
 							<span className="text-xs text-muted-foreground">
-								${product.default_price.unit_amount / 100} per month
+								${product.price} per month
 							</span>
 						</Label>
 					</div>
@@ -70,14 +78,8 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 export default function CreateTeamModal({
 	setShowNewTeamDialog,
 	onNext,
-	onBack,
 }: TeamSwitcherModalProps) {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const { toast } = useToast();
-
 	const products = api.stripe.getProducts.useQuery();
-
-	console.log(products.data);
 
 	const defaultValues: TeamCreationSchemaValues = {
 		name: "",
@@ -90,9 +92,23 @@ export default function CreateTeamModal({
 	});
 
 	async function onSubmit(data: TeamCreationSchemaValues) {
-		// onClick={onNext}
-		console.log(data);
-		onNext();
+		const choosenSubscription = products.data?.find(
+			(product) => product.priceId === data.subscription,
+		);
+
+		const formData = {
+			name: data.name,
+			subscription: {
+				id: choosenSubscription?.id,
+				priceId: choosenSubscription?.priceId,
+				name: choosenSubscription?.name,
+				image: choosenSubscription?.image,
+				price: choosenSubscription?.price,
+				currency: choosenSubscription?.currency,
+			},
+		};
+
+		onNext(formData);
 	}
 
 	return (
@@ -137,8 +153,8 @@ export default function CreateTeamModal({
 					>
 						Cancel
 					</Button>
-					<Button type="submit" disabled={isLoading}>
-						{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+					<Button type="submit">
+						{/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
 						Continue
 					</Button>
 				</DialogFooter>

@@ -57,7 +57,7 @@ export function Checkout() {
 	const options: StripeElementsOptions = {
 		mode: "subscription",
 		currency: "usd",
-		amount: 99,
+		amount: 0,
 	};
 
 	function renderCurrentStep() {
@@ -72,7 +72,7 @@ export function Checkout() {
 					/>
 				);
 			case 1:
-				return <PaymentModal key="1" onNext={nextStep} onBack={returnStep} />;
+				return <PaymentModal key="1" onBack={returnStep} formData={formData} />;
 			default:
 				return null;
 		}

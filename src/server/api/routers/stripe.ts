@@ -34,7 +34,28 @@ export const stripeRouter = createTRPCRouter({
 			expand: ["data.default_price"],
 		});
 
-		return resp.data;
+		// Make the data more readable
+		const data = resp.data.map((product) => {
+			// Make sure we have a price and its an object
+			if (
+				!product.default_price ||
+				typeof product.default_price !== "object" ||
+				!product.default_price.unit_amount
+			) {
+				throw new Error("No price or price is not an object");
+			}
+
+			return {
+				id: product.id,
+				name: product.name,
+				image: product.images?.[0],
+				price: product.default_price.unit_amount / 100,
+				priceId: product.default_price.id,
+				currency: product.default_price.currency,
+			};
+		});
+
+		return data;
 	}),
 
 	getPaymentMethods: protectedProcedure
