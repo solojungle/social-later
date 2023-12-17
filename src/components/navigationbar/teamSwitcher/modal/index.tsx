@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, PlaneIcon, RocketIcon } from "lucide-react";
+import { Loader2, PlaneIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -22,12 +22,50 @@ import {
 	TeamCreationSchema,
 	TeamCreationSchemaValues,
 } from "@/schemas/team-schema";
+import { api } from "@/trpc/react";
 
 type TeamSwitcherModalProps = {
 	setShowNewTeamDialog: any;
 	onNext: any;
 	onBack: any;
 };
+
+interface ProductsSelectorProps {
+	products: any[];
+	field: any;
+}
+
+function ProductsSelector({ products, field }: ProductsSelectorProps) {
+	return (
+		<FormControl>
+			<RadioGroup
+				className="grid grid-cols-2 gap-4"
+				onValueChange={field.onChange}
+				defaultValue={field.value}
+			>
+				{products.map((product) => (
+					<div key={product.id}>
+						<RadioGroupItem
+							value={product.id}
+							id={product.id}
+							className="peer sr-only"
+						/>
+						<Label
+							htmlFor={product.id}
+							className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+						>
+							<PlaneIcon className="mb-3 h-7 w-7" />
+							<span className="mb-2">{product.name}</span>
+							<span className="text-xs text-muted-foreground">
+								${product.default_price.unit_amount / 100} per month
+							</span>
+						</Label>
+					</div>
+				))}
+			</RadioGroup>
+		</FormControl>
+	);
+}
 
 export default function CreateTeamModal({
 	setShowNewTeamDialog,
@@ -36,6 +74,10 @@ export default function CreateTeamModal({
 }: TeamSwitcherModalProps) {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { toast } = useToast();
+
+	const products = api.stripe.getProducts.useQuery();
+
+	console.log(products.data);
 
 	const defaultValues: TeamCreationSchemaValues = {
 		name: "",
@@ -78,48 +120,7 @@ export default function CreateTeamModal({
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Subscription</FormLabel>
-							<FormControl>
-								<RadioGroup
-									className="grid grid-cols-2 gap-4"
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<div>
-										<RadioGroupItem
-											value="paypal"
-											id="paypal"
-											className="peer sr-only"
-										/>
-										<Label
-											htmlFor="paypal"
-											className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-										>
-											<PlaneIcon className="mb-3 h-7 w-7" />
-											<span className="mb-2">Standard</span>
-											<span className="text-xs text-muted-foreground">
-												$99.99 per month
-											</span>
-										</Label>
-									</div>
-									<div>
-										<RadioGroupItem
-											value="apple"
-											id="apple"
-											className="peer sr-only"
-										/>
-										<Label
-											htmlFor="apple"
-											className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-										>
-											<RocketIcon className="mb-3 h-7 w-7" />
-											<span className="mb-2">Agency</span>
-											<span className="text-xs text-muted-foreground">
-												$249.99 per month
-											</span>
-										</Label>
-									</div>
-								</RadioGroup>
-							</FormControl>
+							<ProductsSelector products={products.data ?? []} field={field} />
 							<FormDescription>
 								Creating a new team will not affect your Personal Account
 								(Hobby) or any of its projects.

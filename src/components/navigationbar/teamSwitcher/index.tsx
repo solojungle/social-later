@@ -73,8 +73,6 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						Add a new team to manage products and customers.
 					</DialogDescription>
 				</DialogHeader>
-				{/* <CreateTeamModal setShowNewTeamDialog={setShowNewTeamDialog} /> */}
-				{/* <PaymentModal /> */}
 				<Checkout />
 			</DialogContent>
 		</Dialog>

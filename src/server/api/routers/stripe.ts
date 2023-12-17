@@ -27,6 +27,16 @@ export const stripeRouter = createTRPCRouter({
 			};
 		}),
 
+	getProducts: protectedProcedure.query(async () => {
+		const resp = await stripe.products.list({
+			limit: 3,
+			active: true,
+			expand: ["data.default_price"],
+		});
+
+		return resp.data;
+	}),
+
 	getPaymentMethods: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {

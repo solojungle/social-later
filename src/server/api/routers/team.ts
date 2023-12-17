@@ -6,14 +6,44 @@ import { stripe } from "@/server/services/stripe/client";
 
 export const teamRouter = createTRPCRouter({
 	create: protectedProcedure
-		.input(TeamSchema.pick({ name: true }))
+		.input(
+			z.object({
+				name: z.string(),
+				paymentMethod: z.string(),
+				priceId: z.string(),
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
+			const customer = await stripe.customers.create({
+				name: input.name,
+				payment_method: input.paymentMethod,
+				invoice_settings: {
+					default_payment_method: input.paymentMethod,
+				},
+			});
+
+			// We create a subscription instead of a payment intent because
+			// we want to be able to charge the user every month. Versus
+			// just a one time payment, and subscription also generates
+			// invoices for us.
+			const subscription = await stripe.subscriptions.create({
+				customer: customer.id,
+				items: [{ price: input.priceId }],
+				payment_settings: {
+					payment_method_types: ["card"],
+					save_default_payment_method: "on_subscription",
+				},
+				expand: ["latest_invoice.payment_intent"],
+			});
+
 			const team = await ctx.db.team.create({
 				data: {
 					name: input.name,
 					image: `https://avatar.vercel.sh/${
 						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
 					}.png`,
+					stripeCustomerId: customer.id,
+					stripeSubscriptionId: subscription.id,
 					members: {
 						create: {
 							user: {
@@ -27,20 +57,14 @@ export const teamRouter = createTRPCRouter({
 				},
 			});
 
-			const customer = await stripe.customers.create({
-				name: team.name,
+			// Update stripe customer metadata with the team id
+			await stripe.customers.update(customer.id, {
 				metadata: {
 					teamId: team.id,
 				},
 			});
 
-			// Update the team with the customer id
-			return ctx.db.team.update({
-				where: { id: team.id },
-				data: {
-					stripeCustomerId: customer.id,
-				},
-			});
+			return team;
 		}),
 
 	delete: protectedProcedure
