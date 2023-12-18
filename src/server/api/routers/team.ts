@@ -9,28 +9,19 @@ export const teamRouter = createTRPCRouter({
 		.input(
 			z.object({
 				name: z.string(),
-				paymentMethod: z.string(),
 				priceId: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
 			const customer = await stripe.customers.create({
 				name: input.name,
-				payment_method: input.paymentMethod,
-				invoice_settings: {
-					default_payment_method: input.paymentMethod,
-				},
 			});
 
-			// We create a subscription instead of a payment intent because
-			// we want to be able to charge the user every month. Versus
-			// just a one time payment, and subscription also generates
-			// invoices for us.
 			const subscription = await stripe.subscriptions.create({
 				customer: customer.id,
 				items: [{ price: input.priceId }],
+				payment_behavior: "default_incomplete",
 				payment_settings: {
-					payment_method_types: ["card"],
 					save_default_payment_method: "on_subscription",
 				},
 				expand: ["latest_invoice.payment_intent"],
@@ -44,6 +35,7 @@ export const teamRouter = createTRPCRouter({
 					}.png`,
 					stripeCustomerId: customer.id,
 					stripeSubscriptionId: subscription.id,
+					stripeSubscriptionStatus: subscription.status,
 					members: {
 						create: {
 							user: {
@@ -64,7 +56,21 @@ export const teamRouter = createTRPCRouter({
 				},
 			});
 
-			return team;
+			// Make sure we have a payment intent
+			if (
+				!subscription?.latest_invoice ||
+				typeof subscription?.latest_invoice === "string" ||
+				!subscription?.latest_invoice.payment_intent ||
+				typeof subscription?.latest_invoice.payment_intent === "string"
+			) {
+				throw new Error("No payment intent found");
+			}
+
+			return {
+				team,
+				clientSecret:
+					subscription?.latest_invoice.payment_intent.client_secret ?? "",
+			};
 		}),
 
 	delete: protectedProcedure

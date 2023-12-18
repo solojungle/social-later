@@ -15,45 +15,10 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export function Checkout() {
 	// Pass the pages to the multi-step checkout hook.
-
 	const { currentStep, nextStep, returnStep, formData } =
 		useMultiStepCheckout();
 
-	// const createTeam = api.team.create.useMutation({
-	// 	onSuccess: (data) => {
-	// 		addTeam({
-	// 			...data,
-	// 			type: "team",
-	// 			imageFallbackInitials: "",
-	// 		});
-
-	// 		toast({
-	// 			title: `Successfully created your team!`,
-	// 			description: `To view your new team, click on the team switcher.`,
-	// 		});
-	// 	},
-	// });
-
-	// async function onSubmit(data: TeamCreationSchemaValues) {
-	// 	try {
-	// 		setIsLoading(true);
-	// 		// createTeam.mutate({
-	// 		// 	name: data.name,
-	// 		// });
-	// 	} catch (error) {
-	// 		toast({
-	// 			title: "Uh oh! Something went wrong.",
-	// 			description: "There was a problem with your request.",
-	// 			variant: "destructive",
-	// 		});
-
-	// 		throw error;
-	// 	} finally {
-	// 		setIsLoading(false);
-	// 		setShowNewTeamDialog(false);
-	// 	}
-	// }
-
+	// This isn't really used, but it's required by Stripe.
 	const options: StripeElementsOptions = {
 		mode: "subscription",
 		currency: "usd",
