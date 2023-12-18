@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,14 @@ interface ProductsSelectorProps {
 }
 
 function ProductsSelector({ products, field }: ProductsSelectorProps) {
+	if (!products || products.length <= 0) {
+		return (
+			<div className="flex items-center justify-center p-5">
+				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
+
 	return (
 		<FormControl>
 			<RadioGroup
