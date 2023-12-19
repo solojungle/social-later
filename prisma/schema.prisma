@@ -68,13 +68,13 @@ model User {
 }
 
 model Team {
-  id                       String                    @id @default(cuid())
+  id                       String                   @id @default(cuid())
   name                     String
-  url                      String                    @default(nanoid())
+  url                      String                   @default(nanoid())
   image                    String
-  stripeCustomerId         String?
-  stripeSubscriptionId     String?
-  stripeSubscriptionStatus StripeSubscriptionStatus?
+  stripeCustomerId         String
+  stripeSubscriptionId     String
+  stripeSubscriptionStatus StripeSubscriptionStatus
   members                  UserOnTeam[]
   invitation               Invitation[]
 }
