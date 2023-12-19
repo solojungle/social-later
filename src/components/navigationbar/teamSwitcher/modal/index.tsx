@@ -144,7 +144,7 @@ export default function CreateTeamModal({
 					name="subscription"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Subscription</FormLabel>
+							<FormLabel>Subscriptions</FormLabel>
 							<ProductsSelector products={products.data ?? []} field={field} />
 							<FormDescription>
 								Creating a new team will not affect your Personal Account

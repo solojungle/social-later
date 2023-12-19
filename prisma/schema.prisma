@@ -72,8 +72,8 @@ model Team {
   name                     String
   url                      String                   @default(nanoid())
   image                    String
-  stripeCustomerId         String
-  stripeSubscriptionId     String
+  stripeCustomerId         String                   @unique
+  stripeSubscriptionId     String                   @unique
   stripeSubscriptionStatus StripeSubscriptionStatus
   members                  UserOnTeam[]
   invitation               Invitation[]

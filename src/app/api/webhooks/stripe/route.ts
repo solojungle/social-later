@@ -3,6 +3,7 @@
 import { NextRequest } from "next/server";
 
 import { env } from "@/env.mjs";
+import { db } from "@/server/db";
 import { stripe } from "@/server/services/stripe/client";
 
 export async function POST(req: NextRequest) {
@@ -33,7 +34,24 @@ export async function POST(req: NextRequest) {
 	// Handle the event
 	switch (event.type) {
 		case "payment_intent.succeeded":
+			if (
+				event.data.object.customer === null ||
+				typeof event.data.object.customer === "string"
+			) {
+				return new Response("Bad request", {
+					status: 400,
+				});
+			}
+
 			// Fulfill the purchased goods or services.
+			db.team.update({
+				where: {
+					stripeCustomerId: event.data.object.customer.id,
+				},
+				data: {
+					stripeSubscriptionStatus: "active",
+				},
+			});
 			break;
 		case "payment_intent.payment_failed":
 			// Send an email or push notification to request another payment method.
