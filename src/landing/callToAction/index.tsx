@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 export default function CallToAction() {
 	return (
 		<section className="mx-4 flex min-h-screen flex-col items-center justify-center xl:mx-12">
-			<h2 className="mb-8 flex flex-col text-center text-[30px] xl:text-[48px]">
+			<h2 className="mb-8 flex flex-col text-center text-[30px] leading-tight tracking-tight xl:text-[48px]">
 				<span>Activate a suite of modern sales tools &amp;</span>
-				<span className="serif italic">avoid sprawling tech stacks.</span>
+				<span className="font-tiempos italic">
+					avoid sprawling tech stacks.
+				</span>
 			</h2>
 			<Button className="mb-24" variant="secondary">
 				Get Started Today
