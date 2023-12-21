@@ -1,6 +1,6 @@
 export default function Marquee() {
 	return (
-		<section className="flex w-full flex-col items-center py-10">
+		<section className="mb-48 flex w-full flex-col items-center py-10">
 			<h2 className="mb-8 text-xs tracking-widest text-muted-foreground">
 				OUR NETWORK OF THE MOST INNOVATIVE
 			</h2>
