@@ -1,15 +1,9 @@
 import "@/styles/globals.css";
 
-import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
 import { Toaster } from "@/components/ui/toaster";
 import { TRPCReactProvider } from "@/trpc/react";
-
-const inter = Inter({
-	subsets: ["latin"],
-	variable: "--font-sans",
-});
 
 export const metadata = {
 	title: "Create T3 App",
@@ -24,7 +18,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className={`font-sans ${inter.variable}`}>
+			<body className="font-beausite subpixel-antialiased">
 				<TRPCReactProvider cookies={cookies().toString()}>
 					{children}
 				</TRPCReactProvider>

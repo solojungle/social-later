@@ -20,6 +20,10 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ["var(--font-sans)", ...fontFamily.sans],
+				geistSans: ["var(--font-geist-sans)"],
+				geistMono: ["var(--font-geist-mono)"],
+				beausite: ["BeausiteClassic", "sans-serif"],
+				tiempos: ["TiemposHeadline", "sans-serif"],
 			},
 			colors: {
 				border: "hsl(var(--border))",
