@@ -58,6 +58,44 @@ export const stripeRouter = createTRPCRouter({
 		return data;
 	}),
 
+	getSubscription: protectedProcedure
+		.input(TeamSchema.pick({ id: true }))
+		.query(async ({ ctx, input }) => {
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.id },
+			});
+
+			if (!team) {
+				throw new Error("Team not found");
+			}
+
+			if (!team.stripeCustomerId) {
+				throw new Error("No Stripe customer ID");
+			}
+
+			const resp = await stripe.subscriptions.list({
+				customer: team.stripeCustomerId,
+				limit: 1,
+				expand: ["data.plan.product"],
+			});
+
+			const { data } = resp;
+
+			const subscription = data[0];
+
+			if (!subscription) {
+				return {};
+			}
+
+			return {
+				currentPeriodEnd: subscription.current_period_end,
+				currentPeriodStart: subscription.current_period_start,
+				defaultPaymentMethod: subscription.default_payment_method,
+				productName: subscription.plan.product.name ?? "",
+				price: subscription.plan.amount / 100 ?? "",
+			};
+		}),
+
 	getPaymentMethods: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {
