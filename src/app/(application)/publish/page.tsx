@@ -1,3 +1,4 @@
+import { CreatePost } from "@/components/create-post";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -35,7 +36,7 @@ export default async function PublishPage() {
 						<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 							<Dialog>
 								<DialogTrigger>
-									{/* <Button className="w-full">Create Post</Button> */}
+									<Button className="w-full">Create Post</Button>
 								</DialogTrigger>
 								<DialogContent>
 									<DialogHeader>
@@ -83,7 +84,9 @@ export default async function PublishPage() {
 							</Dialog>
 						</div>
 					</aside>
-					<div className="flex-1 lg:max-w-2xl">Publishing Stuff</div>
+					<div className="flex-1 lg:max-w-2xl">
+						<CreatePost />
+					</div>
 				</div>
 			</div>
 		</main>
