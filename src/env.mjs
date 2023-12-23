@@ -33,6 +33,9 @@ export const env = createEnv({
 		GOOGLE_CLIENT_SECRET: z.string(),
 		STRIPE_SECRET_KEY: z.string(),
 		STRIPE_WEBHOOK_SECRET: z.string(),
+		TWITTER_API_KEY: z.string(),
+		TWITTER_API_KEY_SECRET: z.string(),
+		TWITTER_BEARER_TOKEN: z.string(),
 	},
 
 	/**
@@ -60,6 +63,9 @@ export const env = createEnv({
 			process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
 		STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
 		STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+		TWITTER_API_KEY: process.env.TWITTER_API_KEY,
+		TWITTER_API_KEY_SECRET: process.env.TWITTER_API_KEY_SECRET,
+		TWITTER_BEARER_TOKEN: process.env.TWITTER_BEARER_TOKEN,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
