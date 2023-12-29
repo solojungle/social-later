@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
 	Form,
@@ -12,7 +13,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { TeamSchema, TeamSchemaValues } from "@/schemas/team-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamStore } from "@/stores/teams";
@@ -52,8 +52,7 @@ export function TeamUrlCard() {
 		// Change the url in the browser, by change :id in "/teams/:id/settings" to the new url
 		router.replace(`/teams/${data.url}/settings`);
 
-		toast({
-			title: "You submitted the following values:",
+		toast("You submitted the following values:", {
 			description: (
 				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 					<code className="text-white">{JSON.stringify(data, null, 2)}</code>

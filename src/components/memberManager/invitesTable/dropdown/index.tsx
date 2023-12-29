@@ -1,5 +1,6 @@
 import { MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import {
 	AlertDialog,
@@ -17,7 +18,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
 import { useInvitationsStore } from "@/stores/invitations";
 import { api } from "@/trpc/react";
 
@@ -38,9 +38,7 @@ export function TableCellActions({
 		onSuccess(input) {
 			removeInvitation(input.id);
 
-			toast({
-				description: "This invite has been deleted.",
-			});
+			toast.success("This invite has been deleted.");
 		},
 	});
 

@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
@@ -15,7 +16,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { TeamSchema, TeamSchemaValues } from "@/schemas/team-schema";
 import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
@@ -28,7 +28,6 @@ export default function AddPaymentMethodModal({
 	setShowNewTeamDialog,
 }: TeamSwitcherModalProps) {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const { toast } = useToast();
 
 	const { addTeam } = useTeamStore();
 
@@ -59,15 +58,12 @@ export default function AddPaymentMethodModal({
 				name: data.name,
 			});
 
-			toast({
-				title: `Successfully created your team!`,
+			toast.success("Successfully created your team!", {
 				description: `To view your new team, click on the team switcher.`,
 			});
 		} catch (error) {
-			toast({
-				title: "Uh oh! Something went wrong.",
+			toast.error("Uh oh! Something went wrong.", {
 				description: "There was a problem with your request.",
-				variant: "destructive",
 			});
 
 			throw error;

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import {
 	AlertDialog,
@@ -22,7 +23,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamStore } from "@/stores/teams";
 import { useUserStore } from "@/stores/user";
@@ -89,9 +89,7 @@ export function TeamDeleteCard() {
 									id: selectedTeamId,
 								});
 
-								toast({
-									description: "This team has been deleted.",
-								});
+								toast.success("This team has been deleted.");
 							}}
 						>
 							Delete

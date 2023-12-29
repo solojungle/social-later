@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
 	Form,
@@ -12,7 +13,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { TeamSchema, TeamSchemaValues } from "@/schemas/team-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 
@@ -32,8 +32,7 @@ export function TeamAvatarCard() {
 	});
 
 	function onSubmit(data: TeamSchemaValues) {
-		toast({
-			title: "You submitted the following values:",
+		toast("You submitted the following values:", {
 			description: (
 				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 					<code className="text-white">{JSON.stringify(data, null, 2)}</code>

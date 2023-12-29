@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRole } from "@prisma/client";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
 	Form,
@@ -13,7 +14,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import {
 	InvitationSchema,
 	InvitationSchemaValues,
@@ -38,8 +38,7 @@ export function TeamAddMembersCard() {
 		onSuccess: (input) => {
 			addInvitation(input);
 
-			toast({
-				title: "Invitation sent!",
+			toast.success("Invitation has been sent!", {
 				description: "The invitation has been sent to the recipient.",
 			});
 		},

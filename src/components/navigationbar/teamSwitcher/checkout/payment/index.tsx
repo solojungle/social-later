@@ -7,11 +7,11 @@ import {
 } from "@stripe/react-stripe-js";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
 import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
 
@@ -62,8 +62,7 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 				imageFallbackInitials: "",
 			});
 
-			toast({
-				title: `Successfully created your team!`,
+			toast.success("Successfully created your team!", {
 				description: `To view your new team, click on the team switcher.`,
 			});
 		},
@@ -110,10 +109,8 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 				handleError(error);
 			}
 		} catch (error) {
-			toast({
-				title: "Uh oh! Something went wrong.",
+			toast.error("Uh oh! Something went wrong.", {
 				description: "There was a problem with your request.",
-				variant: "destructive",
 			});
 
 			handleError(error);

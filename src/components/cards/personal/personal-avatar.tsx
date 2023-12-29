@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
 	Form,
@@ -10,7 +11,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { UserSchema, UserSchemaValues } from "@/schemas/user-schema";
 import { useUserStore } from "@/stores/user";
 
@@ -30,8 +30,7 @@ export function PersonalAvatarCard() {
 	});
 
 	function onSubmit(data: UserSchemaValues) {
-		toast({
-			title: "You submitted the following values:",
+		toast("You submitted the following values:", {
 			description: (
 				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 					<code className="text-white">{JSON.stringify(data, null, 2)}</code>

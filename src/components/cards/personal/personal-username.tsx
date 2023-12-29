@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
 	Form,
@@ -11,7 +12,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { UserSchema, UserSchemaValues } from "@/schemas/user-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
@@ -46,8 +46,7 @@ export function PersonalUsernameCard() {
 		// Update selected team url
 		setSelectedTeamsUrl(data.url);
 
-		toast({
-			title: "You submitted the following values:",
+		toast.success("You submitted the following values:", {
 			description: (
 				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
