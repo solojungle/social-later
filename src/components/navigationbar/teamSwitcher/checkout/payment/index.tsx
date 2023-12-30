@@ -17,7 +17,17 @@ import { api } from "@/trpc/react";
 
 interface PaymentModalProps {
 	onBack: any;
-	formData: any;
+	formData: {
+		name: string;
+		subscription: {
+			id: string;
+			name: string;
+			currency: string;
+			price: number;
+			priceFormatted: string;
+			priceId: string;
+		};
+	};
 }
 
 interface TotalAmountProps {
@@ -94,8 +104,8 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 		try {
 			const resp = await createTeam.mutateAsync({
 				name: formData.name,
-				internalProductId: formData.id,
-				stripePriceId: formData.priceId,
+				internalProductId: formData.subscription.id,
+				stripePriceId: formData.subscription.priceId,
 			});
 
 			const { error } = await stripe.confirmPayment({

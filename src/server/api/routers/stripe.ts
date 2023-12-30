@@ -27,68 +27,68 @@ export const stripeRouter = createTRPCRouter({
 			};
 		}),
 
-	getProducts: protectedProcedure.query(async () => {
-		const resp = await stripe.products.list({
-			limit: 3,
-			active: true,
-			expand: ["data.default_price"],
-		});
+	// getProducts: protectedProcedure.query(async () => {
+	// 	const resp = await stripe.products.list({
+	// 		limit: 3,
+	// 		active: true,
+	// 		expand: ["data.default_price"],
+	// 	});
 
-		// Make the data more readable
-		const data = resp.data.map((product) => {
-			// Make sure we have a price and its an object
-			if (
-				!product.default_price ||
-				typeof product.default_price !== "object" ||
-				!product.default_price.unit_amount
-			) {
-				throw new Error("No price or price is not an object");
-			}
-
-			return {
-				id: product.id,
-				name: product.name,
-				image: product.images?.[0],
-				price: product.default_price.unit_amount / 100,
-				priceId: product.default_price.id,
-				currency: product.default_price.currency,
-			};
-		});
-
-		return data;
-	}),
-
-	// getSubscription: protectedProcedure
-	// 	.input(TeamSchema.pick({ id: true }))
-	// 	.query(async ({ ctx, input }) => {
-	// 		// Include the subscription
-	// 		const team = await ctx.db.team.findUnique({
-	// 			where: { id: input.id },
-	// 			include: { subscription: true },
-	// 		});
-
-	// 		if (!team) {
-	// 			throw new Error("Team not found");
+	// 	// Make the data more readable
+	// 	const data = resp.data.map((product) => {
+	// 		// Make sure we have a price and its an object
+	// 		if (
+	// 			!product.default_price ||
+	// 			typeof product.default_price !== "object" ||
+	// 			!product.default_price.unit_amount
+	// 		) {
+	// 			throw new Error("No price or price is not an object");
 	// 		}
-
-	// 		if (!team.stripeCustomerId) {
-	// 			throw new Error("No Stripe customer ID");
-	// 		}
-
-	// 		const resp = await stripe.products.retrieve(
-	// 			team.subscription?.stripeProductId,
-	// 		);
-
-	// 		const { data: subscription } = resp;
 
 	// 		return {
-	// 			currentPeriodEnd: subscription.current_period_end,
-	// 			currentPeriodStart: subscription.current_period_start,
-	// 			defaultPaymentMethod: subscription.default_payment_method,
-	// 			productName: subscription.plan.product.name ?? "",
-	// 			price: subscription.plan.amount / 100 ?? "",
+	// 			id: product.id,
+	// 			name: product.name,
+	// 			image: product.images?.[0],
+	// 			price: product.default_price.unit_amount / 100,
+	// 			priceId: product.default_price.id,
+	// 			currency: product.default_price.currency,
 	// 		};
-	// 	}),
+	// 	});
+
+	// 	return data;
+	// }),
+
+	getSubscription: protectedProcedure
+		.input(TeamSchema.pick({ id: true }))
+		.query(async ({ ctx, input }) => {
+			// Include the subscription
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.id },
+				include: { stripeProduct: true },
+			});
+
+			if (!team) {
+				throw new Error("Team not found");
+			}
+
+			if (!team.stripeCustomerId) {
+				throw new Error("No Stripe customer ID");
+			}
+
+			const resp = await stripe.products.retrieve(
+				team.stripeProduct?.stripeProductId,
+			);
+
+			console.log(resp);
+
+			return {
+				currentPeriodEnd: subscription.current_period_end,
+				currentPeriodStart: subscription.current_period_start,
+				defaultPaymentMethod: subscription.default_payment_method,
+				productName: subscription.plan.product.name ?? "",
+				price: subscription.plan.amount / 100 ?? "",
+			};
+		}),
 
 	getPaymentMethods: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
