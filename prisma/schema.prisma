@@ -72,11 +72,40 @@ model Team {
   name                     String
   url                      String                   @default(nanoid())
   image                    String
+  internalProductId        String
   stripeCustomerId         String                   @unique
   stripeSubscriptionId     String                   @unique
   stripeSubscriptionStatus StripeSubscriptionStatus
   members                  UserOnTeam[]
   invitation               Invitation[]
+  stripeProduct            StripeProduct            @relation(fields: [internalProductId], references: [id])
+  stripeCard               StripeCard[]
+}
+
+model StripeProduct {
+  id              String  @id @default(cuid())
+  name            String
+  image           String
+  price           Int
+  priceFormatted  String
+  currency        String
+  description     String?
+  stripeProductId String  @unique
+  stripePriceId   String  @unique
+  team            Team[]
+}
+
+model StripeCard {
+  id            String @id @default(cuid())
+  brand         String
+  type          String
+  expMonth      Int
+  expYear       Int
+  last4         String
+  team          Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId        String
+  stripeCardId  String @unique
+  stripeTokenId String @unique
 }
 
 enum StripeSubscriptionStatus {

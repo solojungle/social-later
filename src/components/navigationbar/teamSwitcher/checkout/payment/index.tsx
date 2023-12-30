@@ -22,7 +22,7 @@ interface PaymentModalProps {
 
 interface TotalAmountProps {
 	plan: string;
-	amount: number;
+	amount: string;
 }
 
 function TotalAmount({ amount, plan }: TotalAmountProps) {
@@ -31,12 +31,12 @@ function TotalAmount({ amount, plan }: TotalAmountProps) {
 			<h2 className="mb-2 font-medium">Your subscription</h2>
 			<div className="flex justify-between text-muted-foreground">
 				<p>{plan}</p>
-				<p>${amount} billed monthly</p>
+				<p>{amount} billed monthly</p>
 			</div>
 			<Separator className="my-4" />
 			<div className="flex justify-between font-medium">
 				<p>Due Today</p>
-				<p>${amount}</p>
+				<p>{amount}</p>
 			</div>
 		</div>
 	);
@@ -94,7 +94,8 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 		try {
 			const resp = await createTeam.mutateAsync({
 				name: formData.name,
-				priceId: formData.subscription.priceId,
+				internalProductId: formData.id,
+				stripePriceId: formData.priceId,
 			});
 
 			const { error } = await stripe.confirmPayment({
@@ -125,7 +126,7 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 			className="max-h-[70vh] space-y-4 overflow-y-scroll px-5 pb-2"
 		>
 			<TotalAmount
-				amount={formData.subscription.price}
+				amount={formData.subscription.priceFormatted}
 				plan={formData.subscription.name}
 			/>
 			<Separator className="my-4" />

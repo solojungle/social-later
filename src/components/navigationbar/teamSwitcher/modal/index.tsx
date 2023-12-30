@@ -32,10 +32,13 @@ interface ProductsSelectorProps {
 	products: {
 		id: string;
 		name: string;
-		image: string | undefined;
+		image: string;
 		price: number;
-		priceId: string;
+		priceFormatted: string;
 		currency: string;
+		description: string | null;
+		stripeProductId: string;
+		stripePriceId: string;
 	}[];
 	field: any;
 }
@@ -59,7 +62,7 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 				{products.map((product) => (
 					<div key={product.id}>
 						<RadioGroupItem
-							value={product.priceId}
+							value={product.stripePriceId}
 							id={product.id}
 							className="peer sr-only"
 						/>
@@ -74,7 +77,7 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 							/>
 							<span className="mb-2">{product.name}</span>
 							<span className="text-xs text-muted-foreground">
-								${product.price} per month
+								{product.priceFormatted} per month
 							</span>
 						</Label>
 					</div>
@@ -88,7 +91,7 @@ export default function CreateTeamModal({
 	setShowNewTeamDialog,
 	onNext,
 }: TeamSwitcherModalProps) {
-	const products = api.stripe.getProducts.useQuery();
+	const products = api.products.getProducts.useQuery();
 
 	const defaultValues: TeamCreationSchemaValues = {
 		name: "",
@@ -102,17 +105,18 @@ export default function CreateTeamModal({
 
 	async function onSubmit(data: TeamCreationSchemaValues) {
 		const choosenSubscription = products.data?.find(
-			(product) => product.priceId === data.subscription,
+			(product) => product.stripePriceId === data.subscription,
 		);
 
 		const formData = {
 			name: data.name,
 			subscription: {
 				id: choosenSubscription?.id,
-				priceId: choosenSubscription?.priceId,
+				priceId: choosenSubscription?.stripePriceId,
 				name: choosenSubscription?.name,
 				image: choosenSubscription?.image,
 				price: choosenSubscription?.price,
+				priceFormatted: choosenSubscription?.priceFormatted,
 				currency: choosenSubscription?.currency,
 			},
 		};
@@ -162,10 +166,7 @@ export default function CreateTeamModal({
 					>
 						Cancel
 					</Button>
-					<Button type="submit">
-						{/* {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
-						Continue
-					</Button>
+					<Button type="submit">Continue</Button>
 				</DialogFooter>
 			</form>
 		</Form>

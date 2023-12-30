@@ -14,20 +14,20 @@ import {
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-const data = [
-	{
-		item: "Team Seats",
-		quantity: 34,
-		unitPrice: 20,
-		price: "$680",
-	},
-	{
-		item: "Channels",
-		quantity: 3,
-		unitPrice: 20,
-		price: "$60",
-	},
-];
+// const data = [
+// 	{
+// 		item: "Team Seats",
+// 		quantity: 34,
+// 		unitPrice: 20,
+// 		price: "$680",
+// 	},
+// 	{
+// 		item: "Channels",
+// 		quantity: 3,
+// 		unitPrice: 20,
+// 		price: "$60",
+// 	},
+// ];
 
 export function getCurrentDate(time: number) {
 	const newDate = new Date(time);
@@ -48,7 +48,12 @@ export function TeamPaymentPlanCard() {
 		id: teamId,
 	});
 
-	console.log(resp);
+	if (!resp || !resp?.currentPeriodEnd) {
+		return null;
+	}
+
+	const currentPeriodEnd = getCurrentDate(resp.currentPeriodEnd * 1000);
+	const currentPeriodStart = getCurrentDate(resp.currentPeriodStart * 1000);
 
 	return (
 		<Card>
@@ -56,16 +61,14 @@ export function TeamPaymentPlanCard() {
 				<CardTitle className="mb-2">Plan</CardTitle>
 				<CardDescription>
 					Your team is on the {resp?.productName} subscription. The next payment
-					of ${resp?.price} will occur on{" "}
-					{getCurrentDate(resp?.currentPeriodEnd + 100000000)}.
+					of ${resp?.price} will occur on {currentPeriodEnd}.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex items-center justify-between">
 				<div className="flex w-full flex-col space-y-4">
 					<div className="flex items-center justify-between">
 						<span className="text-sm font-medium">
-							Current billing cycle ({getCurrentDate(resp?.currentPeriodStart)}{" "}
-							- {getCurrentDate(resp?.currentPeriodEnd)}).
+							Current billing cycle ({currentPeriodStart} - {currentPeriodEnd}).
 						</span>
 						<div>
 							<Button variant="outline">Update Plan</Button>

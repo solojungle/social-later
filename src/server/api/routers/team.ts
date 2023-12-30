@@ -9,7 +9,8 @@ export const teamRouter = createTRPCRouter({
 		.input(
 			z.object({
 				name: z.string(),
-				priceId: z.string(),
+				stripePriceId: z.string(),
+				internalProductId: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -19,7 +20,7 @@ export const teamRouter = createTRPCRouter({
 
 			const subscription = await stripe.subscriptions.create({
 				customer: customer.id,
-				items: [{ price: input.priceId }],
+				items: [{ price: input.stripePriceId }],
 				payment_behavior: "default_incomplete",
 				payment_settings: {
 					save_default_payment_method: "on_subscription",
@@ -33,6 +34,7 @@ export const teamRouter = createTRPCRouter({
 					image: `https://avatar.vercel.sh/${
 						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
 					}.png`,
+					internalProductId: input.internalProductId,
 					stripeCustomerId: customer.id,
 					stripeSubscriptionId: subscription.id,
 					stripeSubscriptionStatus: subscription.status,

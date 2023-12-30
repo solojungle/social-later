@@ -1,26 +1,11 @@
-import { CreatePost } from "@/components/create-post";
-import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+"use client";
 
-export default async function PublishPage() {
+import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/react";
+
+export default function PublishPage() {
+	const createPost = api.twitter.createPost.useMutation();
+
 	return (
 		<main className="">
 			<div className="space-y-6 p-10 pb-16 md:block">
@@ -34,59 +19,31 @@ export default async function PublishPage() {
 				<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
 					<aside className="-mx-4 lg:w-1/5">
 						<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-							<Dialog>
+							{/* <Dialog>
 								<DialogTrigger>
 									<Button className="w-full">Create Post</Button>
 								</DialogTrigger>
 								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>Are you sure absolutely sure?</DialogTitle>
-										<DialogDescription>
-											This action cannot be undone. This will permanently delete
-											your account and remove your data from our servers.
-										</DialogDescription>
-									</DialogHeader>
 									<div>
-										<div className="space-y-4 py-2 pb-4">
-											<div className="space-y-2">
-												<Label htmlFor="name">Team name</Label>
-												<Input id="name" placeholder="Acme Inc." />
-											</div>
-											<div className="space-y-2">
-												<Label htmlFor="plan">Subscription plan</Label>
-												<Select>
-													<SelectTrigger>
-														<SelectValue placeholder="Select a plan" />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value="free">
-															<span className="font-medium">Free</span> -{" "}
-															<span className="text-muted-foreground">
-																Trial for two weeks
-															</span>
-														</SelectItem>
-														<SelectItem value="pro">
-															<span className="font-medium">Pro</span> -{" "}
-															<span className="text-muted-foreground">
-																$9/month per user
-															</span>
-														</SelectItem>
-													</SelectContent>
-												</Select>
-											</div>
-										</div>
+										<Label htmlFor="post">Post</Label>
+										<Input id="post" />
 									</div>
 									<DialogFooter>
 										<Button variant="outline">Cancel</Button>
-										<Button type="submit">Continue</Button>
+										<Button
+											type="submit"
+											onClick={() => {
+												createPost.mutateAsync();
+											}}
+										>
+											Post
+										</Button>
 									</DialogFooter>
 								</DialogContent>
-							</Dialog>
+							</Dialog> */}
 						</div>
 					</aside>
-					<div className="flex-1 lg:max-w-2xl">
-						<CreatePost />
-					</div>
+					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>
 				</div>
 			</div>
 		</main>
