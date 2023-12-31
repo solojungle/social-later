@@ -1,10 +1,9 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import { api } from "@/trpc/react";
 
 export default function PublishPage() {
-	const createPost = api.twitter.createPost.useMutation();
+	// const createPost = api.twitter.createPost.useMutation();
 
 	return (
 		<main className="">

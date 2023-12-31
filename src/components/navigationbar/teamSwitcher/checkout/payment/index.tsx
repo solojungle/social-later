@@ -12,22 +12,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { TeamCreationFormData } from "@/schemas/team-create-form-data";
 import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
 
 interface PaymentModalProps {
 	onBack: any;
-	formData: {
-		name: string;
-		subscription: {
-			id: string;
-			name: string;
-			currency: string;
-			price: number;
-			priceFormatted: string;
-			priceId: string;
-		};
-	};
+	formData: TeamCreationFormData | undefined;
 }
 
 interface TotalAmountProps {
@@ -83,7 +74,7 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 		// which would refresh the page.
 		event.preventDefault();
 
-		if (!stripe || !elements) {
+		if (!stripe || !elements || !formData) {
 			// Stripe.js hasn't yet loaded.
 			// Make sure to disable form submission until Stripe.js has loaded.
 			return;
@@ -129,6 +120,11 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 			setLoading(false);
 		}
 	};
+
+	// If we don't have a subscription, don't render anything.
+	if (!formData) {
+		return null;
+	}
 
 	return (
 		<form
