@@ -60,8 +60,8 @@ export function TeamPaymentPlanCard() {
 			<CardHeader>
 				<CardTitle className="mb-2">Plan</CardTitle>
 				<CardDescription>
-					Your team is on the {resp?.productName} subscription. The next payment
-					of ${resp?.price} will occur on {currentPeriodEnd}.
+					Your team is on the {resp.productName} subscription. The next payment
+					of {resp.priceFormatted} will occur on {currentPeriodEnd}.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex items-center justify-between">

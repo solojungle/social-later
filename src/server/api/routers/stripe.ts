@@ -64,7 +64,9 @@ export const stripeRouter = createTRPCRouter({
 			// Include the subscription
 			const team = await ctx.db.team.findUnique({
 				where: { id: input.id },
-				include: { stripeProduct: true },
+				include: {
+					stripeProduct: true,
+				},
 			});
 
 			if (!team) {
@@ -75,18 +77,17 @@ export const stripeRouter = createTRPCRouter({
 				throw new Error("No Stripe customer ID");
 			}
 
-			const resp = await stripe.products.retrieve(
-				team.stripeProduct?.stripeProductId,
+			const subscription = await stripe.subscriptions.retrieve(
+				team.stripeSubscriptionId,
 			);
-
-			console.log(resp);
 
 			return {
 				currentPeriodEnd: subscription.current_period_end,
 				currentPeriodStart: subscription.current_period_start,
 				defaultPaymentMethod: subscription.default_payment_method,
-				productName: subscription.plan.product.name ?? "",
-				price: subscription.plan.amount / 100 ?? "",
+				productName: team.stripeProduct.name ?? "",
+				price: team.stripeProduct.price,
+				priceFormatted: team.stripeProduct.priceFormatted,
 			};
 		}),
 
