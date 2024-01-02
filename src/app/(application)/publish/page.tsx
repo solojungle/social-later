@@ -1,9 +1,12 @@
 "use client";
 
+import { LinkTwitterButton } from "@/components/linkTwitter";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/react";
 
 export default function PublishPage() {
-	// const createPost = api.twitter.createPost.useMutation();
+	const createPost = api.twitter.createPost.useMutation();
 
 	return (
 		<main className="">
@@ -18,28 +21,10 @@ export default function PublishPage() {
 				<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
 					<aside className="-mx-4 lg:w-1/5">
 						<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-							{/* <Dialog>
-								<DialogTrigger>
-									<Button className="w-full">Create Post</Button>
-								</DialogTrigger>
-								<DialogContent>
-									<div>
-										<Label htmlFor="post">Post</Label>
-										<Input id="post" />
-									</div>
-									<DialogFooter>
-										<Button variant="outline">Cancel</Button>
-										<Button
-											type="submit"
-											onClick={() => {
-												createPost.mutateAsync();
-											}}
-										>
-											Post
-										</Button>
-									</DialogFooter>
-								</DialogContent>
-							</Dialog> */}
+							<Button type="submit">Send Tweet</Button>
+						</div>
+						<div>
+							<LinkTwitterButton />
 						</div>
 					</aside>
 					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>
