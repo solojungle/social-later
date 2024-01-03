@@ -1,3 +1,4 @@
+import { LinkTwitterButton } from "@/components/linkTwitter";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -19,7 +20,9 @@ export default function PublishPage() {
 						<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 							<Button type="submit">Send Tweet</Button>
 						</div>
-						<div>{/* <LinkTwitterButton /> */}</div>
+						<div>
+							<LinkTwitterButton />
+						</div>
 					</aside>
 					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>
 				</div>

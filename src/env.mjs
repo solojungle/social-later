@@ -38,6 +38,7 @@ export const env = createEnv({
 		TWITTER_BEARER_TOKEN: z.string(),
 		TWITTER_CLIENT_ID: z.string(),
 		TWITTER_CLIENT_SECRET: z.string(),
+		TWITTER_CALLBACK_URL: z.string(),
 	},
 
 	/**
@@ -70,6 +71,7 @@ export const env = createEnv({
 		TWITTER_BEARER_TOKEN: process.env.TWITTER_BEARER_TOKEN,
 		TWITTER_CLIENT_ID: process.env.TWITTER_CLIENT_ID,
 		TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET,
+		TWITTER_CALLBACK_URL: process.env.TWITTER_CALLBACK_URL,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
