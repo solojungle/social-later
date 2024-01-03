@@ -1,5 +1,3 @@
-"use client";
-
 import { LinkTwitterButton } from "@/components/linkTwitter";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
