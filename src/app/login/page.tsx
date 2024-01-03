@@ -14,7 +14,15 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthenticationPage() {
-	const session = await getServerAuthSession();
+	let session;
+	try {
+		session = await getServerAuthSession();
+		console.log("session", session);
+	} catch (error) {
+		console.error(error);
+	}
+
+	// const session = await getServerAuthSession();
 	if (session) {
 		redirect("/publish");
 	}
