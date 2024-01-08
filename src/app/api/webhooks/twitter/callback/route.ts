@@ -23,7 +23,9 @@ export async function GET(req: NextRequest) {
 		const teamId = cookieStore.get("teamId")?.value;
 
 		if (!code || !state || !sessionState || !codeVerifier || !teamId) {
-			throw new Error("You denied the app or your session expired");
+			return new Response("You denied the app or your session expired", {
+				status: 403,
+			});
 		}
 
 		// Delete the cookies
@@ -32,7 +34,9 @@ export async function GET(req: NextRequest) {
 		cookieStore.delete("teamId");
 
 		if (state !== sessionState) {
-			return new Error("Stored tokens didnt match");
+			return new Response("Stored tokens didnt match", {
+				status: 403,
+			});
 		}
 
 		const { accessToken, refreshToken, expiresIn } =
@@ -43,7 +47,9 @@ export async function GET(req: NextRequest) {
 			});
 
 		if (!refreshToken) {
-			throw new Error("No refresh token");
+			return new Response("No refresh token", {
+				status: 500,
+			});
 		}
 
 		await db.twitterAccount.create({
@@ -54,9 +60,14 @@ export async function GET(req: NextRequest) {
 				teamId,
 			},
 		});
+
+		return new Response("Being redirected back to the app...", {
+			status: 200,
+		});
 	} catch (error) {
-		console.error(error);
-		throw error;
+		return new Response("Something went wrong", {
+			status: 500,
+		});
 	} finally {
 		redirect("/publish");
 	}
