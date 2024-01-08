@@ -1,26 +1,16 @@
+import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { twitterUserOAuth } from "@/server/services/twitter/client";
+import { client } from "@/server/services/twitter/client";
 
 export const twitterRouter = createTRPCRouter({
 	getPosts: protectedProcedure.query(async () => {}),
-	// createPost: protectedProcedure.mutation(async () => {
-	// 	try {
-	// 		const resp = await twitter.tweets.createTweet({
-	// 			text: "Hello World",
-	// 		});
-	// 		return resp;
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-
-	// 	return null;
-	// }),
-
 	generateOAuth2URL: protectedProcedure.query(() => {
-		return twitterUserOAuth.generateAuthURL({
-			state: "my-state",
-			code_challenge_method: "plain",
-			code_challenge: "test",
-		});
+		const { url, codeVerifier, state } = client.generateOAuth2AuthLink(
+			`${env.TWITTER_CALLBACK_URL}/api/webhooks/twitter/callback`,
+			{ scope: ["tweet.read", "tweet.write", "users.read", "offline.access"] },
+		);
+
+		// Redirect your user to {url}, store {state} and {codeVerifier} into a DB/Redis/memory after user redirection
+		return { url, codeVerifier, state };
 	}),
 });

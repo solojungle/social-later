@@ -80,6 +80,16 @@ model Team {
   invitation               Invitation[]
   stripeProduct            StripeProduct            @relation(fields: [internalProductId], references: [id])
   stripeCard               StripeCard[]
+  twitterAccount           TwitterAccount[]
+}
+
+model TwitterAccount {
+  id           String @id @default(cuid())
+  accessToken  String
+  refreshToken String
+  expiresIn    Int
+  teamId       String
+  team         Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 model StripeProduct {

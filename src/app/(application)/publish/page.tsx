@@ -1,4 +1,4 @@
-import { LinkTwitterButton } from "@/components/linkTwitter";
+import { LinkTwitterWrapper } from "@/components/linkTwitter/wrapper";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -21,7 +21,7 @@ export default function PublishPage() {
 							<Button type="submit">Send Tweet</Button>
 						</div>
 						<div>
-							<LinkTwitterButton />
+							<LinkTwitterWrapper />
 						</div>
 					</aside>
 					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>

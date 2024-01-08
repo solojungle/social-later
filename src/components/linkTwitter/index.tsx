@@ -1,17 +1,26 @@
-"use client";
-
-import { api } from "@/trpc/react";
+import Cookies from "js-cookie";
 
 import { Button } from "../ui/button";
 
-export function LinkTwitterButton() {
-	const generateAuthLink = api.twitter.generateOAuth2URL.useQuery();
-
-	const { data } = generateAuthLink;
+export function LinkTwitterButton({
+	teamId,
+	state,
+	codeVerifier,
+	url,
+}: {
+	teamId: string;
+	state: string;
+	codeVerifier: string;
+	url: string;
+}) {
+	// Set the cookies
+	Cookies.set("codeVerifier", codeVerifier);
+	Cookies.set("state", state);
+	Cookies.set("teamId", teamId);
 
 	return (
 		<Button variant="link">
-			<a href={data}>Link twitter</a>
+			<a href={url}>Link twitter</a>
 		</Button>
 	);
 }
