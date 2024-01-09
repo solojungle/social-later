@@ -39,12 +39,16 @@ export async function GET(req: NextRequest) {
 			});
 		}
 
-		const { accessToken, refreshToken, expiresIn } =
-			await client.loginWithOAuth2({
-				code,
-				codeVerifier,
-				redirectUri: `${env.TWITTER_CALLBACK_URL}/api/webhooks/twitter/callback`,
-			});
+		const {
+			client: loggedClient,
+			accessToken,
+			refreshToken,
+			expiresIn,
+		} = await client.loginWithOAuth2({
+			code,
+			codeVerifier,
+			redirectUri: `${env.TWITTER_CALLBACK_URL}/api/webhooks/twitter/callback`,
+		});
 
 		if (!refreshToken) {
 			return new Response("No refresh token", {
@@ -52,12 +56,16 @@ export async function GET(req: NextRequest) {
 			});
 		}
 
+		// Get the user object
+		const { data: userObject } = await loggedClient.v2.me();
+
 		await db.twitterAccount.create({
 			data: {
 				accessToken,
 				refreshToken,
 				expiresIn,
 				teamId,
+				username: userObject.username,
 			},
 		});
 

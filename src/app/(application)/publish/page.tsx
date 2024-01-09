@@ -1,10 +1,9 @@
 import { LinkTwitterWrapper } from "@/components/linkTwitter/wrapper";
+import { TwitterAccountsList } from "@/components/twitterAccounts";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export default function PublishPage() {
-	// const createPost = api.twitter.createPost.useMutation();
-
 	return (
 		<main className="">
 			<div className="space-y-6 p-10 pb-16 md:block">
@@ -22,6 +21,9 @@ export default function PublishPage() {
 						</div>
 						<div>
 							<LinkTwitterWrapper />
+						</div>
+						<div>
+							<TwitterAccountsList />
 						</div>
 					</aside>
 					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>
