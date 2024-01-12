@@ -1,5 +1,12 @@
 "use client";
 
+import {
+	ChevronDown,
+	LogOut,
+	MessageSquare,
+	Settings2,
+	Users2,
+} from "lucide-react";
 import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,15 +28,16 @@ export function UserMenu() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" className="relative h-8 w-8 rounded-full">
+				<Button variant="ghost" className="relative gap-2 rounded-lg">
 					<Avatar className="h-8 w-8">
 						<AvatarImage src={image} alt={name} />
 						<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
 					</Avatar>
+					<ChevronDown className="h-4 w-4 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
-				className="w-56"
+				className="w-60 p-3"
 				align="end"
 				sideOffset={10}
 				forceMount
@@ -44,10 +52,24 @@ export function UserMenu() {
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem>Settings</DropdownMenuItem>
+					<DropdownMenuItem>
+						<Settings2 className="mr-2 h-4 w-4" />
+						<span>Settings</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem>
+						<Users2 className="mr-2 h-4 w-4" />
+						<span>Invite a friend</span>
+					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
+				<DropdownMenuItem>
+					<MessageSquare className="mr-2 h-4 w-4" />
+					<span>Share Feedback</span>
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => signOut()}>
+					<LogOut className="mr-2 h-4 w-4" />
+					<span>Log out</span>
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
