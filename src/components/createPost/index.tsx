@@ -1,78 +1,116 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 
-function SelectSocialAccount() {
+interface PostTweetProps {
+	accounts: any;
+}
+
+const UserSchema = z.object({
+	id: z.string(),
+	media: z.array(z.string()),
+	text: z.string().min(1),
+});
+
+export type UserSchemaValues = z.infer<typeof UserSchema>;
+
+function TweetForm() {
+	const form = useForm<UserSchemaValues>({
+		resolver: zodResolver(UserSchema.pick({ media: true })),
+	});
+
+	function onSubmit(data: any) {
+		toast("You submitted the following values:", {
+			description: (
+				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
+				</pre>
+			),
+		});
+	}
+
 	return (
-		<Select>
-			<SelectTrigger className="w-max">
-				<SelectValue placeholder="Select an account" />
-			</SelectTrigger>
-			<SelectContent>
-				<SelectGroup>
-					<SelectLabel>Twitter</SelectLabel>
-					<SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-				</SelectGroup>
-			</SelectContent>
-		</Select>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<FormField
+					control={form.control}
+					name="text"
+					render={() => (
+						<FormItem>
+							<FormLabel>Text</FormLabel>
+							<FormControl>
+								<Input id="picture" type="text" />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="media"
+					render={() => (
+						<FormItem>
+							<FormLabel>Media Upload</FormLabel>
+							<FormControl>
+								<Input id="picture" type="file" />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+			</form>
+		</Form>
+	);
+}
+
+function PostTweet({ accounts }: PostTweetProps) {
+	const tweet = api.socials.postTweet.useMutation();
+
+	return (
+		<div className="w-[350px]">
+			<div>
+				<h2 className="text-xl font-bold tracking-tight">Create Post</h2>
+				<div>Post on your social media accounts.</div>
+			</div>
+			<div>
+				<TweetForm />
+			</div>
+		</div>
 	);
 }
 
 export function CreatePost() {
-	const tweet = api.socials.postTweet.useMutation();
+	const { id: teamId } = useSelectedTeamStore();
+
+	const response = api.socials.getTwitterAccounts.useQuery({
+		id: teamId,
+	});
+
+	const { data: accounts } = response;
+
+	if (!accounts) {
+		return <div>Loading...</div>;
+	}
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button variant="outline">Create Post</Button>
-			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
-				<DialogHeader>
-					<DialogTitle>Create Post</DialogTitle>
-					<DialogDescription>Create a new tweet on twitter</DialogDescription>
-				</DialogHeader>
-				<div className="grid gap-4 py-4">
-					<div className="grid grid-cols-4 items-center gap-4">
-						<SelectSocialAccount />
-					</div>
-				</div>
-				<div className="grid grid-cols-4 items-center gap-4">
-					<Input className="col-span-3" />
-				</div>
-				<DialogFooter>
-					<Button
-						type="submit"
-						onClick={() => {
-							tweet.mutate({
-								id: "clr6vvzz80008sofdtxfuz8me",
-							});
-						}}
-					>
-						Create Post
-					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
+		<div>
+			<PostTweet accounts={accounts} />
+		</div>
 	);
 }

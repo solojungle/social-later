@@ -1,17 +1,7 @@
 "use client";
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import {
-	AlertCircle,
-	Archive,
-	ArchiveX,
-	Inbox,
-	MessagesSquare,
-	Send,
-	ShoppingCart,
-	Trash2,
-	Users2,
-} from "lucide-react";
+import { Archive, Inbox, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -22,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { Separator } from "../ui/separator";
+import { AccountsNav } from "./accountsNav";
 import { Nav } from "./nav";
 
 interface ResizableLayoutProps {
@@ -59,21 +50,21 @@ export function ResizableLayout({
 						isCollapsed={isCollapsed}
 						links={[
 							{
-								title: "Inbox",
-								label: "128",
-								icon: Inbox,
+								title: "Create Post",
+								label: "",
+								icon: Send,
 								variant: "default",
 							},
 							{
-								title: "Sent",
-								label: "",
-								icon: Send,
+								title: "Queue",
+								label: "128",
+								icon: Inbox,
 								variant: "ghost",
 							},
 							{
-								title: "Junk",
-								label: "23",
-								icon: ArchiveX,
+								title: "Drafts",
+								label: "",
+								icon: Archive,
 								variant: "ghost",
 							},
 							{
@@ -82,50 +73,10 @@ export function ResizableLayout({
 								icon: Trash2,
 								variant: "ghost",
 							},
-							{
-								title: "Archive",
-								label: "",
-								icon: Archive,
-								variant: "ghost",
-							},
 						]}
 					/>
 					<Separator />
-					<Nav
-						isCollapsed={isCollapsed}
-						links={[
-							{
-								title: "Social",
-								label: "972",
-								icon: Users2,
-								variant: "ghost",
-							},
-							{
-								title: "Updates",
-								label: "342",
-								icon: AlertCircle,
-								variant: "ghost",
-							},
-							{
-								title: "Forums",
-								label: "128",
-								icon: MessagesSquare,
-								variant: "ghost",
-							},
-							{
-								title: "Shopping",
-								label: "8",
-								icon: ShoppingCart,
-								variant: "ghost",
-							},
-							{
-								title: "Promotions",
-								label: "21",
-								icon: Archive,
-								variant: "ghost",
-							},
-						]}
-					/>
+					<AccountsNav isCollapsed={isCollapsed} />
 				</ResizablePanel>
 				<ResizableHandle withHandle />
 				<ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
