@@ -3,7 +3,6 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { client } from "@/server/services/twitter/client";
 
 export const twitterRouter = createTRPCRouter({
-	getPosts: protectedProcedure.query(async () => {}),
 	generateOAuth2URL: protectedProcedure.query(() => {
 		const { url, codeVerifier, state } = client.generateOAuth2AuthLink(
 			`${env.TWITTER_CALLBACK_URL}/api/webhooks/twitter/callback`,

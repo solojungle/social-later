@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 
 import { cookies } from "next/headers";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata = {

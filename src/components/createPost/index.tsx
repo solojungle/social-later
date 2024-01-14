@@ -23,26 +23,28 @@ interface PostTweetProps {
 	accounts: any;
 }
 
-const UserSchema = z.object({
-	id: z.string(),
-	media: z.array(z.string()).optional(),
+const PostSchema = z.object({
 	text: z.string().min(1),
+	media: z.array(z.string()).optional(),
 });
 
-export type UserSchemaValues = z.infer<typeof UserSchema>;
+export type UserSchemaValues = z.infer<typeof PostSchema>;
 
 function TweetForm() {
+	const tweet = api.socials.postTweet.useMutation({
+		onSuccess() {
+			toast.success("Successfully created your post!", {});
+		},
+	});
+
 	const form = useForm<UserSchemaValues>({
-		resolver: zodResolver(UserSchema.pick({ media: true })),
+		resolver: zodResolver(PostSchema),
 	});
 
 	function onSubmit(data: any) {
-		toast("You submitted the following values:", {
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
+		tweet.mutate({
+			...data,
+			id: "clr6vvzz80008sofdtxfuz8me",
 		});
 	}
 
@@ -52,11 +54,11 @@ function TweetForm() {
 				<FormField
 					control={form.control}
 					name="text"
-					render={() => (
+					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Post Text</FormLabel>
+							<FormLabel htmlFor="text">Post Text</FormLabel>
 							<FormControl>
-								<Input id="picture" type="text" />
+								<Input id="text" type="text" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -65,11 +67,11 @@ function TweetForm() {
 				<FormField
 					control={form.control}
 					name="media"
-					render={() => (
+					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Media Upload</FormLabel>
+							<FormLabel htmlFor="media">Media Upload</FormLabel>
 							<FormControl>
-								<Input id="picture" type="file" />
+								<Input id="media" type="file" {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -82,8 +84,6 @@ function TweetForm() {
 }
 
 function PostTweet({ accounts }: PostTweetProps) {
-	const tweet = api.socials.postTweet.useMutation();
-
 	return (
 		<div className="">
 			<div className="mb-8">

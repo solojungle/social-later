@@ -38,7 +38,13 @@ export const socialAccountRouter = createTRPCRouter({
 		}),
 
 	postTweet: protectedProcedure
-		.input(z.object({ id: z.string() }))
+		.input(
+			z.object({
+				id: z.string(),
+				text: z.string(),
+				media: z.string().optional(),
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
 			const { id: twitterAccountId } = input;
 
@@ -99,7 +105,7 @@ export const socialAccountRouter = createTRPCRouter({
 			}
 
 			// Post the tweet
-			const tweet = await loggedClient.v2.tweet("Hello world!");
+			const tweet = await loggedClient.v2.tweet(input.text);
 
 			return tweet;
 		}),
