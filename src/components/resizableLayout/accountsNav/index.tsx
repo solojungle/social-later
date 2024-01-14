@@ -9,9 +9,12 @@ import { Separator } from "@/components/ui/separator";
 
 interface NavProps {
 	isCollapsed: boolean;
+	accounts: any[] | undefined;
 }
 
-export function AccountsNav({ isCollapsed }: NavProps) {
+export function AccountsNav({ isCollapsed, accounts }: NavProps) {
+	if (!accounts) return null;
+
 	return (
 		<div
 			data-collapsed={isCollapsed}
@@ -34,12 +37,19 @@ export function AccountsNav({ isCollapsed }: NavProps) {
 							<Input placeholder="Search accounts" className="pl-8" />
 						</div>
 						<Separator />
+						<h2 className="text-xs font-medium text-muted-foreground">
+							Twitter
+						</h2>
 						<div className="flex items-center">
-							<Avatar className="mr-3 h-8 w-8">
-								<AvatarImage src="https://pbs.twimg.com/profile_images/1350895249678348292/RS1Aa0iK_400x400.jpg" />
-								<AvatarFallback>AA</AvatarFallback>
-							</Avatar>
-							<span className="text-sm">aliawarii</span>
+							{accounts.map((account) => (
+								<>
+									<Avatar className="mr-3 h-8 w-8">
+										<AvatarImage src="https://pbs.twimg.com/profile_images/1350895249678348292/RS1Aa0iK_400x400.jpg" />
+										<AvatarFallback>AA</AvatarFallback>
+									</Avatar>
+									<span className="text-sm">{account.username}</span>
+								</>
+							))}
 						</div>
 					</div>
 				)}

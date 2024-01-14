@@ -30,7 +30,11 @@ export const socialAccountRouter = createTRPCRouter({
 				},
 			});
 
-			return twitterAccounts;
+			return twitterAccounts.map((twitterAccount) => ({
+				id: twitterAccount.id,
+				username: twitterAccount.username,
+				teamId: twitterAccount.teamId,
+			}));
 		}),
 
 	postTweet: protectedProcedure

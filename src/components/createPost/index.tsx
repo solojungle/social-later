@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import { Button } from "../ui/button";
 import {
 	Form,
 	FormControl,
@@ -24,7 +25,7 @@ interface PostTweetProps {
 
 const UserSchema = z.object({
 	id: z.string(),
-	media: z.array(z.string()),
+	media: z.array(z.string()).optional(),
 	text: z.string().min(1),
 });
 
@@ -53,7 +54,7 @@ function TweetForm() {
 					name="text"
 					render={() => (
 						<FormItem>
-							<FormLabel>Text</FormLabel>
+							<FormLabel>Post Text</FormLabel>
 							<FormControl>
 								<Input id="picture" type="text" />
 							</FormControl>
@@ -74,6 +75,7 @@ function TweetForm() {
 						</FormItem>
 					)}
 				/>
+				<Button type="submit">Submit</Button>
 			</form>
 		</Form>
 	);
@@ -83,14 +85,12 @@ function PostTweet({ accounts }: PostTweetProps) {
 	const tweet = api.socials.postTweet.useMutation();
 
 	return (
-		<div className="w-[350px]">
-			<div>
+		<div className="">
+			<div className="mb-8">
 				<h2 className="text-xl font-bold tracking-tight">Create Post</h2>
-				<div>Post on your social media accounts.</div>
+				<p>Post on your social media accounts.</p>
 			</div>
-			<div>
-				<TweetForm />
-			</div>
+			<TweetForm />
 		</div>
 	);
 }
@@ -108,9 +108,5 @@ export function CreatePost() {
 		return <div>Loading...</div>;
 	}
 
-	return (
-		<div>
-			<PostTweet accounts={accounts} />
-		</div>
-	);
+	return <PostTweet accounts={accounts} />;
 }
