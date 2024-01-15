@@ -1,4 +1,4 @@
-import { CreatePost } from "@/components/createPost";
+import { PlannedPosts } from "@/components/plannedPosts";
 import { Separator } from "@/components/ui/separator";
 
 export default function PublishPage() {
@@ -14,7 +14,10 @@ export default function PublishPage() {
 				<Separator className="my-6" />
 				<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
 					<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-						<CreatePost />
+						<PlannedPosts />
+					</div>
+					<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+						{/* <CreatePost /> */}
 					</div>
 					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>
 				</div>
