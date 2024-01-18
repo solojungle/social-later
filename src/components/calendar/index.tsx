@@ -127,6 +127,7 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 	const startingDay = new Date(selectedYear, selectedMonth, 1).getDay();
 	const previousMonthDays = new Date(selectedYear, selectedMonth, 0).getDate();
 	const nextMonthDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+	const today = new Date().getDate();
 
 	// Add padding to the start and end of the month if the month doesn't start on a Monday
 	// The padding should have a property of "disabled" so that it can be styled accordingly
@@ -145,6 +146,7 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 		days.push({
 			day: i,
 			disabled: false,
+			isToday: i === today,
 		});
 	}
 
@@ -193,7 +195,13 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 										className={`p-2 ${d.disabled ? "bg-gray-50" : "bg-white"}`}
 										key={d.day}
 									>
-										<time className="pl-2 text-xs font-light text-muted-foreground">
+										<time
+											className={`text-xs text-muted-foreground ${
+												d.isToday
+													? "relative flex h-5 w-5 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground"
+													: "font-light"
+											}`}
+										>
 											{d.day}
 										</time>
 									</div>
