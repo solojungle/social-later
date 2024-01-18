@@ -1,3 +1,4 @@
+import { PostsCalendar } from "@/components/calendar";
 import { PlannedPosts } from "@/components/plannedPosts";
 import { Separator } from "@/components/ui/separator";
 
@@ -16,8 +17,8 @@ export default function PublishPage() {
 					<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
 						<PlannedPosts />
 					</div>
-					<div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-						{/* <CreatePost /> */}
+					<div className="flex w-full space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+						<PostsCalendar posts={[]} />
 					</div>
 					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>
 				</div>
