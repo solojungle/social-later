@@ -2,13 +2,23 @@
 
 import { useState } from "react";
 
+function randomDateThisMonth() {
+	const random = new Date(
+		new Date().getFullYear(),
+		new Date().getMonth(),
+		Math.floor(Math.random() * 28) + 1,
+	);
+
+	return random;
+}
+
 const fakePosts = [
 	{
 		id: "1",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023"],
 	},
 	{
@@ -16,7 +26,7 @@ const fakePosts = [
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a super long test post that should wrap around and stuff and also have a lot of tags, and also be super duper long",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023"],
 	},
 	{
@@ -24,7 +34,7 @@ const fakePosts = [
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023"],
 	},
 	{
@@ -32,7 +42,7 @@ const fakePosts = [
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023"],
 	},
 	{
@@ -40,7 +50,7 @@ const fakePosts = [
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023"],
 	},
 	{
@@ -48,63 +58,63 @@ const fakePosts = [
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 	{
-		id: "6",
+		id: "7",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 	{
-		id: "6",
+		id: "8",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 	{
-		id: "6",
+		id: "9",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 	{
-		id: "6",
+		id: "10",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 	{
-		id: "6",
+		id: "11",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 	{
-		id: "6",
+		id: "12",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 	{
-		id: "6",
+		id: "13",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
 ];
@@ -118,6 +128,29 @@ interface PostsProps {
 		scheduledOn: Date;
 		tags: string[];
 	}[];
+}
+
+// This is the component that will be rendered on a day of the calendar
+// It will show the posts that are scheduled for that day
+function Posts({ posts = [] }: PostsProps) {
+	if (posts.length === 0) {
+		return null;
+	}
+
+	const renderedPosts = posts.map((p) => {
+		return (
+			<div
+				key={p.id}
+				className="flex items-center justify-between rounded-md bg-gray-200 p-2 text-xs"
+			>
+				<p>Twitter</p>
+				<time>{p.scheduledOn.toDateString()}</time>
+				<span className="truncate text-xs text-muted-foreground">asd</span>
+			</div>
+		);
+	});
+
+	return <div className="mx-px flex flex-col gap-px">{renderedPosts}</div>;
 }
 
 export function PostsCalendar({ posts = [] }: PostsProps) {
@@ -147,6 +180,7 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 			day: i,
 			disabled: false,
 			isToday: i === today,
+			posts: [],
 		});
 	}
 
@@ -157,13 +191,27 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 		days.push({
 			day: i,
 			disabled: true,
+			posts: [],
 		});
 	}
 
+	// Add the posts to the days
+	days.forEach((d) => {
+		const filteredPosts = fakePosts.filter((p) => {
+			return (
+				p.scheduledOn.getDate() === d.day &&
+				p.scheduledOn.getMonth() === selectedMonth &&
+				p.scheduledOn.getFullYear() === selectedYear
+			);
+		});
+
+		d.posts = filteredPosts;
+	});
+
 	return (
-		<div>
-			<div className="flex flex-col">
-				<div className="flex flex-auto flex-col">
+		<div className="">
+			<div className="flex flex-col ">
+				<div className="flex flex-auto flex-col ">
 					<div className="grid grid-cols-7 gap-px bg-gray-200 p-px pb-0 text-center text-xs font-semibold leading-6">
 						<div className="bg-white py-2">
 							M<span>on</span>
@@ -192,18 +240,21 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 							{days.map((d) => {
 								return (
 									<div
-										className={`p-2 ${d.disabled ? "bg-gray-50" : "bg-white"}`}
+										className={`flex flex-col ${
+											d.disabled ? "bg-gray-50" : "bg-white"
+										}`}
 										key={d.day}
 									>
 										<time
-											className={`text-xs text-muted-foreground ${
+											className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${
 												d.isToday
-													? "relative flex h-5 w-5 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground"
+													? "bg-primary font-semibold text-primary-foreground"
 													: "font-light"
 											}`}
 										>
 											{d.day}
 										</time>
+										{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
 									</div>
 								);
 							})}
@@ -214,20 +265,3 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 		</div>
 	);
 }
-
-// return (
-// 	<div className="grid grid-cols-7">
-// 		{selectedDays.map((d) => {
-// 			return (
-// 				<div
-// 					className="grid h-auto w-full grow border-collapse grid-cols-7 grid-rows-5 border border-red-500"
-// 					key={d.day}
-// 				>
-// 					<div className="relative flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-// 						<span className="text-xs font-light">{d.day}</span>
-// 					</div>
-// 				</div>
-// 			);
-// 		})}
-// 	</div>
-// );
