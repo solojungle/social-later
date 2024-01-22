@@ -1,5 +1,6 @@
 "use client";
 
+import { TwitterIcon } from "lucide-react";
 import { useState } from "react";
 
 function randomDateThisMonth() {
@@ -80,7 +81,7 @@ const fakePosts = [
 	{
 		id: "9",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
+		text: "This is a test post This is a test post This is a test post",
 		status: "approved",
 		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
@@ -141,11 +142,19 @@ function Posts({ posts = [] }: PostsProps) {
 		return (
 			<div
 				key={p.id}
-				className="flex items-center justify-between rounded-md bg-gray-200 p-2 text-xs"
+				className="flex items-center rounded-sm bg-gray-200 p-2 text-xs"
 			>
-				<p>Twitter</p>
-				<time>{p.scheduledOn.toDateString()}</time>
-				<span className="truncate text-xs text-muted-foreground">asd</span>
+				<TwitterIcon className="h-4 w-4 shrink-0 text-blue-600" />
+				<time className="ml-2 shrink-0">
+					{p.scheduledOn.toLocaleTimeString([], {
+						hour: "numeric",
+						minute: "numeric",
+					})}
+				</time>
+				<span className="ml-1 truncate text-xs text-muted-foreground">
+					{p.text}
+				</span>
+				<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
 			</div>
 		);
 	});
