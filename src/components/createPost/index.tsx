@@ -1,7 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import {
+	AtSignIcon,
+	HashIcon,
+	ImageIcon,
+	Loader2,
+	PaperclipIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -26,6 +32,7 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 interface PostTweetProps {
 	accounts: any;
@@ -73,7 +80,31 @@ function TweetForm() {
 								<FormItem>
 									<FormLabel htmlFor="text">Post Text</FormLabel>
 									<FormControl>
-										<Input id="text" type="text" {...field} />
+										<div className="shadow-sm">
+											<div className="rounded-t-md border border-b-0 border-border p-1">
+												<div className="flex justify-end">
+													<Button type="button" size="icon" variant="ghost">
+														<PaperclipIcon className="h-5 w-5 text-muted-foreground" />
+													</Button>
+													<Button type="button" size="icon" variant="ghost">
+														<ImageIcon className="h-5 w-5 text-muted-foreground" />
+													</Button>
+													<Button type="button" size="icon" variant="ghost">
+														<AtSignIcon className="h-5 w-5 text-muted-foreground" />
+													</Button>
+													<Button type="button" size="icon" variant="ghost">
+														<HashIcon className="h-5 w-5 text-muted-foreground" />
+													</Button>
+													{/* <EmojiPicker /> */}
+												</div>
+											</div>
+											<Textarea
+												className="!mt-0 rounded-t-none shadow-none"
+												id="text"
+												{...field}
+												placeholder="Write something, mention or add emoji..."
+											/>
+										</div>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
