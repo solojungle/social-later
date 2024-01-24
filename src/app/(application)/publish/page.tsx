@@ -180,7 +180,7 @@ export default function PublishPage() {
 
 	return (
 		<>
-			<ResizablePanel minSize={28}>
+			<ResizablePanel minSize={30}>
 				<PlannedPosts posts={fakePosts} />
 			</ResizablePanel>
 			<ResizableHandle withHandle />

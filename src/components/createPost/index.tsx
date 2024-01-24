@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -49,50 +50,49 @@ function TweetForm() {
 	}
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-				<FormField
-					control={form.control}
-					name="text"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel htmlFor="text">Post Text</FormLabel>
-							<FormControl>
-								<Input id="text" type="text" {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="media"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel htmlFor="media">Media Upload</FormLabel>
-							<FormControl>
-								<Input id="media" type="file" {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<Button type="submit">Submit</Button>
-			</form>
-		</Form>
+		<Dialog>
+			<DialogTrigger>
+				<Button>Create Post</Button>
+			</DialogTrigger>
+			<DialogContent>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+						<FormField
+							control={form.control}
+							name="text"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel htmlFor="text">Post Text</FormLabel>
+									<FormControl>
+										<Input id="text" type="text" {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="media"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel htmlFor="media">Media Upload</FormLabel>
+									<FormControl>
+										<Input id="media" type="file" {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<Button type="submit">Submit</Button>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
 function PostTweet({ accounts }: PostTweetProps) {
-	return (
-		<div className="">
-			<div className="mb-8">
-				<h2 className="text-xl font-bold tracking-tight">Create Post</h2>
-				<p>Post on your social media accounts.</p>
-			</div>
-			<TweetForm />
-		</div>
-	);
+	return <TweetForm />;
 }
 
 export function CreatePost() {
