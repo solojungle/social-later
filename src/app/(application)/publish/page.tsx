@@ -1,26 +1,19 @@
+"use client";
+
 import { PostsCalendar } from "@/components/calendar";
+import { PlannedPosts } from "@/components/plannedPosts";
+import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
 
 export default function PublishPage() {
 	return (
-		<main className="">
-			<div className="space-y-6 p-10 pb-16 md:block">
-				{/* <div className="space-y-0.5">
-					<h2 className="text-2xl font-bold tracking-tight">Publish</h2>
-					<p className="text-muted-foreground">
-						Tools to help you to create posts.
-					</p>
-				</div>
-				<Separator className="my-6" /> */}
-				<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-					{/* <div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-						<PlannedPosts />
-					</div> */}
-					<div className="flex w-full space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-						<PostsCalendar posts={[]} />
-					</div>
-					<div className="flex-1 lg:max-w-2xl">{/* <CreatePost /> */}</div>
-				</div>
-			</div>
-		</main>
+		<>
+			<ResizablePanel minSize={28}>
+				<PlannedPosts />
+			</ResizablePanel>
+			<ResizableHandle withHandle />
+			<ResizablePanel minSize={30} className="p-5">
+				<PostsCalendar posts={[]} />
+			</ResizablePanel>
+		</>
 	);
 }
