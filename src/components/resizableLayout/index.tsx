@@ -86,7 +86,7 @@ export function ResizableLayout({
 					<AccountsNav isCollapsed={isCollapsed} accounts={data} />
 				</ResizablePanel>
 				<ResizableHandle withHandle />
-				<ResizablePanel defaultSize={defaultLayout[1]}>
+				<ResizablePanel defaultSize={defaultLayout[1]} minSize={28}>
 					<PlannedPosts />
 				</ResizablePanel>
 				<ResizableHandle withHandle />
