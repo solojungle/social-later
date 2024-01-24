@@ -3,119 +3,12 @@ import { Search } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
 
-const fakePosts = [
-	{
-		id: "1",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023"],
-	},
-	{
-		id: "2",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a super long test post that should wrap around and stuff and also have a lot of tags, and also be super duper long",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023"],
-	},
-	{
-		id: "3",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023"],
-	},
-	{
-		id: "4",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023"],
-	},
-	{
-		id: "5",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-	{
-		id: "6",
-		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
-		text: "This is a test post",
-		status: "approved",
-		scheduledOn: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
-	},
-];
-
 interface PostsProps {
 	posts: {
 		id: string;
 		media: string[];
 		text: string;
-		status: "approved" | "rejected" | "pending";
+		status: string;
 		scheduledOn: Date;
 		tags: string[];
 	}[];
@@ -178,14 +71,14 @@ function Posts({ posts }: PostsProps) {
 	);
 }
 
-export function PlannedPosts() {
+export function PlannedPosts({ posts = [] }: PostsProps) {
 	return (
 		<div className="p-5">
 			<div className="relative mb-4">
 				<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
 				<Input placeholder="Search posts..." className="pl-8" />
 			</div>
-			<Posts posts={fakePosts} />
+			<Posts posts={posts} />
 		</div>
 	);
 }
