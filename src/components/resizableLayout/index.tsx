@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import { PlannedPosts } from "../plannedPosts";
 import { Separator } from "../ui/separator";
 import { AccountsNav } from "./accountsNav";
 import { Nav } from "./nav";
@@ -85,7 +86,11 @@ export function ResizableLayout({
 					<AccountsNav isCollapsed={isCollapsed} accounts={data} />
 				</ResizablePanel>
 				<ResizableHandle withHandle />
-				<ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+				<ResizablePanel defaultSize={defaultLayout[1]}>
+					<PlannedPosts />
+				</ResizablePanel>
+				<ResizableHandle withHandle />
+				<ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
 					{children}
 				</ResizablePanel>
 			</ResizablePanelGroup>

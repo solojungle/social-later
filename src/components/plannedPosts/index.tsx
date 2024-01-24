@@ -1,7 +1,5 @@
 import { Search } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
 
@@ -141,19 +139,29 @@ function Posts({ posts }: PostsProps) {
 	}
 
 	return (
-		<div className="inline-flex h-[70vh] flex-col divide-y overflow-scroll pr-5">
+		<div className="inline-flex max-h-[80vh] flex-col divide-y overflow-scroll pr-5">
 			{posts.map((post) => (
-				<div key={post.id} className="flex max-w-sm items-center py-2">
+				<div key={post.id} className="flex items-center py-2">
 					<img
 						alt="Post media"
-						className="mr-4 h-20 w-20 rounded-xl"
+						className="mr-4 h-16 w-16 rounded-xl"
 						src="https://picsum.photos/200"
 					/>
 					<div className="flex w-full flex-col">
 						<div className="mb-2 flex flex-col text-sm">
 							<div className="flex justify-between gap-14">
 								<p>{post.scheduledOn.toLocaleString()}</p>
-								<p>Pending</p>
+								<p
+									className={`text-xs font-semibold capitalize ${
+										post.status === "approved"
+											? "text-green-500"
+											: post.status === "rejected"
+											? "text-red-500"
+											: "text-yellow-500"
+									}`}
+								>
+									{post.status}
+								</p>
 							</div>
 							<p className="line-clamp-1 text-muted-foreground">{post.text}</p>
 						</div>
@@ -172,17 +180,12 @@ function Posts({ posts }: PostsProps) {
 
 export function PlannedPosts() {
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Planned posts</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div className="relative mb-4">
-					<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-					<Input placeholder="Search posts..." className="pl-8" />
-				</div>
-				<Posts posts={fakePosts} />
-			</CardContent>
-		</Card>
+		<div className="p-5">
+			<div className="relative mb-4">
+				<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+				<Input placeholder="Search posts..." className="pl-8" />
+			</div>
+			<Posts posts={fakePosts} />
+		</div>
 	);
 }

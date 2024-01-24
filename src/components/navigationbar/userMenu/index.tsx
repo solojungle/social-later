@@ -58,7 +58,7 @@ export function UserMenu() {
 					</DropdownMenuItem>
 					<DropdownMenuItem>
 						<Users2 className="mr-2 h-4 w-4" />
-						<span>Invite a friend</span>
+						<span>Refer a friend</span>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
