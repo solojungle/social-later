@@ -7,7 +7,7 @@ function randomDateThisMonth() {
 	const random = new Date(
 		new Date().getFullYear(),
 		new Date().getMonth(),
-		Math.floor(Math.random() * 28) + 1,
+		Math.floor(Math.random() * 31) + 1,
 	);
 
 	return random;
@@ -98,7 +98,7 @@ const fakePosts = [
 		id: "11",
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
-		status: "approved",
+		status: "pending",
 		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
@@ -115,6 +115,62 @@ const fakePosts = [
 		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
 		text: "This is a test post",
 		status: "approved",
+		scheduledOn: randomDateThisMonth(),
+		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
+	},
+	{
+		id: "14",
+		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
+		text: "This is a test post",
+		status: "approved",
+		scheduledOn: randomDateThisMonth(),
+		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
+	},
+	{
+		id: "15",
+		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
+		text: "This is a test post",
+		status: "pending",
+		scheduledOn: randomDateThisMonth(),
+		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
+	},
+	{
+		id: "16",
+		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
+		text: "This is a test post",
+		status: "pending",
+		scheduledOn: randomDateThisMonth(),
+		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
+	},
+	{
+		id: "17",
+		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
+		text: "This is a test post",
+		status: "approved",
+		scheduledOn: randomDateThisMonth(),
+		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
+	},
+	{
+		id: "18",
+		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
+		text: "This is a test post",
+		status: "approved",
+		scheduledOn: randomDateThisMonth(),
+		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
+	},
+	{
+		id: "19",
+		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
+		text: "This is a test post",
+		status: "pending",
+		scheduledOn: randomDateThisMonth(),
+		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
+	},
+	{
+		id: "20",
+		media: ["https://pbs.twimg.com/media/E1Q0qQqXoAEXX5-.jpg"],
+		text: "This is a test post",
+		status: "pending",
 		scheduledOn: randomDateThisMonth(),
 		tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 	},
@@ -139,10 +195,23 @@ function Posts({ posts = [] }: PostsProps) {
 	}
 
 	const renderedPosts = posts.map((p) => {
+		const currentDay = new Date();
+		const currentMonday = new Date(
+			currentDay.setDate(currentDay.getDate() - currentDay.getDay()),
+		);
+		currentMonday.setHours(0);
+		currentMonday.setMinutes(0);
+		currentMonday.setSeconds(0);
+		currentMonday.setMilliseconds(0);
+
+		const isBeforeThisWeek = p.scheduledOn < currentMonday;
+
 		return (
 			<div
 				key={p.id}
-				className="flex items-center rounded-sm bg-gray-200 p-2 text-xs"
+				className={`flex items-center rounded-sm bg-gray-200 p-2 text-xs ${
+					isBeforeThisWeek ? "opacity-60" : ""
+				}`}
 			>
 				<TwitterIcon className="h-4 w-4 shrink-0 text-blue-600" />
 				<time className="ml-2 shrink-0">
@@ -154,12 +223,32 @@ function Posts({ posts = [] }: PostsProps) {
 				<span className="ml-1 truncate text-xs text-muted-foreground">
 					{p.text}
 				</span>
-				<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
+				{
+					{
+						approved: (
+							<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
+						),
+						pending: (
+							<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-yellow-500" />
+						),
+						rejected: (
+							<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-red-500" />
+						),
+					}[p.status]
+				}
 			</div>
 		);
 	});
 
-	return <div className="mx-px flex flex-col gap-px">{renderedPosts}</div>;
+	return (
+		<div
+			className={`mx-px flex flex-col gap-px ${
+				posts.length > 3 ? "overflow-y-scroll" : ""
+			}`}
+		>
+			{renderedPosts}
+		</div>
+	);
 }
 
 export function PostsCalendar({ posts = [] }: PostsProps) {
@@ -223,6 +312,9 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 				<div className="flex flex-auto flex-col ">
 					<div className="grid grid-cols-7 gap-px bg-gray-200 p-px pb-0 text-center text-xs font-semibold leading-6">
 						<div className="bg-white py-2">
+							S<span>un</span>
+						</div>
+						<div className="bg-white py-2">
 							M<span>on</span>
 						</div>
 						<div className="bg-white py-2">
@@ -239,9 +331,6 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 						</div>
 						<div className="bg-white py-2">
 							S<span>at</span>
-						</div>
-						<div className="bg-white py-2">
-							S<span>un</span>
 						</div>
 					</div>
 					<div className="flex flex-auto bg-gray-200 text-xs leading-6 text-gray-700">
