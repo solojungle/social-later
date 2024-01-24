@@ -1,11 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogTrigger,
+} from "@/components/ui/dialog";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -32,6 +39,8 @@ const PostSchema = z.object({
 export type UserSchemaValues = z.infer<typeof PostSchema>;
 
 function TweetForm() {
+	const [loading, setLoading] = useState(false);
+
 	const tweet = api.socials.postTweet.useMutation({
 		onSuccess() {
 			toast.success("Successfully created your post!", {});
@@ -83,7 +92,17 @@ function TweetForm() {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit">Submit</Button>
+						<div className="flex justify-end gap-2">
+							<DialogClose asChild>
+								<Button type="button" variant="outline">
+									Cancel
+								</Button>
+							</DialogClose>
+							<Button type="submit" disabled={loading}>
+								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+								Publish
+							</Button>
+						</div>
 					</form>
 				</Form>
 			</DialogContent>
