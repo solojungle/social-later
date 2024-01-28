@@ -22,6 +22,7 @@ import {
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import { EmojiPicker } from "../emojiPicker";
 import { Button } from "../ui/button";
 import {
 	Form,
@@ -95,7 +96,7 @@ function TweetForm() {
 													<Button type="button" size="icon" variant="ghost">
 														<HashIcon className="h-5 w-5 text-muted-foreground" />
 													</Button>
-													{/* <EmojiPicker /> */}
+													<EmojiPicker />
 												</div>
 											</div>
 											<Textarea
