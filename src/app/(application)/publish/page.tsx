@@ -3,6 +3,7 @@
 import { PostsCalendar } from "@/components/calendar";
 import { PlannedPosts } from "@/components/plannedPosts";
 import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 
 export default function PublishPage() {
 	function randomDateThisMonth() {
@@ -177,6 +178,18 @@ export default function PublishPage() {
 			tags: ["Blog", "Spring", "2023", "Pine Point", "It was you", "I know it"],
 		},
 	];
+
+	const { type } = useSelectedTeamStore();
+
+	if (type === "personal") {
+		return (
+			<ResizablePanel minSize={30}>
+				<div className="flex h-full items-center justify-center">
+					<h2>Please select or create or join a team to view the calendar.</h2>
+				</div>
+			</ResizablePanel>
+		);
+	}
 
 	return (
 		<>

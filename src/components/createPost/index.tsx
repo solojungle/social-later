@@ -36,7 +36,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 interface PostTweetProps {
-	accounts: any;
+	teamId: string;
 }
 
 const PostSchema = z.object({
@@ -142,13 +142,7 @@ function TweetForm() {
 	);
 }
 
-function PostTweet({ accounts }: PostTweetProps) {
-	return <TweetForm />;
-}
-
-export function CreatePost() {
-	const { id: teamId } = useSelectedTeamStore();
-
+function PostTweet({ teamId }: PostTweetProps) {
 	const response = api.socials.getTwitterAccounts.useQuery({
 		id: teamId,
 	});
@@ -159,5 +153,15 @@ export function CreatePost() {
 		return <div>Loading...</div>;
 	}
 
-	return <PostTweet accounts={accounts} />;
+	return <TweetForm />;
+}
+
+export function CreatePost() {
+	const { id: teamId, type } = useSelectedTeamStore();
+
+	if (type === "personal") {
+		return null;
+	}
+
+	return <PostTweet teamId={teamId} />;
 }

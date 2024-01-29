@@ -25,7 +25,7 @@ export function EmojiPicker() {
 	}
 
 	return (
-		<div className="relative flex">
+		<>
 			{visible && (
 				<div className="absolute bottom-7 z-50 shadow-lg">
 					<Picker
@@ -46,6 +46,6 @@ export function EmojiPicker() {
 			>
 				<SmileIcon className="h-5 w-5 text-muted-foreground" />
 			</Button>
-		</div>
+		</>
 	);
 }
