@@ -32,7 +32,7 @@ function Posts({ posts }: PostsProps) {
 	}
 
 	return (
-		<div className="inline-flex max-h-[80vh] flex-col divide-y overflow-scroll pr-5">
+		<div className="inline-flex max-h-screen flex-col divide-y overflow-scroll pr-5">
 			{posts.map((post) => (
 				<div key={post.id} className="flex items-center py-2">
 					<img

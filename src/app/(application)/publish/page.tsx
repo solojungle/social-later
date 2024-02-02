@@ -1,8 +1,7 @@
 "use client";
 
 import { PostsCalendar } from "@/components/calendar";
-import { PlannedPosts } from "@/components/plannedPosts";
-import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
+import { ResizablePanel } from "@/components/ui/resizable";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 
 export default function PublishPage() {
@@ -193,11 +192,11 @@ export default function PublishPage() {
 
 	return (
 		<>
-			<ResizablePanel minSize={30}>
+			{/* <ResizablePanel minSize={30}>
 				<PlannedPosts posts={fakePosts} />
 			</ResizablePanel>
-			<ResizableHandle withHandle />
-			<ResizablePanel minSize={30} className="p-5">
+			<ResizableHandle withHandle /> */}
+			<ResizablePanel minSize={30} className="p-3">
 				<PostsCalendar posts={fakePosts} />
 			</ResizablePanel>
 		</>

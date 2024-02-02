@@ -4,11 +4,12 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
 	Archive,
 	BellIcon,
+	Calendar,
 	HelpCircleIcon,
-	Inbox,
-	Send,
+	PieChartIcon,
 	SettingsIcon,
 	Trash2,
+	UserIcon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -62,15 +63,15 @@ export function ResizableLayout({
 						isCollapsed={isCollapsed}
 						links={[
 							{
-								title: "Create Post",
+								title: "Calendar",
 								label: "",
-								icon: Send,
+								icon: Calendar,
 								variant: "default",
 							},
 							{
-								title: "Queue",
+								title: "Analytics",
 								label: "128",
-								icon: Inbox,
+								icon: PieChartIcon,
 								variant: "ghost",
 							},
 							{
@@ -106,6 +107,12 @@ export function ResizableLayout({
 								title: "Settings",
 								label: "",
 								icon: SettingsIcon,
+								variant: "ghost",
+							},
+							{
+								title: "User",
+								label: "",
+								icon: UserIcon,
 								variant: "ghost",
 							},
 						]}

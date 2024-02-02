@@ -134,56 +134,54 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 	});
 
 	return (
-		<div className="">
-			<div className="flex flex-col ">
-				<div className="flex flex-auto flex-col ">
-					<div className="grid grid-cols-7 gap-px bg-gray-200 p-px pb-0 text-center text-xs font-semibold leading-6">
-						<div className="bg-white py-2">
-							S<span>un</span>
-						</div>
-						<div className="bg-white py-2">
-							M<span>on</span>
-						</div>
-						<div className="bg-white py-2">
-							T<span>ue</span>
-						</div>
-						<div className="bg-white py-2">
-							W<span>ed</span>
-						</div>
-						<div className="bg-white py-2">
-							T<span>hu</span>
-						</div>
-						<div className="bg-white py-2">
-							F<span>ri</span>
-						</div>
-						<div className="bg-white py-2">
-							S<span>at</span>
-						</div>
+		<div className="flex h-screen flex-col pb-6">
+			<div className="flex flex-auto flex-col ">
+				<div className="grid grid-cols-7 gap-px bg-gray-200 p-px pb-0 text-center text-xs font-semibold leading-6">
+					<div className="bg-white py-2">
+						S<span>un</span>
 					</div>
-					<div className="flex flex-auto bg-gray-200 text-xs leading-6 text-gray-700">
-						<div className="grid min-h-[70vh] w-full grid-cols-7 grid-rows-5 gap-px border">
-							{days.map((d) => {
-								return (
-									<div
-										className={`flex flex-col ${
-											d.disabled ? "bg-gray-50" : "bg-white"
+					<div className="bg-white py-2">
+						M<span>on</span>
+					</div>
+					<div className="bg-white py-2">
+						T<span>ue</span>
+					</div>
+					<div className="bg-white py-2">
+						W<span>ed</span>
+					</div>
+					<div className="bg-white py-2">
+						T<span>hu</span>
+					</div>
+					<div className="bg-white py-2">
+						F<span>ri</span>
+					</div>
+					<div className="bg-white py-2">
+						S<span>at</span>
+					</div>
+				</div>
+				<div className="flex flex-auto bg-gray-200 text-xs leading-6 text-gray-700">
+					<div className="grid w-full grid-cols-7 grid-rows-5 gap-px border">
+						{days.map((d) => {
+							return (
+								<div
+									className={`flex flex-col ${
+										d.disabled ? "bg-gray-50" : "bg-white"
+									}`}
+									key={d.day}
+								>
+									<time
+										className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${
+											d.isToday
+												? "bg-primary font-semibold text-primary-foreground"
+												: "font-light"
 										}`}
-										key={d.day}
 									>
-										<time
-											className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${
-												d.isToday
-													? "bg-primary font-semibold text-primary-foreground"
-													: "font-light"
-											}`}
-										>
-											{d.day}
-										</time>
-										{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
-									</div>
-								);
-							})}
-						</div>
+										{d.day}
+									</time>
+									{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			</div>
