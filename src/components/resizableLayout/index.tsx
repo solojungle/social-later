@@ -71,21 +71,21 @@ export function ResizableLayout({
 								},
 								{
 									title: "Analytics",
-									label: "128",
+									label: "",
 									icon: PieChartIcon,
-									variant: "ghost",
+									variant: "disabled",
 								},
 								{
 									title: "Drafts",
 									label: "",
 									icon: Archive,
-									variant: "ghost",
+									variant: "disabled",
 								},
 								{
 									title: "Trash",
 									label: "",
 									icon: Trash2,
-									variant: "ghost",
+									variant: "disabled",
 								},
 							]}
 						/>
