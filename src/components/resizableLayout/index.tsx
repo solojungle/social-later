@@ -1,7 +1,15 @@
 "use client";
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { Archive, Inbox, Send, Trash2 } from "lucide-react";
+import {
+	Archive,
+	BellIcon,
+	HelpCircleIcon,
+	Inbox,
+	Send,
+	SettingsIcon,
+	Trash2,
+} from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -13,8 +21,6 @@ import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import { Separator } from "../ui/separator";
-import { AccountsNav } from "./accountsNav";
 import { Nav } from "./nav";
 
 interface ResizableLayoutProps {
@@ -81,8 +87,29 @@ export function ResizableLayout({
 							},
 						]}
 					/>
-					<Separator />
-					<AccountsNav isCollapsed={isCollapsed} accounts={data} />
+					<Nav
+						isCollapsed={isCollapsed}
+						links={[
+							{
+								title: "Notifications",
+								label: "128",
+								icon: BellIcon,
+								variant: "ghost",
+							},
+							{
+								title: "Help Center",
+								label: "",
+								icon: HelpCircleIcon,
+								variant: "ghost",
+							},
+							{
+								title: "Settings",
+								label: "",
+								icon: SettingsIcon,
+								variant: "ghost",
+							},
+						]}
+					/>
 				</ResizablePanel>
 				<ResizableHandle withHandle />
 				{children}

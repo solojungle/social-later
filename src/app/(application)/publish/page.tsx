@@ -181,7 +181,7 @@ export default function PublishPage() {
 
 	const { type } = useSelectedTeamStore();
 
-	if (type === "personal") {
+	if (!type || type === "personal") {
 		return (
 			<ResizablePanel minSize={30}>
 				<div className="flex h-full items-center justify-center">
