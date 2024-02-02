@@ -59,64 +59,66 @@ export function ResizableLayout({
 							"min-w-[50px] transition-all duration-300 ease-in-out",
 					)}
 				>
-					<Nav
-						isCollapsed={isCollapsed}
-						links={[
-							{
-								title: "Calendar",
-								label: "",
-								icon: Calendar,
-								variant: "default",
-							},
-							{
-								title: "Analytics",
-								label: "128",
-								icon: PieChartIcon,
-								variant: "ghost",
-							},
-							{
-								title: "Drafts",
-								label: "",
-								icon: Archive,
-								variant: "ghost",
-							},
-							{
-								title: "Trash",
-								label: "",
-								icon: Trash2,
-								variant: "ghost",
-							},
-						]}
-					/>
-					<Nav
-						isCollapsed={isCollapsed}
-						links={[
-							{
-								title: "Notifications",
-								label: "128",
-								icon: BellIcon,
-								variant: "ghost",
-							},
-							{
-								title: "Help Center",
-								label: "",
-								icon: HelpCircleIcon,
-								variant: "ghost",
-							},
-							{
-								title: "Settings",
-								label: "",
-								icon: SettingsIcon,
-								variant: "ghost",
-							},
-							{
-								title: "User",
-								label: "",
-								icon: UserIcon,
-								variant: "ghost",
-							},
-						]}
-					/>
+					<div className="flex h-full flex-col justify-between py-5">
+						<Nav
+							isCollapsed={isCollapsed}
+							links={[
+								{
+									title: "Calendar",
+									label: "",
+									icon: Calendar,
+									variant: "default",
+								},
+								{
+									title: "Analytics",
+									label: "128",
+									icon: PieChartIcon,
+									variant: "ghost",
+								},
+								{
+									title: "Drafts",
+									label: "",
+									icon: Archive,
+									variant: "ghost",
+								},
+								{
+									title: "Trash",
+									label: "",
+									icon: Trash2,
+									variant: "ghost",
+								},
+							]}
+						/>
+						<Nav
+							isCollapsed={isCollapsed}
+							links={[
+								{
+									title: "Notifications",
+									label: "128",
+									icon: BellIcon,
+									variant: "ghost",
+								},
+								{
+									title: "Help Center",
+									label: "",
+									icon: HelpCircleIcon,
+									variant: "ghost",
+								},
+								{
+									title: "Settings",
+									label: "",
+									icon: SettingsIcon,
+									variant: "ghost",
+								},
+								{
+									title: "User",
+									label: "",
+									icon: UserIcon,
+									variant: "ghost",
+								},
+							]}
+						/>
+					</div>
 				</ResizablePanel>
 				<ResizableHandle withHandle />
 				{children}

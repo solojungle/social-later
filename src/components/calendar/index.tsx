@@ -134,7 +134,7 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 	});
 
 	return (
-		<div className="flex h-screen flex-col pb-6">
+		<div className="flex h-full flex-col">
 			<div className="flex flex-auto flex-col ">
 				<div className="grid grid-cols-7 gap-px bg-gray-200 p-px pb-0 text-center text-xs font-semibold leading-6">
 					<div className="bg-white py-2">
