@@ -32,7 +32,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
-import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 interface PostTweetProps {
@@ -54,6 +53,9 @@ function TweetForm({ className }: { className?: string }) {
 		onSuccess() {
 			toast.success("Successfully created your post!", {});
 		},
+		onSettled() {
+			setLoading(false);
+		},
 	});
 
 	const form = useForm<UserSchemaValues>({
@@ -61,6 +63,7 @@ function TweetForm({ className }: { className?: string }) {
 	});
 
 	function onSubmit(data: any) {
+		setLoading(true);
 		tweet.mutate({
 			...data,
 			id: "clr6vvzz80008sofdtxfuz8me",
@@ -137,7 +140,7 @@ function TweetForm({ className }: { className?: string }) {
 									</FormItem>
 								)}
 							/>
-							<FormField
+							{/* <FormField
 								control={form.control}
 								name="media"
 								render={({ field }) => (
@@ -149,7 +152,7 @@ function TweetForm({ className }: { className?: string }) {
 										<FormMessage />
 									</FormItem>
 								)}
-							/>
+							/> */}
 							<div className="flex justify-end gap-2">
 								<DialogClose asChild>
 									<Button type="button" variant="outline">
