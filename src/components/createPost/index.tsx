@@ -1,13 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	AtSignIcon,
-	HashIcon,
-	ImageIcon,
-	Loader2,
-	PaperclipIcon,
-} from "lucide-react";
+import { ImageIcon, Loader2, PaperclipIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +13,12 @@ import {
 	DialogContent,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -73,71 +73,97 @@ function TweetForm({ className }: { className?: string }) {
 				<Button className={className}>Post</Button>
 			</DialogTrigger>
 			<DialogContent>
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						<FormField
-							control={form.control}
-							name="text"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel htmlFor="text">Post Text</FormLabel>
-									<FormControl>
-										<div className="shadow-sm">
-											<div className="rounded-t-md border border-b-0 border-border p-1">
-												<div className="flex justify-end">
-													<Button type="button" size="icon" variant="ghost">
-														<PaperclipIcon className="h-5 w-5 text-muted-foreground" />
-													</Button>
-													<Button type="button" size="icon" variant="ghost">
-														<ImageIcon className="h-5 w-5 text-muted-foreground" />
-													</Button>
-													<Button type="button" size="icon" variant="ghost">
-														<AtSignIcon className="h-5 w-5 text-muted-foreground" />
-													</Button>
-													<Button type="button" size="icon" variant="ghost">
-														<HashIcon className="h-5 w-5 text-muted-foreground" />
-													</Button>
-													<EmojiPicker />
+				<TooltipProvider delayDuration={0}>
+					<Form {...form}>
+						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+							<FormField
+								control={form.control}
+								name="text"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor="text">Post Text</FormLabel>
+										<FormControl>
+											<div className="shadow-sm">
+												<div className="rounded-t-md border border-b-0 border-border p-1">
+													<div className="flex justify-end">
+														<Tooltip delayDuration={0}>
+															<TooltipTrigger>
+																<Button
+																	type="button"
+																	size="icon"
+																	variant="ghost"
+																>
+																	<PaperclipIcon className="h-5 w-5 text-muted-foreground" />
+																</Button>
+															</TooltipTrigger>
+															<TooltipContent>
+																<span>Link shortener</span>
+															</TooltipContent>
+														</Tooltip>
+														<Tooltip delayDuration={0}>
+															<TooltipTrigger asChild>
+																<Button
+																	type="button"
+																	size="icon"
+																	variant="ghost"
+																>
+																	<ImageIcon className="h-5 w-5 text-muted-foreground" />
+																</Button>
+															</TooltipTrigger>
+															<TooltipContent>
+																<span>Add media</span>
+															</TooltipContent>
+														</Tooltip>
+														<Tooltip delayDuration={0}>
+															<TooltipTrigger>
+																<EmojiPicker />
+															</TooltipTrigger>
+															<TooltipContent>
+																<span>Emoji</span>
+															</TooltipContent>
+														</Tooltip>
+													</div>
 												</div>
+												<Textarea
+													className="!mt-0 rounded-t-none shadow-none"
+													id="text"
+													autoFocus
+													{...field}
+													placeholder="Write something, mention or add emoji..."
+												/>
 											</div>
-											<Textarea
-												className="!mt-0 rounded-t-none shadow-none"
-												id="text"
-												{...field}
-												placeholder="Write something, mention or add emoji..."
-											/>
-										</div>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="media"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel htmlFor="media">Media Upload</FormLabel>
-									<FormControl>
-										<Input id="media" type="file" {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<div className="flex justify-end gap-2">
-							<DialogClose asChild>
-								<Button type="button" variant="outline">
-									Cancel
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="media"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel htmlFor="media">Media Upload</FormLabel>
+										<FormControl>
+											<Input id="media" type="file" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<div className="flex justify-end gap-2">
+								<DialogClose asChild>
+									<Button type="button" variant="outline">
+										Cancel
+									</Button>
+								</DialogClose>
+								<Button type="submit" disabled={loading}>
+									{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+									Publish
 								</Button>
-							</DialogClose>
-							<Button type="submit" disabled={loading}>
-								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-								Publish
-							</Button>
-						</div>
-					</form>
-				</Form>
+							</div>
+						</form>
+					</Form>
+				</TooltipProvider>
 			</DialogContent>
 		</Dialog>
 	);
