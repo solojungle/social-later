@@ -3,6 +3,8 @@
 import { TwitterIcon } from "lucide-react";
 import { useState } from "react";
 
+import { CreatePost } from "../createPost";
+
 interface PostsProps {
 	posts: {
 		id: string;
@@ -164,7 +166,7 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 						{days.map((d) => {
 							return (
 								<div
-									className={`flex flex-col ${
+									className={`group flex flex-col ${
 										d.disabled ? "bg-gray-50" : "bg-white"
 									}`}
 									key={d.day}
@@ -179,6 +181,7 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 										{d.day}
 									</time>
 									{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
+									<CreatePost className="mt-px hidden w-full group-hover:block" />
 								</div>
 							);
 						})}

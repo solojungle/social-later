@@ -37,6 +37,7 @@ import { Textarea } from "../ui/textarea";
 
 interface PostTweetProps {
 	teamId: string;
+	className?: string;
 }
 
 const PostSchema = z.object({
@@ -46,7 +47,7 @@ const PostSchema = z.object({
 
 export type UserSchemaValues = z.infer<typeof PostSchema>;
 
-function TweetForm() {
+function TweetForm({ className }: { className?: string }) {
 	const [loading, setLoading] = useState(false);
 
 	const tweet = api.socials.postTweet.useMutation({
@@ -69,7 +70,7 @@ function TweetForm() {
 	return (
 		<Dialog>
 			<DialogTrigger>
-				<Button>Create Post</Button>
+				<Button className={className}>Post</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<Form {...form}>
@@ -142,26 +143,26 @@ function TweetForm() {
 	);
 }
 
-function PostTweet({ teamId }: PostTweetProps) {
-	const response = api.socials.getTwitterAccounts.useQuery({
-		id: teamId,
-	});
+function PostTweet({ teamId, className }: PostTweetProps) {
+	// const response = api.socials.getTwitterAccounts.useQuery({
+	// 	id: teamId,
+	// });
 
-	const { data: accounts } = response;
+	// const { data: accounts } = response;
 
-	if (!accounts) {
-		return <div>Loading...</div>;
-	}
+	// if (!accounts) {
+	// 	return <div>Loading...</div>;
+	// }
 
-	return <TweetForm />;
+	return <TweetForm className={className} />;
 }
 
-export function CreatePost() {
+export function CreatePost({ className }: { className?: string }) {
 	const { id: teamId, type } = useSelectedTeamStore();
 
 	if (type === "personal") {
 		return null;
 	}
 
-	return <PostTweet teamId={teamId} />;
+	return <PostTweet className={className} teamId={teamId} />;
 }
