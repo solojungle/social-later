@@ -1,6 +1,8 @@
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { SiteHeader } from "@/components/siteHeader";
+
 export const metadata: Metadata = {
 	title: "Forms",
 	description: "Advanced form example using react-hook-form and Zod.",
@@ -20,7 +22,7 @@ export default function ApplicationLayout({
 }: ApplicationLayoutProps) {
 	return (
 		<div className={`min-h-screen font-sans ${inter.variable}`}>
-			{/* <SiteHeader /> */}
+			<SiteHeader />
 			{children}
 		</div>
 	);
