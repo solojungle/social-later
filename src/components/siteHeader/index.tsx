@@ -2,7 +2,6 @@
 
 import { api } from "@/trpc/react";
 
-import { NavigationBar } from "../navigationbar";
 import { StoreInitializer } from "../storeInitializer";
 
 export function SiteHeader() {
@@ -36,7 +35,7 @@ export function SiteHeader() {
 				user={{ ...userWithProperties }}
 				teams={teamsArrayWithProperties}
 			/>
-			<NavigationBar />
+			{/* <NavigationBar /> */}
 		</header>
 	);
 }
