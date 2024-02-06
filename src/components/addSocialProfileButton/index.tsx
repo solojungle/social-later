@@ -49,21 +49,22 @@ function ProfileCards() {
 	return (
 		<div className="grid grid-cols-3 gap-1">
 			{SupportedSites.map((site) => (
-				<a
-					href="google.com"
-					className={cn(
-						"flex select-none flex-col items-center justify-center rounded-lg border border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100",
-						site.disabled && "pointer-events-none opacity-50",
-					)}
-					key={site.name}
-				>
-					<img
-						src={`https://logo.clearbit.com/${site.name.toLowerCase()}.com`}
-						alt={`${site.name} logo`}
-						className="mb-2 h-8 w-8"
-					/>
-					<p className="font-medium">{site.name}</p>
-				</a>
+				<div key={site.name} className="cursor-not-allowed">
+					<a
+						href="google.com"
+						className={cn(
+							"flex select-none flex-col items-center justify-center rounded-lg border border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100",
+							site.disabled && "pointer-events-none opacity-30",
+						)}
+					>
+						<img
+							src={`https://logo.clearbit.com/${site.name.toLowerCase()}.com`}
+							alt={`${site.name} logo`}
+							className="mb-2 h-8 w-8"
+						/>
+						<p className="font-medium">{site.name}</p>
+					</a>
+				</div>
 			))}
 		</div>
 	);
