@@ -17,37 +17,30 @@ import {
 const SupportedSites = [
 	{
 		name: "Twitter",
-		icon: "twitter",
 		disabled: false,
 	},
 	{
 		name: "Facebook",
-		icon: "facebook",
 		disabled: true,
 	},
 	{
 		name: "Instagram",
-		icon: "instagram",
 		disabled: true,
 	},
 	{
 		name: "LinkedIn",
-		icon: "linkedin",
 		disabled: true,
 	},
 	{
 		name: "Pinterest",
-		icon: "pinterest",
 		disabled: true,
 	},
 	{
 		name: "TikTok",
-		icon: "tiktok",
 		disabled: true,
 	},
 	{
 		name: "YouTube",
-		icon: "youtube",
 		disabled: true,
 	},
 ];
@@ -59,11 +52,16 @@ function ProfileCards() {
 				<a
 					href="google.com"
 					className={cn(
-						"flex select-none items-center justify-center rounded-lg border border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100",
+						"flex select-none flex-col items-center justify-center rounded-lg border border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100",
 						site.disabled && "pointer-events-none opacity-50",
 					)}
 					key={site.name}
 				>
+					<img
+						src={`https://logo.clearbit.com/${site.name.toLowerCase()}.com`}
+						alt={`${site.name} logo`}
+						className="mb-2 h-8 w-8"
+					/>
 					<p className="font-medium">{site.name}</p>
 				</a>
 			))}
