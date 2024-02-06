@@ -1,6 +1,7 @@
 "use client";
 
 import { PostsCalendar } from "@/components/calendar";
+import CreateTeamButton from "@/components/createTeamButton";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 
@@ -183,8 +184,11 @@ export default function PublishPage() {
 	if (!type || type === "personal") {
 		return (
 			<ResizablePanel minSize={30}>
-				<div className="flex h-full items-center justify-center">
-					<h2>Please select or create or join a team to view the calendar.</h2>
+				<div className="flex h-full flex-col items-center justify-center">
+					<h2 className="mb-4">
+						Please join or create a team to view the calendar.
+					</h2>
+					<CreateTeamButton />
 				</div>
 			</ResizablePanel>
 		);

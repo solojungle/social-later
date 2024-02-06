@@ -24,19 +24,21 @@ export function StoreInitializer({
 		if (!isInitialized.current) {
 			useUserStore.setState(user);
 
-			if (params.id) {
-				const selectedTeam = teams.find((team) => team.url === params.id);
+			useSelectedTeamStore.setState(teams[0] || user);
 
-				// Redirect them to settings if they are not a member of the team
-				if (!selectedTeam) {
-					window.location.href = "/settings";
-					return;
-				}
+			// if (params.id) {
+			// 	const selectedTeam = teams.find((team) => team.url === params.id);
 
-				useSelectedTeamStore.setState(selectedTeam || user);
-			} else {
-				useSelectedTeamStore.setState(user);
-			}
+			// 	// Redirect them to settings if they are not a member of the team
+			// 	if (!selectedTeam) {
+			// 		window.location.href = "/settings";
+			// 		return;
+			// 	}
+
+			// 	useSelectedTeamStore.setState(selectedTeam || user);
+			// } else {
+			// 	useSelectedTeamStore.setState(user);
+			// }
 
 			useTeamStore.setState({ teams });
 			isInitialized.current = true;
