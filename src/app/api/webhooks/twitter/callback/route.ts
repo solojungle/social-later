@@ -59,13 +59,24 @@ export async function GET(req: NextRequest) {
 		// Get the user object
 		const { data: userObject } = await loggedClient.v2.me();
 
-		await db.twitterAccount.create({
-			data: {
+		await db.twitterAccount.upsert({
+			where: {
+				username_teamId: {
+					username: userObject.username,
+					teamId,
+				},
+			},
+			create: {
 				accessToken,
 				refreshToken,
 				expiresIn,
 				teamId,
 				username: userObject.username,
+			},
+			update: {
+				accessToken,
+				refreshToken,
+				expiresIn,
 			},
 		});
 

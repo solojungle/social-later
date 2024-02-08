@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 
 import { Button } from "../ui/button";
 
-export function LinkTwitterButton({
+export function OLDLinkTwitterButton({
 	teamId,
 	state,
 	codeVerifier,

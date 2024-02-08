@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { Button } from "../ui/button";
 import {
@@ -13,12 +14,9 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
+import { LinkTwitterButton } from "./linkSocialsButton";
 
 const SupportedSites = [
-	{
-		name: "Twitter",
-		disabled: false,
-	},
 	{
 		name: "Facebook",
 		disabled: true,
@@ -50,10 +48,9 @@ function ProfileCards() {
 		<div className="grid grid-cols-3 gap-1">
 			{SupportedSites.map((site) => (
 				<div key={site.name} className="cursor-not-allowed">
-					<a
-						href="google.com"
+					<span
 						className={cn(
-							"flex select-none flex-col items-center justify-center rounded-lg border border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100",
+							"flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100",
 							site.disabled && "pointer-events-none opacity-30",
 						)}
 					>
@@ -63,7 +60,7 @@ function ProfileCards() {
 							className="mb-2 h-8 w-8"
 						/>
 						<p className="font-medium">{site.name}</p>
-					</a>
+					</span>
 				</div>
 			))}
 		</div>
@@ -72,6 +69,7 @@ function ProfileCards() {
 
 export default function AddSocialProfile() {
 	const [open, setOpen] = useState(false);
+	const { id: teamId } = useSelectedTeamStore();
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -85,6 +83,7 @@ export default function AddSocialProfile() {
 						Add a new profile manage and create posts.
 					</DialogDescription>
 				</DialogHeader>
+				<LinkTwitterButton teamId={teamId} />
 				<ProfileCards />
 			</DialogContent>
 		</Dialog>
