@@ -8,6 +8,15 @@ export function SiteHeader() {
 	const { data: userData } = api.user.getUser.useQuery();
 	const { data: teamsData } = api.user.getTeams.useQuery();
 
+	const { data: profilesData } = api.socials.getTwitterAccounts.useQuery(
+		{
+			id: teamsData?.[0]?.team.id || "",
+		},
+		{
+			enabled: !!teamsData,
+		},
+	);
+
 	if (!userData || !teamsData) {
 		return null;
 	}
@@ -31,10 +40,13 @@ export function SiteHeader() {
 
 	return (
 		<header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-			<StoreInitializer
-				user={{ ...userWithProperties }}
-				teams={teamsArrayWithProperties}
-			/>
+			{profilesData && (
+				<StoreInitializer
+					user={{ ...userWithProperties }}
+					teams={teamsArrayWithProperties}
+					profiles={profilesData || []}
+				/>
+			)}
 			{/* <NavigationBar /> */}
 		</header>
 	);

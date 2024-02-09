@@ -5,7 +5,7 @@ import { createTRPCRouter } from "@/server/api/trpc";
 
 import { invitationRouter } from "./routers/invitation";
 import { productsRouter } from "./routers/products";
-import { socialAccountRouter } from "./routers/social-accounts";
+import { socialProfilesRouter } from "./routers/social-profiles";
 import { stripeRouter } from "./routers/stripe";
 import { twitterRouter } from "./routers/twitter";
 
@@ -22,7 +22,7 @@ export const appRouter = createTRPCRouter({
 	stripe: stripeRouter,
 	twitter: twitterRouter,
 	products: productsRouter,
-	socials: socialAccountRouter,
+	socials: socialProfilesRouter,
 });
 
 // export type definition of API

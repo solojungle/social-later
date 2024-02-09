@@ -5,7 +5,7 @@ import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { client } from "@/server/services/twitter/client";
 
-export const socialAccountRouter = createTRPCRouter({
+export const socialProfilesRouter = createTRPCRouter({
 	getTwitterAccounts: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.query(async ({ ctx, input }) => {
@@ -30,11 +30,13 @@ export const socialAccountRouter = createTRPCRouter({
 				},
 			});
 
-			return twitterAccounts.map((twitterAccount) => ({
-				id: twitterAccount.id,
-				username: twitterAccount.username,
-				teamId: twitterAccount.teamId,
-			}));
+			return (
+				twitterAccounts.map((twitterAccount) => ({
+					id: twitterAccount.id,
+					username: twitterAccount.username,
+					teamId: twitterAccount.teamId,
+				})) || []
+			);
 		}),
 
 	postTweet: protectedProcedure
