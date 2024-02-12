@@ -15,17 +15,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Post {
-  id          Int      @id @default(autoincrement())
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  createdById String
-
-  @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -62,9 +51,33 @@ model User {
   url           String       @default(nanoid())
   accounts      Account[]
   sessions      Session[]
-  posts         Post[]
   teams         UserOnTeam[]
   invitation    Invitation[]
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  url       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+}
+
+model Post {
+  id        String         @id @default(cuid())
+  title     String
+  content   String
+  media     Media[]
+  published Boolean        @default(false)
+  profile   TwitterAccount @relation(fields: [profileId], references: [id])
+  profileId String
+  author    Team           @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model Team {
@@ -81,6 +94,7 @@ model Team {
   stripeProduct            StripeProduct            @relation(fields: [internalProductId], references: [id])
   stripeCard               StripeCard[]
   twitterAccount           TwitterAccount[]
+  post                     Post[]
 }
 
 model TwitterAccount {
@@ -93,6 +107,7 @@ model TwitterAccount {
   team         Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  post         Post[]
 
   @@unique([username, teamId])
 }

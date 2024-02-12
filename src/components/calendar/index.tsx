@@ -3,17 +3,12 @@
 import { TwitterIcon } from "lucide-react";
 import { useState } from "react";
 
+import { PostsSchemaValues } from "@/schemas/posts-schema";
+
 import { CreatePost } from "../createPost";
 
 interface PostsProps {
-	posts: {
-		id: string;
-		media: string[];
-		text: string;
-		status: string;
-		scheduledOn: Date;
-		tags: string[];
-	}[];
+	posts: PostsSchemaValues[] | undefined;
 }
 
 // This is the component that will be rendered on a day of the calendar
