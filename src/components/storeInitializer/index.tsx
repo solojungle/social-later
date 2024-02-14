@@ -45,7 +45,10 @@ export function StoreInitializer({
 			// }
 
 			useTeamStore.setState({ teams });
-			useSocialProfilesStore.setState({ profiles });
+			useSocialProfilesStore.setState({
+				profiles,
+				currentProfileId: profiles[0]?.id,
+			});
 			isInitialized.current = true;
 		}
 	}, [user, teams, params.id, profiles]);

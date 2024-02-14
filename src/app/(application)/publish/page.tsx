@@ -1,21 +1,13 @@
 "use client";
 
 import AddSocialProfile from "@/components/addSocialProfileButton";
-import { PostsCalendar } from "@/components/calendar";
 import CreateTeamButton from "@/components/createTeamButton";
+import { PublishPageContent } from "@/components/publishPageContent";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { api } from "@/trpc/react";
 
 export default function PublishPage() {
-	const CURRENT_PROFILE_ID = "clsm3dzlg0001soqv77qdr7ud";
-	const CURRENT_TEAM_ID = "clsm373sw0006sow81i5pgf9l";
-
-	const { data: posts } = api.post.getAll.useQuery({
-		teamId: CURRENT_TEAM_ID,
-	});
-
 	const { type } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
 
@@ -46,15 +38,5 @@ export default function PublishPage() {
 		);
 	}
 
-	return (
-		<>
-			{/* <ResizablePanel minSize={30}>
-				<PlannedPosts posts={fakePosts} />
-			</ResizablePanel>
-			<ResizableHandle withHandle /> */}
-			<ResizablePanel minSize={30} className="p-3">
-				<PostsCalendar posts={posts} profileId={CURRENT_PROFILE_ID} />
-			</ResizablePanel>
-		</>
-	);
+	return <PublishPageContent />;
 }
