@@ -37,6 +37,7 @@ import { Textarea } from "../ui/textarea";
 
 interface PostTweetProps {
 	teamId: string;
+	profileId: string;
 	className?: string;
 }
 
@@ -49,9 +50,11 @@ export type UserSchemaValues = z.infer<typeof PostSchema>;
 
 function TweetForm({
 	teamId,
+	profileId,
 	className,
 }: {
 	teamId: string;
+	profileId: string;
 	className?: string;
 }) {
 	const [loading, setLoading] = useState(false);
@@ -72,12 +75,10 @@ function TweetForm({
 	});
 
 	function onSubmit(data: any) {
-		console.log("CALLED");
-
 		setLoading(true);
 		tweet.mutate({
 			...data,
-			id: "clsm373sw0006sow81i5pgf9l",
+			id: profileId,
 		});
 		createPost.mutate({
 			title: "",
@@ -85,7 +86,7 @@ function TweetForm({
 			media: [],
 			published: true,
 			scheduledFor: new Date(),
-			profileId: "clsm373sw0006sow81i5pgf9l",
+			profileId,
 			authorId: teamId,
 		});
 	}
@@ -193,26 +194,26 @@ function TweetForm({
 	);
 }
 
-function PostTweet({ teamId, className }: PostTweetProps) {
-	// const response = api.socials.getTwitterAccounts.useQuery({
-	// 	id: teamId,
-	// });
-
-	// const { data: accounts } = response;
-
-	// if (!accounts) {
-	// 	return <div>Loading...</div>;
-	// }
-
-	return <TweetForm className={className} teamId={teamId} />;
+function PostTweet({ teamId, className, profileId }: PostTweetProps) {
+	return (
+		<TweetForm className={className} teamId={teamId} profileId={profileId} />
+	);
 }
 
-export function CreatePost({ className }: { className?: string }) {
+export function CreatePost({
+	className,
+	profileId,
+}: {
+	profileId: string;
+	className?: string;
+}) {
 	const { id: teamId, type } = useSelectedTeamStore();
 
 	if (type === "personal") {
 		return null;
 	}
 
-	return <PostTweet className={className} teamId={teamId} />;
+	return (
+		<PostTweet className={className} teamId={teamId} profileId={profileId} />
+	);
 }

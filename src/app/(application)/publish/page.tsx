@@ -9,18 +9,11 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 export default function PublishPage() {
-	function randomDateThisMonth() {
-		const random = new Date(
-			new Date().getFullYear(),
-			new Date().getMonth(),
-			Math.floor(Math.random() * 31) + 1,
-		);
-
-		return random;
-	}
+	const CURRENT_PROFILE_ID = "clsm3dzlg0001soqv77qdr7ud";
+	const CURRENT_TEAM_ID = "clsm373sw0006sow81i5pgf9l";
 
 	const { data: posts } = api.post.getAll.useQuery({
-		teamId: "clsm373sw0006sow81i5pgf9l",
+		teamId: CURRENT_TEAM_ID,
 	});
 
 	const { type } = useSelectedTeamStore();
@@ -60,7 +53,7 @@ export default function PublishPage() {
 			</ResizablePanel>
 			<ResizableHandle withHandle /> */}
 			<ResizablePanel minSize={30} className="p-3">
-				<PostsCalendar posts={posts} />
+				<PostsCalendar posts={posts} profileId={CURRENT_PROFILE_ID} />
 			</ResizablePanel>
 		</>
 	);

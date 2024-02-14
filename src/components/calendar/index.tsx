@@ -8,12 +8,13 @@ import { PostsSchemaValues } from "@/schemas/posts-schema";
 import { CreatePost } from "../createPost";
 
 interface PostsProps {
+	profileId: string;
 	posts: PostsSchemaValues[] | undefined;
 }
 
 // This is the component that will be rendered on a day of the calendar
 // It will show the posts that are scheduled for that day
-function Posts({ posts = [] }: PostsProps) {
+function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 	if (posts.length === 0) {
 		return null;
 	}
@@ -75,7 +76,7 @@ function Posts({ posts = [] }: PostsProps) {
 	);
 }
 
-export function PostsCalendar({ posts = [] }: PostsProps) {
+export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
@@ -176,7 +177,10 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 										{d.day}
 									</time>
 									{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
-									<CreatePost className="mt-px hidden w-full group-hover:block" />
+									<CreatePost
+										className="mt-px hidden w-full group-hover:block"
+										profileId={profileId}
+									/>
 								</div>
 							);
 						})}
