@@ -20,7 +20,7 @@ export default function PublishPage() {
 	}
 
 	const { data: posts } = api.post.getAll.useQuery({
-		teamId: "1",
+		teamId: "clsm373sw0006sow81i5pgf9l",
 	});
 
 	const { type } = useSelectedTeamStore();

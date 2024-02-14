@@ -28,7 +28,7 @@ function Posts({ posts = [] }: PostsProps) {
 		currentMonday.setSeconds(0);
 		currentMonday.setMilliseconds(0);
 
-		const isBeforeThisWeek = p.scheduledOn < currentMonday;
+		const isBeforeThisWeek = p.scheduledFor < currentMonday;
 
 		return (
 			<div
@@ -39,7 +39,7 @@ function Posts({ posts = [] }: PostsProps) {
 			>
 				<TwitterIcon className="h-4 w-4 shrink-0 text-blue-600" />
 				<time className="ml-2 shrink-0">
-					{p.scheduledOn.toLocaleTimeString([], {
+					{p.scheduledFor.toLocaleTimeString([], {
 						hour: "numeric",
 						minute: "numeric",
 					})}
@@ -121,9 +121,9 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 	days.forEach((d) => {
 		const filteredPosts = posts.filter((p) => {
 			return (
-				p.scheduledOn.getDate() === d.day &&
-				p.scheduledOn.getMonth() === selectedMonth &&
-				p.scheduledOn.getFullYear() === selectedYear
+				p.scheduledFor.getDate() === d.day &&
+				p.scheduledFor.getMonth() === selectedMonth &&
+				p.scheduledFor.getFullYear() === selectedYear
 			);
 		});
 
@@ -158,13 +158,13 @@ export function PostsCalendar({ posts = [] }: PostsProps) {
 				</div>
 				<div className="flex flex-auto bg-gray-200 text-xs leading-6 text-gray-700">
 					<div className="grid w-full grid-cols-7 grid-rows-5 gap-px border">
-						{days.map((d) => {
+						{days.map((d, i) => {
 							return (
 								<div
 									className={`group flex flex-col ${
 										d.disabled ? "bg-gray-50" : "bg-white"
 									}`}
-									key={d.day}
+									key={i}
 								>
 									<time
 										className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${

@@ -43,7 +43,7 @@ export const socialProfilesRouter = createTRPCRouter({
 		.input(
 			z.object({
 				id: z.string(),
-				text: z.string(),
+				content: z.string(),
 				media: z.string().optional(),
 			}),
 		)
@@ -107,7 +107,7 @@ export const socialProfilesRouter = createTRPCRouter({
 			}
 
 			// Post the tweet
-			const tweet = await loggedClient.v2.tweet(input.text);
+			const tweet = await loggedClient.v2.tweet(input.content);
 
 			return tweet;
 		}),

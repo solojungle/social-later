@@ -7,14 +7,23 @@ export const postRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(PostsSchema)
 		.mutation(async ({ ctx, input }) => {
+			if (input.media) {
+				return ctx.db.post.create({
+					data: {
+						...input,
+						media: {
+							connect: input.media.map((media) => ({
+								id: media.id,
+							})),
+						},
+					},
+				});
+			}
+
 			return ctx.db.post.create({
 				data: {
 					...input,
-					media: {
-						connect: input.media.map((media) => ({
-							id: media.id,
-						})),
-					},
+					media: {},
 				},
 			});
 		}),

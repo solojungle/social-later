@@ -67,17 +67,18 @@ model Media {
 }
 
 model Post {
-  id        String         @id @default(cuid())
-  title     String
-  content   String
-  media     Media[]
-  published Boolean        @default(false)
-  profile   TwitterAccount @relation(fields: [profileId], references: [id])
-  profileId String
-  author    Team           @relation(fields: [authorId], references: [id])
-  authorId  String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id           String         @id @default(cuid())
+  title        String
+  content      String
+  media        Media[]
+  published    Boolean        @default(false)
+  scheduledFor DateTime
+  profile      TwitterAccount @relation(fields: [profileId], references: [id])
+  profileId    String
+  author       Team           @relation(fields: [authorId], references: [id])
+  authorId     String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model Team {

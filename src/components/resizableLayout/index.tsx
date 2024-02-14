@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import { UserMenu } from "../navigationbar/userMenu";
 import { Nav } from "./nav";
 
 interface ResizableLayoutProps {
@@ -89,6 +90,7 @@ export function ResizableLayout({
 								},
 							]}
 						/>
+						<UserMenu />
 						<Nav
 							isCollapsed={isCollapsed}
 							links={[

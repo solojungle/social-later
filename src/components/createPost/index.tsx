@@ -19,6 +19,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { PostsSchemaValues } from "@/schemas/posts-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -40,16 +41,24 @@ interface PostTweetProps {
 }
 
 const PostSchema = z.object({
-	text: z.string().min(1),
-	media: z.array(z.string()).optional(),
+	content: z.string().min(1),
+	// media: z.array(z.string()).optional(),
 });
 
 export type UserSchemaValues = z.infer<typeof PostSchema>;
 
-function TweetForm({ className }: { className?: string }) {
+function TweetForm({
+	teamId,
+	className,
+}: {
+	teamId: string;
+	className?: string;
+}) {
 	const [loading, setLoading] = useState(false);
 
-	const tweet = api.socials.postTweet.useMutation({
+	const tweet = api.socials.postTweet.useMutation({});
+
+	const createPost = api.post.create.useMutation({
 		onSuccess() {
 			toast.success("Successfully created your post!", {});
 		},
@@ -58,21 +67,32 @@ function TweetForm({ className }: { className?: string }) {
 		},
 	});
 
-	const form = useForm<UserSchemaValues>({
+	const form = useForm<PostsSchemaValues>({
 		resolver: zodResolver(PostSchema),
 	});
 
 	function onSubmit(data: any) {
+		console.log("CALLED");
+
 		setLoading(true);
 		tweet.mutate({
 			...data,
-			id: "clr6vvzz80008sofdtxfuz8me",
+			id: "clsm373sw0006sow81i5pgf9l",
+		});
+		createPost.mutate({
+			title: "",
+			content: data.content,
+			media: [],
+			published: true,
+			scheduledFor: new Date(),
+			profileId: "clsm373sw0006sow81i5pgf9l",
+			authorId: teamId,
 		});
 	}
 
 	return (
 		<Dialog>
-			<DialogTrigger>
+			<DialogTrigger asChild>
 				<Button className={className}>Post</Button>
 			</DialogTrigger>
 			<DialogContent>
@@ -81,7 +101,7 @@ function TweetForm({ className }: { className?: string }) {
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 							<FormField
 								control={form.control}
-								name="text"
+								name="content"
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel htmlFor="text">Post Text</FormLabel>
@@ -119,6 +139,7 @@ function TweetForm({ className }: { className?: string }) {
 														</Tooltip>
 														<Tooltip delayDuration={0}>
 															<TooltipTrigger>
+																{/* TODO: Remove error button cannot appear as a descendant of button */}
 																<EmojiPicker />
 															</TooltipTrigger>
 															<TooltipContent>
@@ -183,7 +204,7 @@ function PostTweet({ teamId, className }: PostTweetProps) {
 	// 	return <div>Loading...</div>;
 	// }
 
-	return <TweetForm className={className} />;
+	return <TweetForm className={className} teamId={teamId} />;
 }
 
 export function CreatePost({ className }: { className?: string }) {
