@@ -6,6 +6,8 @@ import {
 	User2Icon,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
@@ -26,27 +28,49 @@ interface LinkItemsProps {
 	links: {
 		title: string;
 		icon: LucideIcon;
+		action?: () => void;
 	}[];
 }
 
 function LinkItems({ links }: LinkItemsProps) {
 	return (
 		<div className="grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
-			{links.map((link, index) => (
-				<Link
-					key={index}
-					href="/publish"
-					className="inline-flex h-8 items-center justify-start whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-				>
-					<link.icon className="mr-2 h-4 w-4" />
-					<span className="text-xs">{link.title}</span>
-				</Link>
-			))}
+			{links.map((link, index) => {
+				if (link.action) {
+					return (
+						<button
+							key={index}
+							type="button"
+							onClick={link.action}
+							className={cn(
+								buttonVariants({ variant: "ghost", size: "sm" }),
+								"flex w-full items-center justify-start",
+								"dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+							)}
+						>
+							<link.icon className="mr-2 h-4 w-4" />
+							<span>{link.title}</span>
+						</button>
+					);
+				}
+
+				return (
+					<Link
+						key={index}
+						href="/publish"
+						className="inline-flex h-8 items-center justify-start whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+					>
+						<link.icon className="mr-2 h-4 w-4" />
+						<span className="text-xs">{link.title}</span>
+					</Link>
+				);
+			})}
 		</div>
 	);
 }
 
 export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
+	const router = useRouter();
 	const { email, name, image, imageFallbackInitials } = useUserStore();
 
 	return (
@@ -94,9 +118,17 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 							<LinkItems
 								links={[
 									{ title: "Personal Settings", icon: User2Icon },
-									// { title: "Refer a friend", icon:  },
 									{ title: "Share feedback", icon: MessageSquareIcon },
-									{ title: "Log out", icon: LogOutIcon },
+									{
+										title: "Log out",
+										icon: LogOutIcon,
+										action: () => {
+											signOut({ redirect: false }).then(() => {
+												// Redirect to the dashboard page after signing out
+												router.push("/");
+											});
+										},
+									},
 								]}
 							/>
 						</CollapsibleContent>
