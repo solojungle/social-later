@@ -1,63 +1,108 @@
-import { Tooltip } from "@/components/ui/tooltip";
+import {
+	ChevronsUpDown,
+	LogOutIcon,
+	LucideIcon,
+	MessageSquareIcon,
+	UserIcon,
+} from "lucide-react";
+import Link from "next/link";
 
-export function UserButton {
-	return (
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { buttonVariants } from "@/components/ui/button";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { useUserStore } from "@/stores/user";
 
-				<Tooltip delayDuration={0}></Tooltip>
-	)
+interface LinkItemsProps {
+	links: {
+		title: string;
+		icon: LucideIcon;
+	}[];
 }
 
+function LinkItems({ links }: LinkItemsProps) {
+	return (
+		<div className="grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+			{links.map((link, index) => (
+				<Link
+					key={index}
+					href="/publish"
+					className="inline-flex h-8 items-center justify-start whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+				>
+					<link.icon className="mr-2 h-4 w-4" />
+					<span className="text-xs">{link.title}</span>
+				</Link>
+			))}
+		</div>
+	);
+}
 
-		// {links.map((link, index) =>
-		// 	isCollapsed ? (
-		// 		<Tooltip key={index} delayDuration={0}>
-		// 			<TooltipTrigger asChild>
-		// 				<Link
-		// 					href="/publish"
-		// 					className={cn(
-		// 						buttonVariants({ variant: link.variant, size: "icon" }),
-		// 						"h-9 w-9",
-		// 						link.variant === "default" &&
-		// 							"dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
-		// 					)}
-		// 				>
-		// 					<link.icon className="h-4 w-4" />
-		// 					<span className="sr-only">{link.title}</span>
-		// 				</Link>
-		// 			</TooltipTrigger>
-		// 			<TooltipContent side="right" className="flex items-center gap-4">
-		// 				{link.title}
-		// 				{link.label && (
-		// 					<span className="ml-auto text-muted-foreground">
-		// 						{link.label}
-		// 					</span>
-		// 				)}
-		// 			</TooltipContent>
-		// 		</Tooltip>
-		// 	) : (
-		// 		<Link
-		// 			key={index}
-		// 			href="/publish"
-		// 			className={cn(
-		// 				buttonVariants({ variant: link.variant, size: "sm" }),
-		// 				link.variant === "default" &&
-		// 					"dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-		// 				"justify-start",
-		// 			)}
-		// 		>
-		// 			<link.icon className="mr-2 h-4 w-4" />
-		// 			{link.title}
-		// 			{link.label && (
-		// 				<span
-		// 					className={cn(
-		// 						"ml-auto",
-		// 						link.variant === "default" &&
-		// 							"text-background dark:text-white",
-		// 					)}
-		// 				>
-		// 					{link.label}
-		// 				</span>
-		// 			)}
-		// 		</Link>
-		// 	),
-		// )}
+export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
+	const { email, name, image, imageFallbackInitials } = useUserStore();
+
+	return (
+		<div className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2">
+			<div className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+				{isCollapsed ? (
+					<Tooltip delayDuration={0}>
+						<TooltipTrigger asChild>
+							<Link
+								href="/publish"
+								className={cn(
+									buttonVariants({ variant: "ghost", size: "icon" }),
+									"h-9 w-9",
+									"dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
+								)}
+							>
+								<Avatar className="h-6 w-6">
+									<AvatarImage src={image} alt={name} />
+									<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+								</Avatar>
+								<span className="sr-only">User</span>
+							</Link>
+						</TooltipTrigger>
+						<TooltipContent side="right" className="flex items-center gap-4">
+							User
+						</TooltipContent>
+					</Tooltip>
+				) : (
+					<Collapsible>
+						<CollapsibleTrigger
+							className={cn(
+								buttonVariants({ variant: "ghost", size: "sm" }),
+								"justify-start",
+								"w-full dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+							)}
+						>
+							<Avatar className="mr-2 h-6 w-6">
+								<AvatarImage src={image} alt={name} />
+								<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+							</Avatar>
+							{email || name}
+							<ChevronsUpDown className="ml-auto h-4 w-4" />
+						</CollapsibleTrigger>
+						<CollapsibleContent>
+							<LinkItems
+								links={[
+									{ title: "Personal Settings", icon: UserIcon },
+									// { title: "Refer a friend", icon:  },
+									{ title: "Share feedback", icon: MessageSquareIcon },
+									{ title: "Log out", icon: LogOutIcon },
+								]}
+							/>
+						</CollapsibleContent>
+					</Collapsible>
+				)}
+			</div>
+		</div>
+	);
+}

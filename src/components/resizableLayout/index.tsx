@@ -9,7 +9,6 @@ import {
 	PieChartIcon,
 	SettingsIcon,
 	Trash2,
-	UserIcon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -22,8 +21,9 @@ import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import { UserMenu } from "../navigationbar/userMenu";
+import { Separator } from "../ui/separator";
 import { Nav } from "./nav";
+import { CollapsibleUserMenu } from "./userButton";
 
 interface ResizableLayoutProps {
 	children: React.ReactNode;
@@ -90,36 +90,33 @@ export function ResizableLayout({
 								},
 							]}
 						/>
-						<UserMenu />
-						<Nav
-							isCollapsed={isCollapsed}
-							links={[
-								{
-									title: "Notifications",
-									label: "128",
-									icon: BellIcon,
-									variant: "ghost",
-								},
-								{
-									title: "Help Center",
-									label: "",
-									icon: HelpCircleIcon,
-									variant: "ghost",
-								},
-								{
-									title: "Settings",
-									label: "",
-									icon: SettingsIcon,
-									variant: "ghost",
-								},
-								{
-									title: "User",
-									label: "",
-									icon: UserIcon,
-									variant: "ghost",
-								},
-							]}
-						/>
+						<div className="flex flex-col justify-between">
+							<Nav
+								isCollapsed={isCollapsed}
+								links={[
+									{
+										title: "Notifications",
+										label: "128",
+										icon: BellIcon,
+										variant: "ghost",
+									},
+									{
+										title: "Help Center",
+										label: "",
+										icon: HelpCircleIcon,
+										variant: "ghost",
+									},
+									{
+										title: "Settings",
+										label: "",
+										icon: SettingsIcon,
+										variant: "ghost",
+									},
+								]}
+							/>
+							<Separator className="my-3" />
+							<CollapsibleUserMenu isCollapsed={isCollapsed} />
+						</div>
 					</div>
 				</ResizablePanel>
 				<ResizableHandle withHandle />
