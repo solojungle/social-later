@@ -3,7 +3,7 @@ import {
 	LogOutIcon,
 	LucideIcon,
 	MessageSquareIcon,
-	UserIcon,
+	User2Icon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -93,7 +93,7 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 						<CollapsibleContent>
 							<LinkItems
 								links={[
-									{ title: "Personal Settings", icon: UserIcon },
+									{ title: "Personal Settings", icon: User2Icon },
 									// { title: "Refer a friend", icon:  },
 									{ title: "Share feedback", icon: MessageSquareIcon },
 									{ title: "Log out", icon: LogOutIcon },
