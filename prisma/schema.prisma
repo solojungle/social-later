@@ -72,6 +72,7 @@ model Post {
   content      String
   media        Media[]
   published    Boolean        @default(false)
+  status       String
   scheduledFor DateTime
   profile      TwitterAccount @relation(fields: [profileId], references: [id])
   profileId    String

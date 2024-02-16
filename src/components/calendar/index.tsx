@@ -46,7 +46,7 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 					})}
 				</time>
 				<span className="ml-1 truncate text-xs text-muted-foreground">
-					{p.text}
+					{p.content}
 				</span>
 				{
 					{
@@ -77,8 +77,8 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 }
 
 export function PostsCalendar({ posts = [], profileId }: PostsProps) {
-	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+	const [selectedMonth] = useState(new Date().getMonth());
+	const [selectedYear] = useState(new Date().getFullYear());
 
 	const startingDay = new Date(selectedYear, selectedMonth, 1).getDay();
 	const previousMonthDays = new Date(selectedYear, selectedMonth, 0).getDate();
@@ -87,13 +87,19 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 
 	// Add padding to the start and end of the month if the month doesn't start on a Monday
 	// The padding should have a property of "disabled" so that it can be styled accordingly
-	const days = [];
+	const days = [] as {
+		day: number;
+		disabled: boolean;
+		isToday?: boolean;
+		posts: PostsSchemaValues[];
+	}[];
 
 	// Find out which day this month starts, then add padding to the start of the month
 	for (let i = 0; i < startingDay; i += 1) {
 		days.push({
 			day: previousMonthDays - i,
 			disabled: true,
+			posts: [],
 		});
 	}
 
@@ -128,7 +134,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 			);
 		});
 
-		d.posts = filteredPosts;
+		d.posts.push(...filteredPosts);
 	});
 
 	return (
