@@ -88,6 +88,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	// Add padding to the start and end of the month if the month doesn't start on a Monday
 	// The padding should have a property of "disabled" so that it can be styled accordingly
 	const days = [] as {
+		id: string;
 		day: number;
 		disabled: boolean;
 		isToday?: boolean;
@@ -97,6 +98,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	// Find out which day this month starts, then add padding to the start of the month
 	for (let i = 0; i < startingDay; i += 1) {
 		days.push({
+			id: Math.random().toString(),
 			day: previousMonthDays - i,
 			disabled: true,
 			posts: [],
@@ -106,6 +108,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	// Add the days of the month
 	for (let i = 1; i <= nextMonthDays; i += 1) {
 		days.push({
+			id: Math.random().toString(),
 			day: i,
 			disabled: false,
 			isToday: i === today,
@@ -118,6 +121,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	const daysToAdd = 7 - (days.length % 7);
 	for (let i = 1; i <= daysToAdd; i += 1) {
 		days.push({
+			id: Math.random().toString(),
 			day: i,
 			disabled: true,
 			posts: [],
@@ -165,13 +169,13 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 				</div>
 				<div className="flex flex-auto bg-gray-200 text-xs leading-6 text-gray-700">
 					<div className="grid w-full grid-cols-7 grid-rows-5 gap-px border">
-						{days.map((d, i) => {
+						{days.map((d) => {
 							return (
 								<div
 									className={`group flex flex-col ${
 										d.disabled ? "bg-gray-50" : "bg-white"
 									}`}
-									key={i}
+									key={d.id}
 								>
 									<time
 										className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${
