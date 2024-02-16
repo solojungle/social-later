@@ -18,8 +18,6 @@ import {
 	ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { cn } from "@/lib/utils";
-import { useSelectedTeamStore } from "@/stores/selected-team";
-import { api } from "@/trpc/react";
 
 import { Separator } from "../ui/separator";
 import { Nav } from "./nav";
@@ -40,9 +38,9 @@ export function ResizableLayout({
 }: ResizableLayoutProps) {
 	const [isCollapsed, setIsCollapsed] = useState<boolean>(defaultCollapsed);
 
-	const { id: teamId } = useSelectedTeamStore();
-
-	const { data } = api.socials.getTwitterAccounts.useQuery({ id: teamId });
+	// Will be used to fetch the twitter accounts
+	// const { id: teamId } = useSelectedTeamStore();
+	// const { data } = api.socials.getTwitterAccounts.useQuery({ id: teamId });
 
 	return (
 		<TooltipProvider delayDuration={0}>

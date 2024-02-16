@@ -14,11 +14,9 @@ interface ApplicationLayoutProps {
 export default function PublishLayout({ children }: ApplicationLayoutProps) {
 	return (
 		<div className="h-screen">
-			<ResizableLayout
-				children={children}
-				defaultLayout={undefined}
-				navCollapsedSize={0}
-			/>
+			<ResizableLayout defaultLayout={undefined} navCollapsedSize={0}>
+				{children}
+			</ResizableLayout>
 		</div>
 	);
 }

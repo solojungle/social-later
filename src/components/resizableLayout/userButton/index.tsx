@@ -35,11 +35,11 @@ interface LinkItemsProps {
 function LinkItems({ links }: LinkItemsProps) {
 	return (
 		<div className="grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
-			{links.map((link, index) => {
+			{links.map((link) => {
 				if (link.action) {
 					return (
 						<button
-							key={index}
+							key={link.title}
 							type="button"
 							onClick={link.action}
 							className={cn(
@@ -56,7 +56,7 @@ function LinkItems({ links }: LinkItemsProps) {
 
 				return (
 					<Link
-						key={index}
+						key={link.title}
 						href="/publish"
 						className="inline-flex h-8 items-center justify-start whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 					>

@@ -3,8 +3,8 @@
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import { LinkTwitterButton } from ".";
 import { Button } from "../ui/button";
+import { OLDLinkTwitterButton } from ".";
 
 export function OLDLinkTwitterWrapper() {
 	const generateAuthLink = api.twitter.generateOAuth2URL.useQuery();
@@ -16,7 +16,7 @@ export function OLDLinkTwitterWrapper() {
 	}
 
 	return (
-		<LinkTwitterButton
+		<OLDLinkTwitterButton
 			teamId={teamId}
 			state={data.state}
 			codeVerifier={data.codeVerifier}

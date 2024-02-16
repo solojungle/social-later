@@ -19,7 +19,10 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { PostsSchemaValues } from "@/schemas/posts-schema";
+import {
+	CreatePostSchema,
+	CreatePostSchemaValues,
+} from "@/schemas/posts-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -70,8 +73,8 @@ function TweetForm({
 		},
 	});
 
-	const form = useForm<PostsSchemaValues>({
-		resolver: zodResolver(PostSchema),
+	const form = useForm<CreatePostSchemaValues>({
+		resolver: zodResolver(CreatePostSchema),
 	});
 
 	function onSubmit(data: any) {
@@ -84,6 +87,7 @@ function TweetForm({
 			title: "",
 			content: data.content,
 			media: [],
+			status: "published",
 			published: true,
 			scheduledFor: new Date(),
 			profileId,

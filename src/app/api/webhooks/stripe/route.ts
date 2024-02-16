@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
 			env.STRIPE_WEBHOOK_SECRET,
 		);
 	} catch (err) {
-		console.log(err);
 		return new Response("Bad request", {
 			status: 400,
 		});
@@ -73,7 +72,7 @@ export async function POST(req: NextRequest) {
 			// Cancel the subscription.
 			break;
 		default:
-			console.log(`Unhandled event type ${event.type}`);
+		// console.log(`Unhandled event type ${event.type}`);
 	}
 
 	return new Response("OK", {

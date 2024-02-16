@@ -33,40 +33,46 @@ function Posts({ posts }: PostsProps) {
 
 	return (
 		<div className="inline-flex max-h-screen flex-col divide-y overflow-scroll pr-5">
-			{posts.map((post) => (
-				<div key={post.id} className="flex items-center py-2">
-					<img
-						alt="Post media"
-						className="mr-4 h-16 w-16 rounded-xl"
-						src="https://picsum.photos/200"
-					/>
-					<div className="flex w-full flex-col">
-						<div className="mb-2 flex flex-col text-sm">
-							<div className="flex justify-between gap-14">
-								<p>{post.scheduledOn.toLocaleString()}</p>
-								<p
-									className={`text-xs font-semibold capitalize ${
-										post.status === "approved"
-											? "text-green-500"
-											: post.status === "rejected"
-											? "text-red-500"
-											: "text-yellow-500"
-									}`}
-								>
-									{post.status}
+			{posts.map((post) => {
+				const statusColor = {
+					approved: "text-green-500",
+					rejected: "text-red-500",
+					pending: "text-yellow-500",
+				};
+
+				return (
+					<div key={post.id} className="flex items-center py-2">
+						<img
+							alt="Post media"
+							className="mr-4 h-16 w-16 rounded-xl"
+							src="https://picsum.photos/200"
+						/>
+						<div className="flex w-full flex-col">
+							<div className="mb-2 flex flex-col text-sm">
+								<div className="flex justify-between gap-14">
+									<p>{post.scheduledOn.toLocaleString()}</p>
+									<p
+										className={`text-xs font-semibold capitalize ${
+											statusColor[post.status as keyof typeof statusColor]
+										}`}
+									>
+										{post.status}
+									</p>
+								</div>
+								<p className="line-clamp-1 text-muted-foreground">
+									{post.text}
 								</p>
 							</div>
-							<p className="line-clamp-1 text-muted-foreground">{post.text}</p>
-						</div>
-						<div className="flex flex-wrap space-x-1">
-							{post.tags.slice(0, 3).map((tag) => (
-								<Badge key={tag}>{tag}</Badge>
-							))}
-							{post.tags.length > 3 && <Badge>+{post.tags.length - 3}</Badge>}
+							<div className="flex flex-wrap space-x-1">
+								{post.tags.slice(0, 3).map((tag) => (
+									<Badge key={tag}>{tag}</Badge>
+								))}
+								{post.tags.length > 3 && <Badge>+{post.tags.length - 3}</Badge>}
+							</div>
 						</div>
 					</div>
-				</div>
-			))}
+				);
+			})}
 		</div>
 	);
 }

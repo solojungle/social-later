@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-import { PostsSchema } from "@/schemas/posts-schema";
+import { CreatePostSchema } from "@/schemas/posts-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
 	create: protectedProcedure
-		.input(PostsSchema)
+		.input(CreatePostSchema)
 		.mutation(async ({ ctx, input }) => {
 			if (input.media) {
 				return ctx.db.post.create({

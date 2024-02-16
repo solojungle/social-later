@@ -1,4 +1,3 @@
-import { CreatePost } from "../createPost";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 // import { NotificationButton } from "./notificationButton";
 import { NotificationContent } from "./notificationContent";
@@ -10,7 +9,7 @@ export function NavigationBar() {
 		<div className="flex h-16 items-center px-4">
 			{/* <TeamSwitcher /> */}
 			<TextLinks className="mx-6" />
-			<CreatePost />
+			{/* <CreatePost /> */}
 			<div className="ml-auto flex items-center space-x-4">
 				<Popover>
 					<PopoverTrigger asChild>
