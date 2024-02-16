@@ -5,8 +5,8 @@ export function Onboarding() {
 		<div className="flex h-screen flex-col items-center justify-center">
 			Which of the following best describes you?
 			<div className="flex space-x-4">
-				<button>Individual</button>
-				<button>Business</button>
+				<button type="button">Individual</button>
+				<button type="button">Business</button>
 			</div>
 			<KYC />
 			<div>
@@ -17,21 +17,21 @@ export function Onboarding() {
 				</p>
 				Whats your day to day role?
 				<div>
-					<button>Developer</button>
-					<button>Designer</button>
-					<button>Product Manager</button>
-					<button>Self employed</button>
-					<button>Other</button>
+					<button type="button">Developer</button>
+					<button type="button">Designer</button>
+					<button type="button">Product Manager</button>
+					<button type="button">Self employed</button>
+					<button type="button">Other</button>
 				</div>
 			</div>
 			<div>
 				Whats your top goal for using this platform?
 				<div>
-					<button>Learn</button>
-					<button>Connect</button>
-					<button>Find work</button>
-					<button>Grow my business</button>
-					<button>Other</button>
+					<button type="button">Learn</button>
+					<button type="button">Connect</button>
+					<button type="button">Find work</button>
+					<button type="button">Grow my business</button>
+					<button type="button">Other</button>
 				</div>
 			</div>
 			<div>
