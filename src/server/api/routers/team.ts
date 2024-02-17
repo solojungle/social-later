@@ -118,7 +118,6 @@ export const teamRouter = createTRPCRouter({
 				url: true,
 				type: true,
 				image: true,
-				imageFallbackInitials: true,
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {

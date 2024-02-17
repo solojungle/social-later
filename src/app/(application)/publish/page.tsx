@@ -8,10 +8,10 @@ import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 export default function PublishPage() {
-	const { type } = useSelectedTeamStore();
+	const { id } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
 
-	if (!type || type === "personal") {
+	if (!id || id === "") {
 		return (
 			<ResizablePanel minSize={30}>
 				<div className="flex h-full flex-col items-center justify-center">

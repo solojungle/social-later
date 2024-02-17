@@ -59,8 +59,6 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 		onSuccess: (data) => {
 			addTeam({
 				...data.team,
-				type: "team",
-				imageFallbackInitials: "",
 			});
 
 			toast.success("Successfully created your team!", {

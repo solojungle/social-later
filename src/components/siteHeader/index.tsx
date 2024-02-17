@@ -10,40 +10,19 @@ export function SiteHeader() {
 
 	const { data: profilesData } = api.socials.getTwitterAccounts.useQuery(
 		{
-			id: teamsData?.[0]?.team.id || "",
+			id: teamsData?.[0]?.id || "",
 		},
 		{
 			enabled: !!teamsData,
 		},
 	);
 
-	if (!userData || !teamsData) {
-		return null;
-	}
-
-	const teamsArray = teamsData.map((team) => team.team);
-
-	// Now create a new teams array that has the properties: type, and imageFallbackInitials
-	const teamsArrayWithProperties = teamsArray.map((team) => {
-		return {
-			...team,
-			type: "team",
-			imageFallbackInitials: "TT",
-		};
-	});
-
-	const userWithProperties = {
-		...userData,
-		type: "personal",
-		imageFallbackInitials: "AA",
-	};
-
 	return (
 		<header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-			{profilesData && (
+			{profilesData && userData && (
 				<StoreInitializer
-					user={{ ...userWithProperties }}
-					teams={teamsArrayWithProperties}
+					user={{ ...userData }}
+					teams={teamsData || []}
 					profiles={profilesData || []}
 				/>
 			)}

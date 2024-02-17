@@ -22,7 +22,6 @@ export const UserSchema = z.object({
 		}),
 	type: z.string(),
 	image: z.string(),
-	imageFallbackInitials: z.string(),
 });
 
 export type UserSchemaValues = z.infer<typeof UserSchema>;
@@ -34,7 +33,6 @@ export const userStoreDefaultValues: UserSchemaValues = {
 	url: "",
 	type: "",
 	image: "",
-	imageFallbackInitials: "",
 };
 
 export const TeamMembers = UserSchema.pick({

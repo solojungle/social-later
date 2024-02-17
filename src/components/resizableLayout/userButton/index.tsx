@@ -71,7 +71,7 @@ function LinkItems({ links }: LinkItemsProps) {
 
 export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 	const router = useRouter();
-	const { email, name, image, imageFallbackInitials } = useUserStore();
+	const { email, name, image } = useUserStore();
 
 	return (
 		<div className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2">
@@ -89,7 +89,7 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 							>
 								<Avatar className="h-6 w-6">
 									<AvatarImage src={image} alt={name} />
-									<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+									<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 								</Avatar>
 								<span className="sr-only">User</span>
 							</Link>
@@ -109,7 +109,7 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 						>
 							<Avatar className="mr-2 h-6 w-6">
 								<AvatarImage src={image} alt={name} />
-								<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+								<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 							</Avatar>
 							{email || name}
 							<ChevronsUpDown className="ml-auto h-4 w-4" />

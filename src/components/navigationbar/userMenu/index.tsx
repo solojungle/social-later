@@ -23,7 +23,7 @@ import {
 import { useUserStore } from "@/stores/user";
 
 export function UserMenu() {
-	const { email, name, image, imageFallbackInitials } = useUserStore();
+	const { email, name, image } = useUserStore();
 
 	return (
 		<DropdownMenu>
@@ -31,7 +31,7 @@ export function UserMenu() {
 				<Button variant="ghost" className="relative gap-2 rounded-lg">
 					<Avatar className="h-8 w-8">
 						<AvatarImage src={image} alt={name} />
-						<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+						<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 					</Avatar>
 					<ChevronDown className="h-4 w-4 text-muted-foreground" />
 				</Button>

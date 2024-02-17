@@ -1,13 +1,5 @@
-import { CheckIcon } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CommandGroup, CommandItem } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { useSelectedTeamStore } from "@/stores/selected-team";
-import { useUserStore } from "@/stores/user";
-
-import { handleLinkClick } from "../utils";
+import { Button } from "@/components/ui/button";
+import { CommandGroup } from "@/components/ui/command";
 
 type PersonalCommandGroupProps = {
 	setOpen: (open: boolean) => void;
@@ -16,19 +8,24 @@ type PersonalCommandGroupProps = {
 export default function PersonalCommandGroup({
 	setOpen,
 }: PersonalCommandGroupProps) {
-	const { image, imageFallbackInitials, name, type } = useUserStore();
+	// const { image, name } = useUserStore();
 
-	const { type: teamType, name: selectedTeamName } = useSelectedTeamStore();
+	// const { name: selectedTeamName } = useSelectedTeamStore();
 
-	const pathName = usePathname();
+	// const pathName = usePathname();
 
-	const { id } = useParams();
+	// const { id } = useParams();
 
-	const router = useRouter();
+	// const router = useRouter();
 
 	return (
 		<CommandGroup key="personal" heading="Personal Account">
-			<CommandItem
+			<Button
+				onClick={() => {
+					setOpen(false);
+				}}
+			/>
+			{/* <CommandItem
 				key={name}
 				onSelect={() => {
 					useSelectedTeamStore.setState({
@@ -36,8 +33,6 @@ export default function PersonalCommandGroup({
 						name,
 						image,
 						url: "",
-						type,
-						imageFallbackInitials,
 					});
 
 					setOpen(false);
@@ -58,7 +53,7 @@ export default function PersonalCommandGroup({
 			>
 				<Avatar className="mr-2 h-5 w-5">
 					<AvatarImage src={image} alt={name} />
-					<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+					<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 				</Avatar>
 				{name}
 				<CheckIcon
@@ -67,7 +62,7 @@ export default function PersonalCommandGroup({
 						selectedTeamName === name ? "opacity-100" : "opacity-0",
 					)}
 				/>
-			</CommandItem>
+			</CommandItem> */}
 		</CommandGroup>
 	);
 }

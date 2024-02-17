@@ -31,7 +31,14 @@ export const userRouter = createTRPCRouter({
 		const teams = await ctx.db.userOnTeam.findMany({
 			where: { userId: ctx.session.user.id },
 			select: {
-				team: true,
+				team: {
+					select: {
+						id: true,
+						name: true,
+						url: true,
+						image: true,
+					},
+				},
 			},
 		});
 		if (!teams) {
@@ -40,7 +47,10 @@ export const userRouter = createTRPCRouter({
 				message: `No teams belong to user with id '${ctx.session.user.id}'`,
 			});
 		}
-		return teams;
+
+		// Remove the "team" key from the response
+		// and return only the teams
+		return teams.map((team) => team.team);
 	}),
 
 	updateUser: protectedProcedure

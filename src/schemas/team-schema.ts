@@ -19,9 +19,7 @@ export const TeamSchema = z.object({
 		.max(48, {
 			message: "URL must not be longer than 48 characters.",
 		}),
-	type: z.string(),
 	image: z.string(),
-	imageFallbackInitials: z.string(),
 });
 
 export type TeamSchemaValues = z.infer<typeof TeamSchema>;
@@ -30,9 +28,7 @@ export const teamStoreDefaultValues: TeamSchemaValues = {
 	id: "",
 	name: "",
 	url: "",
-	type: "",
 	image: "",
-	imageFallbackInitials: "",
 };
 
 export const TeamCreationSchema = z.object({

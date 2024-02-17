@@ -211,9 +211,9 @@ export function CreatePost({
 	profileId: string;
 	className?: string;
 }) {
-	const { id: teamId, type } = useSelectedTeamStore();
+	const { id: teamId } = useSelectedTeamStore();
 
-	if (type === "personal") {
+	if (!teamId || teamId === "" || !profileId || profileId === "") {
 		return null;
 	}
 

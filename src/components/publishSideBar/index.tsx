@@ -27,12 +27,9 @@ export function PublishSidebar({
 	accountItems,
 	...props
 }: SidebarNavProps) {
-	const { image, imageFallbackInitials, name } = useUserStore();
-	const {
-		image: selectedTeamImage,
-		name: selectedTeamName,
-		imageFallbackInitials: selectedImageFallbackInitials,
-	} = useSelectedTeamStore();
+	const { image, name } = useUserStore();
+	const { image: selectedTeamImage, name: selectedTeamName } =
+		useSelectedTeamStore();
 
 	const pathname = usePathname();
 
@@ -49,7 +46,7 @@ export function PublishSidebar({
 					<div className="xs:mb-2 flex items-center">
 						<Avatar className="h-4 w-4">
 							<AvatarImage src={selectedTeamImage} alt={selectedTeamName} />
-							<AvatarFallback>{selectedImageFallbackInitials}</AvatarFallback>
+							<AvatarFallback>{selectedTeamName?.[0] ?? ""}</AvatarFallback>
 						</Avatar>
 						<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
 							Team
@@ -76,7 +73,7 @@ export function PublishSidebar({
 				<div className="xs:mb-2 flex items-center">
 					<Avatar className="h-4 w-4">
 						<AvatarImage src={image} alt={name} />
-						<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+						<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 					</Avatar>
 					<h2 className="ml-3 text-xs font-medium uppercase text-muted-foreground">
 						Account

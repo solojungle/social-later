@@ -10,10 +10,9 @@ export function TextLinks({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLElement>) {
-	const { type, url } = useSelectedTeamStore();
+	const { url } = useSelectedTeamStore();
 	const pathname = usePathname();
-	const settingsUrl =
-		type === "personal" ? "/settings" : `/teams/${url}/settings`;
+	const settingsUrl = `/teams/${url}/settings`;
 
 	return (
 		<nav

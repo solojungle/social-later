@@ -8,7 +8,6 @@ import { TeamSchemaValues } from "@/schemas/team-schema";
 import { UserSchemaValues } from "@/schemas/user-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { useTeamStore } from "@/stores/teams";
 import { useUserStore } from "@/stores/user";
 
 export function StoreInitializer({
@@ -44,7 +43,7 @@ export function StoreInitializer({
 			// 	useSelectedTeamStore.setState(user);
 			// }
 
-			useTeamStore.setState({ teams });
+			// useTeamStore.setState({ teams });
 			useSocialProfilesStore.setState({
 				profiles,
 				currentProfileId: profiles[0]?.id,

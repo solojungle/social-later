@@ -15,11 +15,8 @@ export default function TeamSwitcherPopoverTrigger({
 	className,
 	open,
 }: TeamSwitcherPopoverTriggerProps) {
-	const {
-		name: selectedTeamName,
-		image: selectedTeamImage,
-		imageFallbackInitials: selectedTeamImageFallbackInitials,
-	} = useSelectedTeamStore();
+	const { name: selectedTeamName, image: selectedTeamImage } =
+		useSelectedTeamStore();
 
 	return (
 		<PopoverTrigger asChild>
@@ -32,7 +29,7 @@ export default function TeamSwitcherPopoverTrigger({
 			>
 				<Avatar className="mr-2 h-5 w-5">
 					<AvatarImage src={selectedTeamImage} alt={selectedTeamName} />
-					<AvatarFallback>{selectedTeamImageFallbackInitials}</AvatarFallback>
+					<AvatarFallback>{selectedTeamName?.[0] ?? ""}</AvatarFallback>
 				</Avatar>
 				<span title={selectedTeamName} className="overflow-hidden truncate">
 					{selectedTeamName}

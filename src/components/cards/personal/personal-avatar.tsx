@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalAvatarCard() {
-	const { image, imageFallbackInitials, name } = useUserStore();
+	const { image, name } = useUserStore();
 
 	const defaultValues = {
 		image,
@@ -63,7 +63,8 @@ export function PersonalAvatarCard() {
 							/>
 							<Avatar className="mr-2 h-20 w-20">
 								<AvatarImage src={image} alt={name} />
-								<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+								{/* imageFallbackInitials */}
+								<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 							</Avatar>
 						</>
 					}

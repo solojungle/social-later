@@ -20,7 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamAvatarCard() {
-	const { image, name, imageFallbackInitials } = useSelectedTeamStore();
+	const { image, name } = useSelectedTeamStore();
 
 	const defaultValues = {
 		image,
@@ -66,7 +66,7 @@ export function TeamAvatarCard() {
 							/>
 							<Avatar className="mr-2 h-20 w-20">
 								<AvatarImage src={image} alt={name} />
-								<AvatarFallback>{imageFallbackInitials}</AvatarFallback>
+								<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 							</Avatar>
 						</>
 					}

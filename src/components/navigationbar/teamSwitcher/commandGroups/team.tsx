@@ -37,9 +37,7 @@ export default function TeamCommandGroup({
 							id: team.id,
 							name: team.name,
 							url: team.url,
-							type: team.type,
 							image: team.image,
-							imageFallbackInitials: team.imageFallbackInitials,
 						});
 
 						setOpen(false);
@@ -58,7 +56,7 @@ export default function TeamCommandGroup({
 				>
 					<Avatar className="mr-2 h-5 w-5">
 						<AvatarImage src={team.image} alt={team.name} />
-						<AvatarFallback>{team.imageFallbackInitials}</AvatarFallback>
+						<AvatarFallback>{team.name?.[0] ?? ""}</AvatarFallback>
 					</Avatar>
 					<span title={team.name} className="overflow-hidden truncate">
 						{team.name}
