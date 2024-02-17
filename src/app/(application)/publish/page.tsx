@@ -1,15 +1,29 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
+
 import AddSocialProfile from "@/components/addSocialProfileButton";
 import CreateTeamButton from "@/components/createTeamButton";
 import { PublishPageContent } from "@/components/publishPageContent";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
+import { useUserStore } from "@/stores/user";
 
 export default function PublishPage() {
 	const { id } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
+	const { id: userId } = useUserStore();
+
+	if (!userId) {
+		return (
+			<ResizablePanel minSize={30}>
+				<div className="flex h-full flex-col items-center justify-center">
+					<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+				</div>
+			</ResizablePanel>
+		);
+	}
 
 	if (!id || id.length === 0) {
 		return (
