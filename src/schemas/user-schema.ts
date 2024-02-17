@@ -20,7 +20,6 @@ export const UserSchema = z.object({
 		.max(48, {
 			message: "Name must not be longer than 48 characters.",
 		}),
-	type: z.string(),
 	image: z.string(),
 });
 
@@ -31,7 +30,6 @@ export const userStoreDefaultValues: UserSchemaValues = {
 	name: "",
 	email: "",
 	url: "",
-	type: "",
 	image: "",
 };
 

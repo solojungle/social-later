@@ -1,13 +1,10 @@
 import { CheckIcon } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CommandGroup, CommandItem } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamStore } from "@/stores/teams";
-
-import { handleLinkClick } from "../utils";
 
 type PersonalCommandGroupProps = {
 	setOpen: (open: boolean) => void;
@@ -16,16 +13,15 @@ type PersonalCommandGroupProps = {
 export default function TeamCommandGroup({
 	setOpen,
 }: PersonalCommandGroupProps) {
-	const { type: selectedTeamType, name: selectedTeamName } =
-		useSelectedTeamStore();
+	const { name: selectedTeamName } = useSelectedTeamStore();
 
-	const pathName = usePathname();
+	// const pathName = usePathname();
 
 	const { teams } = useTeamStore();
 
-	const { id } = useParams();
+	// const { id } = useParams();
 
-	const router = useRouter();
+	// const router = useRouter();
 
 	return (
 		<CommandGroup key="teams" heading="Teams">
@@ -42,15 +38,15 @@ export default function TeamCommandGroup({
 
 						setOpen(false);
 
-						router.push(
-							handleLinkClick({
-								selectedAccountType: selectedTeamType,
-								incomingAccountType: "team",
-								pathName,
-								teamUrl: team.url,
-								id,
-							}),
-						);
+						// router.push(
+						// 	handleLinkClick({
+						// 		selectedAccountType: selectedTeamType,
+						// 		incomingAccountType: "team",
+						// 		pathName,
+						// 		teamUrl: team.url,
+						// 		id,
+						// 	}),
+						// );
 					}}
 					className="text-sm"
 				>

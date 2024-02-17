@@ -19,7 +19,7 @@ export function SiteHeader() {
 
 	return (
 		<header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-			{profilesData && userData && (
+			{!!userData && (
 				<StoreInitializer
 					user={{ ...userData }}
 					teams={teamsData || []}

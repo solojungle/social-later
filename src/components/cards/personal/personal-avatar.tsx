@@ -63,7 +63,6 @@ export function PersonalAvatarCard() {
 							/>
 							<Avatar className="mr-2 h-20 w-20">
 								<AvatarImage src={image} alt={name} />
-								{/* imageFallbackInitials */}
 								<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
 							</Avatar>
 						</>
