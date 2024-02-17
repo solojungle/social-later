@@ -11,7 +11,7 @@ export default function PublishPage() {
 	const { id } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
 
-	if (!id || id === "") {
+	if (!id || id.length === 0) {
 		return (
 			<ResizablePanel minSize={30}>
 				<div className="flex h-full flex-col items-center justify-center">

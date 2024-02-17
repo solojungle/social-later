@@ -1,5 +1,6 @@
 "use client";
 
+import { TeamSchema } from "@/schemas/team-schema";
 import { api } from "@/trpc/react";
 
 import { StoreInitializer } from "../storeInitializer";
@@ -10,10 +11,13 @@ export function SiteHeader() {
 
 	const { data: profilesData } = api.socials.getTwitterAccounts.useQuery(
 		{
-			id: teamsData?.[0]?.id || "",
+			// Use the non-nullable assertion operator to assert that the value is not null or undefined
+			id: teamsData?.[0]?.id!,
 		},
 		{
-			enabled: !!teamsData,
+			// Use the safeParse method to safely parse the data
+			enabled: TeamSchema.pick({ id: true }).safeParse(teamsData?.[0]?.id)
+				.success,
 		},
 	);
 

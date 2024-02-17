@@ -27,7 +27,7 @@ export function StoreInitializer({
 		if (!isInitialized.current) {
 			useUserStore.setState(user);
 
-			useSelectedTeamStore.setState(teams[0] || user);
+			useSelectedTeamStore.setState(teams[0] || {});
 
 			// if (params.id) {
 			// 	const selectedTeam = teams.find((team) => team.url === params.id);
