@@ -94,7 +94,7 @@ export function ResizableLayout({
 								links={[
 									{
 										title: "Notifications",
-										label: "128",
+										label: "",
 										icon: BellIcon,
 										variant: "ghost",
 									},
