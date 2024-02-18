@@ -60,7 +60,12 @@ export default function SettingsLayout({
 		// 		<div className="flex-1 lg:max-w-4xl">{children}</div>
 		// 	</div>
 		// </div>
-		<ResizablePanel minSize={70} className="!overflow-scroll p-3 pb-48">
+		<ResizablePanel
+			id="team-settings"
+			order={2}
+			defaultSize={80}
+			className="!overflow-scroll p-3 pb-48"
+		>
 			{children}
 		</ResizablePanel>
 	);

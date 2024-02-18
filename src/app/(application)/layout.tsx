@@ -24,9 +24,7 @@ export default function ApplicationLayout({
 	return (
 		<div className={`h-screen font-sans ${inter.variable}`}>
 			<SiteHeader />
-			<ResizableLayout defaultLayout={undefined} navCollapsedSize={0}>
-				{children}
-			</ResizableLayout>
+			<ResizableLayout navCollapsedSize={0}>{children}</ResizableLayout>
 		</div>
 	);
 }

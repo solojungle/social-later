@@ -23,8 +23,14 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
 	return (
-		<ResizablePanel minSize={70} className="!overflow-scroll p-3 pb-48">
-			<div>{children}</div>
+		<ResizablePanel
+			id="personal-settings"
+			collapsible={false}
+			order={2}
+			defaultSize={80}
+			className="!overflow-scroll p-3 pb-48"
+		>
+			{children}
 		</ResizablePanel>
 	);
 }

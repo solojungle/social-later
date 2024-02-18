@@ -21,14 +21,8 @@ export const PublishPageContent = () => {
 	);
 
 	return (
-		<>
-			{/* <ResizablePanel minSize={30}>
-				<PlannedPosts posts={fakePosts} />
-			</ResizablePanel>
-			<ResizableHandle withHandle /> */}
-			<ResizablePanel minSize={30} className="p-3">
-				<PostsCalendar posts={posts} profileId={profileId} />
-			</ResizablePanel>
-		</>
+		<ResizablePanel id="calendar" order={2} defaultSize={80} className="p-3">
+			<PostsCalendar posts={posts} profileId={profileId} />
+		</ResizablePanel>
 	);
 };

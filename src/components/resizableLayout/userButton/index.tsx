@@ -77,27 +77,29 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 		<div className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2">
 			<div className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
 				{isCollapsed ? (
-					<Tooltip delayDuration={0}>
-						<TooltipTrigger asChild>
-							<Link
-								href="/publish"
-								className={cn(
-									buttonVariants({ variant: "ghost", size: "icon" }),
-									"h-9 w-9",
-									"dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
-								)}
-							>
-								<Avatar className="h-6 w-6">
-									<AvatarImage src={image} alt={name} />
-									<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
-								</Avatar>
-								<span className="sr-only">User</span>
-							</Link>
-						</TooltipTrigger>
-						<TooltipContent side="right" className="flex items-center gap-4">
-							User
-						</TooltipContent>
-					</Tooltip>
+					<div className="flex items-center justify-center">
+						<Tooltip delayDuration={0}>
+							<TooltipTrigger asChild>
+								<Link
+									href="/publish"
+									className={cn(
+										buttonVariants({ variant: "ghost", size: "icon" }),
+										"h-9 w-9",
+										"dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
+									)}
+								>
+									<Avatar className="h-6 w-6">
+										<AvatarImage src={image} alt={name} />
+										<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
+									</Avatar>
+									<span className="sr-only">User</span>
+								</Link>
+							</TooltipTrigger>
+							<TooltipContent side="right" className="flex items-center gap-4">
+								User
+							</TooltipContent>
+						</Tooltip>
+					</div>
 				) : (
 					<Collapsible>
 						<CollapsibleTrigger

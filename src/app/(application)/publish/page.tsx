@@ -17,7 +17,7 @@ export default function PublishPage() {
 
 	if (!userId) {
 		return (
-			<ResizablePanel minSize={30}>
+			<ResizablePanel id="no-user-loading" order={2} defaultSize={80}>
 				<div className="flex h-full flex-col items-center justify-center">
 					<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
 				</div>
@@ -27,7 +27,7 @@ export default function PublishPage() {
 
 	if (!id || id.length === 0) {
 		return (
-			<ResizablePanel minSize={30}>
+			<ResizablePanel id="no-team" order={2} defaultSize={80}>
 				<div className="flex h-full flex-col items-center justify-center">
 					<h2 className="mb-4">
 						Please join or create a team to view the calendar.
@@ -41,7 +41,7 @@ export default function PublishPage() {
 	// If the user hasn't added any social profiles, show the add social profile button
 	if (!profiles || profiles.length === 0) {
 		return (
-			<ResizablePanel minSize={30}>
+			<ResizablePanel id="no-profiles" order={2} defaultSize={80}>
 				<div className="flex h-full flex-col items-center justify-center">
 					<h2 className="mb-4">
 						Please add a social profile to view the calendar.

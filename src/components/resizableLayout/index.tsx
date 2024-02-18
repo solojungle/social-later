@@ -25,14 +25,12 @@ import { CollapsibleUserMenu } from "./userButton";
 
 interface ResizableLayoutProps {
 	children: React.ReactNode;
-	defaultLayout: number[] | undefined;
 	defaultCollapsed?: boolean;
 	navCollapsedSize: number;
 }
 
 export function ResizableLayout({
 	children,
-	defaultLayout = [265, 440, 655],
 	defaultCollapsed = false,
 	navCollapsedSize,
 }: ResizableLayoutProps) {
@@ -44,9 +42,9 @@ export function ResizableLayout({
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<ResizablePanelGroup direction="horizontal">
+			<ResizablePanelGroup autoSaveId="conditional" direction="horizontal">
 				<ResizablePanel
-					defaultSize={defaultLayout[0]}
+					order={1}
 					collapsedSize={navCollapsedSize}
 					collapsible
 					minSize={15}
