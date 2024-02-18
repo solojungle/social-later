@@ -64,17 +64,22 @@ function TweetForm({
 
 	const tweet = api.socials.postTweet.useMutation({});
 
+	const utils = api.useUtils();
+
 	const createPost = api.post.create.useMutation({
 		onSuccess() {
 			toast.success("Successfully created your post!", {});
 		},
 		onSettled() {
 			setLoading(false);
+
+			// Invalidate the query so we can refetch the data
+			utils.post.getAll.invalidate();
 		},
 	});
 
 	const form = useForm<CreatePostSchemaValues>({
-		resolver: zodResolver(CreatePostSchema),
+		resolver: zodResolver(CreatePostSchema.pick({ content: true })),
 	});
 
 	function onSubmit(data: any) {
