@@ -10,23 +10,26 @@ export function SiteHeader() {
 	const { data: teamsData, isLoading: teamIsLoading } =
 		api.user.getTeams.useQuery();
 
-	const { data: profilesData, isLoading: profilesIsLoading } =
-		api.socials.getTwitterAccounts.useQuery(
-			{
-				// Use the non-nullable assertion operator to assert that the value is not null or undefined
-				id: teamsData?.[0]?.id!,
-			},
-			{
-				// Use the safeParse method to safely parse the data
-				enabled: TeamSchema.pick({ id: true }).safeParse({
-					id: teamsData?.[0]?.id,
-				}).success,
-			},
-		);
+	const {
+		data: profilesData,
+		isLoading: profilesIsLoading,
+		isFetching,
+	} = api.socials.getTwitterAccounts.useQuery(
+		{
+			// Use the non-nullable assertion operator to assert that the value is not null or undefined
+			id: teamsData?.[0]?.id!,
+		},
+		{
+			// Use the safeParse method to safely parse the data
+			enabled: TeamSchema.pick({ id: true }).safeParse({
+				id: teamsData?.[0]?.id,
+			}).success,
+		},
+	);
 
 	return (
 		<div>
-			{!!userData && !profilesIsLoading && !teamIsLoading && (
+			{!!userData && (!profilesIsLoading || !isFetching) && !teamIsLoading && (
 				<StoreInitializer
 					user={{ ...userData }}
 					teams={teamsData || []}
