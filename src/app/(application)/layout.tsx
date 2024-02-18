@@ -1,6 +1,7 @@
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { ResizableLayout } from "@/components/resizableLayout";
 import { SiteHeader } from "@/components/siteHeader";
 
 export const metadata: Metadata = {
@@ -21,9 +22,11 @@ export default function ApplicationLayout({
 	children,
 }: ApplicationLayoutProps) {
 	return (
-		<div className={`min-h-screen font-sans ${inter.variable}`}>
+		<div className={`h-screen font-sans ${inter.variable}`}>
 			<SiteHeader />
-			{children}
+			<ResizableLayout defaultLayout={undefined} navCollapsedSize={0}>
+				{children}
+			</ResizableLayout>
 		</div>
 	);
 }

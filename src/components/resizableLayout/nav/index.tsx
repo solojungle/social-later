@@ -33,7 +33,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
 						<Tooltip key={link.title} delayDuration={0}>
 							<TooltipTrigger asChild>
 								<Link
-									href="/publish"
+									href={`/${link.title.toLowerCase()}`}
 									className={cn(
 										buttonVariants({ variant: link.variant, size: "icon" }),
 										"h-9 w-9",
@@ -57,7 +57,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
 					) : (
 						<Link
 							key={link.title}
-							href="/publish"
+							href={`/${link.title.toLowerCase()}`}
 							className={cn(
 								buttonVariants({ variant: link.variant, size: "sm" }),
 								link.variant === "default" &&

@@ -25,7 +25,7 @@ export function SiteHeader() {
 		);
 
 	return (
-		<header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+		<div>
 			{!!userData && !profilesIsLoading && !teamIsLoading && (
 				<StoreInitializer
 					user={{ ...userData }}
@@ -33,7 +33,6 @@ export function SiteHeader() {
 					profiles={profilesData || []}
 				/>
 			)}
-			{/* <NavigationBar /> */}
-		</header>
+		</div>
 	);
 }

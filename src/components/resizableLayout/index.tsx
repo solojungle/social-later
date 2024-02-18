@@ -63,7 +63,7 @@ export function ResizableLayout({
 							isCollapsed={isCollapsed}
 							links={[
 								{
-									title: "Calendar",
+									title: "Publish",
 									label: "",
 									icon: Calendar,
 									variant: "default",
