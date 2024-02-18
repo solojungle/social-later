@@ -2,20 +2,20 @@
 
 import { ResizablePanel } from "@/components/ui/resizable";
 
-const accountNavItems = [
-	{
-		title: "Account",
-		href: "/settings",
-	},
-	{
-		title: "Notifications",
-		href: "/settings/notifications",
-	},
-	// {
-	// 	title: "Security",
-	// 	href: "/settings/security",
-	// },
-];
+// const accountNavItems = [
+// 	{
+// 		title: "Account",
+// 		href: "/settings",
+// 	},
+// 	{
+// 		title: "Notifications",
+// 		href: "/settings/notifications",
+// 	},
+// 	// {
+// 	// 	title: "Security",
+// 	// 	href: "/settings/security",
+// 	// },
+// ];
 
 interface SettingsLayoutProps {
 	children: React.ReactNode;

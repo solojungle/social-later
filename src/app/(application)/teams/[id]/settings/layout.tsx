@@ -9,40 +9,39 @@ import { ResizablePanel } from "@/components/ui/resizable";
 
 interface SettingsLayoutProps {
 	children: React.ReactNode;
-	params: { id: string };
+	// params: { id: string };
 }
 
 export default function SettingsLayout({
-	children,
-	params,
+	children, // params,
 }: SettingsLayoutProps) {
-	const { id } = params;
+	// const { id } = params;
 
-	const accountNavItems = [
-		{
-			title: "Notifications",
-			href: `/teams/${id}/settings/notifications`,
-		},
-	];
+	// const accountNavItems = [
+	// 	{
+	// 		title: "Notifications",
+	// 		href: `/teams/${id}/settings/notifications`,
+	// 	},
+	// ];
 
-	const teamNavItems = [
-		{
-			title: "General",
-			href: `/teams/${id}/settings`,
-		},
-		{
-			title: "Billing",
-			href: `/teams/${id}/settings/billing`,
-		},
-		{
-			title: "Members",
-			href: `/teams/${id}/settings/members`,
-		},
-		// {
-		// 	title: "Security",
-		// 	href: `/teams/${id}/settings/security`,
-		// },
-	];
+	// const teamNavItems = [
+	// 	{
+	// 		title: "General",
+	// 		href: `/teams/${id}/settings`,
+	// 	},
+	// 	{
+	// 		title: "Billing",
+	// 		href: `/teams/${id}/settings/billing`,
+	// 	},
+	// 	{
+	// 		title: "Members",
+	// 		href: `/teams/${id}/settings/members`,
+	// 	},
+	// 	// {
+	// 	// 	title: "Security",
+	// 	// 	href: `/teams/${id}/settings/security`,
+	// 	// },
+	// ];
 
 	return (
 		// <div className="space-y-6 p-4 pb-16 sm:p-10 md:block">
