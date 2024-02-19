@@ -79,14 +79,8 @@ export async function GET(req: NextRequest) {
 				expiresIn,
 			},
 		});
-
-		return new Response("Being redirected back to the app...", {
-			status: 200,
-		});
 	} catch (error) {
-		return new Response("Something went wrong", {
-			status: 500,
-		});
+		console.error(error);
 	} finally {
 		redirect("/publish");
 	}
