@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
@@ -11,34 +10,36 @@ import { client } from "@/server/services/twitter/client";
  * This is the callback route for Twitter OAuth.
  */
 export async function GET(req: NextRequest) {
+	// Get the code and state from the URL query
+	const url = req.nextUrl;
+	const code = url.searchParams.get("code");
+	const state = url.searchParams.get("state");
+	const cookieStore = cookies();
+
+	const codeVerifier = cookieStore.get("codeVerifier")?.value;
+	const sessionState = cookieStore.get("state")?.value;
+	const teamId = cookieStore.get("teamId")?.value;
+
+	if (!code || !state || !sessionState || !codeVerifier || !teamId) {
+		// return new Response("You denied the app or your session expired", {
+		// 	status: 403,
+		// });
+		redirect("/publish");
+	}
+
+	// Delete the cookies
+	cookieStore.delete("codeVerifier");
+	cookieStore.delete("state");
+	cookieStore.delete("teamId");
+
+	if (state !== sessionState) {
+		// return new Response("Stored tokens didnt match", {
+		// 	status: 403,
+		// });
+		redirect("/publish");
+	}
+
 	try {
-		// Get the code and state from the URL query
-		const url = new URL(req.url);
-		const code = url.searchParams.get("code");
-		const state = url.searchParams.get("state");
-		const cookieStore = cookies();
-
-		const codeVerifier = cookieStore.get("codeVerifier")?.value;
-		const sessionState = cookieStore.get("state")?.value;
-		const teamId = cookieStore.get("teamId")?.value;
-
-		if (!code || !state || !sessionState || !codeVerifier || !teamId) {
-			return new Response("You denied the app or your session expired", {
-				status: 403,
-			});
-		}
-
-		// Delete the cookies
-		cookieStore.delete("codeVerifier");
-		cookieStore.delete("state");
-		cookieStore.delete("teamId");
-
-		if (state !== sessionState) {
-			return new Response("Stored tokens didnt match", {
-				status: 403,
-			});
-		}
-
 		const {
 			client: loggedClient,
 			accessToken,
@@ -51,9 +52,10 @@ export async function GET(req: NextRequest) {
 		});
 
 		if (!refreshToken) {
-			return new Response("No refresh token", {
-				status: 500,
-			});
+			// return new Response("No refresh token", {
+			// 	status: 500,
+			// });
+			redirect("/publish");
 		}
 
 		// Get the user object
