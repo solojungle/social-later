@@ -18,6 +18,7 @@ interface NavProps {
 		label?: string;
 		icon: LucideIcon;
 		variant: "default" | "ghost" | "disabled";
+		url?: string;
 	}[];
 }
 
@@ -33,7 +34,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
 						<Tooltip key={link.title} delayDuration={0}>
 							<TooltipTrigger asChild>
 								<Link
-									href={`/${link.title.toLowerCase()}`}
+									href={`/${link.url}`}
 									className={cn(
 										buttonVariants({ variant: link.variant, size: "icon" }),
 										"h-9 w-9",
@@ -57,7 +58,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
 					) : (
 						<Link
 							key={link.title}
-							href={`/${link.title.toLowerCase()}`}
+							href={`/${link.url}`}
 							className={cn(
 								buttonVariants({ variant: link.variant, size: "sm" }),
 								link.variant === "default" &&

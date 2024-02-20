@@ -10,6 +10,7 @@ import {
 	SettingsIcon,
 	Trash2,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -29,6 +30,10 @@ interface ResizableLayoutProps {
 	navCollapsedSize: number;
 }
 
+function isCurrentTab(path: string, url: string) {
+	return path === `/${url}` ? "default" : "ghost";
+}
+
 export function ResizableLayout({
 	children,
 	defaultCollapsed = false,
@@ -36,9 +41,10 @@ export function ResizableLayout({
 }: ResizableLayoutProps) {
 	const [isCollapsed, setIsCollapsed] = useState<boolean>(defaultCollapsed);
 
-	// Will be used to fetch the twitter accounts
 	// const { id: teamId } = useSelectedTeamStore();
 	// const { data } = api.socials.getTwitterAccounts.useQuery({ id: teamId });
+
+	const path = usePathname();
 
 	return (
 		<TooltipProvider delayDuration={0}>
@@ -64,25 +70,30 @@ export function ResizableLayout({
 									title: "Publish",
 									label: "",
 									icon: Calendar,
-									variant: "default",
+									// Check if the path matches the current path, if so set the variant to "default" else "ghost"
+									variant: isCurrentTab(path, "publish"),
+									url: "publish",
 								},
 								{
 									title: "Analytics",
 									label: "",
 									icon: PieChartIcon,
 									variant: "disabled",
+									url: "analytics",
 								},
 								{
 									title: "Drafts",
 									label: "",
 									icon: Archive,
 									variant: "disabled",
+									url: "drafts",
 								},
 								{
 									title: "Trash",
 									label: "",
 									icon: Trash2,
 									variant: "disabled",
+									url: "trash",
 								},
 							]}
 						/>
@@ -94,19 +105,22 @@ export function ResizableLayout({
 										title: "Notifications",
 										label: "",
 										icon: BellIcon,
-										variant: "ghost",
+										variant: isCurrentTab(path, "notifications"),
+										url: "notifications",
 									},
 									{
 										title: "Help Center",
 										label: "",
 										icon: HelpCircleIcon,
-										variant: "ghost",
+										variant: isCurrentTab(path, "help"),
+										url: "help",
 									},
 									{
 										title: "Settings",
 										label: "",
 										icon: SettingsIcon,
-										variant: "ghost",
+										variant: isCurrentTab(path, "settings"),
+										url: "settings",
 									},
 								]}
 							/>
