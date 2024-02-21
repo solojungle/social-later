@@ -28,6 +28,7 @@ interface LinkItemsProps {
 	links: {
 		title: string;
 		icon: LucideIcon;
+		url?: string;
 		action?: () => void;
 	}[];
 }
@@ -57,7 +58,7 @@ function LinkItems({ links }: LinkItemsProps) {
 				return (
 					<Link
 						key={link.title}
-						href="/publish"
+						href={link.url ?? "/"}
 						className="inline-flex h-8 items-center justify-start whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 					>
 						<link.icon className="mr-2 h-4 w-4" />
@@ -119,11 +120,20 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 						<CollapsibleContent>
 							<LinkItems
 								links={[
-									{ title: "Personal Settings", icon: User2Icon },
-									{ title: "Share feedback", icon: MessageSquareIcon },
+									{
+										title: "Personal Settings",
+										icon: User2Icon,
+										url: "settings",
+									},
+									{
+										title: "Share feedback",
+										icon: MessageSquareIcon,
+										url: "feedback",
+									},
 									{
 										title: "Log out",
 										icon: LogOutIcon,
+										url: "",
 										action: () => {
 											signOut({ redirect: false }).then(() => {
 												// Redirect to the dashboard page after signing out
