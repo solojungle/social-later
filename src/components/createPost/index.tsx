@@ -1,18 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon, Loader2, PaperclipIcon } from "lucide-react";
+import {
+	FileCheck2Icon,
+	ImageIcon,
+	Loader2,
+	PaperclipIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogTrigger,
-} from "@/components/ui/dialog";
 import {
 	Tooltip,
 	TooltipContent,
@@ -26,7 +25,9 @@ import {
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import Dropzone, { handleOnDrop } from "../dropzone";
 import { EmojiPicker } from "../emojiPicker";
+import { ReorderableImageGallery } from "../reorderableImageGallery";
 import { Button } from "../ui/button";
 import {
 	Form,
@@ -36,6 +37,8 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Textarea } from "../ui/textarea";
 
 interface PostTweetProps {
@@ -100,12 +103,13 @@ function TweetForm({
 		});
 	}
 
+	// TODO: When mobile, user a drawer instead of a sheet
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
+		<Sheet>
+			<SheetTrigger asChild>
 				<Button className={className}>Post</Button>
-			</DialogTrigger>
-			<DialogContent>
+			</SheetTrigger>
+			<SheetContent className="w-[800px] !max-w-[80vw]" side="right">
 				<TooltipProvider delayDuration={0}>
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -171,7 +175,52 @@ function TweetForm({
 									</FormItem>
 								)}
 							/>
-							{/* <FormField
+							<FormField
+								control={form.control}
+								name="file"
+								render={({ field }) => (
+									<FormItem className="w-full">
+										<FormControl>
+											<Dropzone
+												{...field}
+												dropMessage="Drop files or click here"
+												handleOnDrop={handleOnDrop}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							{form.watch("file") && (
+								<div className="relative flex items-center justify-center gap-3 p-4">
+									<FileCheck2Icon className="h-4 w-4" />
+									<p className="text-sm font-medium">
+										{form.watch("file")?.name}
+									</p>
+								</div>
+							)}
+
+							<ReorderableImageGallery
+								images={[
+									{
+										id: "1",
+										src: "https://via.placeholder.com/150",
+										alt: "placeholder",
+									},
+									{
+										id: "2",
+										src: "https://via.placeholder.com/150",
+										alt: "placeholder",
+									},
+									{
+										id: "3",
+										src: "https://via.placeholder.com/150",
+										alt: "placeholder",
+									},
+								]}
+							/>
+
+							<FormField
 								control={form.control}
 								name="media"
 								render={({ field }) => (
@@ -183,13 +232,13 @@ function TweetForm({
 										<FormMessage />
 									</FormItem>
 								)}
-							/> */}
+							/>
 							<div className="flex justify-end gap-2">
-								<DialogClose asChild>
+								<SheetClose asChild>
 									<Button type="button" variant="outline">
 										Cancel
 									</Button>
-								</DialogClose>
+								</SheetClose>
 								<Button type="submit" disabled={loading}>
 									{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 									Publish
@@ -198,8 +247,8 @@ function TweetForm({
 						</form>
 					</Form>
 				</TooltipProvider>
-			</DialogContent>
-		</Dialog>
+			</SheetContent>
+		</Sheet>
 	);
 }
 
