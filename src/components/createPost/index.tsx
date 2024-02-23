@@ -25,7 +25,6 @@ import {
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import Dropzone, { handleOnDrop } from "../dropzone";
 import { EmojiPicker } from "../emojiPicker";
 import { ReorderableImageGallery } from "../reorderableImageGallery";
 import { Button } from "../ui/button";
@@ -180,11 +179,11 @@ function TweetForm({
 								render={({ field }) => (
 									<FormItem className="w-full">
 										<FormControl>
-											<Dropzone
+											{/* <Dropzone
 												{...field}
 												dropMessage="Drop files or click here"
 												handleOnDrop={handleOnDrop}
-											/>
+											/> */}
 										</FormControl>
 										<FormMessage />
 									</FormItem>

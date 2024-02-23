@@ -34,8 +34,7 @@ export function ReorderableImageGallery({ className, ...props }: Props) {
 				</div>
 			))}
 			<Dropzone
-				className="h-32 w-32 rounded-md"
-				dropMessage=""
+				dropMessage="Drop files or click"
 				handleOnDrop={function (acceptedFiles: FileList | null): void {
 					throw new Error("Function not implemented.");
 				}}

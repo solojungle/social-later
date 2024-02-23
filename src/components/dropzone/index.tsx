@@ -1,8 +1,9 @@
 import React, { ChangeEvent, useRef } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+
+import { Input } from "../ui/input";
 
 interface DropzoneProps
 	extends Omit<
@@ -83,29 +84,30 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
 			<Card
 				ref={ref}
 				className={cn(
-					`border-2 border-dashed bg-muted hover:cursor-pointer hover:border-muted-foreground/50`,
+					`h-32 w-32 border-2 border-dashed bg-muted transition-colors duration-300 hover:cursor-pointer hover:border-muted-foreground/50`,
 					classNameWrapper,
 				)}
 			>
 				<CardContent
-					className="flex flex-col items-center justify-center space-y-2 px-2 py-4 text-xs"
+					className="flex h-full flex-col items-center justify-center p-0 text-xs text-muted-foreground"
 					onDragOver={handleDragOver}
 					onDrop={handleDrop}
 					onClick={handleButtonClick}
 				>
-					<div className="flex items-center justify-center text-muted-foreground">
-						<span className="font-medium">{dropMessage}</span>
-						<Input
-							{...props}
-							value={undefined}
-							ref={inputRef}
-							type="file"
-							className={cn("hidden", className)}
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								handleOnDrop(e.target.files)
-							}
-						/>
-					</div>
+					{/* <PlusIcon className="h-6 w-6" /> */}
+					<span className="flex flex-col items-center justify-center font-medium">
+						{dropMessage}
+					</span>
+					<Input
+						{...props}
+						value={undefined}
+						ref={inputRef}
+						type="file"
+						className={cn("hidden", className)}
+						onChange={(e: ChangeEvent<HTMLInputElement>) =>
+							handleOnDrop(e.target.files)
+						}
+					/>
 				</CardContent>
 			</Card>
 		);
