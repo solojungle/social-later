@@ -37,7 +37,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
-import { Input } from "../ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Textarea } from "../ui/textarea";
 
@@ -218,20 +217,6 @@ function TweetForm({
 										alt: "placeholder",
 									},
 								]}
-							/>
-
-							<FormField
-								control={form.control}
-								name="media"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel htmlFor="media">Media Upload</FormLabel>
-										<FormControl>
-											<Input id="media" type="file" {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
 							/>
 							<div className="flex justify-end gap-2">
 								<SheetClose asChild>

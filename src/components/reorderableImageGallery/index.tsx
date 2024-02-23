@@ -1,3 +1,5 @@
+import { Cross2Icon } from "@radix-ui/react-icons";
+
 import { cn } from "@/lib/utils";
 
 import Dropzone from "../dropzone";
@@ -15,15 +17,14 @@ export function ReorderableImageGallery({ className, ...props }: Props) {
 	return (
 		<div className={cn("flex space-x-2", className)} {...props}>
 			{props.images.map((image) => (
-				<div key={image.id} className="relative">
+				<div key={image.id} className="group relative">
 					<button
-						className="absolute right-2 top-2 rounded-full bg-gray-800 p-1 text-white opacity-0 transition-opacity duration-300 hover:opacity-100"
 						type="button"
-						onClick={() => {
-							// Handle removal of the image
-							// For example, you can use a function passed as a prop from the parent component
-						}}
-					/>
+						className="absolute right-3 top-3 rounded-sm bg-background opacity-0 ring-offset-background transition-opacity duration-300 hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none group-hover:opacity-100 data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+					>
+						<Cross2Icon className="h-5 w-5" />
+						<span className="sr-only">Close</span>
+					</button>
 					<img
 						key={image.id}
 						src={image.src}
