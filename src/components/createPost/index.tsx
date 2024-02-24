@@ -199,23 +199,25 @@ function TweetForm({
 							)}
 
 							<ReorderableImageGallery
-								images={[
-									{
-										id: "1",
-										src: "https://via.placeholder.com/150",
-										alt: "placeholder",
-									},
-									{
-										id: "2",
-										src: "https://via.placeholder.com/150",
-										alt: "placeholder",
-									},
-									{
-										id: "3",
-										src: "https://via.placeholder.com/150",
-										alt: "placeholder",
-									},
-								]}
+								images={
+									[
+										// {
+										// 	id: "1",
+										// 	src: "https://via.placeholder.com/150",
+										// 	alt: "placeholder",
+										// },
+										// {
+										// 	id: "2",
+										// 	src: "https://via.placeholder.com/150",
+										// 	alt: "placeholder",
+										// },
+										// {
+										// 	id: "3",
+										// 	src: "https://via.placeholder.com/150",
+										// 	alt: "placeholder",
+										// },
+									]
+								}
 							/>
 							<div className="flex justify-end gap-2">
 								<SheetClose asChild>

@@ -39,6 +39,16 @@ export function ReorderableImageGallery({ className, ...props }: Props) {
 					throw new Error("Function not implemented.");
 				}}
 			/>
+			{props.images.length < 4 && (
+				<>
+					{new Array(3 - props.images.length).fill(null).map((_, index) => (
+						<div
+							key={index}
+							className="h-32 w-32 rounded-md border-2 bg-muted transition-colors duration-300"
+						/>
+					))}
+				</>
+			)}
 		</div>
 	);
 }
