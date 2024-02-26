@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 
 import { cookies } from "next/headers";
 
+import { ThemeProvider } from "@/components/themeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/react";
 
@@ -20,7 +21,14 @@ export default function RootLayout({
 		<html lang="en">
 			<body className="font-beausite subpixel-antialiased">
 				<TRPCReactProvider cookies={cookies().toString()}>
-					{children}
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						{children}
+					</ThemeProvider>
 				</TRPCReactProvider>
 				<Toaster />
 			</body>
