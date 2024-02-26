@@ -144,36 +144,36 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	return (
 		<div className="flex h-full flex-col">
 			<div className="flex flex-auto flex-col ">
-				<div className="grid grid-cols-7 gap-px bg-gray-200 p-px pb-0 text-center text-xs font-semibold leading-6">
-					<div className="bg-white py-2">
+				<div className="grid grid-cols-7 gap-px bg-border p-px pb-0 text-center text-xs font-semibold leading-6">
+					<div className="bg-background py-2 text-foreground">
 						S<span>un</span>
 					</div>
-					<div className="bg-white py-2">
+					<div className="bg-background py-2 text-foreground">
 						M<span>on</span>
 					</div>
-					<div className="bg-white py-2">
+					<div className="bg-background py-2 text-foreground">
 						T<span>ue</span>
 					</div>
-					<div className="bg-white py-2">
+					<div className="bg-background py-2 text-foreground">
 						W<span>ed</span>
 					</div>
-					<div className="bg-white py-2">
+					<div className="bg-background py-2 text-foreground">
 						T<span>hu</span>
 					</div>
-					<div className="bg-white py-2">
+					<div className="bg-background py-2 text-foreground">
 						F<span>ri</span>
 					</div>
-					<div className="bg-white py-2">
+					<div className="bg-background py-2 text-foreground">
 						S<span>at</span>
 					</div>
 				</div>
-				<div className="flex flex-auto bg-gray-200 text-xs leading-6 text-gray-700">
+				<div className="flex flex-auto bg-border text-xs leading-6 text-foreground">
 					<div className="grid w-full grid-cols-7 grid-rows-5 gap-px border">
 						{days.map((d) => {
 							return (
 								<div
 									className={`group flex flex-col ${
-										d.disabled ? "bg-gray-50" : "bg-white"
+										d.disabled ? "bg-secondary" : "bg-background"
 									}`}
 									key={d.id}
 								>
