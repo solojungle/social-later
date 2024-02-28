@@ -1,6 +1,5 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { z } from "zod";
 
 import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -15,18 +14,17 @@ export const awsRouter = createTRPCRouter({
 		return listObjectsOutput.Contents ?? [];
 	}),
 
-	getStandardUploadPresignedUrl: protectedProcedure
-		.input(z.object({ key: z.string() }))
-		.mutation(async ({ input }) => {
-			const { key } = input;
+	getStandardUploadPresignedUrl: protectedProcedure.mutation(async () => {
+		// Can be used to generate a unique key for the object
+		const key = crypto.randomUUID();
 
-			const putObjectCommand = new PutObjectCommand({
-				Bucket: env.AWS_BUCKET_NAME,
-				Key: key,
-			});
+		const putObjectCommand = new PutObjectCommand({
+			Bucket: env.AWS_BUCKET_NAME,
+			Key: key,
+		});
 
-			const signedUrl = await getSignedUrl(s3, putObjectCommand);
+		const signedUrl = await getSignedUrl(s3, putObjectCommand);
 
-			return signedUrl;
-		}),
+		return { signedUrl, key };
+	}),
 });

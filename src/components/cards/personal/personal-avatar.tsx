@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import {
 	Form,
@@ -13,11 +13,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { UserSchema, UserSchemaValues } from "@/schemas/user-schema";
 import { useUserStore } from "@/stores/user";
+import { api } from "@/trpc/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalAvatarCard() {
+	const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
+	const { mutateAsync: fetchPresignedUrls } =
+		api.aws.getStandardUploadPresignedUrl.useMutation();
 	const { image, name } = useUserStore();
 
 	const defaultValues = {
@@ -30,13 +34,23 @@ export function PersonalAvatarCard() {
 	});
 
 	function onSubmit(data: UserSchemaValues) {
-		toast("You submitted the following values:", {
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
-		});
+		// Check if the users image is valid
+		// Create a presigned URL for the user to upload their avatar to S3
+		// Create the S3 object with the user's avatar
+		// Check if the user already has an avatar, if so, delete it
+		// Update the database with the new avatar
+		// Update the user's avatar in the store
+		// Show a toast message to the user that their avatar has been updated
+		const url = fetchPresignedUrls({ key: "" });
+
+		//
+		// toast("You submitted the following values:", {
+		// 	description: (
+		// 		<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+		// 			<code className="text-white">{JSON.stringify(data, null, 2)}</code>
+		// 		</pre>
+		// 	),
+		// });
 	}
 
 	return (
