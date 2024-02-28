@@ -40,6 +40,10 @@ export const env = createEnv({
 		TWITTER_CLIENT_SECRET: z.string(),
 		TWITTER_CALLBACK_URL: z.string(),
 		DOPPLER_ENVIRONMENT: z.string(),
+		AWS_ACCESS_KEY_ID: z.string(),
+		AWS_SECRET_ACCESS_KEY: z.string(),
+		AWS_BUCKET_NAME: z.string(),
+		AWS_REGION: z.string(),
 	},
 
 	/**
@@ -74,6 +78,10 @@ export const env = createEnv({
 		TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET,
 		TWITTER_CALLBACK_URL: process.env.TWITTER_CALLBACK_URL,
 		DOPPLER_ENVIRONMENT: process.env.DOPPLER_ENVIRONMENT,
+		AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+		AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+		AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
+		AWS_REGION: process.env.AWS_REGION,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
