@@ -3,6 +3,7 @@ import { teamRouter } from "@/server/api/routers/team";
 import { userRouter } from "@/server/api/routers/user";
 import { createTRPCRouter } from "@/server/api/trpc";
 
+import { awsRouter } from "./routers/aws";
 import { invitationRouter } from "./routers/invitation";
 import { productsRouter } from "./routers/products";
 import { socialProfilesRouter } from "./routers/social-profiles";
@@ -21,6 +22,7 @@ export const appRouter = createTRPCRouter({
 	invitation: invitationRouter,
 	stripe: stripeRouter,
 	twitter: twitterRouter,
+	aws: awsRouter,
 	products: productsRouter,
 	socials: socialProfilesRouter,
 });
