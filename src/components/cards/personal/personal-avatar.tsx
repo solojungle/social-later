@@ -44,7 +44,7 @@ export function PersonalAvatarCard() {
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<SettingsCardBase
 					title="Avatar"
-					description="This is your avatar. Click to upload a custom one from your files."
+					description="This is your avatar. Click to upload a custom one from your files. Will be resized to 200x200."
 					footerSubtitle="An avatar is optional but strongly recommended."
 					content={
 						<>
