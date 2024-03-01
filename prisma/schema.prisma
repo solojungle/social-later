@@ -49,28 +49,54 @@ model User {
   emailVerified DateTime?
   image         String?
   url           String       @default(nanoid())
+  fileId        String?
+  avatar        File?        @relation(fields: [fileId], references: [id])
   accounts      Account[]
   sessions      Session[]
   teams         UserOnTeam[]
   invitation    Invitation[]
 }
 
-model Media {
+// Why is this model needed:
+// * Users can upload avatars so Files needs to exist (can be directly referrenced)
+// * Posts can have multiple files, so in order to get all Files related to a post we need to have a relation
+// 	 since mySQL does not support arrays
+model Attachment {
   id        String   @id @default(cuid())
-  name      String
-  type      String
-  url       String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  file      File     @relation(fields: [fileId], references: [id])
   post      Post     @relation(fields: [postId], references: [id])
+  fileId    String
   postId    String
+}
+
+enum FileType {
+  image
+  video
+  gif
+}
+
+model File {
+  id         String       @id @default(cuid())
+  name       String
+  size       Int
+  mime       String
+  extension  String
+  height     Int?
+  width      Int?
+  key        String       @unique
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  attachment Attachment[]
+  user       User[]
 }
 
 model Post {
   id           String         @id @default(cuid())
   title        String
   content      String
-  media        Media[]
+  attachment   Attachment[]
   published    Boolean        @default(false)
   status       String
   scheduledFor DateTime

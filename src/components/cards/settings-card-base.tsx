@@ -1,3 +1,5 @@
+import { Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -16,6 +18,7 @@ interface SettingsCardBaseProps {
 	buttonContent?: string;
 	button?: any;
 	footerSubtitle: string;
+	isLoading?: boolean;
 }
 
 export function SettingsCardBase({
@@ -25,6 +28,7 @@ export function SettingsCardBase({
 	buttonContent = "Save",
 	footerSubtitle,
 	button,
+	isLoading = false,
 }: SettingsCardBaseProps) {
 	return (
 		<Card>
@@ -41,7 +45,12 @@ export function SettingsCardBase({
 					<span className="text-sm text-muted-foreground">
 						{footerSubtitle}
 					</span>
-					{button || <Button type="submit">{buttonContent}</Button>}
+					{button || (
+						<Button disabled={isLoading} type="submit">
+							{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+							{buttonContent}
+						</Button>
+					)}
 				</CardFooter>
 			</div>
 		</Card>

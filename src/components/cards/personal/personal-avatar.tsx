@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -21,9 +22,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalAvatarCard() {
+	const [loading, setLoading] = useState(false);
 	const { mutateAsync: fetchPresignedUrls } =
 		api.aws.getStandardUploadPresignedUrl.useMutation();
-	const { image, name } = useUserStore();
+	const { image, name, setImage: setUserAvatar } = useUserStore();
+
+	const { mutateAsync: createFile } = api.file.create.useMutation();
+	const updateUser = api.user.updateUser.useMutation();
 
 	const defaultValues = {
 		image: undefined,
@@ -50,13 +55,38 @@ export function PersonalAvatarCard() {
 		// Update the database with the new avatar
 		// Update the user's avatar in the store
 		// Show a toast message to the user that their avatar has been updated
-		const presignedObject = await fetchPresignedUrls();
 
-		await axios.put(presignedObject.signedUrl, data.image, {
-			headers: {
-				"Content-Type": data.image.type,
-			},
-		});
+		const imageFile = data.image[0] as File;
+		const filename = imageFile.name.split(".").shift();
+		const extension = imageFile.name.split(".").pop();
+
+		try {
+			setLoading(true);
+
+			const presignedObject = await fetchPresignedUrls();
+
+			await axios.put(presignedObject.signedUrl, imageFile, {
+				headers: {
+					"Content-Type": imageFile.type,
+				},
+			});
+
+			const userAvatarFile = await createFile({
+				name: filename || "",
+				extension: extension || "",
+				key: presignedObject.key,
+				size: imageFile.size,
+				mime: imageFile.type,
+			});
+
+			updateUser.mutate({
+				image: userAvatarFile.url,
+			});
+
+			setUserAvatar(userAvatarFile.url);
+		} finally {
+			setLoading(false);
+		}
 
 		toast("You submitted the following values:", {
 			description: (
@@ -71,6 +101,7 @@ export function PersonalAvatarCard() {
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 				<SettingsCardBase
+					isLoading={loading}
 					title="Avatar"
 					description="This is your avatar. Click to upload a custom one from your files. Will be resized to 200x200."
 					footerSubtitle="An avatar is optional but strongly recommended."

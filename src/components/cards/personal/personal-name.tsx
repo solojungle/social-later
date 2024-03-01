@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UserSchema, UserSchemaValues } from "@/schemas/user-schema";
-import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
@@ -21,7 +20,9 @@ import { SettingsCardBase } from "../settings-card-base";
 
 export function PersonalNameCard() {
 	const { name, setName } = useUserStore();
-	const { setName: setSelectedTeamsName } = useSelectedTeamStore();
+
+	// TODO: Remove this functionality
+	// const { setName: setSelectedTeamsName } = useSelectedTeamStore();
 
 	const updateUser = api.user.updateUser.useMutation();
 
@@ -44,7 +45,7 @@ export function PersonalNameCard() {
 		setName(data.name);
 
 		// Update selected team name
-		setSelectedTeamsName(data.name);
+		// setSelectedTeamsName(data.name);
 
 		toast("You submitted the following values:", {
 			description: (
