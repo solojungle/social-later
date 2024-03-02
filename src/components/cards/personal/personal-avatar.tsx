@@ -26,8 +26,9 @@ export function PersonalAvatarCard() {
 	const { mutateAsync: fetchPresignedUrls } =
 		api.aws.getStandardUploadPresignedUrl.useMutation();
 	const { image, name, setImage: setUserAvatar } = useUserStore();
-
 	const { mutateAsync: createFile } = api.file.create.useMutation();
+	const { mutate: deleteFile } = api.file.delete.useMutation();
+	const { mutate: deleteObject } = api.aws.deleteObject.useMutation();
 	const updateUser = api.user.updateUser.useMutation();
 
 	const defaultValues = {
@@ -48,20 +49,24 @@ export function PersonalAvatarCard() {
 	const fileRef = form.register("image", { required: true });
 
 	async function onSubmit(data: any) {
-		// Check if the users image is valid
-		// Create a presigned URL for the user to upload their avatar to S3
-		// Create the S3 object with the user's avatar
-		// Check if the user already has an avatar, if so, delete it
-		// Update the database with the new avatar
-		// Update the user's avatar in the store
-		// Show a toast message to the user that their avatar has been updated
-
 		const imageFile = data.image[0] as File;
 		const filename = imageFile.name.split(".").shift();
 		const extension = imageFile.name.split(".").pop();
 
 		try {
 			setLoading(true);
+
+			if (image && image !== "" && image !== null) {
+				const oldAvatarKey = image.split("/").pop();
+
+				if (oldAvatarKey) {
+					// Delete the avatar from aws
+					deleteObject({ key: oldAvatarKey });
+
+					// Delete file from our system
+					deleteFile({ key: oldAvatarKey });
+				}
+			}
 
 			const presignedObject = await fetchPresignedUrls();
 

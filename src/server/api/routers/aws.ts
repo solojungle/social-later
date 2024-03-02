@@ -1,5 +1,6 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { z } from "zod";
 
 import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -27,4 +28,19 @@ export const awsRouter = createTRPCRouter({
 
 		return { signedUrl, key };
 	}),
+
+	deleteObject: protectedProcedure
+		.input(
+			z.object({
+				key: z.string(),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const resp = await s3.deleteObject({
+				Bucket: env.AWS_BUCKET_NAME,
+				Key: input.key,
+			});
+
+			return resp;
+		}),
 });
