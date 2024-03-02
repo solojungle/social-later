@@ -84,17 +84,11 @@ export function PersonalAvatarCard() {
 			});
 
 			setUserAvatar(userAvatarFile.url);
+
+			toast.success("Successfully updated your avatar!", {});
 		} finally {
 			setLoading(false);
 		}
-
-		toast("You submitted the following values:", {
-			description: (
-				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
-				</pre>
-			),
-		});
 	}
 
 	return (
