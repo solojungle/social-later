@@ -16,7 +16,7 @@ import { SingleFileSchema } from "./file-schema";
 export const PostsSchema = z.object({
 	id: z.string(),
 	title: z.string(),
-	content: z.string().optional(),
+	content: z.string().optional().nullish(),
 	fileId: z.string().optional(),
 	status: z.string(),
 	scheduledFor: z.date(),
@@ -25,7 +25,7 @@ export const PostsSchema = z.object({
 	authorId: z.string(),
 });
 
-// export type PostsSchemaValues = z.infer<typeof PostsSchema>;
+export type PostsSchemaValues = z.infer<typeof PostsSchema>;
 
 // Use to validate the form data before sending it to the server
 export const PostFormSchema = z.union([

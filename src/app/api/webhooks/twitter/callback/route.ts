@@ -81,8 +81,6 @@ export async function GET(req: NextRequest) {
 				expiresIn,
 			},
 		});
-	} catch (error) {
-		console.error(error);
 	} finally {
 		redirect("/publish");
 	}

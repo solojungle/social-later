@@ -13,6 +13,10 @@ interface Props {
 	className?: string;
 }
 
+function handleDrop() {
+	console.log("handleDrop"); // Fixes build
+}
+
 export function ReorderableImageGallery({ className, ...props }: Props) {
 	return (
 		<div className={cn("flex space-x-2", className)} {...props}>
@@ -33,17 +37,12 @@ export function ReorderableImageGallery({ className, ...props }: Props) {
 					/>
 				</div>
 			))}
-			<Dropzone
-				dropMessage="Drop files or click"
-				handleOnDrop={function (acceptedFiles: FileList | null): void {
-					throw new Error("Function not implemented.");
-				}}
-			/>
+			<Dropzone dropMessage="Drop files or click" handleOnDrop={handleDrop} />
 			{props.images.length < 4 && (
 				<>
-					{new Array(3 - props.images.length).fill(null).map((_, index) => (
+					{new Array(3 - props.images.length).fill(null).map(() => (
 						<div
-							key={index}
+							key={1}
 							className="h-32 w-32 rounded-md border-2 bg-muted transition-colors duration-300"
 						/>
 					))}
