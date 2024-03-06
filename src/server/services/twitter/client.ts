@@ -8,8 +8,8 @@ export const client = new TwitterApi({
 });
 
 export const v1client = new TwitterApi({
-	appKey: "X61xwtbC65UKIAuxqyvTw4jql",
-	appSecret: "gx8TT4dJe4Cy05bd5E2GnPgVzdWuPRKIyDo1DIndMRqW4hxDhp",
-	accessToken: "1261465989528596491-3SonpxdePtyt692wFxKyktiQN5w3aJ",
-	accessSecret: "EHNslYEoSCK35tcrH1coSgQiK56VRWoZcSX33S71boJHn",
+	appKey: env.TWITTER_APP_KEY,
+	appSecret: env.TWITTER_APP_SECRET,
+	accessToken: env.TWITTER_ACCESS_TOKEN,
+	accessSecret: env.TWITTER_ACCESS_SECRET,
 });
