@@ -1,9 +1,10 @@
 import { TwitterApi } from "twitter-api-v2";
-import { z } from "zod";
 
+import { env } from "@/env.mjs";
+import { TweetSchema } from "@/schemas/posts-schema";
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { client } from "@/server/services/twitter/client";
+import { client, v1client } from "@/server/services/twitter/client";
 
 export const socialProfilesRouter = createTRPCRouter({
 	getTwitterAccounts: protectedProcedure
@@ -40,15 +41,9 @@ export const socialProfilesRouter = createTRPCRouter({
 		}),
 
 	postTweet: protectedProcedure
-		.input(
-			z.object({
-				id: z.string(),
-				content: z.string(),
-				media: z.string().optional(),
-			}),
-		)
+		.input(TweetSchema)
 		.mutation(async ({ ctx, input }) => {
-			const { id: twitterAccountId } = input;
+			const { profileId: twitterAccountId } = input;
 
 			// Make sure the user is apart of the team, and that the twitter account belongs to the team
 			const twitterAccount = await ctx.db.twitterAccount.findUnique({
@@ -77,7 +72,10 @@ export const socialProfilesRouter = createTRPCRouter({
 				twitterAccount.createdAt.getTime() + twitterAccount.expiresIn * 1000,
 			);
 
-			let loggedClient;
+			// Will this throw an error if the token is expired?
+			// Can test this later by passing in an invalid token
+			// TODO: Test this
+			let loggedClient = new TwitterApi(twitterAccount.accessToken);
 
 			if (expirationDate < new Date()) {
 				// Refresh the token
@@ -102,13 +100,77 @@ export const socialProfilesRouter = createTRPCRouter({
 				loggedClient = refreshedClient;
 			}
 
-			if (!loggedClient) {
-				loggedClient = new TwitterApi(twitterAccount.accessToken);
+			const hasMedia = "mediaId" in input;
+			const hasContent = "content" in input;
+
+			if (hasContent && hasMedia) {
+				// Get the file from the database
+				const file = await ctx.db.file.findUnique({
+					where: {
+						id: input.mediaId,
+					},
+				});
+
+				if (!file) {
+					throw new Error("File does not exist");
+				}
+
+				const response = await fetch(
+					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}`,
+				);
+				const buffer = Buffer.from(await response.arrayBuffer());
+
+				// Upload media to twitter via url
+				const mediaId = await v1client.v1.uploadMedia(buffer, {
+					mimeType: file.mime,
+				});
+
+				// Use media_ids to tweet
+				const tweet = await loggedClient.v2.tweet(input.content, {
+					media: {
+						media_ids: [mediaId],
+					},
+				});
+
+				return tweet;
+			}
+			if (hasMedia) {
+				// Get the file from the database
+				const file = await ctx.db.file.findUnique({
+					where: {
+						id: input.mediaId,
+					},
+				});
+
+				if (!file) {
+					throw new Error("File does not exist");
+				}
+
+				const response = await fetch(
+					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}`,
+				);
+				const buffer = Buffer.from(await response.arrayBuffer());
+
+				// Upload media to twitter via url
+				const mediaId = await v1client.v1.uploadMedia(buffer, {
+					mimeType: file.mime,
+				});
+
+				// Use media_ids to tweet
+				const tweet = await loggedClient.v2.tweet({
+					media: {
+						media_ids: [mediaId],
+					},
+				});
+
+				return tweet;
+			}
+			if (hasContent) {
+				const tweet = await loggedClient.v2.tweet(input.content);
+
+				return tweet;
 			}
 
-			// Post the tweet
-			const tweet = await loggedClient.v2.tweet(input.content);
-
-			return tweet;
+			throw new Error("You must provide content or media to tweet");
 		}),
 });

@@ -63,12 +63,12 @@ model User {
 // 	 since mySQL does not support arrays
 model Attachment {
   id        String   @id @default(cuid())
+  fileId    String   @unique
+  postId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   file      File     @relation(fields: [fileId], references: [id])
   post      Post     @relation(fields: [postId], references: [id])
-  fileId    String
-  postId    String
 }
 
 enum FileType {
@@ -95,7 +95,7 @@ model File {
 model Post {
   id           String         @id @default(cuid())
   title        String
-  content      String
+  content      String?
   attachment   Attachment[]
   published    Boolean        @default(false)
   status       String

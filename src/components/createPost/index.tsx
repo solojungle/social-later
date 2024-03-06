@@ -1,16 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	FileCheck2Icon,
-	ImageIcon,
-	Loader2,
-	PaperclipIcon,
-} from "lucide-react";
+import axios from "axios";
+import { ImageIcon, Loader2, PaperclipIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import {
 	Tooltip,
@@ -18,15 +13,11 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-	CreatePostSchema,
-	CreatePostSchemaValues,
-} from "@/schemas/posts-schema";
+import { PostFormSchema, PostFormSchemaValues } from "@/schemas/posts-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
 import { EmojiPicker } from "../emojiPicker";
-import { ReorderableImageGallery } from "../reorderableImageGallery";
 import { Button } from "../ui/button";
 import {
 	Form,
@@ -36,6 +27,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Textarea } from "../ui/textarea";
 
@@ -44,13 +36,6 @@ interface PostTweetProps {
 	profileId: string;
 	className?: string;
 }
-
-const PostSchema = z.object({
-	content: z.string().min(1),
-	// media: z.array(z.string()).optional(),
-});
-
-export type UserSchemaValues = z.infer<typeof PostSchema>;
 
 function TweetForm({
 	teamId,
@@ -63,6 +48,9 @@ function TweetForm({
 }) {
 	const [loading, setLoading] = useState(false);
 
+	const { mutateAsync: createFile } = api.file.create.useMutation();
+	const { mutateAsync: fetchPresignedUrls } =
+		api.aws.getStandardUploadPresignedUrl.useMutation();
 	const tweet = api.socials.postTweet.useMutation({});
 
 	const utils = api.useUtils();
@@ -79,26 +67,81 @@ function TweetForm({
 		},
 	});
 
-	const form = useForm<CreatePostSchemaValues>({
-		resolver: zodResolver(CreatePostSchema.pick({ content: true })),
+	const form = useForm<PostFormSchemaValues>({
+		resolver: zodResolver(PostFormSchema),
 	});
 
-	function onSubmit(data: any) {
+	const fileRef = form.register("media", { required: true });
+
+	async function onSubmit(data: any) {
 		setLoading(true);
-		tweet.mutate({
-			...data,
-			id: profileId,
-		});
-		createPost.mutate({
-			title: "",
-			content: data.content,
-			media: [],
-			status: "published",
-			published: true,
-			scheduledFor: new Date(),
-			profileId,
-			authorId: teamId,
-		});
+
+		// If there is media then we need to convert it to a file and
+		// upload it to aws. Then one the backend we will get the url
+		// and upload it from aws to twitter.
+		if (data.media) {
+			const imageFile = data.media[0] as File;
+			const filename = imageFile.name.split(".").shift();
+			const extension = imageFile.name.split(".").pop();
+
+			try {
+				const presignedObject = await fetchPresignedUrls();
+
+				await axios.put(presignedObject.signedUrl, imageFile, {
+					headers: {
+						"Content-Type": imageFile.type,
+					},
+				});
+
+				const mediaFile = await createFile({
+					name: filename || "",
+					extension: extension || "",
+					key: presignedObject.key,
+					size: imageFile.size,
+					mime: imageFile.type,
+				});
+
+				// Now that we've created the file, we can create the post
+				createPost.mutate({
+					title: "",
+					content: data.content || "",
+					fileId: mediaFile.id,
+					status: "published",
+					scheduledFor: new Date(),
+					published: true,
+					profileId,
+					authorId: teamId,
+				});
+
+				// Now we tweet
+				tweet.mutate({
+					profileId,
+					content: data.content,
+					mediaId: mediaFile.id,
+				});
+
+				toast.success("Successfully created your post!", {});
+			} finally {
+				setLoading(false);
+			}
+		} else {
+			// There is no media so we can just create the post
+			createPost.mutate({
+				title: "",
+				content: data.content,
+				status: "published",
+				scheduledFor: new Date(),
+				published: true,
+				profileId,
+				authorId: teamId,
+			});
+
+			// Now we tweet
+			tweet.mutate({
+				profileId,
+				content: data.content,
+			});
+		}
 	}
 
 	// TODO: When mobile, user a drawer instead of a sheet
@@ -173,52 +216,47 @@ function TweetForm({
 									</FormItem>
 								)}
 							/>
+
 							<FormField
 								control={form.control}
-								name="file"
-								render={({ field }) => (
-									<FormItem className="w-full">
+								name="media"
+								render={() => (
+									<FormItem>
 										<FormControl>
-											{/* <Dropzone
-												{...field}
-												dropMessage="Drop files or click here"
-												handleOnDrop={handleOnDrop}
-											/> */}
+											<Input type="file" {...fileRef} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							{form.watch("file") && (
+
+							{/* {form.watch("file") && (
 								<div className="relative flex items-center justify-center gap-3 p-4">
 									<FileCheck2Icon className="h-4 w-4" />
 									<p className="text-sm font-medium">
 										{form.watch("file")?.name}
 									</p>
 								</div>
-							)}
-
-							<ReorderableImageGallery
-								images={
-									[
-										// {
-										// 	id: "1",
-										// 	src: "https://via.placeholder.com/150",
-										// 	alt: "placeholder",
-										// },
-										// {
-										// 	id: "2",
-										// 	src: "https://via.placeholder.com/150",
-										// 	alt: "placeholder",
-										// },
-										// {
-										// 	id: "3",
-										// 	src: "https://via.placeholder.com/150",
-										// 	alt: "placeholder",
-										// },
-									]
-								}
-							/>
+							)} */}
+							{/* <ReorderableImageGallery
+								images={[
+									{
+										id: "1",
+										src: "https://via.placeholder.com/150",
+										alt: "placeholder",
+									},
+									// {
+									// 	id: "2",
+									// 	src: "https://via.placeholder.com/150",
+									// 	alt: "placeholder",
+									// },
+									// {
+									// 	id: "3",
+									// 	src: "https://via.placeholder.com/150",
+									// 	alt: "placeholder",
+									// },
+								]}
+							/> */}
 							<div className="flex justify-end gap-2">
 								<SheetClose asChild>
 									<Button type="button" variant="outline">

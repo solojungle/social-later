@@ -1,13 +1,17 @@
 import { z } from "zod";
 
 const ACCEPTED_IMAGE_TYPES = [
-	"image/png",
-	"image/jpg",
 	"image/jpeg",
+	"image/jpg",
+	"video/mp4",
+	"video/quicktime",
 	"image/gif",
+	"image/png",
+	"text/plain",
+	"image/webp",
 ];
-// const MAX_IMAGE_SIZE = 4; // In MegaBytes
 
+// const MAX_IMAGE_SIZE = 4; // In MegaBytes
 // const sizeInMB = (sizeInBytes: number, decimalsNum = 2) => {
 // 	const result = sizeInBytes / (1024 * 1024);
 // 	return +result.toFixed(decimalsNum);
