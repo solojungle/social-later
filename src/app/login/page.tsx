@@ -24,19 +24,12 @@ export default async function AuthenticationPage() {
 				<div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
 					<div className="absolute inset-0 h-screen bg-zinc-900" />
 					<div className="relative z-20 flex items-center text-lg font-medium">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							className="mr-2 h-6 w-6"
-						>
-							<path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-						</svg>
-						Social Later
+						<img
+							src="/images/logo.png"
+							alt="logo"
+							className="mr-2 h-8 w-8 rounded-lg"
+						/>
+						<span>FeedFrenzy</span>
 					</div>
 					<div className="relative z-20 mt-auto">
 						<blockquote className="space-y-2">
@@ -49,7 +42,7 @@ export default async function AuthenticationPage() {
 						</blockquote>
 					</div>
 				</div>
-				<div className="h-full lg:p-8">
+				<div className="flex h-full flex-col lg:p-8">
 					<BackButton />
 					<div className="mx-auto flex h-full w-full grow flex-col justify-center space-y-6 sm:w-[350px]">
 						<div className="mb-8 flex flex-col space-y-2 text-start">
