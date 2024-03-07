@@ -78,7 +78,7 @@ export function ResizableLayout({
 									title: "Analytics",
 									label: "",
 									icon: PieChartIcon,
-									variant: "disabled",
+									variant: isCurrentTab(path, "analytics"),
 									url: "analytics",
 								},
 								{
