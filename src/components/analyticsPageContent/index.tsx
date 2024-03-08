@@ -1,7 +1,16 @@
 "use client";
 
 import { ArrowDownRight, ArrowUpRight, InfoIcon } from "lucide-react";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+	Bar,
+	BarChart,
+	Cell,
+	Pie,
+	PieChart,
+	ResponsiveContainer,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 import { ResizablePanel } from "../ui/resizable";
 
@@ -56,6 +65,42 @@ const data = [
 	},
 ];
 
+const pieData = [
+	{ name: "Group A", value: 400 },
+	{ name: "Group B", value: 300 },
+	{ name: "Group C", value: 300 },
+	{ name: "Group D", value: 200 },
+];
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({
+	cx,
+	cy,
+	midAngle,
+	innerRadius,
+	outerRadius,
+	percent,
+	index,
+}) => {
+	const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+	const x = cx + radius * Math.cos(-midAngle * RADIAN);
+	const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+	return (
+		<text
+			x={x}
+			y={y}
+			fill="white"
+			textAnchor={x > cx ? "start" : "end"}
+			dominantBaseline="central"
+		>
+			{`${(percent * 100).toFixed(0)}%`}
+		</text>
+	);
+};
+
 export const StatsCard = ({
 	title,
 	value,
@@ -74,19 +119,19 @@ export const StatsCard = ({
 
 	if (percentage > 0) {
 		// Make positive percentages green
-		colorClass = "text-green-500";
+		colorClass = "text-green-600";
 		// Use ArrowUpRight for positive percentages
-		arrowIcon = <ArrowUpRight className="h-4 w-4 text-green-500" />;
+		arrowIcon = <ArrowUpRight className="h-4 w-4 text-green-600" />;
 	} else if (percentage < 0) {
 		// Make negative percentages red
-		colorClass = "text-red-500";
+		colorClass = "text-red-600";
 		// Use ArrowDownRight for negative percentages
-		arrowIcon = <ArrowDownRight className="h-4 w-4 text-red-500" />;
+		arrowIcon = <ArrowDownRight className="h-4 w-4 text-red-600" />;
 	} else {
 		// Make neutral percentages blue
-		colorClass = "text-blue-500";
+		colorClass = "text-blue-600";
 		// Use ArrowDownRight for neutral percentages
-		arrowIcon = <ArrowDownRight className="h-4 w-4 text-blue-500" />;
+		arrowIcon = <ArrowDownRight className="h-4 w-4 text-blue-600" />;
 	}
 
 	return (
@@ -115,7 +160,7 @@ export const AnalyticsPageContent = () => {
 			id="analytics"
 			order={2}
 			defaultSize={80}
-			className="space-y-4 p-3"
+			className="space-y-4 !overflow-scroll p-3 pb-48"
 		>
 			<div className="mb-6">
 				<h3 className="text-lg font-medium">Analytics</h3>
@@ -178,6 +223,29 @@ export const AnalyticsPageContent = () => {
 							className="fill-primary"
 						/>
 					</BarChart>
+				</ResponsiveContainer>
+			</div>
+			<div className="flex rounded-lg border border-border p-5">
+				<ResponsiveContainer width="100%" height={350}>
+					<PieChart width={400} height={400}>
+						<Pie
+							data={pieData}
+							cx="50%"
+							cy="50%"
+							labelLine={false}
+							label={renderCustomizedLabel}
+							outerRadius={80}
+							fill="#8884d8"
+							dataKey="value"
+						>
+							{data.map((entry, index) => (
+								<Cell
+									key={`cell-${index}`}
+									fill={COLORS[index % COLORS.length]}
+								/>
+							))}
+						</Pie>
+					</PieChart>
 				</ResponsiveContainer>
 			</div>
 		</ResizablePanel>
