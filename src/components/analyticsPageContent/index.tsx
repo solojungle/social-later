@@ -1,8 +1,60 @@
 "use client";
 
 import { ArrowDownRight, ArrowUpRight, InfoIcon } from "lucide-react";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 import { ResizablePanel } from "../ui/resizable";
+
+const data = [
+	{
+		name: "Jan",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Feb",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Mar",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Apr",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "May",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Jun",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Jul",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Aug",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Sep",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Oct",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Nov",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Dec",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+];
 
 export const StatsCard = ({
 	title,
@@ -38,7 +90,7 @@ export const StatsCard = ({
 	}
 
 	return (
-		<div className="flex flex-col rounded-lg border-2 border-border p-5">
+		<div className="flex flex-col rounded-lg border border-border p-5">
 			<div className="mb-3 flex items-center gap-1 text-muted-foreground">
 				<h2 className="text-sm">{title}</h2>
 				<InfoIcon className="h-4 w-4" />
@@ -59,7 +111,12 @@ export const StatsCard = ({
 
 export const AnalyticsPageContent = () => {
 	return (
-		<ResizablePanel id="analytics" order={2} defaultSize={80} className="p-3">
+		<ResizablePanel
+			id="analytics"
+			order={2}
+			defaultSize={80}
+			className="space-y-4 p-3"
+		>
 			<div className="mb-6">
 				<h3 className="text-lg font-medium">Analytics</h3>
 				<p className="text-sm text-muted-foreground">
@@ -76,7 +133,14 @@ export const AnalyticsPageContent = () => {
 					period="yesterday"
 				/>
 				<StatsCard
-					title="Followers"
+					title="Likes"
+					value="12,345"
+					increasedBy="2,345"
+					percentage="20.1"
+					period="yesterday"
+				/>
+				<StatsCard
+					title="Impressions"
 					value="12,345"
 					increasedBy="2,345"
 					percentage="20.1"
@@ -89,13 +153,32 @@ export const AnalyticsPageContent = () => {
 					percentage="20.1"
 					period="yesterday"
 				/>
-				<StatsCard
-					title="Followers"
-					value="12,345"
-					increasedBy="2,345"
-					percentage="20.1"
-					period="yesterday"
-				/>
+			</div>
+			<div className="flex rounded-lg border border-border p-5">
+				<ResponsiveContainer width="100%" height={350}>
+					<BarChart data={data}>
+						<XAxis
+							dataKey="name"
+							stroke="#888888"
+							fontSize={12}
+							tickLine={false}
+							axisLine={false}
+						/>
+						<YAxis
+							stroke="#888888"
+							fontSize={12}
+							tickLine={false}
+							axisLine={false}
+							tickFormatter={(value) => `$${value}`}
+						/>
+						<Bar
+							dataKey="total"
+							fill="currentColor"
+							radius={[4, 4, 0, 0]}
+							className="fill-primary"
+						/>
+					</BarChart>
+				</ResponsiveContainer>
 			</div>
 		</ResizablePanel>
 	);
