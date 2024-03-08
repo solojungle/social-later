@@ -1,154 +1,101 @@
 "use client";
 
-import { Button } from "../ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "../ui/card";
+import { ArrowDownRight, ArrowUpRight, InfoIcon } from "lucide-react";
+
 import { ResizablePanel } from "../ui/resizable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+
+export const StatsCard = ({
+	title,
+	value,
+	increasedBy,
+	percentage,
+	period,
+}: {
+	title: string;
+	value: string;
+	increasedBy: string;
+	percentage: number;
+	period: string;
+}) => {
+	let colorClass = "";
+	let arrowIcon = null;
+
+	if (percentage > 0) {
+		// Make positive percentages green
+		colorClass = "text-green-500";
+		// Use ArrowUpRight for positive percentages
+		arrowIcon = <ArrowUpRight className="h-4 w-4 text-green-500" />;
+	} else if (percentage < 0) {
+		// Make negative percentages red
+		colorClass = "text-red-500";
+		// Use ArrowDownRight for negative percentages
+		arrowIcon = <ArrowDownRight className="h-4 w-4 text-red-500" />;
+	} else {
+		// Make neutral percentages blue
+		colorClass = "text-blue-500";
+		// Use ArrowDownRight for neutral percentages
+		arrowIcon = <ArrowDownRight className="h-4 w-4 text-blue-500" />;
+	}
+
+	return (
+		<div className="flex flex-col rounded-lg border-2 border-border p-5">
+			<div className="mb-3 flex items-center gap-1 text-muted-foreground">
+				<h2 className="text-sm">{title}</h2>
+				<InfoIcon className="h-4 w-4" />
+			</div>
+			<span className="mb-1 text-3xl font-medium">{value}</span>
+			<div className="flex items-center gap-px text-sm">
+				{arrowIcon}
+				<span className={colorClass}>
+					{increasedBy} ({percentage}%)
+				</span>
+				<span className="ml-1 truncate text-xs text-muted-foreground">
+					vs {period}
+				</span>
+			</div>
+		</div>
+	);
+};
 
 export const AnalyticsPageContent = () => {
 	return (
 		<ResizablePanel id="analytics" order={2} defaultSize={80} className="p-3">
-			<div className="hidden flex-col md:flex">
-				<div className="flex-1 space-y-4 p-8 pt-6">
-					<div className="flex items-center justify-between space-y-2">
-						<h2 className="text-3xl font-bold tracking-tight">Analytics</h2>
-						<div className="flex items-center space-x-2">
-							<Button>Download</Button>
-						</div>
-					</div>
-					<Tabs defaultValue="overview" className="space-y-4">
-						<TabsList>
-							<TabsTrigger value="overview">Overview</TabsTrigger>
-							<TabsTrigger value="analytics" disabled>
-								Analytics
-							</TabsTrigger>
-							<TabsTrigger value="reports" disabled>
-								Reports
-							</TabsTrigger>
-							<TabsTrigger value="notifications" disabled>
-								Notifications
-							</TabsTrigger>
-						</TabsList>
-						<TabsContent value="overview" className="space-y-4">
-							<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-								<Card>
-									<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-										<CardTitle className="text-sm font-medium">
-											Impressions
-										</CardTitle>
-									</CardHeader>
-									<CardContent>
-										<div className="text-2xl font-bold">+45,231</div>
-										<p className="text-xs text-muted-foreground">
-											+20.1% from last month
-										</p>
-									</CardContent>
-								</Card>
-								<Card>
-									<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-										<CardTitle className="text-sm font-medium">
-											Engagements
-										</CardTitle>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											className="h-4 w-4 text-muted-foreground"
-										>
-											<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-											<circle cx="9" cy="7" r="4" />
-											<path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-										</svg>
-									</CardHeader>
-									<CardContent>
-										<div className="text-2xl font-bold">+2350</div>
-										<p className="text-xs text-muted-foreground">
-											+180.1% from last month
-										</p>
-									</CardContent>
-								</Card>
-								<Card>
-									<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-										<CardTitle className="text-sm font-medium">
-											Post Link Clicks
-										</CardTitle>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											className="h-4 w-4 text-muted-foreground"
-										>
-											<rect width="20" height="14" x="2" y="5" rx="2" />
-											<path d="M2 10h20" />
-										</svg>
-									</CardHeader>
-									<CardContent>
-										<div className="text-2xl font-bold">+12,234</div>
-										<p className="text-xs text-muted-foreground">
-											+19% from last month
-										</p>
-									</CardContent>
-								</Card>
-								<Card>
-									<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-										<CardTitle className="text-sm font-medium">
-											Engagement Rate (per impression)
-										</CardTitle>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth="2"
-											className="h-4 w-4 text-muted-foreground"
-										>
-											<path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-										</svg>
-									</CardHeader>
-									<CardContent>
-										<div className="text-2xl font-bold">+573</div>
-										<p className="text-xs text-muted-foreground">
-											+201 since last hour
-										</p>
-									</CardContent>
-								</Card>
-							</div>
-							<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-								<Card className="col-span-4">
-									<CardHeader>
-										<CardTitle>Overview</CardTitle>
-									</CardHeader>
-									<CardContent className="pl-2" />
-								</Card>
-								<Card className="col-span-3">
-									<CardHeader>
-										<CardTitle>Recent Sales</CardTitle>
-										<CardDescription>
-											You made 265 sales this month.
-										</CardDescription>
-									</CardHeader>
-									<CardContent />
-								</Card>
-							</div>
-						</TabsContent>
-					</Tabs>
-				</div>
+			<div className="mb-6">
+				<h3 className="text-lg font-medium">Analytics</h3>
+				<p className="text-sm text-muted-foreground">
+					Customize your analytics view. Select your preferred data range and
+					visualizations.
+				</p>
+			</div>
+			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				<StatsCard
+					title="Followers"
+					value="12,345"
+					increasedBy="2,345"
+					percentage="20.1"
+					period="yesterday"
+				/>
+				<StatsCard
+					title="Followers"
+					value="12,345"
+					increasedBy="2,345"
+					percentage="20.1"
+					period="yesterday"
+				/>
+				<StatsCard
+					title="Followers"
+					value="12,345"
+					increasedBy="2,345"
+					percentage="20.1"
+					period="yesterday"
+				/>
+				<StatsCard
+					title="Followers"
+					value="12,345"
+					increasedBy="2,345"
+					percentage="20.1"
+					period="yesterday"
+				/>
 			</div>
 		</ResizablePanel>
 	);
