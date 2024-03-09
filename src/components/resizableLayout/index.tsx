@@ -4,6 +4,7 @@ import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
 	BellIcon,
 	Calendar,
+	FileImage,
 	HelpCircleIcon,
 	PieChartIcon,
 	SettingsIcon,
@@ -78,6 +79,13 @@ export function ResizableLayout({
 									icon: PieChartIcon,
 									variant: isCurrentTab(path, "analytics"),
 									url: "analytics",
+								},
+								{
+									title: "Media Files",
+									label: "",
+									icon: FileImage,
+									variant: "disabled",
+									url: "media",
 								},
 							]}
 						/>
