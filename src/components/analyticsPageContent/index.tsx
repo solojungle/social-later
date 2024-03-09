@@ -13,6 +13,7 @@ import {
 } from "recharts";
 
 import { ResizablePanel } from "../ui/resizable";
+import { Separator } from "../ui/separator";
 
 const data = [
 	{
@@ -199,54 +200,68 @@ export const AnalyticsPageContent = () => {
 					period="yesterday"
 				/>
 			</div>
-			<div className="flex rounded-lg border border-border p-5">
-				<ResponsiveContainer width="100%" height={350}>
-					<BarChart data={data}>
-						<XAxis
-							dataKey="name"
-							stroke="#888888"
-							fontSize={12}
-							tickLine={false}
-							axisLine={false}
-						/>
-						<YAxis
-							stroke="#888888"
-							fontSize={12}
-							tickLine={false}
-							axisLine={false}
-							tickFormatter={(value) => `$${value}`}
-						/>
-						<Bar
-							dataKey="total"
-							fill="currentColor"
-							radius={[4, 4, 0, 0]}
-							className="fill-primary"
-						/>
-					</BarChart>
-				</ResponsiveContainer>
-			</div>
-			<div className="flex rounded-lg border border-border p-5">
-				<ResponsiveContainer width="100%" height={350}>
-					<PieChart width={400} height={400}>
-						<Pie
-							data={pieData}
-							cx="50%"
-							cy="50%"
-							labelLine={false}
-							label={renderCustomizedLabel}
-							outerRadius={80}
-							fill="#8884d8"
-							dataKey="value"
-						>
-							{data.map((entry, index) => (
-								<Cell
-									key={`cell-${index}`}
-									fill={COLORS[index % COLORS.length]}
-								/>
-							))}
-						</Pie>
-					</PieChart>
-				</ResponsiveContainer>
+			<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+				<div className="flex flex-col rounded-lg border border-border p-5">
+					<div className="mb-2 space-y-2">
+						<span className="w-full text-xs font-medium text-muted-foreground">
+							Followers Overtime
+						</span>
+						<Separator />
+					</div>
+					<ResponsiveContainer width="100%" height={350}>
+						<BarChart data={data}>
+							<XAxis
+								dataKey="name"
+								stroke="#888888"
+								fontSize={12}
+								tickLine={false}
+								axisLine={false}
+							/>
+							<YAxis
+								stroke="#888888"
+								fontSize={12}
+								tickLine={false}
+								axisLine={false}
+								tickFormatter={(value) => `$${value}`}
+							/>
+							<Bar
+								dataKey="total"
+								fill="currentColor"
+								radius={[4, 4, 0, 0]}
+								className="fill-primary"
+							/>
+						</BarChart>
+					</ResponsiveContainer>
+				</div>
+				<div className="flex flex-col rounded-lg border border-border p-5">
+					<div className="mb-2 space-y-2">
+						<span className="w-full text-xs font-medium text-muted-foreground">
+							Followers Per Social Profile
+						</span>
+						<Separator />
+					</div>
+					<ResponsiveContainer width="100%" height={350}>
+						<PieChart width={400} height={400}>
+							<Pie
+								data={pieData}
+								cx="50%"
+								cy="50%"
+								labelLine={false}
+								label={renderCustomizedLabel}
+								outerRadius={80}
+								fill="#8884d8"
+								dataKey="value"
+							>
+								{data.map((entry, index) => (
+									<Cell
+										key={`cell-${index}`}
+										fill={COLORS[index % COLORS.length]}
+									/>
+								))}
+							</Pie>
+						</PieChart>
+					</ResponsiveContainer>
+				</div>
 			</div>
 		</ResizablePanel>
 	);
