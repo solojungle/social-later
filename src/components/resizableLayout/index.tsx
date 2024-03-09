@@ -2,13 +2,11 @@
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
-	Archive,
 	BellIcon,
 	Calendar,
 	HelpCircleIcon,
 	PieChartIcon,
 	SettingsIcon,
-	Trash2,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -80,20 +78,6 @@ export function ResizableLayout({
 									icon: PieChartIcon,
 									variant: isCurrentTab(path, "analytics"),
 									url: "analytics",
-								},
-								{
-									title: "Drafts",
-									label: "",
-									icon: Archive,
-									variant: "disabled",
-									url: "drafts",
-								},
-								{
-									title: "Trash",
-									label: "",
-									icon: Trash2,
-									variant: "disabled",
-									url: "trash",
 								},
 							]}
 						/>
