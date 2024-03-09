@@ -16,6 +16,7 @@ import { CalendarDateRangePicker } from "../dateRangePicker";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ResizablePanel } from "../ui/resizable";
 import { Separator } from "../ui/separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const data = [
 	{
@@ -75,7 +76,7 @@ const pieData = [
 	{ name: "Group D", value: 200 },
 ];
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#475569", "#6B7280", "#9CA3AF", "#475569"];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -110,12 +111,14 @@ export const StatsCard = ({
 	increasedBy,
 	percentage,
 	period,
+	tooltip,
 }: {
 	title: string;
 	value: string;
 	increasedBy: string;
 	percentage: number;
 	period: string;
+	tooltip: string;
 }) => {
 	let colorClass = "";
 	let arrowIcon = null;
@@ -139,10 +142,15 @@ export const StatsCard = ({
 
 	return (
 		<div className="flex flex-col rounded-lg border border-border p-5">
-			<div className="mb-3 flex items-center gap-1 text-muted-foreground">
-				<h2 className="text-sm">{title}</h2>
-				<InfoIcon className="h-4 w-4" />
-			</div>
+			<Tooltip delayDuration={0}>
+				<TooltipTrigger className="mb-3 flex max-w-fit items-center gap-1 text-muted-foreground">
+					<h2 className="text-sm">{title}</h2>
+					<InfoIcon className="h-4 w-4" />
+				</TooltipTrigger>
+				<TooltipContent side="top" className="flex w-40 items-center gap-4">
+					<p className="text-xs">{tooltip}</p>
+				</TooltipContent>
+			</Tooltip>
 			<span className="mb-1 text-3xl font-medium">{value}</span>
 			<div className="flex items-center gap-px text-sm">
 				{arrowIcon}
@@ -173,7 +181,7 @@ export const AnalyticsPageContent = () => {
 				</p>
 				<Separator className="my-4" />
 			</div>
-			<div className="rounded-lg bg-primary p-5">
+			<div className="!mb-8 rounded-lg bg-primary p-5">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center">
 						<Avatar className="mr-4 h-20 w-20">
@@ -218,6 +226,7 @@ export const AnalyticsPageContent = () => {
 					increasedBy="2,345"
 					percentage="20.1"
 					period="yesterday"
+					tooltip="The total number of followers on your social profile."
 				/>
 				<StatsCard
 					title="Likes"
@@ -225,6 +234,7 @@ export const AnalyticsPageContent = () => {
 					increasedBy="2,345"
 					percentage="20.1"
 					period="yesterday"
+					tooltip="The total number of likes on your social profile."
 				/>
 				<StatsCard
 					title="Impressions"
@@ -232,6 +242,7 @@ export const AnalyticsPageContent = () => {
 					increasedBy="2,345"
 					percentage="20.1"
 					period="yesterday"
+					tooltip="The total number of impressions on your social profile."
 				/>
 				<StatsCard
 					title="Followers"
@@ -239,6 +250,7 @@ export const AnalyticsPageContent = () => {
 					increasedBy="2,345"
 					percentage="20.1"
 					period="yesterday"
+					tooltip="The total number of followers on your social profile."
 				/>
 			</div>
 			<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
