@@ -179,7 +179,7 @@ export const AnalyticsPageContent = () => {
 					Customize your analytics view. Select your preferred data range and
 					visualizations.
 				</p>
-				<Separator className="my-4" />
+				<Separator className="my-6" />
 			</div>
 			<div className="!mb-8 rounded-lg bg-primary p-5">
 				<div className="flex items-center justify-between">
