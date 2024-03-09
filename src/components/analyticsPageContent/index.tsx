@@ -13,6 +13,7 @@ import {
 } from "recharts";
 
 import { CalendarDateRangePicker } from "../dateRangePicker";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ResizablePanel } from "../ui/resizable";
 import { Separator } from "../ui/separator";
 
@@ -169,6 +170,44 @@ export const AnalyticsPageContent = () => {
 				<p className="text-sm text-muted-foreground">
 					Customize your analytics view. Select your preferred data range and
 					visualizations.
+				</p>
+				<Separator className="my-4" />
+			</div>
+			<div className="rounded-lg bg-primary p-5">
+				<div className="flex items-center justify-between">
+					<div className="flex items-center">
+						<Avatar className="mr-4 h-20 w-20">
+							<AvatarImage src="" />
+							<AvatarFallback className="border border-border">
+								A
+							</AvatarFallback>
+						</Avatar>
+						<div>
+							<h3 className="line-clamp-1 text-xl font-semibold text-primary-foreground">
+								Profile Name
+							</h3>
+						</div>
+					</div>
+					<div className="flex space-x-8">
+						<div className="text-center text-primary-foreground">
+							<span className="text-2xl">12,123,123</span>
+							<p className="text-xs text-muted">Total Followers</p>
+						</div>
+						<div className="text-center text-primary-foreground">
+							<span className="text-2xl">12,123,123</span>
+							<p className="text-xs text-muted">Total Followers</p>
+						</div>
+						<div className="text-center text-primary-foreground">
+							<span className="text-2xl">12,123,123</span>
+							<p className="text-xs text-muted">Total Followers</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<h4 className="text-sm font-medium">Date Range</h4>
+				<p className="text-xs text-muted-foreground">
+					Select the date range for your analytics.
 				</p>
 			</div>
 			<CalendarDateRangePicker />
