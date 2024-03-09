@@ -5,6 +5,7 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 import { PostsCalendar } from "../calendar";
+import { CalendarDateRangePicker } from "../dateRangePicker";
 import { ResizablePanel } from "../ui/resizable";
 
 export const PublishPageContent = () => {
@@ -21,7 +22,19 @@ export const PublishPageContent = () => {
 	);
 
 	return (
-		<ResizablePanel id="calendar" order={2} defaultSize={80} className="p-3">
+		<ResizablePanel
+			id="calendar"
+			order={2}
+			defaultSize={80}
+			className="h-full space-y-2 !overflow-scroll p-3 pb-48"
+		>
+			<div>
+				<h4 className="text-sm font-medium">Date Range</h4>
+				<p className="text-xs text-muted-foreground">
+					Select the date range for your calendar.
+				</p>
+			</div>
+			<CalendarDateRangePicker />
 			<PostsCalendar posts={posts} profileId={profileId} />
 		</ResizablePanel>
 	);
