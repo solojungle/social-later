@@ -172,7 +172,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 						{days.map((d) => {
 							return (
 								<div
-									className={`group flex flex-col ${
+									className={`group flex max-h-48 flex-col ${
 										d.disabled ? "bg-secondary" : "bg-background"
 									}`}
 									key={d.id}
