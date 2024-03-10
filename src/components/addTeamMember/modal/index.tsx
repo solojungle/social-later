@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRole } from "@prisma/client";
-import { PlusIcon } from "lucide-react";
+import { Loader2, PlusIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -41,14 +42,18 @@ import {
 
 function Content() {
 	const { addInvitation } = useInvitationsStore();
+	const [loading, setLoading] = useState(false);
 
 	const createInvitation = api.invitation.create.useMutation({
 		onSuccess: (input) => {
 			addInvitation(input);
 
 			toast.success("Invitation has been sent!", {
-				description: "The invitation has been sent to the recipient.",
+				description: "The recipient will be sent an email shortly.",
 			});
+		},
+		onSettled: () => {
+			setLoading(false);
 		},
 	});
 
@@ -65,6 +70,9 @@ function Content() {
 	});
 
 	function onSubmit(data: InvitationSchemaValues) {
+		// Set loading state
+		setLoading(true);
+
 		// Add teamId to the input
 		const input = {
 			...data,
@@ -126,7 +134,10 @@ function Content() {
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button type="submit">Invite</Button>
+					<Button disabled={loading} type="submit">
+						{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+						Invite
+					</Button>
 				</DialogFooter>
 			</form>
 		</Form>
