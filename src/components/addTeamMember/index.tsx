@@ -1,11 +1,9 @@
-import { PlusIcon } from "lucide-react";
-
 import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { AddTeamMemberModal } from "./modal";
 
 export function AddTeamMember() {
 	const { image: userAvatar, name } = useUserStore();
@@ -41,9 +39,8 @@ export function AddTeamMember() {
 			</div>
 			<Tooltip delayDuration={500}>
 				<TooltipTrigger>
-					<Button variant="ghost" size="icon">
-						<PlusIcon className="h-4 w-4" />
-					</Button>
+					{/* TODO: Fix Tooltip hover bug */}
+					<AddTeamMemberModal />
 				</TooltipTrigger>
 				<TooltipContent side="bottom">
 					<p>Add team member</p>
