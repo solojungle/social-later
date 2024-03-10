@@ -11,12 +11,7 @@ export function AddTeamMember() {
 	const { image: userAvatar, name } = useUserStore();
 	const { members } = useTeamMembersStore();
 
-	const allMembers = [
-		{ image: userAvatar, name },
-		{ image: userAvatar, name },
-		{ image: userAvatar, name },
-		...members,
-	];
+	const allMembers = [{ image: userAvatar, name }, ...members];
 	const displayedMembers = allMembers.slice(0, 3);
 
 	const memberAvatars = displayedMembers.map((member, index) => (
@@ -44,7 +39,7 @@ export function AddTeamMember() {
 					</Avatar>
 				)}
 			</div>
-			<Tooltip delayDuration={0}>
+			<Tooltip delayDuration={500}>
 				<TooltipTrigger>
 					<Button variant="ghost" size="icon">
 						<PlusIcon className="h-4 w-4" />
