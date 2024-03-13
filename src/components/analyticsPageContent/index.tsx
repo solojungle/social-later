@@ -307,6 +307,7 @@ export const AnalyticsPageContent = () => {
 							>
 								{data.map((entry, index) => (
 									<Cell
+										// eslint-disable-next-line react/no-array-index-key
 										key={`cell-${index}`}
 										fill={COLORS[index % COLORS.length]}
 									/>

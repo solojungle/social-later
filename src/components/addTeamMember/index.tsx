@@ -13,7 +13,7 @@ export function AddTeamMember() {
 	const displayedMembers = allMembers.slice(0, 3);
 
 	const memberAvatars = displayedMembers.map((member, index) => (
-		// eslint-disable-next-line tailwindcss/classnames-order, prettier/prettier
+		// eslint-disable-next-line tailwindcss/classnames-order, prettier/prettier, react/no-array-index-key
 		<Avatar key={index} className={`relative left-[${-10 * index}px] h-8 w-8 bg-white`}>
 			<AvatarImage src={member.image} />
 			<AvatarFallback className="border border-border">
