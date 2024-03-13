@@ -14,6 +14,27 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
+function renderDateText(date: any) {
+	if (!date || (!date.from && !date.to)) {
+		return <span>Pick a date</span>;
+	}
+
+	if (date.from && date.to) {
+		return (
+			<>
+				{format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+			</>
+		);
+	}
+
+	if (date.from) {
+		return format(date.from, "LLL dd, y");
+	}
+
+	// This case should never happen, but it's good to have a fallback
+	return null;
+}
+
 export function CalendarDateRangePicker({
 	className,
 }: React.HTMLAttributes<HTMLDivElement>) {
@@ -35,18 +56,7 @@ export function CalendarDateRangePicker({
 						)}
 					>
 						<CalendarIcon className="mr-2 h-4 w-4" />
-						{date?.from ? (
-							date.to ? (
-								<>
-									{format(date.from, "LLL dd, y")} -{" "}
-									{format(date.to, "LLL dd, y")}
-								</>
-							) : (
-								format(date.from, "LLL dd, y")
-							)
-						) : (
-							<span>Pick a date</span>
-						)}
+						{renderDateText(date)}
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent className="w-auto p-0" align="end">
