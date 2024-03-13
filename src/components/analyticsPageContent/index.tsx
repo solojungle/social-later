@@ -86,7 +86,13 @@ const renderCustomizedLabel = ({
 	innerRadius,
 	outerRadius,
 	percent,
-	index,
+}: {
+	cx: number;
+	cy: number;
+	midAngle: number;
+	innerRadius: number;
+	outerRadius: number;
+	percent: number;
 }) => {
 	const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
 	const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -224,7 +230,7 @@ export const AnalyticsPageContent = () => {
 					title="Followers"
 					value="12,345"
 					increasedBy="2,345"
-					percentage="20.1"
+					percentage={20.1}
 					period="yesterday"
 					tooltip="The total number of followers on your social profile."
 				/>
@@ -232,7 +238,7 @@ export const AnalyticsPageContent = () => {
 					title="Likes"
 					value="12,345"
 					increasedBy="2,345"
-					percentage="20.1"
+					percentage={20.1}
 					period="yesterday"
 					tooltip="The total number of likes on your social profile."
 				/>
@@ -240,7 +246,7 @@ export const AnalyticsPageContent = () => {
 					title="Impressions"
 					value="12,345"
 					increasedBy="2,345"
-					percentage="20.1"
+					percentage={20.1}
 					period="yesterday"
 					tooltip="The total number of impressions on your social profile."
 				/>
@@ -248,7 +254,7 @@ export const AnalyticsPageContent = () => {
 					title="Followers"
 					value="12,345"
 					increasedBy="2,345"
-					percentage="20.1"
+					percentage={20.1}
 					period="yesterday"
 					tooltip="The total number of followers on your social profile."
 				/>
