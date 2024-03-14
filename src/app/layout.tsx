@@ -4,18 +4,19 @@ import { cookies } from "next/headers";
 
 import { ThemeProvider } from "@/components/themeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { env } from "@/env.mjs";
 import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata = {
+	metadataBase: new URL(env.NEXTAUTH_URL),
 	openGraph: {
 		title: "FeedFrenzy - Social Media Management Platform",
 		description:
 			"Powerful social media management platform for scheduling, analytics, and audience engagement.",
-		url: "https://feedfrenzy.co",
 		siteName: "FeedFrenzy",
 		images: [
 			{
-				url: "https://feedfrenzy.co/og.png",
+				url: "/og.png",
 				width: 800,
 				height: 600,
 			},
@@ -32,7 +33,7 @@ export const metadata = {
 		site: "@feedfrenzy",
 		images: [
 			{
-				url: "https://feedfrenzy.co/og.png",
+				url: "/og.png",
 				width: 800,
 				height: 600,
 				alt: "FeedFrenzy logo",
