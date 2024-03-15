@@ -12,6 +12,28 @@ interface PostsProps {
 	posts: any | undefined;
 }
 
+function StyledStatus({ status }: { status: string }) {
+	const condition = status.toLowerCase();
+
+	if (condition === "approved") {
+		return (
+			<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
+		);
+	}
+	if (condition === "pending") {
+		return (
+			<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-yellow-500" />
+		);
+	}
+	if (condition === "rejected") {
+		return (
+			<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-red-500" />
+		);
+	}
+
+	return null;
+}
+
 function StyledPost() {
 	return (
 		<div className="relative">
@@ -25,12 +47,15 @@ function StyledPost() {
 					alt="A beautiful sunset"
 				/>
 			</div>
-			<div className="absolute bottom-0 flex w-full items-center rounded-b  bg-primary/50 p-2 text-xs text-primary-foreground">
-				<span className="line-clamp-1">10:00 AM</span>
-				<span className="mx-2">•</span>
-				<span className="truncate">A beautiful sunset...</span>
-				<span className="mx-2">•</span>
-				<span>Approved</span>
+			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-primary/50 p-2 text-xs text-primary-foreground">
+				<div className="flex items-center justify-between">
+					<span>10:00 AM</span>
+					{StyledStatus({ status: "approved" })}
+				</div>
+				<span className="truncate">
+					A beautiful sunset overasdjdsajsdnkajsdn akjdnajsndajknsd asdja sdjnak
+					sdja...
+				</span>
 			</div>
 		</div>
 	);
