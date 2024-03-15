@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { env } from "@/env.mjs";
 import { PostsSchema } from "@/schemas/posts-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
@@ -55,13 +56,51 @@ export const postRouter = createTRPCRouter({
 			}),
 		)
 		.query(async ({ ctx, input }) => {
-			return ctx.db.post.findMany({
+			// Get posts and their attachments
+			const posts = await ctx.db.post.findMany({
 				where: {
 					authorId: input.teamId,
+				},
+				include: {
+					attachment: {
+						include: {
+							file: true,
+						},
+					},
 				},
 				orderBy: {
 					createdAt: "desc",
 				},
 			});
+
+			// Get the file for each attachment
+			const postsWithFiles = await Promise.all(
+				posts.map(async (post) => {
+					const attachment = await ctx.db.attachment.findFirst({
+						where: {
+							postId: post.id,
+						},
+						include: {
+							file: true,
+						},
+					});
+
+					// Add a url to make it easier to access the file
+					if (attachment?.file) {
+						return {
+							...post,
+							attachment,
+							url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${attachment.file.key}`,
+						};
+					}
+
+					return {
+						...post,
+						attachment,
+					};
+				}),
+			);
+
+			return postsWithFiles;
 		}),
 });
