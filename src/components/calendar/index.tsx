@@ -25,7 +25,7 @@ function StyledPost() {
 					alt="A beautiful sunset"
 				/>
 			</div>
-			<div className="absolute bottom-0 flex w-full items-center rounded-b bg-primary p-2 text-xs text-primary-foreground">
+			<div className="absolute bottom-0 flex w-full items-center rounded-b  bg-primary/50 p-2 text-xs text-primary-foreground">
 				<span className="line-clamp-1">10:00 AM</span>
 				<span className="mx-2">•</span>
 				<span className="truncate">A beautiful sunset...</span>
@@ -244,6 +244,10 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 										{d.day}
 									</time>
 									{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
+
+									{d.posts.length === 0 && (
+										<div className="relative aspect-video" />
+									)}
 									<CreatePost
 										className="invisible mt-px w-full group-hover:visible"
 										profileId={profileId}
