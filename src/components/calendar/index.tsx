@@ -105,7 +105,7 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 	}
 
 	return (
-		<div className="aspect-video rounded-lg bg-primary p-2 text-xs text-primary-foreground">
+		<div className="flex aspect-video flex-col rounded-sm bg-primary p-2 text-xs text-primary-foreground">
 			<div className="flex items-center justify-between">
 				<span className="mb-1 font-medium">
 					{postToDisplay.scheduledFor.toLocaleString("en-US", {
