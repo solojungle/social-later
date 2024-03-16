@@ -1,6 +1,6 @@
 "use client";
 
-import { VideoIcon } from "lucide-react";
+import { ImageIcon, VideoIcon } from "lucide-react";
 import { useState } from "react";
 
 import { PostsSchemaValues } from "@/schemas/posts-schema";
@@ -15,7 +15,7 @@ interface PostsProps {
 function StyledStatus({ status }: { status: string }) {
 	const condition = status.toLowerCase();
 
-	if (condition === "approved") {
+	if (condition === "published") {
 		return (
 			<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
 		);
@@ -34,27 +34,36 @@ function StyledStatus({ status }: { status: string }) {
 	return null;
 }
 
-function StyledPost() {
+function StyledPost({ post }: { post: PostsSchemaValues }) {
 	return (
 		<div className="relative">
 			<div className="flex flex-col">
 				<div className="absolute right-2 top-2 rounded-sm bg-secondary p-1">
-					<VideoIcon className="h-4 w-4 text-secondary-foreground" />
+					{post.type === "video" ? (
+						<VideoIcon className="h-4 w-4 text-secondary-foreground" />
+					) : (
+						<ImageIcon className="h-4 w-4 text-secondary-foreground" />
+					)}
 				</div>
 				<img
 					className="aspect-video rounded-sm object-cover"
-					src="https://images.unsplash.com/photo-1554629947-334ff61d85dc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&h=1280&q=80"
+					src={post.url}
 					alt="A beautiful sunset"
 				/>
 			</div>
-			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-primary/50 p-2 text-xs text-primary-foreground">
+			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-primary/70 p-2 text-xs text-primary-foreground">
 				<div className="flex items-center justify-between">
-					<span>10:00 AM</span>
-					{StyledStatus({ status: "approved" })}
+					<span>
+						{post.scheduledFor.toLocaleString("en-US", {
+							hour: "numeric",
+							minute: "numeric",
+							hour12: true,
+						})}
+					</span>
+					{StyledStatus({ status: post.status })}
 				</div>
 				<span className="truncate">
-					A beautiful sunset overasdjdsajsdnkajsdn akjdnajsndajknsd asdja sdjnak
-					sdja...
+					{post.content && post.content.slice(0, 50)}
 				</span>
 			</div>
 		</div>
@@ -68,7 +77,9 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 		return null;
 	}
 
-	const renderedPosts = StyledPost();
+	const renderedPosts = StyledPost({
+		post: posts[0],
+	});
 
 	// const renderedPosts = posts.map((p) => {
 	// 	const currentDay = new Date();
@@ -87,15 +98,15 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 	// 		return (
 	// 			<div key={p.id} className="relative h-36">
 	// 				<div className="relative flex flex-col">
-	// 					{p.type === "video" ? (
-	// 						<div className="absolute right-2 top-2 rounded-sm bg-gray-200 p-1">
-	// 							<VideoIcon className="h-4 w-4 text-gray-600" />
-	// 						</div>
-	// 					) : (
-	// 						<div className="absolute right-2 top-2 rounded-sm bg-gray-200 p-1">
-	// 							<ImageIcon className="h-4 w-4 text-gray-600" />
-	// 						</div>
-	// 					)}
+	// {p.type === "video" ? (
+	// 	<div className="absolute right-2 top-2 rounded-sm bg-gray-200 p-1">
+	// 		<VideoIcon className="h-4 w-4 text-gray-600" />
+	// 	</div>
+	// ) : (
+	// 	<div className="absolute right-2 top-2 rounded-sm bg-gray-200 p-1">
+	// 		<ImageIcon className="h-4 w-4 text-gray-600" />
+	// 	</div>
+	// )}
 	// 					<img
 	// 						className="rounded-sm object-cover"
 	// 						src={p.url}
@@ -269,7 +280,6 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 										{d.day}
 									</time>
 									{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
-
 									{d.posts.length === 0 && (
 										<div className="relative aspect-video" />
 									)}
