@@ -50,7 +50,7 @@ function StyledStatus({ status }: { status: string }) {
 	return null;
 }
 
-function StyledPost({ post }: { post: PostsSchemaValues }) {
+function StyledMediaPost({ post }: { post: PostsSchemaValues }) {
 	return (
 		<div className="relative">
 			<div className="flex flex-col">
@@ -64,12 +64,12 @@ function StyledPost({ post }: { post: PostsSchemaValues }) {
 				<img
 					className="aspect-video rounded-sm object-cover"
 					src={post.url}
-					alt="A beautiful sunset"
+					alt="post content"
 				/>
 			</div>
 			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-primary/70 p-2 text-xs text-primary-foreground">
 				<div className="flex items-center justify-between">
-					<span>
+					<span className="font-medium">
 						{post.scheduledFor.toLocaleString("en-US", {
 							hour: "numeric",
 							minute: "numeric",
@@ -94,21 +94,11 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 		return null;
 	}
 
-	const renderedPosts = StyledPost({
+	const renderedPosts = StyledMediaPost({
 		post: posts[0],
 	});
 
 	// const renderedPosts = posts.map((p) => {
-	// 	const currentDay = new Date();
-	// 	const currentMonday = new Date(
-	// 		currentDay.setDate(currentDay.getDate() - currentDay.getDay()),
-	// 	);
-	// 	currentMonday.setHours(0);
-	// 	currentMonday.setMinutes(0);
-	// 	currentMonday.setSeconds(0);
-	// 	currentMonday.setMilliseconds(0);
-
-	// 	const isBeforeThisWeek = p.scheduledFor < currentMonday;
 
 	// 	// If the post has an attachment, render the attachment
 	// 	if (p.url) {
@@ -176,80 +166,72 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 	// 	);
 	// });
 
-	return (
-		// <div
-		// 	className={`mx-px flex flex-col gap-px ${
-		// 		posts.length > 3 ? "overflow-y-scroll" : ""
-		// 	}`}
-		// >
-		<div>{renderedPosts}</div>
-	);
+	return <div>{renderedPosts}</div>;
 }
 
 export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	const [selectedMonth] = useState(new Date().getMonth());
 	const [selectedYear] = useState(new Date().getFullYear());
+	const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1);
+	const lastDayOfMonth = new Date(selectedYear, selectedMonth + 1, 0);
+	const daysInMonth = lastDayOfMonth.getDate();
+	const firstDayOfWeek = firstDayOfMonth.getDay();
+	const lastDayOfWeek = lastDayOfMonth.getDay();
 
-	const startingDay = new Date(selectedYear, selectedMonth, 1).getDay();
-	const previousMonthDays = new Date(selectedYear, selectedMonth, 0).getDate();
-	const nextMonthDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-	const today = new Date().getDate();
-
-	// Add padding to the start and end of the month if the month doesn't start on a Monday
-	// The padding should have a property of "disabled" so that it can be styled accordingly
 	const days = [] as {
 		id: string;
 		day: number;
-		disabled: boolean;
+		postingDisabled: boolean;
+		isNextOrPreviousMonth: boolean;
+		isPreviousDay: boolean;
 		isToday?: boolean;
 		posts: PostsSchemaValues[];
 	}[];
 
-	// Find out which day this month starts, then add padding to the start of the month
-	for (let i = 0; i < startingDay; i += 1) {
+	// Add the previous month days
+	const previousMonthDays = new Date(selectedYear, selectedMonth, 0).getDate();
+
+	for (let i = firstDayOfWeek - 1; i >= 0; i -= 1) {
+		const day = previousMonthDays - i;
 		days.push({
-			id: Math.random().toString(),
-			day: previousMonthDays - i,
-			disabled: true,
+			id: `previous-${day}`,
+			day,
+			postingDisabled: true,
+			isNextOrPreviousMonth: true,
+			isPreviousDay: true,
 			posts: [],
 		});
 	}
 
-	// Add the days of the month
-	for (let i = 1; i <= nextMonthDays; i += 1) {
+	// Add the current month days
+	for (let i = 1; i <= daysInMonth; i += 1) {
+		const date = new Date(selectedYear, selectedMonth, i);
+		const isToday = date.toDateString() === new Date().toDateString();
 		days.push({
-			id: Math.random().toString(),
+			id: `current-${i}`,
 			day: i,
-			disabled: false,
-			isToday: i === today,
-			posts: [],
+			postingDisabled: false,
+			isNextOrPreviousMonth: false,
+			isPreviousDay: date <= new Date(),
+			isToday,
+			posts: posts.filter((p) => {
+				const postDate = new Date(p.scheduledFor);
+				return postDate.toDateString() === date.toDateString();
+			}),
 		});
 	}
 
-	// Add padding to the end of the month if the month doesn't end on a Sunday
-	// The padding should have a property of "disabled" so that it can be styled accordingly
-	const daysToAdd = 7 - (days.length % 7);
-	for (let i = 1; i <= daysToAdd; i += 1) {
+	// Add the next month days
+	for (let i = 1; i <= 6 - lastDayOfWeek; i += 1) {
 		days.push({
-			id: Math.random().toString(),
+			id: `next-${i}`,
 			day: i,
-			disabled: true,
+			postingDisabled: true,
+			isPreviousDay: false,
+			isNextOrPreviousMonth: true,
 			posts: [],
 		});
 	}
-
-	// Add the posts to the days
-	days.forEach((d) => {
-		const filteredPosts = posts.filter((p) => {
-			return (
-				p.scheduledFor.getDate() === d.day &&
-				p.scheduledFor.getMonth() === selectedMonth &&
-				p.scheduledFor.getFullYear() === selectedYear
-			);
-		});
-
-		d.posts.push(...filteredPosts);
-	});
 
 	return (
 		<div className="flex h-full flex-col">
@@ -282,8 +264,8 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 						{days.map((d) => {
 							return (
 								<div
-									className={`group grid ${
-										d.disabled ? "bg-secondary" : "bg-background"
+									className={`group grid bg-background ${
+										d.isNextOrPreviousMonth && "opacity-60"
 									}`}
 									key={d.id}
 								>
@@ -300,10 +282,17 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 									{d.posts.length === 0 && (
 										<div className="relative aspect-video" />
 									)}
-									<CreatePost
-										className="invisible mt-px w-full group-hover:visible"
-										profileId={profileId}
-									/>
+									{!d.postingDisabled && (!d.isPreviousDay || d.isToday) ? (
+										<CreatePost
+											className="invisible mt-px w-full group-hover:visible"
+											profileId={profileId}
+										/>
+									) : (
+										<CreatePost
+											className="invisible mt-px w-full"
+											profileId={profileId}
+										/>
+									)}
 								</div>
 							);
 						})}
