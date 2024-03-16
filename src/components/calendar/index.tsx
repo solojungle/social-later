@@ -6,6 +6,7 @@ import { useState } from "react";
 import { PostsSchemaValues } from "@/schemas/posts-schema";
 
 import { CreatePost } from "../createPost";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface PostsProps {
 	profileId: string;
@@ -17,17 +18,32 @@ function StyledStatus({ status }: { status: string }) {
 
 	if (condition === "published") {
 		return (
-			<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
+			<Tooltip delayDuration={0}>
+				<TooltipTrigger asChild>
+					<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
+				</TooltipTrigger>
+				<TooltipContent>Published</TooltipContent>
+			</Tooltip>
 		);
 	}
 	if (condition === "pending") {
 		return (
-			<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-yellow-500" />
+			<Tooltip delayDuration={0}>
+				<TooltipTrigger asChild>
+					<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-yellow-500" />
+				</TooltipTrigger>
+				<TooltipContent>Pending</TooltipContent>
+			</Tooltip>
 		);
 	}
 	if (condition === "rejected") {
 		return (
-			<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-red-500" />
+			<Tooltip delayDuration={0}>
+				<TooltipTrigger asChild>
+					<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-red-500" />
+				</TooltipTrigger>
+				<TooltipContent>Rejected</TooltipContent>
+			</Tooltip>
 		);
 	}
 
@@ -60,6 +76,7 @@ function StyledPost({ post }: { post: PostsSchemaValues }) {
 							hour12: true,
 						})}
 					</span>
+
 					{StyledStatus({ status: post.status })}
 				</div>
 				<span className="truncate">
