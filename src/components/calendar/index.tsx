@@ -94,79 +94,31 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 		return null;
 	}
 
-	const renderedPosts = StyledMediaPost({
-		post: posts[0],
-	});
+	const postToDisplay = posts[0];
 
-	// const renderedPosts = posts.map((p) => {
+	if (!postToDisplay) {
+		return null;
+	}
 
-	// 	// If the post has an attachment, render the attachment
-	// 	if (p.url) {
-	// 		return (
-	// 			<div key={p.id} className="relative h-36">
-	// 				<div className="relative flex flex-col">
-	// {p.type === "video" ? (
-	// 	<div className="absolute right-2 top-2 rounded-sm bg-gray-200 p-1">
-	// 		<VideoIcon className="h-4 w-4 text-gray-600" />
-	// 	</div>
-	// ) : (
-	// 	<div className="absolute right-2 top-2 rounded-sm bg-gray-200 p-1">
-	// 		<ImageIcon className="h-4 w-4 text-gray-600" />
-	// 	</div>
-	// )}
-	// 					<img
-	// 						className="rounded-sm object-cover"
-	// 						src={p.url}
-	// 						alt={p.content}
-	// 					/>
-	// 				</div>
-	// 				<div className="absolute bottom-0 flex w-full items-center rounded-b bg-gray-200 p-2 text-xs">
-	// 					{/* <span>{p.createdAt}</span> */}
-	// 					<span className="mx-2">•</span>
-	// 					lololol
-	// 					{/* <span className="truncate">{p.content.slice(0, 20)}...</span> */}
-	// 					<span className="mx-2">•</span>
-	// 					<span>{p.status}</span>
-	// 				</div>
-	// 			</div>
-	// 		);
-	// 	}
+	if (postToDisplay.url) {
+		return StyledMediaPost({ post: postToDisplay });
+	}
 
-	// 	return (
-	// 		<div
-	// 			key={p.id}
-	// 			className={`flex items-center rounded-sm bg-gray-200 p-2 text-xs ${
-	// 				isBeforeThisWeek ? "opacity-60" : ""
-	// 			}`}
-	// 		>
-	// 			<TwitterIcon className="h-4 w-4 shrink-0 text-blue-600" />
-	// 			<time className="ml-2 shrink-0">
-	// 				{p.scheduledFor.toLocaleTimeString([], {
-	// 					hour: "numeric",
-	// 					minute: "numeric",
-	// 				})}
-	// 			</time>
-	// 			<span className="ml-1 truncate text-xs text-muted-foreground">
-	// 				{p.content}
-	// 			</span>
-	// 			{
-	// 				{
-	// 					approved: (
-	// 						<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
-	// 					),
-	// 					pending: (
-	// 						<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-yellow-500" />
-	// 					),
-	// 					rejected: (
-	// 						<span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-red-500" />
-	// 					),
-	// 				}[p.status]
-	// 			}
-	// 		</div>
-	// 	);
-	// });
-
-	return <div>{renderedPosts}</div>;
+	return (
+		<div className="aspect-video rounded-lg bg-primary p-2 text-xs text-primary-foreground">
+			<div className="flex items-center justify-between">
+				<span className="mb-1 font-medium">
+					{postToDisplay.scheduledFor.toLocaleString("en-US", {
+						hour: "numeric",
+						minute: "numeric",
+						hour12: true,
+					})}
+				</span>
+				{StyledStatus({ status: postToDisplay.status })}
+			</div>
+			<span>{postToDisplay.content && postToDisplay.content.slice(0, 50)}</span>
+		</div>
+	);
 }
 
 export function PostsCalendar({ posts = [], profileId }: PostsProps) {
