@@ -52,7 +52,7 @@ function StyledStatus({ status }: { status: string }) {
 
 function StyledMediaPost({ post }: { post: PostsSchemaValues }) {
 	return (
-		<div className="relative">
+		<div className="relative m-px rounded-sm border border-border shadow-md">
 			<div className="flex flex-col">
 				<div className="absolute right-2 top-2 rounded-sm bg-secondary p-1">
 					{post.type === "video" ? (
@@ -105,7 +105,7 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 	}
 
 	return (
-		<div className="flex aspect-video flex-col rounded-sm bg-secondary p-2 text-xs text-secondary-foreground">
+		<div className="m-px flex aspect-video flex-col rounded-sm border border-border bg-secondary p-2 text-xs text-secondary-foreground shadow-md">
 			<div className="flex items-center justify-between">
 				<span className="mb-1 font-medium">
 					{postToDisplay.scheduledFor.toLocaleString("en-US", {
