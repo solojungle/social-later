@@ -67,7 +67,7 @@ function StyledMediaPost({ post }: { post: PostsSchemaValues }) {
 					alt="post content"
 				/>
 			</div>
-			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-primary/70 p-2 text-xs text-primary-foreground">
+			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-primary/90 p-2 text-xs text-primary-foreground">
 				<div className="flex items-center justify-between">
 					<span className="font-medium">
 						{post.scheduledFor.toLocaleString("en-US", {
