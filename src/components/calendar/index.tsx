@@ -67,7 +67,7 @@ function StyledMediaPost({ post }: { post: PostsSchemaValues }) {
 					alt="post content"
 				/>
 			</div>
-			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-primary/90 p-2 text-xs text-primary-foreground">
+			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-secondary p-2 text-xs text-secondary-foreground">
 				<div className="flex items-center justify-between">
 					<span className="font-medium">
 						{post.scheduledFor.toLocaleString("en-US", {
@@ -105,7 +105,7 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 	}
 
 	return (
-		<div className="flex aspect-video flex-col rounded-sm bg-primary p-2 text-xs text-primary-foreground">
+		<div className="flex aspect-video flex-col rounded-sm bg-secondary p-2 text-xs text-secondary-foreground">
 			<div className="flex items-center justify-between">
 				<span className="mb-1 font-medium">
 					{postToDisplay.scheduledFor.toLocaleString("en-US", {
