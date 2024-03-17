@@ -30,7 +30,10 @@ interface ResizableLayoutProps {
 }
 
 function isCurrentTab(path: string, url: string) {
-	return path === `/${url}` ? "default" : "ghost";
+	// Only get stuff before first slash
+	const formattedPath = path.split("/")[1]?.toLowerCase();
+
+	return `${formattedPath}` === `${url}` ? "default" : "ghost";
 }
 
 export function ResizableLayout({
@@ -105,7 +108,7 @@ export function ResizableLayout({
 										label: "",
 										icon: HelpCircleIcon,
 										variant: isCurrentTab(path, "help"),
-										url: "help",
+										url: "help/en",
 									},
 									{
 										title: "Settings",
