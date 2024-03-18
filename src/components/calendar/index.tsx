@@ -123,8 +123,8 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 }
 
 export function PostsCalendar({ posts = [], profileId }: PostsProps) {
-	const [selectedMonth] = useState(new Date().getMonth());
-	const [selectedYear] = useState(new Date().getFullYear());
+	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 	const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1);
 	const lastDayOfMonth = new Date(selectedYear, selectedMonth + 1, 0);
 	const daysInMonth = lastDayOfMonth.getDate();
@@ -188,8 +188,15 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 
 	return (
 		<div className="flex h-full flex-col">
-			<div className="flex items-center space-x-4 rounded-t border border-b-0 p-5">
-				<Button className="sticky self-start" variant="ghost">
+			<div className="flex items-center space-x-4 rounded-t border border-b-0 p-2">
+				<Button
+					variant="ghost"
+					onClick={() => {
+						const newDate = new Date(selectedYear, selectedMonth - 1);
+						setSelectedMonth(newDate.getMonth());
+						setSelectedYear(newDate.getFullYear());
+					}}
+				>
 					<ChevronLeft className="h-5 w-5" />
 				</Button>
 				<span className="font-semibold">
@@ -198,7 +205,14 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 					})}
 					, {selectedYear}
 				</span>
-				<Button className="sticky self-start" variant="ghost">
+				<Button
+					variant="ghost"
+					onClick={() => {
+						const newDate = new Date(selectedYear, selectedMonth + 1);
+						setSelectedMonth(newDate.getMonth());
+						setSelectedYear(newDate.getFullYear());
+					}}
+				>
 					<ChevronRight className="h-5 w-5" />
 				</Button>
 			</div>
