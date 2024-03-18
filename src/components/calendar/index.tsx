@@ -1,11 +1,12 @@
 "use client";
 
-import { ImageIcon, VideoIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
 import { useState } from "react";
 
 import { PostsSchemaValues } from "@/schemas/posts-schema";
 
 import { CreatePost } from "../createPost";
+import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface PostsProps {
@@ -187,6 +188,20 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 
 	return (
 		<div className="flex h-full flex-col">
+			<div className="flex items-center space-x-4 rounded-t border border-b-0 p-5">
+				<Button className="sticky self-start" variant="ghost">
+					<ChevronLeft className="h-5 w-5" />
+				</Button>
+				<span className="font-semibold">
+					{new Date(selectedYear, selectedMonth).toLocaleString("default", {
+						month: "long",
+					})}
+					, {selectedYear}
+				</span>
+				<Button className="sticky self-start" variant="ghost">
+					<ChevronRight className="h-5 w-5" />
+				</Button>
+			</div>
 			<div className="flex flex-auto flex-col ">
 				<div className="grid grid-cols-7 gap-px bg-border p-px pb-0 text-center text-xs font-semibold leading-6">
 					<div className="bg-background py-2 text-foreground">

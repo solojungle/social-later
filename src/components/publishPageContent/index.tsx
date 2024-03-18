@@ -6,7 +6,6 @@ import { api } from "@/trpc/react";
 
 import { AddTeamMember } from "../addTeamMember";
 import { PostsCalendar } from "../calendar";
-import { CalendarDateRangePicker } from "../dateRangePicker";
 import TeamSwitcher from "../navigationbar/teamSwitcher";
 import { ResizablePanel } from "../ui/resizable";
 
@@ -35,13 +34,6 @@ export const PublishPageContent = () => {
 				<AddTeamMember />
 			</div>
 
-			<div>
-				<h4 className="text-sm font-medium">Date Range</h4>
-				<p className="text-xs text-muted-foreground">
-					Select the date range for your calendar.
-				</p>
-			</div>
-			<CalendarDateRangePicker />
 			<PostsCalendar posts={posts} profileId={profileId} />
 		</ResizablePanel>
 	);

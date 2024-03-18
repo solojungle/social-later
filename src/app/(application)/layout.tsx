@@ -5,8 +5,8 @@ import { ResizableLayout } from "@/components/resizableLayout";
 import { SiteHeader } from "@/components/siteHeader";
 
 export const metadata: Metadata = {
-	title: "Forms",
-	description: "Advanced form example using react-hook-form and Zod.",
+	title: "FeedFrenzy",
+	description: "FeedFrenzy is a social media aggregator and feed reader.",
 };
 
 const inter = Inter({
