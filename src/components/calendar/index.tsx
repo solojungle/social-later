@@ -199,7 +199,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 				>
 					<ChevronLeft className="h-5 w-5" />
 				</Button>
-				<span className="font-semibold">
+				<span className="flex w-36 justify-center font-semibold">
 					{new Date(selectedYear, selectedMonth).toLocaleString("default", {
 						month: "long",
 					})}
