@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FileType } from "@prisma/client";
 import axios from "axios";
 import { ImageIcon, Loader2, PaperclipIcon } from "lucide-react";
 import { useState } from "react";
@@ -35,6 +36,21 @@ interface PostTweetProps {
 	teamId: string;
 	profileId: string;
 	className?: string;
+}
+
+// Determine which type of file it is, image, video, gif
+function determineFileType(file: File) {
+	if (file.type.includes("video")) {
+		return FileType.video;
+	}
+	if (file.type.includes("gif")) {
+		return FileType.gif;
+	}
+	if (file.type.includes("image")) {
+		return FileType.image;
+	}
+
+	throw new Error("File type not supported");
 }
 
 function TweetForm({
@@ -79,7 +95,7 @@ function TweetForm({
 		// If there is media then we need to convert it to a file and
 		// upload it to aws. Then one the backend we will get the url
 		// and upload it from aws to twitter.
-		if (data.media) {
+		if (data.media && data.media.length > 0) {
 			const imageFile = data.media[0] as File;
 			const filename = imageFile.name.split(".").shift();
 			const extension = imageFile.name.split(".").pop();
@@ -93,10 +109,14 @@ function TweetForm({
 					},
 				});
 
+				// Determine which type of file it is, image, video, gif
+				const mediaFileType = determineFileType(imageFile);
+
 				const mediaFile = await createFile({
 					name: filename || "",
 					extension: extension || "",
 					key: presignedObject.key,
+					type: mediaFileType,
 					size: imageFile.size,
 					mime: imageFile.type,
 				});
@@ -159,7 +179,7 @@ function TweetForm({
 								name="content"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel htmlFor="text">Post Text</FormLabel>
+										<FormLabel>Post Text</FormLabel>
 										<FormControl>
 											<div className="shadow-sm">
 												<div className="rounded-t-md border border-b-0 border-border p-1">
@@ -205,7 +225,6 @@ function TweetForm({
 												</div>
 												<Textarea
 													className="!mt-0 rounded-t-none shadow-none"
-													id="text"
 													autoFocus
 													{...field}
 													placeholder="Write something, mention or add emoji..."

@@ -83,6 +83,7 @@ model File {
   size       Int
   mime       String
   extension  String
+  type       FileType
   height     Int?
   width      Int?
   key        String       @unique

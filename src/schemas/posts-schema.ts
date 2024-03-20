@@ -23,23 +23,128 @@ export const PostsSchema = z.object({
 	published: z.boolean(),
 	profileId: z.string(),
 	authorId: z.string(),
+	url: z.string().optional().nullish(),
 });
 
 export type PostsSchemaValues = z.infer<typeof PostsSchema>;
 
 // Use to validate the form data before sending it to the server
-export const PostFormSchema = z.union([
-	z.object({
-		content: z.string(),
-		media: SingleFileSchema,
-	}),
-	z.object({
-		content: z.string(),
-	}),
-	z.object({
-		media: SingleFileSchema,
-	}),
-]);
+// export const PostFormSchema = z.union([
+// 	z.object({
+// 		content: z.string().min(1),
+// 		media: SingleFileSchema,
+// 	}),
+// 	z.object({
+// 		media: SingleFileSchema,
+// 	}),
+// 	z.object({
+// 		content: z.string().min(1),
+// 	}),
+// ]);
+
+// export const SingleFileSchema = z
+// 	.any()
+// 	.refine((file) => file?.length === 1, "File is required.")
+// 	.refine(
+// 		(file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type),
+// 		"File type is not supported.",
+// 	)
+// 	.refine((file) => file[0]?.size <= 3000000, `Max file size is 3MB.`);
+
+export const PostFormSchema = z
+	.object({
+		content: z.string().min(1),
+		media: z.any(),
+	})
+	.partial()
+	.refine(
+		(data) => {
+			const hasContent =
+				data.content && data.content !== undefined && data.content.length > 0;
+			const hasMedia =
+				data.media && data.media !== undefined && data.media.length > 0;
+
+			if (!hasContent && !hasMedia) {
+				return false;
+			}
+
+			return true;
+		},
+		{
+			message: "You must provide either content, a valid media file, or both",
+			path: ["media"],
+		},
+	)
+	.refine(
+		(data) => {
+			const hasContent =
+				data.content && data.content !== undefined && data.content.length > 0;
+			const hasMedia =
+				data.media && data.media !== undefined && data.media.length > 0;
+
+			if (hasContent && hasMedia) {
+				const files = data.media;
+				if (files === undefined) {
+					return false;
+				}
+
+				const result = SingleFileSchema.safeParse(files);
+				if (!result.success) {
+					return false;
+				}
+			}
+
+			return true;
+		},
+		{
+			message: "Invalid file type or size",
+			path: ["media"],
+		},
+	)
+	.refine(
+		(data) => {
+			const hasMedia =
+				data.media && data.media !== undefined && data.media.length > 0;
+
+			const hasContent =
+				data.content && data.content !== undefined && data.content.length > 0;
+
+			if (!hasContent && hasMedia) {
+				const files = data.media;
+				if (files === undefined) {
+					return false;
+				}
+
+				const result = SingleFileSchema.safeParse(files);
+				if (!result.success) {
+					return false;
+				}
+			}
+
+			return true;
+		},
+		{
+			message: "Invalid file type or size",
+			path: ["media"],
+		},
+	)
+	.refine(
+		(data) => {
+			const hasContent =
+				data.content && data.content !== undefined && data.content.length > 0;
+
+			if (hasContent) {
+				return true;
+			}
+
+			return false;
+		},
+		{
+			message: "You must provide either content, a valid media file, or both",
+			path: ["content"],
+		},
+	);
+
 export type PostFormSchemaValues = z.infer<typeof PostFormSchema>;
 
 // The backend cannot receive a file array

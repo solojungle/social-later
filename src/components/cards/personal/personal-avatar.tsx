@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FileType } from "@prisma/client";
 import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -60,6 +61,8 @@ export function PersonalAvatarCard() {
 				const oldAvatarKey = image.split("/").pop();
 
 				if (oldAvatarKey) {
+					// TODO: Check if it exists in our AWS versus just being a url to another site!
+
 					// Delete the avatar from aws
 					deleteObject({ key: oldAvatarKey });
 
@@ -80,6 +83,7 @@ export function PersonalAvatarCard() {
 				name: filename || "",
 				extension: extension || "",
 				key: presignedObject.key,
+				type: FileType.image,
 				size: imageFile.size,
 				mime: imageFile.type,
 			});
