@@ -37,7 +37,7 @@ export function AddTeamMember() {
 					</Avatar>
 				)}
 			</div>
-			<Tooltip delayDuration={500}>
+			<Tooltip delayDuration={0}>
 				<TooltipTrigger>
 					{/* TODO: Fix Tooltip hover bug */}
 					<AddTeamMemberModal />

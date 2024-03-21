@@ -35,6 +35,7 @@ export const socialProfilesRouter = createTRPCRouter({
 				twitterAccounts.map((twitterAccount) => ({
 					id: twitterAccount.id,
 					username: twitterAccount.username,
+					avatar: twitterAccount.avatar,
 					teamId: twitterAccount.teamId,
 				})) || []
 			);

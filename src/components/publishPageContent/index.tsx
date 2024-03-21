@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 
 import { AddTeamMember } from "../addTeamMember";
 import { PostsCalendar } from "../calendar";
-import TeamSwitcher from "../navigationbar/teamSwitcher";
+import SocialProfileSwitcher from "../socialProfileSwitcher";
 import { ResizablePanel } from "../ui/resizable";
 
 export const PublishPageContent = () => {
@@ -30,7 +30,7 @@ export const PublishPageContent = () => {
 			className="h-full space-y-2 !overflow-scroll p-3 pb-48"
 		>
 			<div className="flex space-x-8 border p-2">
-				<TeamSwitcher />
+				<SocialProfileSwitcher />
 				<AddTeamMember />
 			</div>
 
