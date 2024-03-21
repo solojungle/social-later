@@ -59,7 +59,11 @@ export async function GET(req: NextRequest) {
 		}
 
 		// Get the user object
-		const { data: userObject } = await loggedClient.v2.me();
+		const { data: userObject } = await loggedClient.v2.me({
+			"user.fields": ["profile_image_url"],
+		});
+
+		const profileImageUrl = userObject.profile_image_url || "";
 
 		await db.twitterAccount.upsert({
 			where: {
@@ -73,6 +77,7 @@ export async function GET(req: NextRequest) {
 				refreshToken,
 				expiresIn,
 				teamId,
+				avatar: profileImageUrl,
 				username: userObject.username,
 			},
 			update: {
