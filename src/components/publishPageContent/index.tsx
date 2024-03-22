@@ -27,9 +27,9 @@ export const PublishPageContent = () => {
 			id="calendar"
 			order={2}
 			defaultSize={80}
-			className="h-full space-y-2 !overflow-scroll p-3 pb-48"
+			className="h-full space-y-3 !overflow-scroll p-3"
 		>
-			<div className="flex space-x-8 border p-2">
+			<div className="flex space-x-6">
 				<SocialProfileSwitcher />
 				<AddTeamMember />
 			</div>

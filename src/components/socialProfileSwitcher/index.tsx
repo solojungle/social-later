@@ -1,11 +1,7 @@
 "use client";
 
-import {
-	CaretSortIcon,
-	PlusCircledIcon,
-	TwitterLogoIcon,
-} from "@radix-ui/react-icons";
-import { CheckIcon } from "lucide-react";
+import { CaretSortIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
+import { CheckIcon, PlusIcon } from "lucide-react";
 import * as React from "react";
 import { useState } from "react";
 
@@ -68,14 +64,14 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 	);
 }
 
-type TeamSwitcherPopoverTriggerProps = PopoverTriggerProps & {
+type SocialProfileSwitcherPopoverTriggerProps = PopoverTriggerProps & {
 	open: boolean; // Define the 'open' prop
 };
 
 function SocialProfileSwitcherPopoverTrigger({
 	className,
 	open,
-}: TeamSwitcherPopoverTriggerProps) {
+}: SocialProfileSwitcherPopoverTriggerProps) {
 	const { profiles, currentProfileId, setCurrentProfileId } =
 		useSocialProfilesStore();
 
@@ -129,7 +125,7 @@ export default function SocialProfileSwitcher({
 	className,
 }: SocialProfileSwitcherProps) {
 	const [open, setOpen] = useState(false);
-	const [showNewTeamDialog, setShowNewTeamDialog] = useState(false);
+	const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -146,10 +142,10 @@ export default function SocialProfileSwitcher({
 							<CommandItem
 								onSelect={() => {
 									setOpen(false);
-									setShowNewTeamDialog(true);
+									setShowNewProfileDialog(true);
 								}}
 							>
-								<PlusCircledIcon className="mr-2 h-5 w-5" />
+								<PlusIcon className="mr-2 h-4 w-4" />
 								Add profile
 							</CommandItem>
 						</CommandGroup>
