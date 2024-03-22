@@ -15,9 +15,19 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
+import { ProfileCards } from "../addSocialProfileButton";
+import { LinkTwitterButton } from "../addSocialProfileButton/linkSocialsButton";
 import { Button } from "../ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type PersonalCommandGroupProps = {
@@ -126,32 +136,48 @@ export default function SocialProfileSwitcher({
 }: SocialProfileSwitcherProps) {
 	const [open, setOpen] = useState(false);
 	const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
+	const { id: teamId } = useSelectedTeamStore();
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<SocialProfileSwitcherPopoverTrigger className={className} open={open} />
-			<PopoverContent className="w-[250px] p-0">
-				<Command>
-					<CommandInput placeholder="Search profiles..." />
-					<CommandList>
-						<CommandEmpty>No profiles found.</CommandEmpty>
-						<SocialProfilesCommandGroup setOpen={setOpen} />
-					</CommandList>
-					<CommandList>
-						<CommandGroup>
-							<CommandItem
-								onSelect={() => {
-									setOpen(false);
-									setShowNewProfileDialog(true);
-								}}
-							>
-								<PlusIcon className="mr-2 h-4 w-4" />
-								Add profile
-							</CommandItem>
-						</CommandGroup>
-					</CommandList>
-				</Command>
-			</PopoverContent>
-		</Popover>
+		<Dialog open={showNewProfileDialog} onOpenChange={setShowNewProfileDialog}>
+			<Popover open={open} onOpenChange={setOpen}>
+				<SocialProfileSwitcherPopoverTrigger
+					className={className}
+					open={open}
+				/>
+				<PopoverContent className="w-[250px] p-0">
+					<Command>
+						<CommandInput placeholder="Search profiles..." />
+						<CommandList>
+							<CommandEmpty>No profiles found.</CommandEmpty>
+							<SocialProfilesCommandGroup setOpen={setOpen} />
+						</CommandList>
+						<CommandList>
+							<CommandGroup>
+								<CommandItem
+									onSelect={() => {
+										setOpen(false);
+										setShowNewProfileDialog(true);
+									}}
+								>
+									<PlusIcon className="mr-2 h-4 w-4" />
+									Add profile
+								</CommandItem>
+							</CommandGroup>
+						</CommandList>
+					</Command>
+				</PopoverContent>
+			</Popover>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Add a social profile</DialogTitle>
+					<DialogDescription>
+						Connect your social profile to manage your posts.
+					</DialogDescription>
+				</DialogHeader>
+				<LinkTwitterButton teamId={teamId} />
+				<ProfileCards />
+			</DialogContent>
+		</Dialog>
 	);
 }

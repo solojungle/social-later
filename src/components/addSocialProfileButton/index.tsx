@@ -43,7 +43,7 @@ const SupportedSites = [
 	},
 ];
 
-function ProfileCards() {
+export function ProfileCards() {
 	return (
 		<div className="grid grid-cols-3 gap-1">
 			{SupportedSites.map((site) => (
