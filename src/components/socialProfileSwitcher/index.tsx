@@ -19,20 +19,9 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { useTeamStore } from "@/stores/teams";
 
-import { Checkout } from "../navigationbar/teamSwitcher/checkout";
 import { Button } from "../ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type PersonalCommandGroupProps = {
@@ -40,36 +29,37 @@ type PersonalCommandGroupProps = {
 };
 
 function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
-	const { name: selectedTeamName } = useSelectedTeamStore();
-	const { teams } = useTeamStore();
+	const { profiles, currentProfileId } = useSocialProfilesStore();
 
 	return (
-		<CommandGroup key="teams" heading="Profiles">
-			{teams.map((team) => (
+		<CommandGroup key="profiles" heading="Profiles">
+			{profiles.map((profile) => (
 				<CommandItem
-					key={team.id}
+					key={profile.id}
+					value={profile.username}
 					onSelect={() => {
-						useSelectedTeamStore.setState({
-							id: team.id,
-							name: team.name,
-							url: team.url,
-							image: team.image,
-						});
 						setOpen(false);
 					}}
 					className="text-sm"
 				>
-					<Avatar className="mr-2 h-5 w-5">
-						<AvatarImage src={team.image} alt={team.name} />
-						<AvatarFallback>{team.name?.[0] ?? ""}</AvatarFallback>
+					<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
+						<TwitterLogoIcon className="absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm bg-blue-600 p-px text-white" />
+						<AvatarImage
+							src={profile.avatar}
+							alt={profile.username}
+							className="!rounded-sm bg-white"
+						/>
+						<AvatarFallback className="!rounded-sm border border-border">
+							{profile.username?.[0]?.toUpperCase() ?? ""}
+						</AvatarFallback>
 					</Avatar>
-					<span title={team.name} className="overflow-hidden truncate">
-						{team.name}
+					<span title={profile.username} className="overflow-hidden truncate">
+						{profile.username}
 					</span>
 					<CheckIcon
 						className={cn(
 							"ml-auto h-4 w-4",
-							selectedTeamName === team.name ? "opacity-100" : "opacity-0",
+							currentProfileId === profile.id ? "opacity-100" : "opacity-0",
 						)}
 					/>
 				</CommandItem>
@@ -82,7 +72,7 @@ type TeamSwitcherPopoverTriggerProps = PopoverTriggerProps & {
 	open: boolean; // Define the 'open' prop
 };
 
-function TeamSwitcherPopoverTrigger({
+function SocialProfileSwitcherPopoverTrigger({
 	className,
 	open,
 }: TeamSwitcherPopoverTriggerProps) {
@@ -98,22 +88,22 @@ function TeamSwitcherPopoverTrigger({
 	}
 
 	return (
-		<PopoverTrigger asChild>
+		<PopoverTrigger>
 			<Button
 				variant="outline"
 				role="combobox"
 				aria-expanded={open}
-				aria-label="Select a team"
+				aria-label="Select a profile"
 				className={cn("w-[250px] justify-between", className)}
 			>
-				<Avatar className="relative mr-2 h-7 w-7 !rounded-sm bg-white shadow-sm">
+				<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
 					<TwitterLogoIcon className="absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm bg-blue-600 p-px text-white" />
 					<AvatarImage
 						src={selectedProfile.avatar}
 						alt={selectedProfile.username}
-						className="!rounded-sm"
+						className="!rounded-sm bg-white"
 					/>
-					<AvatarFallback className="!rounded-sm">
+					<AvatarFallback className="!rounded-sm border border-border">
 						{selectedProfile.username[0]?.toUpperCase() ?? ""}
 					</AvatarFallback>
 				</Avatar>
@@ -142,43 +132,30 @@ export default function SocialProfileSwitcher({
 	const [showNewTeamDialog, setShowNewTeamDialog] = useState(false);
 
 	return (
-		<Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
-			<Popover open={open} onOpenChange={setOpen}>
-				<TeamSwitcherPopoverTrigger className={className} open={open} />
-				<PopoverContent className="w-[250px] p-0">
-					<Command>
-						<CommandList>
-							<CommandInput placeholder="Search profiles..." />
-							<CommandEmpty>No profiles found.</CommandEmpty>
-							<SocialProfilesCommandGroup setOpen={setOpen} />
-						</CommandList>
-						<CommandList>
-							<CommandGroup>
-								<DialogTrigger asChild>
-									<CommandItem
-										onSelect={() => {
-											setOpen(false);
-											setShowNewTeamDialog(true);
-										}}
-									>
-										<PlusCircledIcon className="mr-2 h-5 w-5" />
-										Add profile
-									</CommandItem>
-								</DialogTrigger>
-							</CommandGroup>
-						</CommandList>
-					</Command>
-				</PopoverContent>
-			</Popover>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>INSERT PROFILE HERE</DialogTitle>
-					<DialogDescription>
-						Add a new team to manage products and customers.
-					</DialogDescription>
-				</DialogHeader>
-				<Checkout />
-			</DialogContent>
-		</Dialog>
+		<Popover open={open} onOpenChange={setOpen}>
+			<SocialProfileSwitcherPopoverTrigger className={className} open={open} />
+			<PopoverContent className="w-[250px] p-0">
+				<Command>
+					<CommandInput placeholder="Search profiles..." />
+					<CommandList>
+						<CommandEmpty>No profiles found.</CommandEmpty>
+						<SocialProfilesCommandGroup setOpen={setOpen} />
+					</CommandList>
+					<CommandList>
+						<CommandGroup>
+							<CommandItem
+								onSelect={() => {
+									setOpen(false);
+									setShowNewTeamDialog(true);
+								}}
+							>
+								<PlusCircledIcon className="mr-2 h-5 w-5" />
+								Add profile
+							</CommandItem>
+						</CommandGroup>
+					</CommandList>
+				</Command>
+			</PopoverContent>
+		</Popover>
 	);
 }
