@@ -18,6 +18,7 @@ import {
 	ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { cn } from "@/lib/utils";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { Separator } from "../ui/separator";
 import { Nav } from "./nav";
@@ -29,7 +30,7 @@ interface ResizableLayoutProps {
 	navCollapsedSize: number;
 }
 
-function isCurrentTab(path: string, url: string) {
+export function isCurrentTab(path: string, url: string) {
 	// Only get stuff before first slash
 	const formattedPath = path.split("/")[1]?.toLowerCase();
 
@@ -42,11 +43,10 @@ export function ResizableLayout({
 	navCollapsedSize,
 }: ResizableLayoutProps) {
 	const [isCollapsed, setIsCollapsed] = useState<boolean>(defaultCollapsed);
-
-	// const { id: teamId } = useSelectedTeamStore();
-	// const { data } = api.socials.getTwitterAccounts.useQuery({ id: teamId });
-
+	const { id: teamId } = useSelectedTeamStore();
 	const path = usePathname();
+
+	// const { data } = api.socials.getTwitterAccounts.useQuery({ id: teamId });
 
 	return (
 		<TooltipProvider delayDuration={0}>
@@ -114,8 +114,8 @@ export function ResizableLayout({
 										title: "Settings",
 										label: "",
 										icon: SettingsIcon,
-										variant: isCurrentTab(path, "settings"),
-										url: "settings",
+										variant: isCurrentTab(path, "teams"),
+										url: `teams/${teamId}/settings`,
 									},
 								]}
 							/>

@@ -6,7 +6,7 @@ import {
 	User2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,41 +28,43 @@ interface LinkItemsProps {
 	links: {
 		title: string;
 		icon: LucideIcon;
+		variant: "default" | "ghost" | "disabled";
 		url?: string;
 		action?: () => void;
 	}[];
+}
+
+export function isCurrentTab(path: string, url: string) {
+	// Only get stuff before first slash
+	const formattedPath = path.split("/")[1]?.toLowerCase();
+
+	return `${formattedPath}` === `${url}` ? "default" : "ghost";
 }
 
 function LinkItems({ links }: LinkItemsProps) {
 	return (
 		<div className="grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
 			{links.map((link) => {
-				if (link.action) {
-					return (
-						<button
-							key={link.title}
-							type="button"
-							onClick={link.action}
-							className={cn(
-								buttonVariants({ variant: "ghost", size: "sm" }),
-								"flex w-full items-center justify-start",
-								"dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-							)}
-						>
-							<link.icon className="mr-2 h-4 w-4" />
-							<span>{link.title}</span>
-						</button>
-					);
-				}
-
 				return (
 					<Link
 						key={link.title}
-						href={link.url ?? "/"}
-						className="inline-flex h-8 items-center justify-start whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+						href={`/${link.url}`}
+						className={cn(
+							buttonVariants({ variant: link.variant, size: "sm" }),
+							link.variant === "default" &&
+								"dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+							"justify-start",
+						)}
 					>
 						<link.icon className="mr-2 h-4 w-4" />
-						<span className="text-xs">{link.title}</span>
+						<span
+							className={cn(
+								"text-xs",
+								link.variant === "default" && "text-background dark:text-white",
+							)}
+						>
+							{link.title}
+						</span>
 					</Link>
 				);
 			})}
@@ -73,6 +75,7 @@ function LinkItems({ links }: LinkItemsProps) {
 export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 	const router = useRouter();
 	const { email, name, image } = useUserStore();
+	const path = usePathname();
 
 	return (
 		<div className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2">
@@ -123,16 +126,19 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 									{
 										title: "Personal Settings",
 										icon: User2Icon,
+										variant: isCurrentTab(path, "settings"),
 										url: "settings",
 									},
 									{
 										title: "Share feedback",
 										icon: MessageSquareIcon,
+										variant: isCurrentTab(path, "feedback"),
 										url: "feedback",
 									},
 									{
 										title: "Log out",
 										icon: LogOutIcon,
+										variant: "ghost",
 										url: "",
 										action: () => {
 											signOut({ redirect: false }).then(() => {
