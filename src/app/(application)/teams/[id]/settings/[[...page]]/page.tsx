@@ -1,0 +1,64 @@
+"use client";
+
+import { useParams } from "next/navigation";
+
+import BillingPage from "@/components/billingPage";
+import GeneralTeamSettingsPage from "@/components/generalPage";
+import TeamMembersPage from "@/components/membersPage";
+import SettingsNotificationsPage from "@/components/notificationsPage";
+import SettingsSecurityPage from "@/components/securityPage";
+import { ResizablePanel } from "@/components/ui/resizable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+export default function SettingsLayout() {
+	const params = useParams<{ page: string[]; id: string }>();
+
+	let page: string = "general";
+	if (params.page && params.page.length > 0) {
+		[page] = params.page as [string];
+	}
+
+	type Page = "general" | "members" | "billing" | "notifications" | "security";
+	const defaultValue: Page =
+		page === "general" ||
+		page === "members" ||
+		page === "billing" ||
+		page === "notifications" ||
+		page === "security"
+			? page
+			: "general";
+
+	return (
+		<ResizablePanel
+			id="team-settings"
+			order={2}
+			defaultSize={80}
+			className="!overflow-scroll p-3 pb-48"
+		>
+			<Tabs defaultValue={defaultValue} className="w-full">
+				<TabsList className="grid w-full grid-cols-5">
+					<TabsTrigger value="general">General</TabsTrigger>
+					<TabsTrigger value="members">Members</TabsTrigger>
+					<TabsTrigger value="billing">Billing</TabsTrigger>
+					<TabsTrigger value="notifications">Notifications</TabsTrigger>
+					<TabsTrigger value="security">Security</TabsTrigger>
+				</TabsList>
+				<TabsContent value="general">
+					<GeneralTeamSettingsPage />
+				</TabsContent>
+				<TabsContent value="members">
+					<TeamMembersPage />
+				</TabsContent>
+				<TabsContent value="billing">
+					<BillingPage />
+				</TabsContent>
+				<TabsContent value="notifications">
+					<SettingsNotificationsPage />
+				</TabsContent>
+				<TabsContent value="security">
+					<SettingsSecurityPage />
+				</TabsContent>
+			</Tabs>
+		</ResizablePanel>
+	);
+}
