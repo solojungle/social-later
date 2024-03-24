@@ -13,7 +13,7 @@ export function AddTeamMember() {
 	const displayedMembers = allMembers.slice(0, 3);
 
 	const avatarStack = displayedMembers.map((member) => (
-		<Avatar key={member.id} className="h-8 w-8 bg-white">
+		<Avatar key={member.id} className="pointer-events-none h-8 w-8 bg-white">
 			<AvatarImage src={member.image} />
 			<AvatarFallback className="border border-border">
 				{member.name[0]}
@@ -22,8 +22,8 @@ export function AddTeamMember() {
 	));
 
 	return (
-		<div className="flex select-none items-center text-xs">
-			<div className="mr-1 flex select-none items-center -space-x-1 overflow-hidden">
+		<div className="flex items-center text-xs">
+			<div className="mr-1 flex items-center -space-x-1 overflow-hidden">
 				{avatarStack}
 				{avatarStack.length > 2 && (
 					<Avatar
