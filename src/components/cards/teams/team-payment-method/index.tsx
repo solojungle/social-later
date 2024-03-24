@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, MoreHorizontal } from "lucide-react";
+import { CheckCircle2, Loader2, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,9 +21,28 @@ interface TeamPaymentMethodCardProps {
 }
 
 export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
-	const { data } = api.stripe.getPaymentMethods.useQuery({
-		id,
-	});
+	const { data, isLoading, isFetching } = api.stripe.getPaymentMethods.useQuery(
+		{
+			id,
+		},
+	);
+
+	if (isLoading || isFetching) {
+		return (
+			<SettingsCardBase
+				title="Payment Method"
+				content={
+					<div className="flex w-full flex-col items-center justify-center">
+						<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+						<span className="mt-4 text-xs text-muted-foreground">
+							Loading payment methods...
+						</span>
+					</div>
+				}
+				footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
+			/>
+		);
+	}
 
 	if (!data || data.length === 0) {
 		return (
