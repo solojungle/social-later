@@ -1,16 +1,13 @@
 import { useTeamMembersStore } from "@/stores/team-members";
-import { useUserStore } from "@/stores/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { AddTeamMemberModal } from "./modal";
 
 export function AddTeamMember() {
-	const { image: userAvatar, name } = useUserStore();
 	const { members } = useTeamMembersStore();
 
-	const allMembers = [{ image: userAvatar, name, id: "0" }, ...members];
-	const displayedMembers = allMembers.slice(0, 3);
+	const displayedMembers = members.slice(0, 3);
 
 	const avatarStack = displayedMembers.map((member) => (
 		<Avatar
@@ -34,7 +31,7 @@ export function AddTeamMember() {
 						className="flex h-8 w-8 items-center justify-center bg-white"
 					>
 						<AvatarFallback className="border border-border text-xs font-medium">
-							+{Math.min(allMembers.length - avatarStack.length, 99)}
+							+{Math.min(members.length - avatarStack.length, 99)}
 						</AvatarFallback>
 					</Avatar>
 				)}

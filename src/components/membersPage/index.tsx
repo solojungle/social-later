@@ -12,7 +12,6 @@ import { api } from "@/trpc/react";
 
 export default function TeamMembersPage() {
 	const { id: selectedTeamId } = useSelectedTeamStore();
-
 	const { data: invitations } = api.invitation.getPendingInvitations.useQuery({
 		id: selectedTeamId,
 	});
