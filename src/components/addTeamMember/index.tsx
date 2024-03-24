@@ -9,12 +9,11 @@ export function AddTeamMember() {
 	const { image: userAvatar, name } = useUserStore();
 	const { members } = useTeamMembersStore();
 
-	const allMembers = [{ image: userAvatar, name }, ...members];
+	const allMembers = [{ image: userAvatar, name, id: "0" }, ...members];
 	const displayedMembers = allMembers.slice(0, 3);
 
-	const memberAvatars = displayedMembers.map((member, index) => (
-		// eslint-disable-next-line tailwindcss/classnames-order, prettier/prettier, react/no-array-index-key
-		<Avatar key={index} className={`relative left-[${-10 * index}px] h-8 w-8 bg-white`}>
+	const avatarStack = displayedMembers.map((member) => (
+		<Avatar key={member.id} className="h-8 w-8 bg-white">
 			<AvatarImage src={member.image} />
 			<AvatarFallback className="border border-border">
 				{member.name[0]}
@@ -24,15 +23,15 @@ export function AddTeamMember() {
 
 	return (
 		<div className="flex select-none items-center text-xs">
-			<div className="mr-1 flex max-w-[98px] select-none items-center overflow-hidden">
-				{memberAvatars}
-				{memberAvatars.length > 2 && (
+			<div className="mr-1 flex select-none items-center -space-x-1 overflow-hidden">
+				{avatarStack}
+				{avatarStack.length > 2 && (
 					<Avatar
 						key={3}
-						className="relative left-[-30px] mr-[-10px] flex h-8 w-8 items-center justify-center bg-white"
+						className="flex h-8 w-8 items-center justify-center bg-white"
 					>
 						<AvatarFallback className="border border-border text-xs font-medium">
-							+{allMembers.length}
+							+{Math.min(allMembers.length - avatarStack.length, 99)}
 						</AvatarFallback>
 					</Avatar>
 				)}
