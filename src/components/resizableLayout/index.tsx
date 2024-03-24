@@ -100,14 +100,16 @@ export function ResizableLayout({
 										title: "Notifications",
 										label: "",
 										icon: BellIcon,
-										variant: isCurrentTab(path, "notifications"),
+										// variant: isCurrentTab(path, "notifications"),
+										variant: "disabled",
 										url: "notifications",
 									},
 									{
 										title: "Help Center",
 										label: "",
 										icon: HelpCircleIcon,
-										variant: isCurrentTab(path, "help"),
+										// variant: isCurrentTab(path, "help"),
+										variant: "disabled",
 										url: "help/en",
 									},
 									{
