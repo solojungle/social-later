@@ -1,9 +1,13 @@
 "use client";
 
+import { FileType } from "@prisma/client";
 import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
 import { useState } from "react";
 
-import { PostsSchemaValues } from "@/schemas/posts-schema";
+import {
+	PostsSchemaValues,
+	PostWithAttachmentsSchemaValues,
+} from "@/schemas/posts-schema";
 
 import { CreatePost } from "../createPost";
 import { Button } from "../ui/button";
@@ -11,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface PostsProps {
 	profileId: string;
-	posts: any | undefined;
+	posts: PostWithAttachmentsSchemaValues[];
 }
 
 function StyledStatus({ status }: { status: string }) {
@@ -51,12 +55,16 @@ function StyledStatus({ status }: { status: string }) {
 	return null;
 }
 
-function StyledMediaPost({ post }: { post: PostsSchemaValues }) {
+function StyledMediaPost({ post }: { post: PostWithAttachmentsSchemaValues }) {
+	if (!post.url) {
+		return null;
+	}
+
 	return (
 		<div className="relative m-px rounded-sm border border-border shadow-md">
 			<div className="flex flex-col">
 				<div className="absolute right-2 top-2 rounded-sm bg-secondary p-1">
-					{post.type === "video" ? (
+					{post.attachment?.file.type === FileType.video ? (
 						<VideoIcon className="h-4 w-4 text-secondary-foreground" />
 					) : (
 						<ImageIcon className="h-4 w-4 text-secondary-foreground" />

@@ -59,10 +59,8 @@ export const PostFormSchema = z
 	.partial()
 	.refine(
 		(data) => {
-			const hasContent =
-				data.content && data.content !== undefined && data.content.length > 0;
-			const hasMedia =
-				data.media && data.media !== undefined && data.media.length > 0;
+			const hasContent = data.content !== undefined && data.content.length > 0;
+			const hasMedia = data.media !== undefined && data.media.length > 0;
 
 			if (!hasContent && !hasMedia) {
 				return false;
@@ -77,10 +75,8 @@ export const PostFormSchema = z
 	)
 	.refine(
 		(data) => {
-			const hasContent =
-				data.content && data.content !== undefined && data.content.length > 0;
-			const hasMedia =
-				data.media && data.media !== undefined && data.media.length > 0;
+			const hasContent = data.content !== undefined && data.content.length > 0;
+			const hasMedia = data.media !== undefined && data.media.length > 0;
 
 			if (hasContent && hasMedia) {
 				const files = data.media;
@@ -103,11 +99,8 @@ export const PostFormSchema = z
 	)
 	.refine(
 		(data) => {
-			const hasMedia =
-				data.media && data.media !== undefined && data.media.length > 0;
-
-			const hasContent =
-				data.content && data.content !== undefined && data.content.length > 0;
+			const hasMedia = data.media !== undefined && data.media.length > 0;
+			const hasContent = data.content !== undefined && data.content.length > 0;
 
 			if (!hasContent && hasMedia) {
 				const files = data.media;
@@ -130,14 +123,14 @@ export const PostFormSchema = z
 	)
 	.refine(
 		(data) => {
-			const hasContent =
-				data.content && data.content !== undefined && data.content.length > 0;
+			const hasContent = data.content !== undefined && data.content.length > 0;
+			const hasMedia = data.media !== undefined && data.media.length > 0;
 
-			if (hasContent) {
-				return true;
+			if (hasContent && !hasMedia) {
+				// If there are any other kind of validation needed on content, we do it here.
 			}
 
-			return false;
+			return true;
 		},
 		{
 			message: "You must provide either content, a valid media file, or both",
@@ -182,3 +175,35 @@ export const CreatePostSchema = z.union([
 ]);
 
 export type CreatePostSchemaValues = z.infer<typeof CreatePostSchema>;
+
+export const AttachmentWithFileSchema = z.object({
+	id: z.string(),
+	fileId: z.string(),
+	postId: z.string(),
+	createdAt: z.string(),
+	updatedAt: z.string(),
+	file: z.object({
+		id: z.string(),
+		name: z.string(),
+		size: z.number(),
+		mime: z.string(),
+		extension: z.string(),
+		type: z.string(),
+		height: z.null(),
+		width: z.null(),
+		key: z.string(),
+		createdAt: z.string(),
+		updatedAt: z.string(),
+	}),
+});
+
+export type AttachmentWithFileValues = z.infer<typeof AttachmentWithFileSchema>;
+
+export const PostWithAttachmentsSchema = PostsSchema.extend({
+	attachment: AttachmentWithFileSchema.nullable().optional(),
+	url: z.string().optional().nullish(),
+});
+
+export type PostWithAttachmentsSchemaValues = z.infer<
+	typeof PostWithAttachmentsSchema
+>;
