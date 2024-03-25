@@ -82,8 +82,7 @@ function SocialProfileSwitcherPopoverTrigger({
 	className,
 	open,
 }: SocialProfileSwitcherPopoverTriggerProps) {
-	const { profiles, currentProfileId, setCurrentProfileId } =
-		useSocialProfilesStore();
+	const { profiles, currentProfileId } = useSocialProfilesStore();
 
 	const selectedProfile = profiles.find(
 		(profile) => profile.id === currentProfileId,

@@ -180,8 +180,8 @@ export const AttachmentWithFileSchema = z.object({
 	id: z.string(),
 	fileId: z.string(),
 	postId: z.string(),
-	createdAt: z.string(),
-	updatedAt: z.string(),
+	createdAt: z.date(),
+	updatedAt: z.date(),
 	file: z.object({
 		id: z.string(),
 		name: z.string(),
@@ -189,11 +189,11 @@ export const AttachmentWithFileSchema = z.object({
 		mime: z.string(),
 		extension: z.string(),
 		type: z.string(),
-		height: z.null(),
-		width: z.null(),
+		height: z.number().nullable(),
+		width: z.number().nullable(),
 		key: z.string(),
-		createdAt: z.string(),
-		updatedAt: z.string(),
+		createdAt: z.date(),
+		updatedAt: z.date(),
 	}),
 });
 

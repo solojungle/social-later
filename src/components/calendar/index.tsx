@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface PostsProps {
 	profileId: string;
-	posts: PostWithAttachmentsSchemaValues[];
+	posts: PostWithAttachmentsSchemaValues[] | undefined;
 }
 
 function StyledStatus({ status }: { status: string }) {
