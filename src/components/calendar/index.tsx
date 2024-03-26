@@ -11,18 +11,17 @@ import {
 
 import { CreatePost } from "../createPost";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
 	Sheet,
 	SheetClose,
 	SheetContent,
-	SheetDescription,
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
 } from "../ui/sheet";
+import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface PostsProps {
@@ -30,33 +29,49 @@ interface PostsProps {
 	posts: PostWithAttachmentsSchemaValues[] | undefined;
 }
 
-function EditPostSheetContent() {
+function EditPostSheetContent({
+	post,
+}: {
+	post: PostWithAttachmentsSchemaValues;
+}) {
 	return (
-		<SheetContent>
+		<SheetContent className="w-[600px] !max-w-[80vw]" side="right">
 			<SheetHeader>
-				<SheetTitle>Edit profile</SheetTitle>
-				<SheetDescription>
-					Make changes to your profile here. Click save when youre done.
-				</SheetDescription>
+				<SheetTitle>Post View</SheetTitle>
 			</SheetHeader>
 			<div className="grid gap-4 py-4">
-				<div className="grid grid-cols-4 items-center gap-4">
-					<Label htmlFor="name" className="text-right">
-						Name
-					</Label>
-					<Input id="name" value="Pedro Duarte" className="col-span-3" />
-				</div>
-				<div className="grid grid-cols-4 items-center gap-4">
-					<Label htmlFor="username" className="text-right">
-						Username
-					</Label>
-					<Input id="username" value="@peduarte" className="col-span-3" />
-				</div>
+				{post.url && (
+					<img
+						src={post.url}
+						alt={post.title || "Post content"}
+						className="w-full rounded-lg object-cover"
+					/>
+				)}
+				{post.content && post.content.length > 0 && (
+					<div>
+						<Label>Content</Label>
+						<Textarea
+							value={post.content}
+							placeholder="Write your post content here"
+							className="h-40"
+						/>
+					</div>
+				)}
 			</div>
-			<SheetFooter>
-				<SheetClose asChild>
-					<Button type="submit">Save changes</Button>
-				</SheetClose>
+			<SheetFooter className="flex !justify-between">
+				<Button type="button" variant="destructive">
+					Delete Post
+				</Button>
+				<div className="space-x-2">
+					<SheetClose asChild>
+						<Button type="submit" variant="secondary">
+							Cancel
+						</Button>
+					</SheetClose>
+					<SheetClose asChild>
+						<Button type="submit">Save changes</Button>
+					</SheetClose>
+				</div>
 			</SheetFooter>
 		</SheetContent>
 	);
@@ -140,7 +155,7 @@ function StyledMediaPost({ post }: { post: PostWithAttachmentsSchemaValues }) {
 					</div>
 				</div>
 			</SheetTrigger>
-			<EditPostSheetContent />
+			<EditPostSheetContent post={post} />
 		</Sheet>
 	);
 }
