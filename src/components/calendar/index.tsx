@@ -10,6 +10,17 @@ import {
 } from "@/schemas/posts-schema";
 
 import { CreatePost } from "../createPost";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import {
@@ -41,11 +52,14 @@ function EditPostSheetContent({
 			</SheetHeader>
 			<div className="grid gap-4 py-4">
 				{post.url && (
-					<img
-						src={post.url}
-						alt={post.title || "Post content"}
-						className="w-full rounded-lg object-cover"
-					/>
+					<div>
+						<Label>Media</Label>
+						<img
+							src={post.url}
+							alt={post.title || "Post content"}
+							className="w-full rounded-lg object-cover"
+						/>
+					</div>
 				)}
 				{post.content && post.content.length > 0 && (
 					<div>
@@ -59,9 +73,29 @@ function EditPostSheetContent({
 				)}
 			</div>
 			<SheetFooter className="flex !justify-between">
-				<Button type="button" variant="destructive">
-					Delete Post
-				</Button>
+				<AlertDialog>
+					<AlertDialogTrigger>
+						<Button type="button" variant="destructive">
+							Delete Post
+						</Button>
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+							<AlertDialogDescription>
+								This action cannot be undone. This will permanently delete your
+								account and remove your data from our servers.
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction variant="destructive">
+								Delete
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+
 				<div className="space-x-2">
 					<SheetClose asChild>
 						<Button type="submit" variant="secondary">
