@@ -11,11 +11,55 @@ import {
 
 import { CreatePost } from "../createPost";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import {
+	Sheet,
+	SheetClose,
+	SheetContent,
+	SheetDescription,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface PostsProps {
 	profileId: string;
 	posts: PostWithAttachmentsSchemaValues[] | undefined;
+}
+
+function EditPostSheetContent() {
+	return (
+		<SheetContent>
+			<SheetHeader>
+				<SheetTitle>Edit profile</SheetTitle>
+				<SheetDescription>
+					Make changes to your profile here. Click save when youre done.
+				</SheetDescription>
+			</SheetHeader>
+			<div className="grid gap-4 py-4">
+				<div className="grid grid-cols-4 items-center gap-4">
+					<Label htmlFor="name" className="text-right">
+						Name
+					</Label>
+					<Input id="name" value="Pedro Duarte" className="col-span-3" />
+				</div>
+				<div className="grid grid-cols-4 items-center gap-4">
+					<Label htmlFor="username" className="text-right">
+						Username
+					</Label>
+					<Input id="username" value="@peduarte" className="col-span-3" />
+				</div>
+			</div>
+			<SheetFooter>
+				<SheetClose asChild>
+					<Button type="submit">Save changes</Button>
+				</SheetClose>
+			</SheetFooter>
+		</SheetContent>
+	);
 }
 
 function StyledStatus({ status }: { status: string }) {
@@ -61,38 +105,43 @@ function StyledMediaPost({ post }: { post: PostWithAttachmentsSchemaValues }) {
 	}
 
 	return (
-		<div className="relative m-px rounded-sm border border-border shadow-md">
-			<div className="flex flex-col">
-				<div className="absolute right-2 top-2 rounded-sm bg-secondary p-1">
-					{post.attachment?.file.type === FileType.video ? (
-						<VideoIcon className="h-4 w-4 text-secondary-foreground" />
-					) : (
-						<ImageIcon className="h-4 w-4 text-secondary-foreground" />
-					)}
-				</div>
-				<img
-					className="aspect-video rounded-sm object-cover"
-					src={post.url}
-					alt="post content"
-				/>
-			</div>
-			<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-secondary p-2 text-xs text-secondary-foreground">
-				<div className="flex items-center justify-between">
-					<span className="font-medium">
-						{post.scheduledFor.toLocaleString("en-US", {
-							hour: "numeric",
-							minute: "numeric",
-							hour12: true,
-						})}
-					</span>
+		<Sheet>
+			<SheetTrigger asChild className="cursor-pointer">
+				<div className="relative m-px rounded-sm border border-border shadow-md">
+					<div className="flex flex-col">
+						<div className="absolute right-2 top-2 rounded-sm bg-secondary p-1">
+							{post.attachment?.file.type === FileType.video ? (
+								<VideoIcon className="h-4 w-4 text-secondary-foreground" />
+							) : (
+								<ImageIcon className="h-4 w-4 text-secondary-foreground" />
+							)}
+						</div>
+						<img
+							className="aspect-video rounded-sm object-cover"
+							src={post.url}
+							alt="post content"
+						/>
+					</div>
+					<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-secondary p-2 text-xs text-secondary-foreground">
+						<div className="flex items-center justify-between">
+							<span className="font-medium">
+								{post.scheduledFor.toLocaleString("en-US", {
+									hour: "numeric",
+									minute: "numeric",
+									hour12: true,
+								})}
+							</span>
 
-					{StyledStatus({ status: post.status })}
+							{StyledStatus({ status: post.status })}
+						</div>
+						<span className="truncate">
+							{post.content && post.content.slice(0, 50)}
+						</span>
+					</div>
 				</div>
-				<span className="truncate">
-					{post.content && post.content.slice(0, 50)}
-				</span>
-			</div>
-		</div>
+			</SheetTrigger>
+			<EditPostSheetContent />
+		</Sheet>
 	);
 }
 

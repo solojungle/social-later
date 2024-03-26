@@ -179,11 +179,11 @@ function TweetForm({
 								name="content"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Post Text</FormLabel>
+										<FormLabel>Post Content</FormLabel>
 										<FormControl>
 											<div className="shadow-sm">
 												<div className="rounded-t-md border border-b-0 border-border p-1">
-													<div className="flex justify-end">
+													<div className="flex justify-start">
 														<Tooltip delayDuration={0}>
 															<TooltipTrigger>
 																<Button
