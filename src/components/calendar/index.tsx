@@ -1,7 +1,13 @@
 "use client";
 
 import { FileType } from "@prisma/client";
-import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	ImageIcon,
+	Loader2,
+	VideoIcon,
+} from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -40,11 +46,38 @@ interface PostsProps {
 	posts: PostWithAttachmentsSchemaValues[] | undefined;
 }
 
+async function deletePost({
+	postId,
+	teamId,
+}: {
+	postId: string;
+	teamId: string;
+}) {
+	// First we delete the twitter post via the API
+	// const { mutate: deleteTwitterPost } = api.twitter.delete.useMutation();
+	// deleteTwitterPost({ postId, teamId });
+
+	// Then we delete the post from the database
+	// const { mutate: deleteFile } = api.post.delete.useMutation();
+	// deleteFile({ postId, teamId });
+
+	// We invalidate the post cache
+	// const utils = api.useUtils();
+	// utils.post.getAll.invalidate();
+
+	// Then we close the modal
+	// Then we close the post view sheet
+
+	return "";
+}
+
 function EditPostSheetContent({
 	post,
 }: {
 	post: PostWithAttachmentsSchemaValues;
 }) {
+	const [loading, setLoading] = useState(false);
+
 	return (
 		<SheetContent className="w-[600px] !max-w-[80vw]" side="right">
 			<SheetHeader>
@@ -88,8 +121,9 @@ function EditPostSheetContent({
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction variant="destructive">
+							<AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+							<AlertDialogAction variant="destructive" disabled={loading}>
+								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 								Delete
 							</AlertDialogAction>
 						</AlertDialogFooter>

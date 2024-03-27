@@ -68,7 +68,7 @@ model Attachment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   file      File     @relation(fields: [fileId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 enum FileType {
