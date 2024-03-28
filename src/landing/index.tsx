@@ -1,4 +1,3 @@
-import CallToAction from "./callToAction";
 import Hero from "./hero";
 import { NavigationMenu } from "./navigationMenu";
 
@@ -8,7 +7,7 @@ export default async function LandingPage() {
 			<NavigationMenu />
 			<Hero />
 			{/* <Marquee /> */}
-			<CallToAction />
+			{/* <CallToAction /> */}
 		</main>
 	);
 }
