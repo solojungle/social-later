@@ -52,15 +52,25 @@ export const postRouter = createTRPCRouter({
 	delete: protectedProcedure
 		.input(
 			z.object({
-				postId: z.string(),
-				teamId: z.string(),
+				internalPostId: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			// Get the post
+			const post = await ctx.db.post.findFirst({
+				where: {
+					id: input.internalPostId,
+				},
+			});
+
+			if (!post) {
+				throw new Error("Post does not exist");
+			}
+
 			// Check if the user is part of the team
 			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
 				where: {
-					teamId: input.teamId,
+					teamId: post.authorId,
 					userId: ctx.session.user.id,
 				},
 			});
@@ -78,7 +88,7 @@ export const postRouter = createTRPCRouter({
 			// Delete the post
 			return ctx.db.post.delete({
 				where: {
-					id: input.postId,
+					id: input.internalPostId,
 				},
 			});
 		}),

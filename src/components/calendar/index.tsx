@@ -48,33 +48,26 @@ interface PostsProps {
 }
 
 async function deletePost({
-	postId,
+	internalPostId,
 	accountId,
 	setOpen,
+	deleteInternalPost,
 	deleteTwitterPost,
 }: {
-	postId: string;
+	internalPostId: string;
 	accountId: string;
 	setOpen: (open: boolean) => void;
+	deleteInternalPost: any;
 	deleteTwitterPost: any;
 }) {
 	// First we delete the twitter post via the API
-	const t = deleteTwitterPost({ postId, accountId });
-
-	console.log(t);
+	deleteTwitterPost({ internalPostId, accountId });
 
 	// Then we delete the post from the database
-	// const { mutate: deleteFile } = api.post.delete.useMutation();
-	// deleteFile({ postId, teamId });
-
-	// We invalidate the post cache
-	// const utils = api.useUtils();
-	// utils.post.getAll.invalidate();
+	deleteInternalPost({ internalPostId });
 
 	// Then we close the modal and sheet
 	setOpen(false);
-
-	return "";
 }
 
 function EditPostSheetContent({
@@ -84,7 +77,13 @@ function EditPostSheetContent({
 	post: PostWithAttachmentsSchemaValues;
 	setOpen: (open: boolean) => void;
 }) {
+	const utils = api.useUtils();
 	const { mutate: deleteTwitterPost } = api.socials.deleteTweet.useMutation();
+	const { mutate: deleteInternalPost } = api.post.delete.useMutation({
+		onSuccess: () => {
+			utils.post.getAll.invalidate();
+		},
+	});
 	const [loading, setLoading] = useState(false);
 
 	return (
@@ -137,9 +136,10 @@ function EditPostSheetContent({
 								onClick={() => {
 									setLoading(true);
 									deletePost({
-										postId: post.externalPostId,
+										internalPostId: post.id,
 										accountId: post.profileId,
 										setOpen,
+										deleteInternalPost,
 										deleteTwitterPost,
 									});
 									setLoading(false);

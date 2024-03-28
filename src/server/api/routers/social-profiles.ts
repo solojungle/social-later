@@ -91,12 +91,23 @@ export const socialProfilesRouter = createTRPCRouter({
 	deleteTweet: protectedProcedure
 		.input(
 			z.object({
-				postId: z.string(),
+				internalPostId: z.string(),
 				accountId: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const { postId, accountId } = input;
+			const { internalPostId, accountId } = input;
+
+			// Check if the post exists
+			const post = await ctx.db.post.findUnique({
+				where: {
+					id: internalPostId,
+				},
+			});
+
+			if (!post) {
+				throw new Error("Post does not exist");
+			}
 
 			// Make sure the user is apart of the team, and that the twitter account belongs to the team
 			const twitterAccount = await ctx.db.twitterAccount.findUnique({
@@ -129,7 +140,7 @@ export const socialProfilesRouter = createTRPCRouter({
 				ctx,
 			});
 
-			const tweet = await loggedClient.v2.deleteTweet(postId);
+			const tweet = await loggedClient.v2.deleteTweet(post.externalPostId);
 
 			return tweet;
 		}),
