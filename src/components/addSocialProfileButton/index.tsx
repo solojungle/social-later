@@ -50,7 +50,7 @@ export function ProfileCards() {
 				<div key={site.name} className="cursor-not-allowed">
 					<span
 						className={cn(
-							"flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100",
+							"flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-secondary",
 							site.disabled && "pointer-events-none opacity-30",
 						)}
 					>

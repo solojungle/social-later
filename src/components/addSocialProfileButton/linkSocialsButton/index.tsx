@@ -34,7 +34,7 @@ export function LinkTwitterButton({ teamId }: { teamId: string }) {
 		<button
 			onClick={handleClick}
 			type="button"
-			className="flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-gray-100"
+			className="flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-secondary"
 		>
 			<img
 				src="https://logo.clearbit.com/twitter.com"
