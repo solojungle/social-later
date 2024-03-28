@@ -1,31 +1,35 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function NavigationMenu() {
 	return (
-		<div className="fixed flex h-20 w-full items-center justify-between bg-black/70 px-8 py-1 backdrop-blur-md">
+		<div className="mb-[-64px] flex h-16 w-full max-w-7xl items-center justify-between px-4 py-2">
 			<div className="flex items-center">
-				<a href="https://aliawari.com/">
+				<a href="https://feedfrenzy.co/">
 					<span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-						aliawari.com
+						feedfrenzy.co
 					</span>
 				</a>
 			</div>
-			<Link
-				href="/login"
-				className={cn(
-					buttonVariants({ variant: "ghost" }),
-					"flex items-center justify-center",
-				)}
-			>
-				<span>Login</span>
-				<ChevronRight className="ml-2 h-5 w-5" />
-			</Link>
+			<div className="flex space-x-4">
+				<Link
+					href="/login"
+					className={cn(
+						buttonVariants({ variant: "ghost" }),
+						"flex items-center justify-center",
+					)}
+				>
+					<span>Login</span>
+				</Link>
+				<Button variant="outline">
+					Start a free trial <ArrowUpRight className="ml-1 h-5 w-5" />
+				</Button>
+			</div>
 		</div>
 	);
 }
