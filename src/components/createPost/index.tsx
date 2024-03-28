@@ -63,6 +63,7 @@ function TweetForm({
 	className?: string;
 }) {
 	const [loading, setLoading] = useState(false);
+	const [open, setOpen] = useState(false);
 
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutateAsync: fetchPresignedUrls } =
@@ -77,6 +78,7 @@ function TweetForm({
 		},
 		onSettled() {
 			setLoading(false);
+			setOpen(false);
 
 			// Invalidate the query so we can refetch the data
 			utils.post.getAll.invalidate();
@@ -165,7 +167,7 @@ function TweetForm({
 
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
-		<Sheet>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild>
 				<Button className={className}>Post</Button>
 			</SheetTrigger>
