@@ -1,10 +1,57 @@
 import { TwitterApi } from "twitter-api-v2";
+import { z } from "zod";
 
 import { env } from "@/env.mjs";
 import { TweetSchema } from "@/schemas/posts-schema";
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { client, v1client } from "@/server/services/twitter/client";
+
+// This function will refresh the account if the token is expired
+// will then return the client
+async function getTwitterClientOrRefresh({
+	updatedAt,
+	expiresIn,
+	accessToken,
+	refreshToken,
+	socialAccountId,
+	ctx,
+}: {
+	updatedAt: Date;
+	expiresIn: number;
+	accessToken: string;
+	refreshToken: string;
+	socialAccountId: string;
+	ctx: any;
+}) {
+	// Add expiresIn to createdAt to get the expiration date
+	const expirationDate = new Date(updatedAt.getTime() + expiresIn * 1000);
+
+	if (expirationDate <= new Date()) {
+		// Refresh the token
+		const {
+			client: refreshedClient,
+			accessToken: refreshedAccessToken,
+			refreshToken: refreshedRefreshToken,
+			expiresIn: refreshedExpiresIn,
+		} = await client.refreshOAuth2Token(refreshToken);
+
+		await ctx.db.twitterAccount.update({
+			where: {
+				id: socialAccountId,
+			},
+			data: {
+				accessToken: refreshedAccessToken,
+				refreshToken: refreshedRefreshToken,
+				expiresIn: refreshedExpiresIn,
+			},
+		});
+
+		return refreshedClient;
+	}
+
+	return new TwitterApi(accessToken);
+}
 
 export const socialProfilesRouter = createTRPCRouter({
 	getTwitterAccounts: protectedProcedure
@@ -41,6 +88,52 @@ export const socialProfilesRouter = createTRPCRouter({
 			);
 		}),
 
+	deleteTweet: protectedProcedure
+		.input(
+			z.object({
+				postId: z.string(),
+				accountId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { postId, accountId } = input;
+
+			// Make sure the user is apart of the team, and that the twitter account belongs to the team
+			const twitterAccount = await ctx.db.twitterAccount.findUnique({
+				where: {
+					id: accountId,
+				},
+			});
+
+			if (!twitterAccount) {
+				throw new Error("Twitter account does not exist");
+			}
+
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: twitterAccount.teamId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			const loggedClient = await getTwitterClientOrRefresh({
+				updatedAt: twitterAccount.updatedAt,
+				expiresIn: twitterAccount.expiresIn,
+				accessToken: twitterAccount.accessToken,
+				refreshToken: twitterAccount.refreshToken,
+				socialAccountId: twitterAccount.id,
+				ctx,
+			});
+
+			const tweet = await loggedClient.v2.deleteTweet(postId);
+
+			return tweet;
+		}),
+
 	postTweet: protectedProcedure
 		.input(TweetSchema)
 		.mutation(async ({ ctx, input }) => {
@@ -68,38 +161,14 @@ export const socialProfilesRouter = createTRPCRouter({
 				throw new Error("You are not apart of this team");
 			}
 
-			// Add expiresIn to createdAt to get the expiration date
-			const expirationDate = new Date(
-				twitterAccount.createdAt.getTime() + twitterAccount.expiresIn * 1000,
-			);
-
-			// Will this throw an error if the token is expired?
-			// Can test this later by passing in an invalid token
-			// TODO: Test this
-			let loggedClient = new TwitterApi(twitterAccount.accessToken);
-
-			if (expirationDate < new Date()) {
-				// Refresh the token
-				const {
-					client: refreshedClient,
-					accessToken,
-					refreshToken,
-					expiresIn,
-				} = await client.refreshOAuth2Token(twitterAccount.refreshToken);
-
-				await ctx.db.twitterAccount.update({
-					where: {
-						id: twitterAccountId,
-					},
-					data: {
-						accessToken,
-						refreshToken,
-						expiresIn,
-					},
-				});
-
-				loggedClient = refreshedClient;
-			}
+			const loggedClient = await getTwitterClientOrRefresh({
+				updatedAt: twitterAccount.updatedAt,
+				expiresIn: twitterAccount.expiresIn,
+				accessToken: twitterAccount.accessToken,
+				refreshToken: twitterAccount.refreshToken,
+				socialAccountId: twitterAccount.id,
+				ctx,
+			});
 
 			const hasMedia = "mediaId" in input;
 			const hasContent = "content" in input;

@@ -121,23 +121,22 @@ function TweetForm({
 					mime: imageFile.type,
 				});
 
-				// Now that we've created the file, we can create the post
+				const { data: result } = await tweet.mutateAsync({
+					profileId,
+					content: data.content,
+					mediaId: mediaFile.id,
+				});
+
 				createPost.mutate({
 					title: "",
 					content: data.content || "",
 					fileId: mediaFile.id,
 					status: "published",
+					externalPostId: result.id,
 					scheduledFor: new Date(),
 					published: true,
 					profileId,
 					authorId: teamId,
-				});
-
-				// Now we tweet
-				tweet.mutate({
-					profileId,
-					content: data.content,
-					mediaId: mediaFile.id,
 				});
 
 				toast.success("Successfully created your post!", {});
@@ -145,21 +144,21 @@ function TweetForm({
 				setLoading(false);
 			}
 		} else {
+			const { data: result } = await tweet.mutateAsync({
+				profileId,
+				content: data.content,
+			});
+
 			// There is no media so we can just create the post
 			createPost.mutate({
 				title: "",
 				content: data.content,
 				status: "published",
+				externalPostId: result.id,
 				scheduledFor: new Date(),
 				published: true,
 				profileId,
 				authorId: teamId,
-			});
-
-			// Now we tweet
-			tweet.mutate({
-				profileId,
-				content: data.content,
 			});
 		}
 	}

@@ -18,6 +18,7 @@ export const PostsSchema = z.object({
 	title: z.string(),
 	content: z.string().optional().nullish(),
 	fileId: z.string().optional(),
+	externalPostId: z.string(),
 	status: z.string(),
 	scheduledFor: z.date(),
 	published: z.boolean(),

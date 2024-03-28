@@ -14,6 +14,7 @@ import {
 	PostsSchemaValues,
 	PostWithAttachmentsSchemaValues,
 } from "@/schemas/posts-schema";
+import { api } from "@/trpc/react";
 
 import { CreatePost } from "../createPost";
 import {
@@ -48,14 +49,19 @@ interface PostsProps {
 
 async function deletePost({
 	postId,
-	teamId,
+	accountId,
+	setOpen,
+	deleteTwitterPost,
 }: {
 	postId: string;
-	teamId: string;
+	accountId: string;
+	setOpen: (open: boolean) => void;
+	deleteTwitterPost: any;
 }) {
 	// First we delete the twitter post via the API
-	// const { mutate: deleteTwitterPost } = api.twitter.delete.useMutation();
-	// deleteTwitterPost({ postId, teamId });
+	const t = deleteTwitterPost({ postId, accountId });
+
+	console.log(t);
 
 	// Then we delete the post from the database
 	// const { mutate: deleteFile } = api.post.delete.useMutation();
@@ -65,17 +71,20 @@ async function deletePost({
 	// const utils = api.useUtils();
 	// utils.post.getAll.invalidate();
 
-	// Then we close the modal
-	// Then we close the post view sheet
+	// Then we close the modal and sheet
+	setOpen(false);
 
 	return "";
 }
 
 function EditPostSheetContent({
 	post,
+	setOpen,
 }: {
 	post: PostWithAttachmentsSchemaValues;
+	setOpen: (open: boolean) => void;
 }) {
+	const { mutate: deleteTwitterPost } = api.socials.deleteTweet.useMutation();
 	const [loading, setLoading] = useState(false);
 
 	return (
@@ -122,7 +131,20 @@ function EditPostSheetContent({
 						</AlertDialogHeader>
 						<AlertDialogFooter>
 							<AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-							<AlertDialogAction variant="destructive" disabled={loading}>
+							<AlertDialogAction
+								variant="destructive"
+								disabled={loading}
+								onClick={() => {
+									setLoading(true);
+									deletePost({
+										postId: post.externalPostId,
+										accountId: post.profileId,
+										setOpen,
+										deleteTwitterPost,
+									});
+									setLoading(false);
+								}}
+							>
 								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 								Delete
 							</AlertDialogAction>
@@ -182,13 +204,21 @@ function StyledStatus({ status }: { status: string }) {
 	return null;
 }
 
-function StyledMediaPost({ post }: { post: PostWithAttachmentsSchemaValues }) {
+function StyledMediaPost({
+	post,
+	open,
+	setOpen,
+}: {
+	post: PostWithAttachmentsSchemaValues;
+	open: boolean;
+	setOpen: (open: boolean) => void;
+}) {
 	if (!post.url) {
 		return null;
 	}
 
 	return (
-		<Sheet>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild className="cursor-pointer">
 				<div className="relative m-px rounded-sm border border-border shadow-md">
 					<div className="flex flex-col">
@@ -223,7 +253,7 @@ function StyledMediaPost({ post }: { post: PostWithAttachmentsSchemaValues }) {
 					</div>
 				</div>
 			</SheetTrigger>
-			<EditPostSheetContent post={post} />
+			<EditPostSheetContent post={post} setOpen={setOpen} />
 		</Sheet>
 	);
 }
@@ -231,6 +261,8 @@ function StyledMediaPost({ post }: { post: PostWithAttachmentsSchemaValues }) {
 // This is the component that will be rendered on a day of the calendar
 // It will show the posts that are scheduled for that day
 function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
+	const [open, setOpen] = useState(false);
+
 	if (posts.length === 0) {
 		return null;
 	}
@@ -242,23 +274,30 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 	}
 
 	if (postToDisplay.url) {
-		return StyledMediaPost({ post: postToDisplay });
+		return StyledMediaPost({ post: postToDisplay, open, setOpen });
 	}
 
 	return (
-		<div className="m-px flex aspect-video flex-col rounded-sm border border-border bg-secondary p-2 text-xs text-secondary-foreground shadow-md">
-			<div className="flex items-center justify-between">
-				<span className="mb-1 font-medium">
-					{postToDisplay.scheduledFor.toLocaleString("en-US", {
-						hour: "numeric",
-						minute: "numeric",
-						hour12: true,
-					})}
-				</span>
-				{StyledStatus({ status: postToDisplay.status })}
-			</div>
-			<span>{postToDisplay.content && postToDisplay.content.slice(0, 50)}</span>
-		</div>
+		<Sheet open={open} onOpenChange={setOpen}>
+			<SheetTrigger asChild className="cursor-pointer">
+				<div className="m-px flex aspect-video flex-col rounded-sm border border-border bg-secondary p-2 text-xs text-secondary-foreground shadow-md">
+					<div className="flex items-center justify-between">
+						<span className="mb-1 font-medium">
+							{postToDisplay.scheduledFor.toLocaleString("en-US", {
+								hour: "numeric",
+								minute: "numeric",
+								hour12: true,
+							})}
+						</span>
+						{StyledStatus({ status: postToDisplay.status })}
+					</div>
+					<span>
+						{postToDisplay.content && postToDisplay.content.slice(0, 50)}
+					</span>
+				</div>
+			</SheetTrigger>
+			<EditPostSheetContent post={postToDisplay} setOpen={setOpen} />
+		</Sheet>
 	);
 }
 
