@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 export function NavigationMenu() {
 	return (
-		<div className="mb-[-64px] flex h-16 w-full max-w-7xl items-center justify-between px-4 py-2">
+		<div className="flex h-16 w-full max-w-7xl items-center justify-between px-4 py-2">
 			<div className="flex items-center">
 				<a href="https://feedfrenzy.co/">
 					<span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
