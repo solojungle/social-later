@@ -1,4 +1,3 @@
-import { TeamAvatarCard } from "@/components/cards/teams/team-avatar";
 import { TeamDeleteCard } from "@/components/cards/teams/team-delete";
 import { TeamLeaveCard } from "@/components/cards/teams/team-leave";
 import { TeamNameCard } from "@/components/cards/teams/team-name";
@@ -9,7 +8,7 @@ export function GeneralTeamForm() {
 		<>
 			<TeamNameCard />
 			<TeamUrlCard />
-			<TeamAvatarCard />
+			{/* <TeamAvatarCard /> */}
 			<TeamLeaveCard />
 			<TeamDeleteCard />
 		</>
