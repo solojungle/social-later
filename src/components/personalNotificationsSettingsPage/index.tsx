@@ -1,7 +1,7 @@
 import { NotificationsForm } from "@/components/forms/notifications-form";
 import { Separator } from "@/components/ui/separator";
 
-export default function SettingsNotificationsPage() {
+export default function PersonalNotificationsSettingsPage() {
 	return (
 		<div className="space-y-6">
 			<div>

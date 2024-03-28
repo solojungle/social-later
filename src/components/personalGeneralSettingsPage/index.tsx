@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { AccountForm } from "@/components/forms/account-form";
 import { Separator } from "@/components/ui/separator";
 
-export default function SettingsAccountPage() {
+export default function PersonalGeneralSettingsPage() {
 	const router = useRouter();
 	const pathname = usePathname();
 
