@@ -7,18 +7,18 @@ import { Button } from "@/components/ui/button";
 
 export default function Hero() {
 	return (
-		<section className="flex h-[calc(100vh-64px)] flex-col items-center justify-center space-y-14 px-4">
+		<section className="flex h-[calc(100vh-64px)] w-full flex-col items-center justify-center space-y-14">
 			<motion.div
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ staggerChildren: 0.3 }}
-				className="container max-w-4xl space-y-10 text-center leading-tight tracking-tight"
+				className="container space-y-10 text-center leading-tight tracking-tight md:max-w-4xl"
 			>
 				<motion.h1
 					initial={{ y: 100, opacity: 0 }}
 					animate={{ y: 0, opacity: 1 }}
 					transition={{ duration: 0.4 }}
-					className="text-6xl"
+					className="text-5xl md:text-6xl"
 				>
 					Social Media Management. <br />
 					<span className="font-tiempos italic">
@@ -29,7 +29,7 @@ export default function Hero() {
 					initial={{ y: 100, opacity: 0 }}
 					animate={{ y: 0, opacity: 1 }}
 					transition={{ duration: 0.4, delay: 0.2 }}
-					className="text-xl leading-normal"
+					className="text-lg leading-normal md:text-xl"
 				>
 					Juggling multiple clients, platforms, and teamwork shouldn&apos;t be
 					an extreme sport. Plan content, approve, schedule, and analyze to
@@ -43,7 +43,11 @@ export default function Hero() {
 				className="space-y-3"
 			>
 				<motion.div whileHover={{ scale: 1.05 }}>
-					<Button size="lg" className="flex items-center justify-center">
+					<Button
+						size="lg"
+						variant="secondary"
+						className="flex items-center justify-center"
+					>
 						Start a 14-day free trial <ArrowUpRight className="ml-2 h-5 w-5" />
 					</Button>
 				</motion.div>
