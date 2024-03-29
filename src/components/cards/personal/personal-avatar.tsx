@@ -80,12 +80,14 @@ export function PersonalAvatarCard() {
 			});
 
 			const userAvatarFile = await createFile({
-				name: filename || "",
-				extension: extension || "",
-				key: presignedObject.key,
-				type: FileType.image,
-				size: imageFile.size,
-				mime: imageFile.type,
+				file: {
+					name: filename || "",
+					extension: extension || "",
+					key: presignedObject.key,
+					type: FileType.image,
+					size: imageFile.size,
+					mime: imageFile.type,
+				},
 			});
 
 			updateUser.mutate({

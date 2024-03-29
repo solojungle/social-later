@@ -115,12 +115,14 @@ function TweetForm({
 				const mediaFileType = determineFileType(imageFile);
 
 				const mediaFile = await createFile({
-					name: filename || "",
-					extension: extension || "",
-					key: presignedObject.key,
-					type: mediaFileType,
-					size: imageFile.size,
-					mime: imageFile.type,
+					file: {
+						name: filename || "",
+						extension: extension || "",
+						key: presignedObject.key,
+						type: mediaFileType,
+						size: imageFile.size,
+						mime: imageFile.type,
+					},
 				});
 
 				const { data: result } = await tweet.mutateAsync({

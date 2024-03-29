@@ -6,11 +6,15 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const filesRouter = createTRPCRouter({
 	create: protectedProcedure
-		.input(CreateFileSchema)
+		.input(
+			z.object({
+				file: CreateFileSchema,
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
 			const file = await ctx.db.file.create({
 				data: {
-					...input,
+					...input.file,
 				},
 			});
 
