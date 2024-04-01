@@ -113,7 +113,7 @@ export function PersonalAvatarCard() {
 				image: userAvatarFile.thumbnail,
 			});
 
-			setUserAvatar(userAvatarFile.thumbnail);
+			setUserAvatar(userAvatarFile.url);
 
 			toast.success("Successfully updated your avatar!", {});
 		} finally {
