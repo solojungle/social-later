@@ -95,30 +95,33 @@ function SocialProfileSwitcherPopoverTrigger({
 	return (
 		<PopoverTrigger>
 			<Button
+				asChild
 				variant="outline"
 				role="combobox"
 				aria-expanded={open}
 				aria-label="Select a profile"
 				className={cn("w-[250px] justify-between", className)}
 			>
-				<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
-					<TwitterLogoIcon className="absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm bg-blue-600 p-px text-white" />
-					<AvatarImage
-						src={selectedProfile.avatar}
-						alt={selectedProfile.username}
-						className="!rounded-sm bg-white"
-					/>
-					<AvatarFallback className="!rounded-sm border border-border">
-						{selectedProfile.username[0]?.toUpperCase() ?? ""}
-					</AvatarFallback>
-				</Avatar>
-				<span
-					title={selectedProfile.username}
-					className="overflow-hidden truncate"
-				>
-					{selectedProfile.username}
-				</span>
-				<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+				<div>
+					<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
+						<TwitterLogoIcon className="absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm bg-blue-600 p-px text-white" />
+						<AvatarImage
+							src={selectedProfile.avatar}
+							alt={selectedProfile.username}
+							className="!rounded-sm bg-white"
+						/>
+						<AvatarFallback className="!rounded-sm border border-border">
+							{selectedProfile.username[0]?.toUpperCase() ?? ""}
+						</AvatarFallback>
+					</Avatar>
+					<span
+						title={selectedProfile.username}
+						className="overflow-hidden truncate"
+					>
+						{selectedProfile.username}
+					</span>
+					<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+				</div>
 			</Button>
 		</PopoverTrigger>
 	);
