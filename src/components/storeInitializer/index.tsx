@@ -33,18 +33,15 @@ export function StoreInitializer({
 		if (!isInitialized.current) {
 			// if (params.id) {
 			// 	const selectedTeam = teams.find((team) => team.url === params.id);
-
 			// 	// Redirect them to settings if they are not a member of the team
 			// 	if (!selectedTeam) {
 			// 		window.location.href = "/settings";
 			// 		return;
 			// 	}
-
 			// 	useSelectedTeamStore.setState(selectedTeam || user);
 			// } else {
 			// 	useSelectedTeamStore.setState(user);
 			// }
-
 			// useTeamStore.setState({ teams });
 
 			useUserStore.setState(user);

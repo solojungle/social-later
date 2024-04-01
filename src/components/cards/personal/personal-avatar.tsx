@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SingleFileSchema } from "@/schemas/file-schema";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
@@ -27,8 +29,14 @@ export function PersonalAvatarCard() {
 	const { mutateAsync: fetchPresignedUrls } =
 		api.aws.getStandardUploadPresignedUrl.useMutation();
 	const { image, name, setImage: setUserAvatar } = useUserStore();
+	const { id: selectedTeamId } = useSelectedTeamStore();
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutate: deleteFile } = api.file.delete.useMutation();
+	const getMembers = api.team.getMembers.useQuery(
+		{ id: selectedTeamId },
+		{ enabled: false },
+	);
+
 	const getFile = api.file.get.useQuery(
 		{
 			key:
@@ -109,13 +117,20 @@ export function PersonalAvatarCard() {
 				},
 			});
 
-			updateUser.mutate({
-				image: userAvatarFile.thumbnail,
-			});
-
-			setUserAvatar(userAvatarFile.url);
-
-			toast.success("Successfully updated your avatar!", {});
+			updateUser.mutate(
+				{
+					image: userAvatarFile.thumbnail,
+				},
+				{
+					// There is here to prevent a race condition on updating the user avatar (Add Team Members)
+					onSuccess: async () => {
+						setUserAvatar(userAvatarFile.url);
+						const { data: members } = await getMembers.refetch();
+						useTeamMembersStore.setState({ members });
+						toast.success("Successfully updated your avatar!", {});
+					},
+				},
+			);
 		} finally {
 			setLoading(false);
 		}
