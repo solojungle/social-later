@@ -198,7 +198,7 @@ export const socialProfilesRouter = createTRPCRouter({
 
 				// IF YOU CHANGE THIS URL, YOU WILL NEED TO CHANGE THE OTHER ONE AS WELL
 				const response = await fetch(
-					`https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${file.key}.${file.extension}`,
+					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
 				);
 				const buffer = Buffer.from(await response.arrayBuffer());
 
@@ -230,7 +230,7 @@ export const socialProfilesRouter = createTRPCRouter({
 
 				// IF YOU CHANGE THIS URL, YOU WILL NEED TO CHANGE THE OTHER ONE AS WELL
 				const response = await fetch(
-					`https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${file.key}.${file.extension}`,
+					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
 				);
 				const buffer = Buffer.from(await response.arrayBuffer());
 

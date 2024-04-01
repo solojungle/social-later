@@ -73,6 +73,7 @@ export function PersonalAvatarCard() {
 				const oldAvatarKey = image.split("/").pop();
 
 				// TODO: Check if it exists in our AWS
+				// TODO: I think we can remove some could since we already make a call for the file...
 				if (oldAvatarKey) {
 					// Check if we already have the file in our system
 					const doesFileExist = await getFile.refetch();

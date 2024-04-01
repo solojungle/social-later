@@ -20,8 +20,8 @@ export const filesRouter = createTRPCRouter({
 
 			return {
 				...file,
-				url: `https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${file.key}.${file.extension}`,
-				thumbnail: `https://${env.AWS_BUCKET_NAME}-media-thumbnails.s3.amazonaws.com/${file.key}.${file.extension}`,
+				url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
+				thumbnail: `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${file.key}.${file.extension}`,
 			};
 		}),
 
@@ -44,8 +44,8 @@ export const filesRouter = createTRPCRouter({
 
 			return {
 				...file,
-				url: `https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${file.key}.${file.extension}`,
-				thumbnail: `https://${env.AWS_BUCKET_NAME}-media-thumbnails.s3.amazonaws.com/${file.key}.${file.extension}`,
+				url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
+				thumbnail: `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${file.key}.${file.extension}`,
 			};
 		}),
 

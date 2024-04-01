@@ -26,7 +26,7 @@ export const awsRouter = createTRPCRouter({
 			const key = crypto.randomUUID();
 
 			const putObjectCommand = new PutObjectCommand({
-				Bucket: `${env.AWS_BUCKET_NAME}-media`,
+				Bucket: env.AWS_BUCKET_NAME,
 				Key: `${key}.${input.fileExtension}`,
 			});
 
@@ -43,13 +43,13 @@ export const awsRouter = createTRPCRouter({
 		)
 		.mutation(async ({ input }) => {
 			const resp = await s3.deleteObject({
-				Bucket: `${env.AWS_BUCKET_NAME}-media`,
+				Bucket: env.AWS_BUCKET_NAME,
 				Key: input.key,
 			});
 
 			// Making the assumption that all media files will also have a thumbnail :)
 			await s3.deleteObject({
-				Bucket: `${env.AWS_BUCKET_NAME}-media-thumbnails`,
+				Bucket: `${env.AWS_BUCKET_NAME}-thumbnails`,
 				Key: input.key,
 			});
 
