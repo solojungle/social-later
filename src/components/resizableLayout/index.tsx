@@ -52,6 +52,7 @@ export function ResizableLayout({
 		<TooltipProvider delayDuration={0}>
 			<ResizablePanelGroup autoSaveId="conditional" direction="horizontal">
 				<ResizablePanel
+					id="nav"
 					order={1}
 					collapsedSize={navCollapsedSize}
 					collapsible
