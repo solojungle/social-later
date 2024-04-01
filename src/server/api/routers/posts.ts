@@ -134,7 +134,8 @@ export const postRouter = createTRPCRouter({
 						return {
 							...post,
 							attachment,
-							url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${attachment.file.key}`,
+							url: `https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${attachment.file.key}.${attachment.file.extension}`,
+							thumbnail: `https://${env.AWS_BUCKET_NAME}-media-thumbnails.s3.amazonaws.com/${attachment.file.key}.${attachment.file.extension}`,
 						};
 					}
 

@@ -103,7 +103,9 @@ function TweetForm({
 			const extension = imageFile.name.split(".").pop();
 
 			try {
-				const presignedObject = await fetchPresignedUrls();
+				const presignedObject = await fetchPresignedUrls({
+					fileExtension: extension || "",
+				});
 
 				await axios.put(presignedObject.signedUrl, imageFile, {
 					headers: {
@@ -142,8 +144,6 @@ function TweetForm({
 					profileId,
 					authorId: teamId,
 				});
-
-				toast.success("Successfully created your post!", {});
 			} finally {
 				setLoading(false);
 			}

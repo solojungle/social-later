@@ -87,7 +87,10 @@ function EditPostSheetContent({
 	const [loading, setLoading] = useState(false);
 
 	return (
-		<SheetContent className="w-[600px] !max-w-[80vw]" side="right">
+		<SheetContent
+			className="w-[600px] !max-w-[80vw] overflow-scroll"
+			side="right"
+		>
 			<SheetHeader>
 				<SheetTitle>Post View</SheetTitle>
 			</SheetHeader>
@@ -98,7 +101,7 @@ function EditPostSheetContent({
 						<img
 							src={post.url}
 							alt={post.title || "Post content"}
-							className="w-full rounded-lg object-cover"
+							className="aspect-video w-full rounded-lg object-scale-down"
 						/>
 					</div>
 				)}
@@ -213,7 +216,7 @@ function StyledMediaPost({
 	open: boolean;
 	setOpen: (open: boolean) => void;
 }) {
-	if (!post.url) {
+	if (!post.url || !post.thumbnail) {
 		return null;
 	}
 
@@ -231,7 +234,7 @@ function StyledMediaPost({
 						</div>
 						<img
 							className="aspect-video rounded-sm object-cover"
-							src={post.url}
+							src={post.thumbnail}
 							alt="post content"
 						/>
 					</div>

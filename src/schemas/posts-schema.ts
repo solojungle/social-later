@@ -203,6 +203,7 @@ export type AttachmentWithFileValues = z.infer<typeof AttachmentWithFileSchema>;
 export const PostWithAttachmentsSchema = PostsSchema.extend({
 	attachment: AttachmentWithFileSchema.nullable().optional(),
 	url: z.string().optional().nullish(),
+	thumbnail: z.string().optional().nullish(),
 });
 
 export type PostWithAttachmentsSchemaValues = z.infer<

@@ -196,8 +196,9 @@ export const socialProfilesRouter = createTRPCRouter({
 					throw new Error("File does not exist");
 				}
 
+				// IF YOU CHANGE THIS URL, YOU WILL NEED TO CHANGE THE OTHER ONE AS WELL
 				const response = await fetch(
-					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}`,
+					`https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${file.key}.${file.extension}`,
 				);
 				const buffer = Buffer.from(await response.arrayBuffer());
 
@@ -227,8 +228,9 @@ export const socialProfilesRouter = createTRPCRouter({
 					throw new Error("File does not exist");
 				}
 
+				// IF YOU CHANGE THIS URL, YOU WILL NEED TO CHANGE THE OTHER ONE AS WELL
 				const response = await fetch(
-					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}`,
+					`https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${file.key}.${file.extension}`,
 				);
 				const buffer = Buffer.from(await response.arrayBuffer());
 

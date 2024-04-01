@@ -7,27 +7,33 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { s3 } from "@/server/services/aws/client";
 
 export const awsRouter = createTRPCRouter({
-	getObjects: protectedProcedure.query(async () => {
-		const listObjectsOutput = await s3.listObjectsV2({
-			Bucket: env.AWS_BUCKET_NAME,
-		});
+	// getObjects: protectedProcedure.query(async () => {
+	// 	const listObjectsOutput = await s3.listObjectsV2({
+	// 		Bucket: env.AWS_BUCKET_NAME,
+	// 	});
 
-		return listObjectsOutput.Contents ?? [];
-	}),
+	// 	return listObjectsOutput.Contents ?? [];
+	// }),
 
-	getStandardUploadPresignedUrl: protectedProcedure.mutation(async () => {
-		// Can be used to generate a unique key for the object
-		const key = crypto.randomUUID();
+	getStandardUploadPresignedUrl: protectedProcedure
+		.input(
+			z.object({
+				fileExtension: z.string(),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			// Can be used to generate a unique key for the object
+			const key = crypto.randomUUID();
 
-		const putObjectCommand = new PutObjectCommand({
-			Bucket: env.AWS_BUCKET_NAME,
-			Key: key,
-		});
+			const putObjectCommand = new PutObjectCommand({
+				Bucket: `${env.AWS_BUCKET_NAME}-media`,
+				Key: `${key}.${input.fileExtension}`,
+			});
 
-		const signedUrl = await getSignedUrl(s3, putObjectCommand);
+			const signedUrl = await getSignedUrl(s3, putObjectCommand);
 
-		return { signedUrl, key };
-	}),
+			return { signedUrl, key };
+		}),
 
 	deleteObject: protectedProcedure
 		.input(
@@ -37,7 +43,7 @@ export const awsRouter = createTRPCRouter({
 		)
 		.mutation(async ({ input }) => {
 			const resp = await s3.deleteObject({
-				Bucket: env.AWS_BUCKET_NAME,
+				Bucket: `${env.AWS_BUCKET_NAME}-media`,
 				Key: input.key,
 			});
 

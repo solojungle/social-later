@@ -40,7 +40,7 @@
 // 		event.Records[0].s3.object.key.replace(/\+/g, " "),
 // 	);
 // 	const dstBucket = `${srcBucket}-thumbnails`;
-// 	const dstKey = `thumbnails-${srcKey}`;
+// 	const dstKey = srcKey;
 
 // 	// Infer the image type from the file suffix.
 // 	const typeMatch = srcKey.match(/\.([^.]*)$/);

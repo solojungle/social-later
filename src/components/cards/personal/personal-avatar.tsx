@@ -71,7 +71,9 @@ export function PersonalAvatarCard() {
 				}
 			}
 
-			const presignedObject = await fetchPresignedUrls();
+			const presignedObject = await fetchPresignedUrls({
+				fileExtension: extension || "",
+			});
 
 			await axios.put(presignedObject.signedUrl, imageFile, {
 				headers: {
