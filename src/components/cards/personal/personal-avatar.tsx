@@ -29,6 +29,18 @@ export function PersonalAvatarCard() {
 	const { image, name, setImage: setUserAvatar } = useUserStore();
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutate: deleteFile } = api.file.delete.useMutation();
+	const getFile = api.file.get.useQuery(
+		{
+			key:
+				image
+					.split("/")
+					.pop()
+					?.replace(/\.[^/.]+$/, "") || "",
+		},
+		{
+			enabled: false,
+		},
+	);
 	const { mutate: deleteObject } = api.aws.deleteObject.useMutation();
 	const updateUser = api.user.updateUser.useMutation();
 
@@ -60,15 +72,18 @@ export function PersonalAvatarCard() {
 			if (image && image !== "" && image !== null) {
 				const oldAvatarKey = image.split("/").pop();
 
+				// TODO: Check if it exists in our AWS
 				if (oldAvatarKey) {
-					// TODO: Check if it exists in our AWS versus just being a url to another site!
+					// Check if we already have the file in our system
+					const doesFileExist = await getFile.refetch();
+					if (doesFileExist.data) {
+						// Delete the avatar from aws, will also delete the thumbnail in one go.
+						deleteObject({ key: oldAvatarKey });
 
-					// Delete the avatar from aws, will also delete the thumbnail in one go.
-					deleteObject({ key: oldAvatarKey });
-
-					// Delete file from our system
-					// Remove the extension from the key
-					deleteFile({ key: oldAvatarKey.split(".").shift() || "" });
+						// Delete file from our system
+						// Remove the extension from the key
+						deleteFile({ key: oldAvatarKey.split(".").shift() || "" });
+					}
 				}
 			}
 

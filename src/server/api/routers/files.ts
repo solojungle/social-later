@@ -25,6 +25,30 @@ export const filesRouter = createTRPCRouter({
 			};
 		}),
 
+	get: protectedProcedure
+		.input(
+			z.object({
+				key: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const file = await ctx.db.file.findUnique({
+				where: {
+					key: input.key,
+				},
+			});
+
+			if (!file) {
+				return null;
+			}
+
+			return {
+				...file,
+				url: `https://${env.AWS_BUCKET_NAME}-media.s3.amazonaws.com/${file.key}.${file.extension}`,
+				thumbnail: `https://${env.AWS_BUCKET_NAME}-media-thumbnails.s3.amazonaws.com/${file.key}.${file.extension}`,
+			};
+		}),
+
 	delete: protectedProcedure
 		.input(
 			z.object({
