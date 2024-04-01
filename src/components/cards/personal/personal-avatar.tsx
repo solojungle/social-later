@@ -63,11 +63,12 @@ export function PersonalAvatarCard() {
 				if (oldAvatarKey) {
 					// TODO: Check if it exists in our AWS versus just being a url to another site!
 
-					// Delete the avatar from aws
+					// Delete the avatar from aws, will also delete the thumbnail in one go.
 					deleteObject({ key: oldAvatarKey });
 
 					// Delete file from our system
-					deleteFile({ key: oldAvatarKey });
+					// Remove the extension from the key
+					deleteFile({ key: oldAvatarKey.split(".").shift() || "" });
 				}
 			}
 
@@ -93,10 +94,10 @@ export function PersonalAvatarCard() {
 			});
 
 			updateUser.mutate({
-				image: userAvatarFile.url,
+				image: userAvatarFile.thumbnail,
 			});
 
-			setUserAvatar(userAvatarFile.url);
+			setUserAvatar(userAvatarFile.thumbnail);
 
 			toast.success("Successfully updated your avatar!", {});
 		} finally {

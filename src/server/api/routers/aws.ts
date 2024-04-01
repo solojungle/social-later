@@ -47,6 +47,12 @@ export const awsRouter = createTRPCRouter({
 				Key: input.key,
 			});
 
+			// Making the assumption that all media files will also have a thumbnail :)
+			await s3.deleteObject({
+				Bucket: `${env.AWS_BUCKET_NAME}-media-thumbnails`,
+				Key: input.key,
+			});
+
 			return resp;
 		}),
 });
