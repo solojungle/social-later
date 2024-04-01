@@ -234,7 +234,7 @@ function StyledMediaPost({
 						</div>
 						<img
 							className="aspect-video rounded-sm object-cover"
-							src={post.thumbnail}
+							src={post.thumbnail || post.url}
 							alt="post content"
 						/>
 					</div>

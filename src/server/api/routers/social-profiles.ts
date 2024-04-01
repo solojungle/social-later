@@ -29,6 +29,7 @@ async function getTwitterClientOrRefresh({
 
 	if (expirationDate <= new Date()) {
 		// Refresh the token
+		// TODO: this is giving me issues constantly
 		const {
 			client: refreshedClient,
 			accessToken: refreshedAccessToken,
