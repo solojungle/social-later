@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SingleFileSchema } from "@/schemas/file-schema";
-import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
@@ -28,14 +27,15 @@ export function PersonalAvatarCard() {
 	const [loading, setLoading] = useState(false);
 	const { mutateAsync: fetchPresignedUrls } =
 		api.aws.getStandardUploadPresignedUrl.useMutation();
-	const { image, name, setImage: setUserAvatar } = useUserStore();
-	const { id: selectedTeamId } = useSelectedTeamStore();
+	const {
+		id: currentUserId,
+		image,
+		name,
+		setImage: setUserAvatar,
+	} = useUserStore();
+	const { members: teamMembers } = useTeamMembersStore();
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutate: deleteFile } = api.file.delete.useMutation();
-	const getMembers = api.team.getMembers.useQuery(
-		{ id: selectedTeamId },
-		{ enabled: false },
-	);
 
 	const getFile = api.file.get.useQuery(
 		{
@@ -125,8 +125,22 @@ export function PersonalAvatarCard() {
 					// There is here to prevent a race condition on updating the user avatar (Add Team Members)
 					onSuccess: async () => {
 						setUserAvatar(userAvatarFile.url);
-						const { data: members } = await getMembers.refetch();
+
+						// Update your avatar in the team members store
+						const members = teamMembers.map((member) => {
+							if (member.id === currentUserId) {
+								return {
+									...member,
+									// We set as the full sized image because creating the thumbnail is a race condition
+									image: userAvatarFile.url,
+								};
+							}
+
+							return member;
+						});
+
 						useTeamMembersStore.setState({ members });
+
 						toast.success("Successfully updated your avatar!", {});
 					},
 				},

@@ -62,7 +62,7 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 			});
 
 			toast.success("Successfully created your team!", {
-				description: `To view your new team, click on the team switcher.`,
+				description: `You will be redirected to your team settings shortly.`,
 			});
 		},
 	});
