@@ -1,14 +1,13 @@
 import { FileType } from "@prisma/client";
 import { z } from "zod";
 
-const ACCEPTED_IMAGE_TYPES = [
+const ACCEPTED_FILE_TYPES = [
 	"image/jpeg",
 	"image/jpg",
 	"video/mp4",
 	"video/quicktime",
 	"image/gif",
 	"image/png",
-	"text/plain",
 	"image/webp",
 ];
 
@@ -35,7 +34,7 @@ export const SingleFileSchema = z
 	.any()
 	.refine((file) => file?.length === 1, "File is required.")
 	.refine(
-		(file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type as string),
+		(file) => ACCEPTED_FILE_TYPES.includes(file?.[0]?.type as string),
 		"File type is not supported.",
 	)
 	.refine((file) => file?.[0]?.size ?? 0 <= 3000000, `Max file size is 3MB.`);
