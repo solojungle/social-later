@@ -398,7 +398,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 					<ChevronRight className="h-5 w-5" />
 				</Button>
 			</div>
-			<div className="flex flex-auto flex-col ">
+			<div className="flex flex-auto flex-col pb-24">
 				<div className="grid grid-cols-7 gap-px bg-border p-px pb-0 text-center text-xs font-semibold leading-6">
 					<div className="bg-background py-2 text-foreground">
 						S<span>un</span>
