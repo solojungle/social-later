@@ -131,6 +131,16 @@ export const postRouter = createTRPCRouter({
 
 					// Add a url to make it easier to access the file
 					if (attachment?.file) {
+						// If its a video we remove its extension and add .jpg
+						if (attachment.file.type === "video") {
+							return {
+								...post,
+								attachment,
+								url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${attachment.file.key}.${attachment.file.extension}`,
+								thumbnail: `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${attachment.file.key}.jpg`,
+							};
+						}
+
 						return {
 							...post,
 							attachment,
