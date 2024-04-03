@@ -9,6 +9,7 @@ import {
 	VideoIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import {
 	PostsSchemaValues,
@@ -78,7 +79,11 @@ function EditPostSheetContent({
 	setOpen: (open: boolean) => void;
 }) {
 	const utils = api.useUtils();
-	const { mutate: deleteTwitterPost } = api.socials.deleteTweet.useMutation();
+	const { mutate: deleteTwitterPost } = api.socials.deleteTweet.useMutation({
+		onSuccess: () => {
+			toast.success("Successfully deleted your post.", {});
+		},
+	});
 	const { mutate: deleteInternalPost } = api.post.delete.useMutation({
 		onSuccess: () => {
 			utils.post.getAll.invalidate();
