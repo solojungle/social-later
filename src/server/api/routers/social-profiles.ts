@@ -38,7 +38,7 @@ async function getTwitterClientOrRefresh({
 			expiresIn: refreshedExpiresIn,
 		} = await client.refreshOAuth2Token(refreshToken);
 
-		await ctx.db.twitterAccount.update({
+		await ctx.db.socialProfile.update({
 			where: {
 				id: socialAccountId,
 			},
@@ -116,7 +116,7 @@ export const socialProfilesRouter = createTRPCRouter({
 			}
 
 			// Make sure the user is apart of the team, and that the twitter account belongs to the team
-			const twitterAccount = await ctx.db.twitterAccount.findUnique({
+			const twitterAccount = await ctx.db.socialProfile.findUnique({
 				where: {
 					id: accountId,
 				},
@@ -157,7 +157,7 @@ export const socialProfilesRouter = createTRPCRouter({
 			const { profileId: twitterAccountId } = input;
 
 			// Make sure the user is apart of the team, and that the twitter account belongs to the team
-			const twitterAccount = await ctx.db.twitterAccount.findUnique({
+			const twitterAccount = await ctx.db.socialProfile.findUnique({
 				where: {
 					id: twitterAccountId,
 				},
