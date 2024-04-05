@@ -89,20 +89,20 @@ model File {
 }
 
 model Post {
-  id             String         @id @default(cuid())
+  id             String        @id @default(cuid())
   title          String
   content        String?
   attachment     Attachment[]
-  published      Boolean        @default(false)
+  published      Boolean       @default(false)
   status         String
   scheduledFor   DateTime
   externalPostId String
-  profile        TwitterAccount @relation(fields: [profileId], references: [id])
+  profile        SocialProfile @relation(fields: [profileId], references: [id])
   profileId      String
-  author         Team           @relation(fields: [authorId], references: [id])
+  author         Team          @relation(fields: [authorId], references: [id])
   authorId       String
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model Team {
@@ -118,21 +118,28 @@ model Team {
   invitation               Invitation[]
   stripeProduct            StripeProduct            @relation(fields: [internalProductId], references: [id])
   stripeCard               StripeCard[]
-  twitterAccount           TwitterAccount[]
+  socialProfile            SocialProfile[]
   post                     Post[]
 }
 
-model TwitterAccount {
-  id           String   @id @default(cuid())
+enum SocialProfileType {
+  twitter
+  facebook
+  instagram
+}
+
+model SocialProfile {
+  id           String            @id @default(cuid())
   username     String
   accessToken  String
   refreshToken String
   avatar       String
+  type         SocialProfileType
   expiresIn    Int
   teamId       String
-  team         Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  team         Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   post         Post[]
 
   @@unique([username, teamId])
