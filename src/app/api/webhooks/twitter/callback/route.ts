@@ -1,3 +1,12 @@
+/**
+ * This is a working callback route for Twitter OAuth.
+ * http://127.0.0.1:3000/api/webhooks/twitter/callback
+ * https://feedfrenzy.co/api/webhooks/twitter/callback
+ *
+ * I've had trouble in the past with the callback route for Twitter OAuth.
+ * so I'm leaving this here as a reference.
+ */
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
@@ -20,10 +29,8 @@ export async function GET(req: NextRequest) {
 	const sessionState = cookieStore.get("state")?.value;
 	const teamId = cookieStore.get("teamId")?.value;
 
+	// You denied the app or your session expired
 	if (!code || !state || !sessionState || !codeVerifier || !teamId) {
-		// return new Response("You denied the app or your session expired", {
-		// 	status: 403,
-		// });
 		redirect("/publish");
 	}
 
@@ -32,10 +39,8 @@ export async function GET(req: NextRequest) {
 	cookieStore.delete("state");
 	cookieStore.delete("teamId");
 
+	// Stored tokens didnt match
 	if (state !== sessionState) {
-		// return new Response("Stored tokens didnt match", {
-		// 	status: 403,
-		// });
 		redirect("/publish");
 	}
 
@@ -51,10 +56,8 @@ export async function GET(req: NextRequest) {
 			redirectUri: `${env.TWITTER_CALLBACK_URL}/api/webhooks/twitter/callback`,
 		});
 
+		// No refresh token
 		if (!refreshToken) {
-			// return new Response("No refresh token", {
-			// 	status: 500,
-			// });
 			redirect("/publish");
 		}
 
@@ -65,7 +68,7 @@ export async function GET(req: NextRequest) {
 
 		const profileImageUrl = userObject.profile_image_url || "";
 
-		await db.twitterAccount.upsert({
+		await db.socialProfile.upsert({
 			where: {
 				username_teamId: {
 					username: userObject.username,
@@ -76,6 +79,7 @@ export async function GET(req: NextRequest) {
 				accessToken,
 				refreshToken,
 				expiresIn,
+				type: "twitter",
 				teamId,
 				avatar: profileImageUrl,
 				username: userObject.username,
@@ -87,6 +91,7 @@ export async function GET(req: NextRequest) {
 			},
 		});
 	} finally {
+		// Successful
 		redirect("/publish");
 	}
 }
