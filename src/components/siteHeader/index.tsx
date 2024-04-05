@@ -16,7 +16,7 @@ export function SiteHeader() {
 		data: profilesData,
 		isLoading: profilesIsLoading,
 		isFetching: profilesIsFetching,
-	} = api.socials.getTwitterAccounts.useQuery(
+	} = api.socials.getSocialProfiles.useQuery(
 		{
 			// Use the non-nullable assertion operator to assert that the value is not null or undefined
 			id: teamsData?.[0]?.id!,

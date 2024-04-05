@@ -46,8 +46,6 @@ export function ResizableLayout({
 	const { id: teamId } = useSelectedTeamStore();
 	const path = usePathname();
 
-	// const { data } = api.socials.getTwitterAccounts.useQuery({ id: teamId });
-
 	return (
 		<TooltipProvider delayDuration={0}>
 			<ResizablePanelGroup autoSaveId="conditional" direction="horizontal">

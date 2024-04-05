@@ -1,3 +1,4 @@
+import { SocialProfileType } from "@prisma/client";
 import { TwitterApi } from "twitter-api-v2";
 import { z } from "zod";
 
@@ -55,8 +56,12 @@ async function getTwitterClientOrRefresh({
 }
 
 export const socialProfilesRouter = createTRPCRouter({
-	getTwitterAccounts: protectedProcedure
-		.input(TeamSchema.pick({ id: true }))
+	getSocialProfiles: protectedProcedure
+		.input(
+			TeamSchema.pick({ id: true }).extend({
+				type: z.nativeEnum(SocialProfileType).optional(),
+			}),
+		)
 		.query(async ({ ctx, input }) => {
 			const { id: teamId } = input;
 
@@ -73,18 +78,18 @@ export const socialProfilesRouter = createTRPCRouter({
 			}
 
 			// 2. Grab all the twitter accounts for the team
-			const twitterAccounts = await ctx.db.twitterAccount.findMany({
+			const profiles = await ctx.db.socialProfile.findMany({
 				where: {
 					teamId,
 				},
 			});
 
 			return (
-				twitterAccounts.map((twitterAccount) => ({
-					id: twitterAccount.id,
-					username: twitterAccount.username,
-					avatar: twitterAccount.avatar,
-					teamId: twitterAccount.teamId,
+				profiles.map((profile) => ({
+					id: profile.id,
+					username: profile.username,
+					avatar: profile.avatar,
+					teamId: profile.teamId,
 				})) || []
 			);
 		}),
