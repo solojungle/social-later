@@ -14,6 +14,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
+import { LinkLinkedInButton } from "./linkLinkedInButton";
 import { LinkTwitterButton } from "./linkSocialsButton";
 import { LinkYouTubeButton } from "./linkYoutubeButton";
 
@@ -24,10 +25,6 @@ const SupportedSites = [
 	},
 	{
 		name: "Instagram",
-		disabled: true,
-	},
-	{
-		name: "LinkedIn",
 		disabled: true,
 	},
 	{
@@ -50,6 +47,7 @@ export function ProfileCards() {
 		<div className="grid grid-cols-3 gap-1">
 			<LinkTwitterButton teamId={teamId} />
 			<LinkYouTubeButton teamId={teamId} />
+			<LinkLinkedInButton teamId={teamId} />
 			{SupportedSites.map((site) => (
 				<div key={site.name} className="cursor-not-allowed">
 					<span
