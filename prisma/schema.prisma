@@ -127,11 +127,13 @@ enum SocialProfileType {
   facebook
   youtube
   instagram
+  linkedin
 }
 
 model SocialProfile {
   id           String            @id @default(cuid())
   username     String
+  name         String?
   accessToken  String
   refreshToken String
   avatar       String

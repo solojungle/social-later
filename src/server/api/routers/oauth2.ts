@@ -37,7 +37,11 @@ export const oauth2Router = createTRPCRouter({
 		const codeVerifier = "";
 		const state = "";
 
-		const url = li.generateMemberAuthorizationUrl(["w_member_social"]);
+		const url = li.generateMemberAuthorizationUrl([
+			"w_member_social",
+			"openid",
+			"profile",
+		]);
 
 		return { url, codeVerifier, state };
 	}),
