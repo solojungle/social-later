@@ -41,7 +41,7 @@ async function getTwitterClientOrRefresh({
 			data: {
 				accessToken: refreshedAccessToken,
 				refreshToken: refreshedRefreshToken,
-				expiresAt: new Date(updatedAt.getTime() + refreshedExpiresIn * 1000),
+				expiresAt: new Date(updatedAt.getTime() + refreshedExpiresIn),
 			},
 		});
 

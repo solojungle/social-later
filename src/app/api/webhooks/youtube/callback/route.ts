@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
 					create: {
 						accessToken,
 						refreshToken,
-						expiresAt: new Date(Date.now() + expiresIn * 1000),
+						expiresAt: new Date(Date.now() + expiresIn),
 						type: "youtube",
 						teamId,
 						avatar: thumbnailURL || "",
@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
 					update: {
 						accessToken,
 						refreshToken,
-						expiresAt: new Date(Date.now() + expiresIn * 1000),
+						expiresAt: new Date(Date.now() + expiresIn),
 					},
 				});
 			}),

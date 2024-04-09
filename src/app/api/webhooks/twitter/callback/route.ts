@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
 
 		const profileImageUrl = userObject.profile_image_url || "";
 
-		const expiresAt = new Date(Date.now() + expiresIn * 1000);
+		const expiresAt = new Date(Date.now() + expiresIn);
 
 		await db.socialProfile.upsert({
 			where: {
