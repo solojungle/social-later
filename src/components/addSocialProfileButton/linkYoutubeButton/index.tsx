@@ -5,9 +5,12 @@ import { api } from "@/trpc/react";
 export function LinkYouTubeButton({ teamId }: { teamId: string }) {
 	const router = useRouter();
 
-	const generateAuthLink = api.google.generateOAuth2URL.useQuery(undefined, {
-		enabled: false,
-	});
+	const generateAuthLink = api.oauth2.generateYoutubeOAuth2URL.useQuery(
+		undefined,
+		{
+			enabled: false,
+		},
+	);
 
 	async function handleClick() {
 		const { data } = await generateAuthLink.refetch();

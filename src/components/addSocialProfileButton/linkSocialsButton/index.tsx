@@ -6,9 +6,12 @@ import { api } from "@/trpc/react";
 
 export function LinkTwitterButton({ teamId }: { teamId: string }) {
 	// Disable the query and refetch on click
-	const generateAuthLink = api.twitter.generateOAuth2URL.useQuery(undefined, {
-		enabled: false,
-	});
+	const generateAuthLink = api.oauth2.generateTwitterOAuth2URL.useQuery(
+		undefined,
+		{
+			enabled: false,
+		},
+	);
 
 	const router = useRouter();
 

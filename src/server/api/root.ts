@@ -5,12 +5,11 @@ import { createTRPCRouter } from "@/server/api/trpc";
 
 import { awsRouter } from "./routers/aws";
 import { filesRouter } from "./routers/files";
-import { googleRouter } from "./routers/google";
 import { invitationRouter } from "./routers/invitation";
+import { oauth2Router } from "./routers/oauth2";
 import { productsRouter } from "./routers/products";
 import { socialProfilesRouter } from "./routers/social-profiles";
 import { stripeRouter } from "./routers/stripe";
-import { twitterRouter } from "./routers/twitter";
 
 /**
  * This is the primary router for your server.
@@ -24,8 +23,7 @@ export const appRouter = createTRPCRouter({
 	invitation: invitationRouter,
 	file: filesRouter,
 	stripe: stripeRouter,
-	twitter: twitterRouter,
-	google: googleRouter,
+	oauth2: oauth2Router,
 	aws: awsRouter,
 	products: productsRouter,
 	socials: socialProfilesRouter,

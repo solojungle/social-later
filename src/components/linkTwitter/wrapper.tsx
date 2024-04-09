@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { OLDLinkTwitterButton } from ".";
 
 export function OLDLinkTwitterWrapper() {
-	const generateAuthLink = api.twitter.generateOAuth2URL.useQuery();
+	const generateAuthLink = api.oauth2.generateTwitterOAuth2URL.useQuery();
 	const { data } = generateAuthLink;
 	const { id: teamId } = useSelectedTeamStore();
 
