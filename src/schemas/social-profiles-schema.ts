@@ -8,6 +8,7 @@ export const SocialProfilesSchema = z.object({
 	refreshToken: z.string(),
 	avatar: z.string(),
 	teamId: z.string(),
+	type: z.string(),
 	expiresAt: z.string(),
 	createdAt: z.string(),
 	updatedAt: z.string(),
@@ -20,6 +21,7 @@ export const PublicSocialProfilesSchema = SocialProfilesSchema.pick({
 	username: true,
 	teamId: true,
 	avatar: true,
+	type: true,
 });
 
 export type PublicSocialProfilesSchemaValues = z.infer<

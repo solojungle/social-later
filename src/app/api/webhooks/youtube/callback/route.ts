@@ -91,6 +91,6 @@ export async function GET(req: NextRequest) {
 		);
 	} finally {
 		// Successful
-		// redirect("/publish");
+		redirect("/publish");
 	}
 }

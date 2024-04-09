@@ -1,7 +1,7 @@
 "use client";
 
 import { CaretSortIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
-import { CheckIcon, PlusIcon } from "lucide-react";
+import { CheckIcon, PlusIcon, YoutubeIcon } from "lucide-react";
 import * as React from "react";
 import { useState } from "react";
 
@@ -34,6 +34,25 @@ type PersonalCommandGroupProps = {
 	setOpen: (open: boolean) => void;
 };
 
+function ChannelServiceIcon({ type }: { type: string }) {
+	// These will be different lucide icons
+	const channelIconVariants: { [key: string]: any } = {
+		twitter: TwitterLogoIcon,
+		youtube: YoutubeIcon,
+	};
+
+	const Icon = channelIconVariants[type];
+
+	const iconColor = "red";
+
+	return (
+		<Icon
+			// eslint-disable-next-line tailwindcss/no-custom-classname, tailwindcss/classnames-order
+			className={`absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm shadow-sm bg-${iconColor}-600 p-px text-white`}
+		/>
+	);
+}
+
 function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 	const { profiles, currentProfileId } = useSocialProfilesStore();
 
@@ -49,7 +68,7 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 					className="text-sm"
 				>
 					<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
-						<TwitterLogoIcon className="absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm bg-blue-600 p-px text-white" />
+						{ChannelServiceIcon({ type: profile.type })}
 						<AvatarImage
 							src={profile.avatar}
 							alt={profile.username}
@@ -104,7 +123,7 @@ function SocialProfileSwitcherPopoverTrigger({
 			>
 				<div>
 					<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
-						<TwitterLogoIcon className="absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm bg-blue-600 p-px text-white" />
+						{ChannelServiceIcon({ type: selectedProfile.type })}
 						<AvatarImage
 							src={selectedProfile.avatar}
 							alt={selectedProfile.username}
