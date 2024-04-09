@@ -5,6 +5,7 @@ import { createTRPCRouter } from "@/server/api/trpc";
 
 import { awsRouter } from "./routers/aws";
 import { filesRouter } from "./routers/files";
+import { googleRouter } from "./routers/google";
 import { invitationRouter } from "./routers/invitation";
 import { productsRouter } from "./routers/products";
 import { socialProfilesRouter } from "./routers/social-profiles";
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
 	file: filesRouter,
 	stripe: stripeRouter,
 	twitter: twitterRouter,
+	google: googleRouter,
 	aws: awsRouter,
 	products: productsRouter,
 	socials: socialProfilesRouter,

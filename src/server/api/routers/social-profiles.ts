@@ -12,24 +12,20 @@ import { client, v1client } from "@/server/services/twitter/client";
 // will then return the client
 async function getTwitterClientOrRefresh({
 	updatedAt,
-	expiresIn,
+	expiresAt,
 	accessToken,
 	refreshToken,
 	socialAccountId,
 	ctx,
 }: {
 	updatedAt: Date;
-	expiresIn: number;
+	expiresAt: Date;
 	accessToken: string;
 	refreshToken: string;
 	socialAccountId: string;
 	ctx: any;
 }) {
-	// Add expiresIn to createdAt to get the expiration date
-	const expirationDate = new Date(updatedAt.getTime() + expiresIn * 1000);
-
-	if (expirationDate <= new Date()) {
-		// Refresh the token
+	if (expiresAt <= new Date()) {
 		// TODO: this is giving me issues constantly
 		const {
 			client: refreshedClient,
@@ -45,7 +41,7 @@ async function getTwitterClientOrRefresh({
 			data: {
 				accessToken: refreshedAccessToken,
 				refreshToken: refreshedRefreshToken,
-				expiresIn: refreshedExpiresIn,
+				expiresAt: new Date(updatedAt.getTime() + refreshedExpiresIn * 1000),
 			},
 		});
 
@@ -139,7 +135,7 @@ export const socialProfilesRouter = createTRPCRouter({
 
 			const loggedClient = await getTwitterClientOrRefresh({
 				updatedAt: twitterAccount.updatedAt,
-				expiresIn: twitterAccount.expiresIn,
+				expiresAt: twitterAccount.expiresAt,
 				accessToken: twitterAccount.accessToken,
 				refreshToken: twitterAccount.refreshToken,
 				socialAccountId: twitterAccount.id,
@@ -180,7 +176,7 @@ export const socialProfilesRouter = createTRPCRouter({
 
 			const loggedClient = await getTwitterClientOrRefresh({
 				updatedAt: twitterAccount.updatedAt,
-				expiresIn: twitterAccount.expiresIn,
+				expiresAt: twitterAccount.expiresAt,
 				accessToken: twitterAccount.accessToken,
 				refreshToken: twitterAccount.refreshToken,
 				socialAccountId: twitterAccount.id,

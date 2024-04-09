@@ -125,6 +125,7 @@ model Team {
 enum SocialProfileType {
   twitter
   facebook
+  youtube
   instagram
 }
 
@@ -135,9 +136,9 @@ model SocialProfile {
   refreshToken String
   avatar       String
   type         SocialProfileType
-  expiresIn    Int
   teamId       String
   team         Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
   post         Post[]

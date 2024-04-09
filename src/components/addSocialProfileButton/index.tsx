@@ -15,6 +15,7 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 import { LinkTwitterButton } from "./linkSocialsButton";
+import { LinkYouTubeButton } from "./linkYoutubeButton";
 
 const SupportedSites = [
 	{
@@ -84,6 +85,7 @@ export default function AddSocialProfile() {
 					</DialogDescription>
 				</DialogHeader>
 				<LinkTwitterButton teamId={teamId} />
+				<LinkYouTubeButton teamId={teamId} />
 				<ProfileCards />
 			</DialogContent>
 		</Dialog>

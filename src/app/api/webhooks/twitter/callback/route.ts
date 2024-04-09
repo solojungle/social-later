@@ -68,6 +68,8 @@ export async function GET(req: NextRequest) {
 
 		const profileImageUrl = userObject.profile_image_url || "";
 
+		const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
 		await db.socialProfile.upsert({
 			where: {
 				username_teamId: {
@@ -78,7 +80,7 @@ export async function GET(req: NextRequest) {
 			create: {
 				accessToken,
 				refreshToken,
-				expiresIn,
+				expiresAt,
 				type: "twitter",
 				teamId,
 				avatar: profileImageUrl,
@@ -87,7 +89,7 @@ export async function GET(req: NextRequest) {
 			update: {
 				accessToken,
 				refreshToken,
-				expiresIn,
+				expiresAt,
 			},
 		});
 	} finally {

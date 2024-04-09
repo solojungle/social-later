@@ -7,8 +7,8 @@ export const SocialProfilesSchema = z.object({
 	accessToken: z.string(),
 	refreshToken: z.string(),
 	avatar: z.string(),
-	expiresIn: z.number(),
 	teamId: z.string(),
+	expiresAt: z.string(),
 	createdAt: z.string(),
 	updatedAt: z.string(),
 });
