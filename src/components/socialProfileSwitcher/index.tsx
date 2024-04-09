@@ -41,18 +41,19 @@ function ChannelServiceIcon({ type }: { type: string }) {
 
 	const Icon = channelIconVariants[type];
 
-	const iconColor = "red";
+	const iconColor = type === "twitter" ? "blue" : "red";
 
 	return (
 		<Icon
 			// eslint-disable-next-line tailwindcss/no-custom-classname, tailwindcss/classnames-order
-			className={`absolute bottom-0 right-0 m-px h-3 w-3 rounded-sm shadow-sm bg-${iconColor}-600 p-px text-white`}
+			className={`absolute bottom-0 right-0 m-px h-3 w-3 rounded-[1px] shadow-sm bg-${iconColor}-600 p-px text-white`}
 		/>
 	);
 }
 
 function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
-	const { profiles, currentProfileId } = useSocialProfilesStore();
+	const { profiles, currentProfileId, setCurrentProfileId } =
+		useSocialProfilesStore();
 
 	return (
 		<CommandGroup key="profiles" heading="Profiles">
@@ -61,6 +62,9 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 					key={profile.id}
 					value={profile.username}
 					onSelect={() => {
+						// Set the current profile
+						setCurrentProfileId(profile.id);
+
 						setOpen(false);
 					}}
 					className="text-sm"
@@ -70,7 +74,7 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 						<AvatarImage
 							src={profile.avatar}
 							alt={profile.username}
-							className="!rounded-sm bg-white"
+							className="!rounded-sm border border-border bg-white"
 						/>
 						<AvatarFallback className="!rounded-sm border border-border">
 							{profile.username?.[0]?.toUpperCase() ?? ""}
@@ -120,12 +124,12 @@ function SocialProfileSwitcherPopoverTrigger({
 				className={cn("w-[250px] justify-between", className)}
 			>
 				<div>
-					<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
+					<Avatar className="relative mr-2 h-6 w-6 !rounded-sm">
 						{ChannelServiceIcon({ type: selectedProfile.type })}
 						<AvatarImage
 							src={selectedProfile.avatar}
 							alt={selectedProfile.username}
-							className="!rounded-sm bg-white"
+							className="!rounded-sm border border-border bg-white"
 						/>
 						<AvatarFallback className="!rounded-sm border border-border">
 							{selectedProfile.username[0]?.toUpperCase() ?? ""}
