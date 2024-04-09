@@ -15,11 +15,9 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { ProfileCards } from "../addSocialProfileButton";
-import { LinkTwitterButton } from "../addSocialProfileButton/linkSocialsButton";
 import { Button } from "../ui/button";
 import {
 	Dialog,
@@ -157,7 +155,6 @@ export default function SocialProfileSwitcher({
 }: SocialProfileSwitcherProps) {
 	const [open, setOpen] = useState(false);
 	const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
-	const { id: teamId } = useSelectedTeamStore();
 
 	return (
 		<Dialog open={showNewProfileDialog} onOpenChange={setShowNewProfileDialog}>
@@ -196,7 +193,6 @@ export default function SocialProfileSwitcher({
 						Connect your social profile to manage your posts.
 					</DialogDescription>
 				</DialogHeader>
-				<LinkTwitterButton teamId={teamId} />
 				<ProfileCards />
 			</DialogContent>
 		</Dialog>

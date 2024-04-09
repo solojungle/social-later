@@ -39,14 +39,17 @@ const SupportedSites = [
 		disabled: true,
 	},
 	{
-		name: "YouTube",
+		name: "Snapchat",
 		disabled: true,
 	},
 ];
 
 export function ProfileCards() {
+	const { id: teamId } = useSelectedTeamStore();
 	return (
 		<div className="grid grid-cols-3 gap-1">
+			<LinkTwitterButton teamId={teamId} />
+			<LinkYouTubeButton teamId={teamId} />
 			{SupportedSites.map((site) => (
 				<div key={site.name} className="cursor-not-allowed">
 					<span
@@ -70,7 +73,6 @@ export function ProfileCards() {
 
 export default function AddSocialProfile() {
 	const [open, setOpen] = useState(false);
-	const { id: teamId } = useSelectedTeamStore();
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -84,8 +86,6 @@ export default function AddSocialProfile() {
 						Add a new profile manage and create posts.
 					</DialogDescription>
 				</DialogHeader>
-				<LinkTwitterButton teamId={teamId} />
-				<LinkYouTubeButton teamId={teamId} />
 				<ProfileCards />
 			</DialogContent>
 		</Dialog>

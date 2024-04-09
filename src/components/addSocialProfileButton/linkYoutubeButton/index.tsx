@@ -12,9 +12,7 @@ export function LinkYouTubeButton({ teamId }: { teamId: string }) {
 	async function handleClick() {
 		const { data } = await generateAuthLink.refetch();
 
-		console.log(data);
-
-		// // Set cookies
+		// Set cookies
 		// document.cookie = `codeVerifier=${data?.codeVerifier}`;
 		// document.cookie = `state=${data?.state}`;
 		document.cookie = `teamId=${teamId}`;
