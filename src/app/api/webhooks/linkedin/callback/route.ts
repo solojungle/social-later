@@ -26,15 +26,19 @@ export async function GET(req: NextRequest) {
 	// Delete the cookies
 	cookieStore.delete("teamId");
 
+	/**
+	 * LinkedIn is stingy with their refresh tokens, so we can only store the access token.
+	 * and then ask the user to re-authenticate when the token expires.
+	 */
+
 	try {
-		const {
-			access_token: accessToken,
-			refresh_token: refreshToken,
-			refresh_token_expires_in: expiresIn,
-		} = await oauth2Client.exchangeAuthCodeForAccessToken(code);
+		const tokenDetails =
+			await oauth2Client.exchangeAuthCodeForAccessToken(code);
+
+		const { access_token: accessToken, expires_in: expiresIn } = tokenDetails;
 
 		// No tokens
-		if (!refreshToken || !accessToken || !expiresIn) {
+		if (!accessToken || !expiresIn) {
 			redirect("/publish");
 		}
 
@@ -55,7 +59,7 @@ export async function GET(req: NextRequest) {
 			},
 			create: {
 				accessToken,
-				refreshToken,
+				refreshToken: "",
 				expiresAt: new Date(Date.now() + expiresIn * 1000),
 				type: "linkedin",
 				teamId,
@@ -65,7 +69,7 @@ export async function GET(req: NextRequest) {
 			},
 			update: {
 				accessToken,
-				refreshToken,
+				refreshToken: "",
 				expiresAt: new Date(Date.now() + expiresIn * 1000),
 			},
 		});

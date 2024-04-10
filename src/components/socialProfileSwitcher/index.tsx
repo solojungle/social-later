@@ -1,6 +1,10 @@
 "use client";
 
-import { CaretSortIcon, TwitterLogoIcon } from "@radix-ui/react-icons";
+import {
+	CaretSortIcon,
+	LinkedInLogoIcon,
+	TwitterLogoIcon,
+} from "@radix-ui/react-icons";
 import { CheckIcon, PlusIcon, YoutubeIcon } from "lucide-react";
 import * as React from "react";
 import { useState } from "react";
@@ -37,16 +41,22 @@ function ChannelServiceIcon({ type }: { type: string }) {
 	const channelIconVariants: { [key: string]: any } = {
 		twitter: TwitterLogoIcon,
 		youtube: YoutubeIcon,
+		linkedin: LinkedInLogoIcon,
 	};
 
 	const Icon = channelIconVariants[type];
 
-	const iconColor = type === "twitter" ? "blue" : "red";
+	// These will be different colors
+	const channelIconColors: { [key: string]: string } = {
+		twitter: "blue",
+		youtube: "red",
+		linkedin: "blue",
+	};
 
 	return (
 		<Icon
 			// eslint-disable-next-line tailwindcss/no-custom-classname, tailwindcss/classnames-order
-			className={`absolute bottom-0 right-0 m-px h-3 w-3 rounded-[1px] shadow-sm bg-${iconColor}-600 p-px text-white`}
+			className={`absolute bottom-0 right-0 m-px h-3 w-3 rounded-[1px] bg-${channelIconColors[type]}-600 p-px text-white shadow-sm`}
 		/>
 	);
 }
