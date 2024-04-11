@@ -44,7 +44,7 @@ function ChannelServiceIcon({ type }: { type: string }) {
 		<img
 			src={channelIconVariants[type]}
 			alt={type}
-			className="absolute bottom-0 right-0 m-px w-3 rounded-sm"
+			className="absolute bottom-0 right-0 m-px w-[14px] rounded-sm"
 		/>
 	);
 }
