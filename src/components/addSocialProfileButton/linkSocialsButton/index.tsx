@@ -40,7 +40,7 @@ export function LinkTwitterButton({ teamId }: { teamId: string }) {
 			className="flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-secondary"
 		>
 			<img
-				src="https://logo.clearbit.com/twitter.com"
+				src="/logos/twitter_logo.webp"
 				alt="Twitter logo"
 				className="mb-2 h-8 w-8"
 			/>
