@@ -85,6 +85,7 @@ export const socialProfilesRouter = createTRPCRouter({
 					id: profile.id,
 					username: profile.username,
 					avatar: profile.avatar,
+					name: profile.name,
 					teamId: profile.teamId,
 					type: profile.type,
 				})) || []

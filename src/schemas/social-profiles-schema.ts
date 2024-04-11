@@ -4,6 +4,7 @@ import { z } from "zod";
 export const SocialProfilesSchema = z.object({
 	id: z.string(),
 	username: z.string(),
+	name: z.string().optional(),
 	accessToken: z.string(),
 	refreshToken: z.string(),
 	avatar: z.string(),
@@ -22,6 +23,7 @@ export const PublicSocialProfilesSchema = SocialProfilesSchema.pick({
 	teamId: true,
 	avatar: true,
 	type: true,
+	name: true,
 });
 
 export type PublicSocialProfilesSchemaValues = z.infer<

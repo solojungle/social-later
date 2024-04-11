@@ -71,15 +71,20 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 						{ChannelServiceIcon({ type: profile.type })}
 						<AvatarImage
 							src={profile.avatar}
-							alt={profile.username}
+							alt={profile.name || profile.username}
 							className="!rounded-sm border border-border bg-white"
 						/>
 						<AvatarFallback className="!rounded-sm border border-border">
-							{profile.username?.[0]?.toUpperCase() ?? ""}
+							{(profile.name && profile.name[0]?.toUpperCase()) ??
+								profile.username[0]?.toUpperCase() ??
+								""}
 						</AvatarFallback>
 					</Avatar>
-					<span title={profile.username} className="overflow-hidden truncate">
-						{profile.username}
+					<span
+						title={profile.name || profile.username}
+						className="overflow-hidden truncate"
+					>
+						{profile.name || profile.username}
 					</span>
 					<CheckIcon
 						className={cn(
@@ -126,18 +131,21 @@ function SocialProfileSwitcherPopoverTrigger({
 						{ChannelServiceIcon({ type: selectedProfile.type })}
 						<AvatarImage
 							src={selectedProfile.avatar}
-							alt={selectedProfile.username}
+							alt={selectedProfile.name ?? selectedProfile.username}
 							className="!rounded-sm border border-border bg-white"
 						/>
 						<AvatarFallback className="!rounded-sm border border-border">
-							{selectedProfile.username[0]?.toUpperCase() ?? ""}
+							{(selectedProfile.name &&
+								selectedProfile.name[0]?.toUpperCase()) ??
+								selectedProfile.username[0]?.toUpperCase() ??
+								""}
 						</AvatarFallback>
 					</Avatar>
 					<span
-						title={selectedProfile.username}
+						title={selectedProfile.name || selectedProfile.username}
 						className="overflow-hidden truncate"
 					>
-						{selectedProfile.username}
+						{selectedProfile.name || selectedProfile.username}
 					</span>
 					<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 				</div>
