@@ -1,11 +1,7 @@
 "use client";
 
-import {
-	CaretSortIcon,
-	LinkedInLogoIcon,
-	TwitterLogoIcon,
-} from "@radix-ui/react-icons";
-import { CheckIcon, PlusIcon, YoutubeIcon } from "lucide-react";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import { CheckIcon, PlusIcon } from "lucide-react";
 import * as React from "react";
 import { useState } from "react";
 
@@ -39,24 +35,16 @@ type PersonalCommandGroupProps = {
 function ChannelServiceIcon({ type }: { type: string }) {
 	// These will be different lucide icons
 	const channelIconVariants: { [key: string]: any } = {
-		twitter: TwitterLogoIcon,
-		youtube: YoutubeIcon,
-		linkedin: LinkedInLogoIcon,
-	};
-
-	const Icon = channelIconVariants[type];
-
-	// These will be different colors
-	const channelIconColors: { [key: string]: string } = {
-		twitter: "blue",
-		youtube: "red",
-		linkedin: "blue",
+		twitter: "/logos/twitter_logo.webp",
+		youtube: "/logos/youtube_logo.webp",
+		linkedin: "/logos/linkedin_logo.webp",
 	};
 
 	return (
-		<Icon
-			// eslint-disable-next-line tailwindcss/no-custom-classname, tailwindcss/classnames-order
-			className={`absolute bottom-0 right-0 m-px h-3 w-3 rounded-[1px] bg-${channelIconColors[type]}-600 p-px text-white shadow-sm`}
+		<img
+			src={channelIconVariants[type]}
+			alt={type}
+			className="absolute bottom-0 right-0 m-px w-3 rounded-sm"
 		/>
 	);
 }
