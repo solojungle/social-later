@@ -16,6 +16,7 @@ export function EmojiPicker() {
 	}
 
 	function handleClick(event: Event) {
+		event.preventDefault();
 		event.stopPropagation();
 		if (visible) {
 			return setVisible(false);
@@ -25,11 +26,14 @@ export function EmojiPicker() {
 	}
 
 	return (
-		<>
+		<div className="relative">
 			{visible && (
-				<div className="absolute bottom-7 z-50 shadow-lg">
+				<div className="absolute z-50 shadow-lg">
 					<Picker
 						data={data}
+						maxFrequentRows={0}
+						navPosition="bottom"
+						previewPosition="none"
 						onClickOutside={(e: Event) => {
 							handleClickOutside(e);
 						}}
@@ -39,13 +43,15 @@ export function EmojiPicker() {
 			<Button
 				type="button"
 				size="icon"
+				asChild
+				className="p-2"
 				variant="ghost"
 				onClick={(e) => {
 					handleClick(e as any);
 				}}
 			>
-				<SmileIcon className="h-5 w-5 text-muted-foreground" />
+				<SmileIcon className="text-muted-foreground" />
 			</Button>
-		</>
+		</div>
 	);
 }

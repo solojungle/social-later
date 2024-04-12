@@ -3,34 +3,28 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileType } from "@prisma/client";
 import axios from "axios";
-import { ImageIcon, Loader2, PaperclipIcon } from "lucide-react";
+import {
+	GalleryThumbnailsIcon,
+	ImageIcon,
+	Loader2,
+	TypeIcon,
+	VideoIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { PostFormSchema, PostFormSchemaValues } from "@/schemas/posts-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import { EmojiPicker } from "../emojiPicker";
 import { Button } from "../ui/button";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+import { Form } from "../ui/form";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
-import { Textarea } from "../ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { MediaFormField } from "./mediaFormField";
+import { StatusFormField } from "./statusFormField";
 
 interface PostTweetProps {
 	teamId: string;
@@ -173,112 +167,36 @@ function TweetForm({
 			<SheetTrigger asChild>
 				<Button className={className}>Post</Button>
 			</SheetTrigger>
-			<SheetContent className="w-[800px] !max-w-[80vw]" side="right">
+			<SheetContent className="w-[800px] !max-w-[80vw] pt-12" side="right">
 				<TooltipProvider delayDuration={0}>
+					<Tabs defaultValue="status" className="w-full">
+						<TabsList className="grid w-full grid-cols-4">
+							<TabsTrigger value="status">
+								<TypeIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+								Status
+							</TabsTrigger>
+							<TabsTrigger value="photo">
+								<ImageIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+								Photo
+							</TabsTrigger>
+							<TabsTrigger value="video">
+								<VideoIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+								Video
+							</TabsTrigger>
+							<TabsTrigger value="carousel">
+								<GalleryThumbnailsIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+								Carousel
+							</TabsTrigger>
+						</TabsList>
+						<TabsContent value="status">lol</TabsContent>
+						<TabsContent value="photo">lol</TabsContent>
+						<TabsContent value="video">Lol</TabsContent>
+						<TabsContent value="carousel">Lol</TabsContent>
+					</Tabs>
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-							<FormField
-								control={form.control}
-								name="content"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Post Content</FormLabel>
-										<FormControl>
-											<div className="shadow-sm">
-												<div className="rounded-t-md border border-b-0 border-border p-1">
-													<div className="flex justify-start">
-														<Tooltip delayDuration={0}>
-															<TooltipTrigger>
-																<Button
-																	type="button"
-																	size="icon"
-																	variant="ghost"
-																>
-																	<PaperclipIcon className="h-5 w-5 text-muted-foreground" />
-																</Button>
-															</TooltipTrigger>
-															<TooltipContent>
-																<span>Link shortener</span>
-															</TooltipContent>
-														</Tooltip>
-														<Tooltip delayDuration={0}>
-															<TooltipTrigger asChild>
-																<Button
-																	type="button"
-																	size="icon"
-																	variant="ghost"
-																>
-																	<ImageIcon className="h-5 w-5 text-muted-foreground" />
-																</Button>
-															</TooltipTrigger>
-															<TooltipContent>
-																<span>Add media</span>
-															</TooltipContent>
-														</Tooltip>
-														<Tooltip delayDuration={0}>
-															<TooltipTrigger>
-																{/* TODO: Remove error button cannot appear as a descendant of button */}
-																<EmojiPicker />
-															</TooltipTrigger>
-															<TooltipContent>
-																<span>Emoji</span>
-															</TooltipContent>
-														</Tooltip>
-													</div>
-												</div>
-												<Textarea
-													className="!mt-0 rounded-t-none shadow-none"
-													autoFocus
-													{...field}
-													placeholder="Write something, mention or add emoji..."
-												/>
-											</div>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-
-							<FormField
-								control={form.control}
-								name="media"
-								render={() => (
-									<FormItem>
-										<FormControl>
-											<Input type="file" {...fileRef} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-
-							{/* {form.watch("file") && (
-								<div className="relative flex items-center justify-center gap-3 p-4">
-									<FileCheck2Icon className="h-4 w-4" />
-									<p className="text-sm font-medium">
-										{form.watch("file")?.name}
-									</p>
-								</div>
-							)} */}
-							{/* <ReorderableImageGallery
-								images={[
-									{
-										id: "1",
-										src: "https://via.placeholder.com/150",
-										alt: "placeholder",
-									},
-									// {
-									// 	id: "2",
-									// 	src: "https://via.placeholder.com/150",
-									// 	alt: "placeholder",
-									// },
-									// {
-									// 	id: "3",
-									// 	src: "https://via.placeholder.com/150",
-									// 	alt: "placeholder",
-									// },
-								]}
-							/> */}
+							<StatusFormField form={form} />
+							<MediaFormField form={form} fileRef={fileRef} />
 							<div className="flex justify-end gap-2">
 								<SheetClose asChild>
 									<Button type="button" variant="outline">
