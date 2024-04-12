@@ -4,6 +4,7 @@ import { SmileIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type EmojiPickerProps = {
 	textareaRef: React.RefObject<HTMLTextAreaElement>;
@@ -27,23 +28,30 @@ export function EmojiPicker({ textareaRef }: EmojiPickerProps) {
 	}
 
 	return (
-		<Popover>
-			<PopoverTrigger className="inline-flex h-9 w-9 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
-				<SmileIcon className="h-5 w-5 text-muted-foreground" />
-			</PopoverTrigger>
-			<PopoverContent className="w-fit !overflow-scroll p-0">
-				<Picker
-					className="p-0"
-					data={data}
-					maxFrequentRows={0}
-					navPosition="bottom"
-					previewPosition="none"
-					onClickOutside={(e: Event) => {
-						handleClickOutside(e);
-					}}
-					onEmojiSelect={(emoji: any) => handleEmojiSelect(emoji)}
-				/>
-			</PopoverContent>
-		</Popover>
+		<Tooltip delayDuration={0}>
+			<Popover>
+				<TooltipTrigger asChild>
+					<PopoverTrigger className="inline-flex h-9 w-9 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+						<SmileIcon className="h-5 w-5 text-muted-foreground" />
+					</PopoverTrigger>
+				</TooltipTrigger>
+				<TooltipContent>
+					<span>Emoji</span>
+				</TooltipContent>
+				<PopoverContent className="w-fit !overflow-scroll p-0">
+					<Picker
+						className="p-0"
+						data={data}
+						maxFrequentRows={0}
+						navPosition="bottom"
+						previewPosition="none"
+						onClickOutside={(e: Event) => {
+							handleClickOutside(e);
+						}}
+						onEmojiSelect={(emoji: any) => handleEmojiSelect(emoji)}
+					/>
+				</PopoverContent>
+			</Popover>
+		</Tooltip>
 	);
 }

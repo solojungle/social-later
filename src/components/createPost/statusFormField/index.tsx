@@ -45,14 +45,7 @@ function Toolbar({ textareaRef }: ToolbarProps) {
 						<span>Add media</span>
 					</TooltipContent>
 				</Tooltip>
-				<Tooltip delayDuration={0}>
-					<TooltipTrigger>
-						<EmojiPicker textareaRef={textareaRef} />
-					</TooltipTrigger>
-					<TooltipContent>
-						<span>Emoji</span>
-					</TooltipContent>
-				</Tooltip>
+				<EmojiPicker textareaRef={textareaRef} />
 			</div>
 			<span className="text-xs text-muted-foreground">0/200</span>
 		</div>
