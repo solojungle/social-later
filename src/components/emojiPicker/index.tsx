@@ -3,9 +3,13 @@ import Picker from "@emoji-mart/react";
 import { SmileIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-export function EmojiPicker() {
+type EmojiPickerProps = {
+	textareaRef: React.RefObject<HTMLTextAreaElement>;
+};
+
+export function EmojiPicker({ textareaRef }: EmojiPickerProps) {
 	const [visible, setVisible] = useState(false);
 
 	function handleClickOutside(event: Event) {
@@ -15,43 +19,31 @@ export function EmojiPicker() {
 		}
 	}
 
-	function handleClick(event: Event) {
-		event.preventDefault();
-		event.stopPropagation();
-		if (visible) {
-			return setVisible(false);
+	function handleEmojiSelect(emoji: { native: string }) {
+		if (textareaRef.current) {
+			// eslint-disable-next-line no-param-reassign
+			textareaRef.current.value += emoji.native;
 		}
-
-		return setVisible(true);
 	}
 
 	return (
-		<div className="relative">
-			{visible && (
-				<div className="absolute z-50 shadow-lg">
-					<Picker
-						data={data}
-						maxFrequentRows={0}
-						navPosition="bottom"
-						previewPosition="none"
-						onClickOutside={(e: Event) => {
-							handleClickOutside(e);
-						}}
-					/>
-				</div>
-			)}
-			<Button
-				type="button"
-				size="icon"
-				asChild
-				className="p-2"
-				variant="ghost"
-				onClick={(e) => {
-					handleClick(e as any);
-				}}
-			>
-				<SmileIcon className="text-muted-foreground" />
-			</Button>
-		</div>
+		<Popover>
+			<PopoverTrigger className="inline-flex h-9 w-9 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+				<SmileIcon className="h-5 w-5 text-muted-foreground" />
+			</PopoverTrigger>
+			<PopoverContent className="w-fit !overflow-scroll p-0">
+				<Picker
+					className="p-0"
+					data={data}
+					maxFrequentRows={0}
+					navPosition="bottom"
+					previewPosition="none"
+					onClickOutside={(e: Event) => {
+						handleClickOutside(e);
+					}}
+					onEmojiSelect={(emoji: any) => handleEmojiSelect(emoji)}
+				/>
+			</PopoverContent>
+		</Popover>
 	);
 }

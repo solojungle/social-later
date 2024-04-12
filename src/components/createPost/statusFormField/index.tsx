@@ -1,4 +1,5 @@
 import { ImageIcon, PaperclipIcon } from "lucide-react";
+import { useRef } from "react";
 
 import { EmojiPicker } from "@/components/emojiPicker";
 import { Button } from "@/components/ui/button";
@@ -16,11 +17,11 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type StatusFormFieldProps = {
-	form: any;
+type ToolbarProps = {
+	textareaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
-function Toolbar() {
+function Toolbar({ textareaRef }: ToolbarProps) {
 	return (
 		<div className="flex items-center justify-between">
 			<div className="flex justify-start">
@@ -46,7 +47,7 @@ function Toolbar() {
 				</Tooltip>
 				<Tooltip delayDuration={0}>
 					<TooltipTrigger>
-						<EmojiPicker />
+						<EmojiPicker textareaRef={textareaRef} />
 					</TooltipTrigger>
 					<TooltipContent>
 						<span>Emoji</span>
@@ -58,7 +59,13 @@ function Toolbar() {
 	);
 }
 
+type StatusFormFieldProps = {
+	form: any;
+};
+
 export function StatusFormField({ form }: StatusFormFieldProps) {
+	const textareaRef = useRef(null);
+
 	return (
 		<FormField
 			control={form.control}
@@ -79,9 +86,10 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 									autoFocus
 									{...field}
 									placeholder="Write something, mention or add emoji..."
+									ref={textareaRef}
 								/>
 								<div className="absolute inset-x-3 bottom-3">
-									<Toolbar />
+									<Toolbar textareaRef={textareaRef} />
 								</div>
 							</div>
 						</div>
