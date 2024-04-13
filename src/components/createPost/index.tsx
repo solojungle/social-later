@@ -24,6 +24,7 @@ import { Form } from "../ui/form";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { MediaFormField } from "./mediaFormField";
+import { ScheduleFormField } from "./schedulePost";
 import { StatusFormField } from "./statusFormField";
 
 interface PostTweetProps {
@@ -195,6 +196,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
+									<ScheduleFormField form={form} />
 									<div className="flex justify-end gap-2">
 										<SheetClose asChild>
 											<Button type="button" variant="outline">
