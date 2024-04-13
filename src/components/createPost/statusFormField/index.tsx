@@ -1,4 +1,4 @@
-import { ImageIcon, PaperclipIcon } from "lucide-react";
+import { PaperclipIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { EmojiPicker } from "@/components/emojiPicker";
@@ -34,17 +34,7 @@ function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
 						</Button>
 					</TooltipTrigger>
 					<TooltipContent>
-						<span>Link shortener</span>
-					</TooltipContent>
-				</Tooltip>
-				<Tooltip delayDuration={0}>
-					<TooltipTrigger asChild>
-						<Button type="button" size="icon" variant="ghost">
-							<ImageIcon className="h-5 w-5 text-muted-foreground" />
-						</Button>
-					</TooltipTrigger>
-					<TooltipContent>
-						<span>Add media</span>
+						<span>Shorten link</span>
 					</TooltipContent>
 				</Tooltip>
 				<EmojiPicker textareaRef={textareaRef} />
