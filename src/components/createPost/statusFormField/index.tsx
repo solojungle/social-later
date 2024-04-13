@@ -1,5 +1,5 @@
 import { ImageIcon, PaperclipIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { SetStateAction, useRef, useState } from "react";
 
 import { EmojiPicker } from "@/components/emojiPicker";
 import { Button } from "@/components/ui/button";
@@ -21,9 +21,15 @@ type ToolbarProps = {
 	textareaRef: React.RefObject<HTMLTextAreaElement>;
 	charCount: number;
 	maxCharCount: number;
+	setCharCount: React.Dispatch<SetStateAction<number>>;
 };
 
-function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
+function Toolbar({
+	textareaRef,
+	charCount,
+	maxCharCount,
+	setCharCount,
+}: ToolbarProps) {
 	return (
 		<div className="flex items-center justify-between">
 			<div className="flex justify-start">
@@ -47,7 +53,7 @@ function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
 						<span>Add media</span>
 					</TooltipContent>
 				</Tooltip>
-				<EmojiPicker textareaRef={textareaRef} />
+				<EmojiPicker textareaRef={textareaRef} setCharCount={setCharCount} />
 			</div>
 			<span
 				className={`text-xs ${
@@ -106,6 +112,7 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 										textareaRef={textareaRef}
 										charCount={charCount}
 										maxCharCount={maxCharCount}
+										setCharCount={setCharCount}
 									/>
 								</div>
 							</div>

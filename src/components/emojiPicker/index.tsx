@@ -8,9 +8,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type EmojiPickerProps = {
 	textareaRef: React.RefObject<HTMLTextAreaElement>;
+	setCharCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export function EmojiPicker({ textareaRef }: EmojiPickerProps) {
+export function EmojiPicker({ textareaRef, setCharCount }: EmojiPickerProps) {
 	const [visible, setVisible] = useState(false);
 
 	function handleClickOutside(event: Event) {
@@ -24,6 +25,7 @@ export function EmojiPicker({ textareaRef }: EmojiPickerProps) {
 		if (textareaRef.current) {
 			// eslint-disable-next-line no-param-reassign
 			textareaRef.current.value += emoji.native;
+			setCharCount(textareaRef.current.value.length);
 		}
 	}
 
