@@ -49,7 +49,11 @@ function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
 				</Tooltip>
 				<EmojiPicker textareaRef={textareaRef} />
 			</div>
-			<span className="text-xs text-muted-foreground">
+			<span
+				className={`text-xs ${
+					charCount > maxCharCount ? "text-red-600" : "text-muted-foreground"
+				}`}
+			>
 				{charCount}/{maxCharCount}
 			</span>
 		</div>
@@ -87,7 +91,7 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 						<div className="relative shadow-sm">
 							<div className="relative">
 								<Textarea
-									className="h-48"
+									className="h-48 border-b-[36px] border-transparent pb-0"
 									autoFocus
 									{...field}
 									onChange={(e) => {
@@ -97,7 +101,7 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 									placeholder="Write something, mention or add emoji..."
 									ref={textareaRef}
 								/>
-								<div className="absolute inset-x-3 bottom-3">
+								<div className="absolute inset-x-1 bottom-0">
 									<Toolbar
 										textareaRef={textareaRef}
 										charCount={charCount}
