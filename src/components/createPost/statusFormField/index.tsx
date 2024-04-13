@@ -1,5 +1,5 @@
 import { ImageIcon, PaperclipIcon } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { EmojiPicker } from "@/components/emojiPicker";
 import { Button } from "@/components/ui/button";
@@ -19,9 +19,11 @@ import {
 
 type ToolbarProps = {
 	textareaRef: React.RefObject<HTMLTextAreaElement>;
+	charCount: number;
+	maxCharCount: number;
 };
 
-function Toolbar({ textareaRef }: ToolbarProps) {
+function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
 	return (
 		<div className="flex items-center justify-between">
 			<div className="flex justify-start">
@@ -47,7 +49,9 @@ function Toolbar({ textareaRef }: ToolbarProps) {
 				</Tooltip>
 				<EmojiPicker textareaRef={textareaRef} />
 			</div>
-			<span className="text-xs text-muted-foreground">0/200</span>
+			<span className="text-xs text-muted-foreground">
+				{charCount}/{maxCharCount}
+			</span>
 		</div>
 	);
 }
@@ -57,7 +61,15 @@ type StatusFormFieldProps = {
 };
 
 export function StatusFormField({ form }: StatusFormFieldProps) {
-	const textareaRef = useRef(null);
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
+	const [charCount, setCharCount] = useState(0);
+	const [maxCharCount] = useState(200);
+
+	const handleTextareaChange = () => {
+		if (textareaRef.current) {
+			setCharCount(textareaRef.current.value.length);
+		}
+	};
 
 	return (
 		<FormField
@@ -78,11 +90,19 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 									className="h-48"
 									autoFocus
 									{...field}
+									onChange={(e) => {
+										field.onChange(e);
+										handleTextareaChange();
+									}}
 									placeholder="Write something, mention or add emoji..."
 									ref={textareaRef}
 								/>
 								<div className="absolute inset-x-3 bottom-3">
-									<Toolbar textareaRef={textareaRef} />
+									<Toolbar
+										textareaRef={textareaRef}
+										charCount={charCount}
+										maxCharCount={maxCharCount}
+									/>
 								</div>
 							</div>
 						</div>
