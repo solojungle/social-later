@@ -38,9 +38,8 @@ export function EmojiPicker({ textareaRef }: EmojiPickerProps) {
 				<TooltipContent>
 					<span>Emoji</span>
 				</TooltipContent>
-				<PopoverContent className="w-fit !overflow-scroll p-0">
+				<PopoverContent className="w-fit p-0">
 					<Picker
-						className="p-0"
 						data={data}
 						maxFrequentRows={0}
 						navPosition="bottom"
