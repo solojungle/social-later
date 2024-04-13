@@ -188,28 +188,102 @@ function TweetForm({
 								Carousel
 							</TabsTrigger>
 						</TabsList>
-						<TabsContent value="status">lol</TabsContent>
-						<TabsContent value="photo">lol</TabsContent>
-						<TabsContent value="video">Lol</TabsContent>
-						<TabsContent value="carousel">Lol</TabsContent>
+						<TabsContent value="status" className="px-1 pt-8">
+							<Form {...form}>
+								<form
+									onSubmit={form.handleSubmit(onSubmit)}
+									className="space-y-8"
+								>
+									<StatusFormField form={form} />
+									<div className="flex justify-end gap-2">
+										<SheetClose asChild>
+											<Button type="button" variant="outline">
+												Cancel
+											</Button>
+										</SheetClose>
+										<Button type="submit" disabled={loading}>
+											{loading && (
+												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											)}
+											Publish
+										</Button>
+									</div>
+								</form>
+							</Form>
+						</TabsContent>
+						<TabsContent value="photo" className="px-1 pt-8">
+							<Form {...form}>
+								<form
+									onSubmit={form.handleSubmit(onSubmit)}
+									className="space-y-8"
+								>
+									<StatusFormField form={form} />
+									<MediaFormField form={form} fileRef={fileRef} />
+									<div className="flex justify-end gap-2">
+										<SheetClose asChild>
+											<Button type="button" variant="outline">
+												Cancel
+											</Button>
+										</SheetClose>
+										<Button type="submit" disabled={loading}>
+											{loading && (
+												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											)}
+											Publish
+										</Button>
+									</div>
+								</form>
+							</Form>
+						</TabsContent>
+						<TabsContent value="video" className="px-1 pt-8">
+							<Form {...form}>
+								<form
+									onSubmit={form.handleSubmit(onSubmit)}
+									className="space-y-8"
+								>
+									<StatusFormField form={form} />
+									<MediaFormField form={form} fileRef={fileRef} />
+									<div className="flex justify-end gap-2">
+										<SheetClose asChild>
+											<Button type="button" variant="outline">
+												Cancel
+											</Button>
+										</SheetClose>
+										<Button type="submit" disabled={loading}>
+											{loading && (
+												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											)}
+											Publish
+										</Button>
+									</div>
+								</form>
+							</Form>
+						</TabsContent>
+						<TabsContent value="carousel" className="px-1 pt-8">
+							<Form {...form}>
+								<form
+									onSubmit={form.handleSubmit(onSubmit)}
+									className="space-y-8"
+								>
+									<StatusFormField form={form} />
+									<MediaFormField form={form} fileRef={fileRef} />
+									<div className="flex justify-end gap-2">
+										<SheetClose asChild>
+											<Button type="button" variant="outline">
+												Cancel
+											</Button>
+										</SheetClose>
+										<Button type="submit" disabled={loading}>
+											{loading && (
+												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											)}
+											Publish
+										</Button>
+									</div>
+								</form>
+							</Form>
+						</TabsContent>
 					</Tabs>
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-							<StatusFormField form={form} />
-							<MediaFormField form={form} fileRef={fileRef} />
-							<div className="flex justify-end gap-2">
-								<SheetClose asChild>
-									<Button type="button" variant="outline">
-										Cancel
-									</Button>
-								</SheetClose>
-								<Button type="submit" disabled={loading}>
-									{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-									Publish
-								</Button>
-							</div>
-						</form>
-					</Form>
 				</TooltipProvider>
 			</SheetContent>
 		</Sheet>
