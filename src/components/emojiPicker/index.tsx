@@ -8,10 +8,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type EmojiPickerProps = {
 	textareaRef: React.RefObject<HTMLTextAreaElement>;
-	setCharCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export function EmojiPicker({ textareaRef, setCharCount }: EmojiPickerProps) {
+export function EmojiPicker({ textareaRef }: EmojiPickerProps) {
 	const [visible, setVisible] = useState(false);
 
 	function handleClickOutside(event: Event) {
@@ -23,9 +22,13 @@ export function EmojiPicker({ textareaRef, setCharCount }: EmojiPickerProps) {
 
 	function handleEmojiSelect(emoji: { native: string }) {
 		if (textareaRef.current) {
-			// eslint-disable-next-line no-param-reassign
-			textareaRef.current.value += emoji.native;
-			setCharCount(textareaRef.current.value.length);
+			const { current } = textareaRef;
+			const textareaValue = current.value;
+			current.value = textareaValue + emoji.native;
+
+			// Change event is not triggered when changing the value programmatically
+			const event = new Event("input", { bubbles: true });
+			current.dispatchEvent(event);
 		}
 	}
 

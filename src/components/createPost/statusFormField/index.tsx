@@ -1,5 +1,5 @@
 import { ImageIcon, PaperclipIcon } from "lucide-react";
-import { SetStateAction, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { EmojiPicker } from "@/components/emojiPicker";
 import { Button } from "@/components/ui/button";
@@ -21,15 +21,9 @@ type ToolbarProps = {
 	textareaRef: React.RefObject<HTMLTextAreaElement>;
 	charCount: number;
 	maxCharCount: number;
-	setCharCount: React.Dispatch<SetStateAction<number>>;
 };
 
-function Toolbar({
-	textareaRef,
-	charCount,
-	maxCharCount,
-	setCharCount,
-}: ToolbarProps) {
+function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
 	return (
 		<div className="flex items-center justify-between">
 			<div className="flex justify-start">
@@ -53,7 +47,7 @@ function Toolbar({
 						<span>Add media</span>
 					</TooltipContent>
 				</Tooltip>
-				<EmojiPicker textareaRef={textareaRef} setCharCount={setCharCount} />
+				<EmojiPicker textareaRef={textareaRef} />
 			</div>
 			<span
 				className={`text-xs ${
@@ -97,10 +91,10 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 						<div className="relative shadow-sm">
 							<div className="relative">
 								<Textarea
+									{...field}
 									className="h-48 border-b-[36px] border-transparent pb-0"
 									autoFocus
-									{...field}
-									onChange={(e) => {
+									onInput={(e) => {
 										field.onChange(e);
 										handleTextareaChange();
 									}}
@@ -112,7 +106,6 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 										textareaRef={textareaRef}
 										charCount={charCount}
 										maxCharCount={maxCharCount}
-										setCharCount={setCharCount}
 									/>
 								</div>
 							</div>
