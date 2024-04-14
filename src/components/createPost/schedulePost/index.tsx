@@ -1,13 +1,7 @@
 import { useRef, useState } from "react";
 
-import {
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { DatePickerFormField } from "./datePicker";
+import { TimePickerFormField } from "./timePicker";
 
 type ToolbarProps = {
 	textareaRef: React.RefObject<HTMLTextAreaElement>;
@@ -34,20 +28,9 @@ export function ScheduleFormField({ form }: StatusFormFieldProps) {
 		<div>
 			<h2 className="mb-2 text-sm font-semibold">Schedule Post</h2>
 			<div className="grid grid-cols-2 gap-4">
-				<FormField
-					control={form.control}
-					name="date"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Date</FormLabel>
-							<FormControl>
-								<Input {...field} />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
+				<DatePickerFormField />
+				<TimePickerFormField />
+				{/* <FormField
 					control={form.control}
 					name="time"
 					render={({ field }) => (
@@ -59,7 +42,7 @@ export function ScheduleFormField({ form }: StatusFormFieldProps) {
 							<FormMessage />
 						</FormItem>
 					)}
-				/>
+				/> */}
 			</div>
 		</div>
 	);
