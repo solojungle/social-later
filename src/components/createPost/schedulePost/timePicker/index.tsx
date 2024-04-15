@@ -4,9 +4,9 @@ import { format } from "date-fns";
 import { ClockIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -18,6 +18,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+
+import { TimePickerContent } from "./content";
 
 export function TimePickerFormField(form: any) {
 	return (
@@ -41,23 +43,16 @@ export function TimePickerFormField(form: any) {
 									{field.value ? (
 										format(field.value, "PPP")
 									) : (
-										<span>Pick a time</span>
+										<span>HH:MM</span>
 									)}
 								</Button>
 							</FormControl>
 						</PopoverTrigger>
 						<PopoverContent className="w-auto p-0" align="start">
-							<Calendar
-								mode="single"
-								selected={field.value}
-								onSelect={field.onChange}
-								disabled={(date) =>
-									date > new Date() || date < new Date("1900-01-01")
-								}
-								initialFocus
-							/>
+							<TimePickerContent />
 						</PopoverContent>
 					</Popover>
+					<FormDescription>UTC Timezone</FormDescription>
 					<FormMessage />
 				</FormItem>
 			)}
