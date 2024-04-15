@@ -4,7 +4,7 @@ import { z } from "zod";
 export const SocialProfilesSchema = z.object({
 	id: z.string(),
 	username: z.string(),
-	name: z.string().optional(),
+	name: z.string().optional().nullable(),
 	accessToken: z.string(),
 	refreshToken: z.string(),
 	avatar: z.string(),

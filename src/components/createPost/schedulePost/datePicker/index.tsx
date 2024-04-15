@@ -19,7 +19,11 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-export function DatePickerFormField(form: any) {
+type DatePickerFormFieldProps = {
+	form: any;
+};
+
+export function DatePickerFormField({ form }: DatePickerFormFieldProps) {
 	return (
 		<FormField
 			control={form.control}
