@@ -55,6 +55,7 @@ export function ResizableLayout({
 					collapsedSize={navCollapsedSize}
 					collapsible
 					minSize={15}
+					defaultSize={20}
 					maxSize={20}
 					onCollapse={() => setIsCollapsed(true)}
 					onExpand={() => setIsCollapsed(false)}
