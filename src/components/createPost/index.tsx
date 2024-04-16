@@ -200,7 +200,12 @@ function TweetForm({
 									<StatusFormField form={form} />
 									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
-										<SheetClose asChild>
+										<SheetClose
+											asChild
+											onClick={() => {
+												form.reset();
+											}}
+										>
 											<Button type="button" variant="outline">
 												Cancel
 											</Button>
@@ -224,7 +229,12 @@ function TweetForm({
 									<StatusFormField form={form} />
 									<MediaFormField form={form} fileRef={fileRef} />
 									<div className="flex justify-end gap-2">
-										<SheetClose asChild>
+										<SheetClose
+											asChild
+											onClick={() => {
+												form.reset();
+											}}
+										>
 											<Button type="button" variant="outline">
 												Cancel
 											</Button>
@@ -248,7 +258,12 @@ function TweetForm({
 									<StatusFormField form={form} />
 									<MediaFormField form={form} fileRef={fileRef} />
 									<div className="flex justify-end gap-2">
-										<SheetClose asChild>
+										<SheetClose
+											asChild
+											onClick={() => {
+												form.reset();
+											}}
+										>
 											<Button type="button" variant="outline">
 												Cancel
 											</Button>
@@ -272,7 +287,12 @@ function TweetForm({
 									<StatusFormField form={form} />
 									<MediaFormField form={form} fileRef={fileRef} />
 									<div className="flex justify-end gap-2">
-										<SheetClose asChild>
+										<SheetClose
+											asChild
+											onClick={() => {
+												form.reset();
+											}}
+										>
 											<Button type="button" variant="outline">
 												Cancel
 											</Button>
