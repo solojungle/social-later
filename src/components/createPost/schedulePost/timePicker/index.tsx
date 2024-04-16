@@ -21,11 +21,15 @@ import { cn } from "@/lib/utils";
 
 import { TimePickerContent } from "./content";
 
-export function TimePickerFormField(form: any) {
+type TimePickerFormFieldProps = {
+	form: any;
+};
+
+export function TimePickerFormField({ form }: TimePickerFormFieldProps) {
 	return (
 		<FormField
 			control={form.control}
-			name="dob"
+			name="time"
 			render={({ field }) => (
 				<FormItem className="flex flex-col">
 					<FormLabel>Time</FormLabel>

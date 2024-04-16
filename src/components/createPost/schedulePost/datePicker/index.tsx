@@ -20,14 +20,19 @@ import {
 import { cn } from "@/lib/utils";
 
 type DatePickerFormFieldProps = {
+	defaultDate: Date;
 	form: any;
 };
 
-export function DatePickerFormField({ form }: DatePickerFormFieldProps) {
+export function DatePickerFormField({
+	defaultDate,
+	form,
+}: DatePickerFormFieldProps) {
 	return (
 		<FormField
 			control={form.control}
-			name="dob"
+			name="date"
+			defaultValue={defaultDate}
 			render={({ field }) => (
 				<FormItem className="flex flex-col">
 					<FormLabel>Date</FormLabel>
@@ -56,9 +61,8 @@ export function DatePickerFormField({ form }: DatePickerFormFieldProps) {
 								selected={field.value}
 								onSelect={field.onChange}
 								disabled={(date) =>
-									date > new Date() || date < new Date("1900-01-01")
+									date < new Date(new Date().setHours(0, 0, 0, 0))
 								}
-								initialFocus
 							/>
 						</PopoverContent>
 					</Popover>

@@ -1,110 +1,130 @@
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function TimePickerContent() {
 	const [hours, setHours] = useState("12");
 	const [minutes, setMinutes] = useState("00");
 	const [ampm, setAmpm] = useState("AM");
 
-	const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = e.target;
-		if (/^(0?[1-9]|1[0-2])$/.test(value) || value === "") {
-			setHours(value.padStart(2, "0"));
-		} else if (/^\d+$/.test(value)) {
-			// If the value is a number but outside the range of 1-12, adjust it
-			if (parseInt(value, 10) > 12) {
-				setHours("12");
-			} else {
-				setHours(value.padStart(2, "0"));
-			}
+	const handleHourChange = (e, action) => {
+		let value = hours;
+		if (action === "increment") {
+			value =
+				parseInt(value, 10) + 1 <= 12
+					? (parseInt(value, 10) + 1).toString().padStart(2, "0")
+					: "01";
+		} else if (action === "decrement") {
+			value =
+				parseInt(value, 10) - 1 >= 1
+					? (parseInt(value, 10) - 1).toString().padStart(2, "0")
+					: "12";
 		}
+		setHours(value);
 	};
 
-	const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = e.target;
-		if (/^[0-5]?[0-9]$/.test(value) || value === "") {
-			setMinutes(value.padStart(2, "0"));
+	const handleMinuteChange = (e, action) => {
+		let value = minutes;
+		if (action === "increment") {
+			value =
+				parseInt(value, 10) + 1 <= 59
+					? (parseInt(value, 10) + 1).toString().padStart(2, "0")
+					: "00";
+		} else if (action === "decrement") {
+			value =
+				parseInt(value, 10) - 1 >= 0
+					? (parseInt(value, 10) - 1).toString().padStart(2, "0")
+					: "59";
 		}
+		setMinutes(value);
 	};
 
-	const handleHourKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const handleHourKeyDown = (e) => {
 		if (e.key === "ArrowUp") {
-			setHours((prev) => {
-				const value = parseInt(prev, 10) + 1;
-				return (value <= 23 ? value : 0).toString().padStart(2, "0");
-			});
+			handleHourChange(e, "increment");
 		} else if (e.key === "ArrowDown") {
-			setHours((prev) => {
-				const value = parseInt(prev, 10) - 1;
-				return (value >= 0 ? value : 23).toString().padStart(2, "0");
-			});
+			handleHourChange(e, "decrement");
 		}
 	};
 
-	const handleMinuteKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const handleMinuteKeyDown = (e) => {
 		if (e.key === "ArrowUp") {
-			setMinutes((prev) => {
-				const value = parseInt(prev, 10) + 1;
-				return (value <= 59 ? value : 0).toString().padStart(2, "0");
-			});
+			handleMinuteChange(e, "increment");
 		} else if (e.key === "ArrowDown") {
-			setMinutes((prev) => {
-				const value = parseInt(prev, 10) - 1;
-				return (value >= 0 ? value : 59).toString().padStart(2, "0");
-			});
+			handleMinuteChange(e, "decrement");
 		}
 	};
 
 	return (
-		<div className="flex items-center justify-center rounded-lg bg-card p-4">
-			<div className="flex flex-col items-center">
+		<div className="flex items-center justify-center space-x-2 rounded-lg bg-card p-4">
+			<div className="relative flex flex-col items-center space-y-1">
+				<Button
+					variant="ghost"
+					size="icon"
+					className="!w-full"
+					onClick={(e) => handleHourChange(e, "increment")}
+				>
+					<ChevronUpIcon className="h-5 w-5" />
+				</Button>
 				<input
-					className="h-16 w-16 rounded-lg border border-border bg-transparent text-center font-mono text-3xl tabular-nums caret-transparent [&::-webkit-inner-spin-button]:appearance-none"
+					className="h-16 w-16 appearance-none rounded-lg border border-border bg-transparent text-center font-mono text-3xl tabular-nums caret-transparent outline-none"
 					type="text"
 					value={hours}
-					onChange={handleHourChange}
+					onChange={(e) => handleHourChange(e, "")}
 					onKeyDown={handleHourKeyDown}
 					maxLength={2}
 				/>
+				<Button
+					variant="ghost"
+					size="icon"
+					className="!w-full"
+					onClick={(e) => handleHourChange(e, "decrement")}
+				>
+					<ChevronDownIcon className="h-5 w-5" />
+				</Button>
 			</div>
 			<div className="flex flex-col items-center justify-center px-2">
 				<span className="text-2xl text-muted-foreground">:</span>
 			</div>
-			<div className="flex flex-col items-center">
+			<div className="relative flex flex-col items-center space-y-1">
+				<Button
+					variant="ghost"
+					size="icon"
+					className="!w-full"
+					onClick={(e) => handleMinuteChange(e, "increment")}
+				>
+					<ChevronUpIcon className="h-5 w-5" />
+				</Button>
 				<input
-					className="h-16 w-16 rounded-lg border border-border bg-transparent text-center font-mono text-3xl tabular-nums caret-transparent [&::-webkit-inner-spin-button]:appearance-none"
+					className="h-16 w-16 appearance-none rounded-lg border border-border bg-transparent text-center font-mono text-3xl tabular-nums caret-transparent outline-none"
 					type="text"
 					value={minutes}
-					onChange={handleMinuteChange}
+					onChange={(e) => handleMinuteChange(e, "")}
 					onKeyDown={handleMinuteKeyDown}
 					maxLength={2}
 				/>
+				<Button
+					variant="ghost"
+					size="icon"
+					className="!w-full"
+					onClick={(e) => handleMinuteChange(e, "decrement")}
+				>
+					<ChevronDownIcon className="h-5 w-5" />
+				</Button>
 			</div>
-			<div className="flex flex-col px-2">
-				<div className="flex h-16 w-16 flex-col rounded-lg border border-border bg-card text-sm font-medium">
-					<button
-						type="button"
-						className={`h-8 rounded-b-none rounded-t-lg ${
-							ampm === "AM"
-								? "bg-primary text-primary-foreground"
-								: "bg-muted text-muted-foreground"
-						}`}
-						onClick={() => setAmpm("AM")}
-					>
-						AM
-					</button>
-					<button
-						type="button"
-						className={`h-8 rounded-b-lg rounded-t-none ${
-							ampm === "PM"
-								? "bg-primary text-primary-foreground"
-								: "bg-muted text-muted-foreground"
-						}`}
-						onClick={() => setAmpm("PM")}
-					>
-						PM
-					</button>
+			<RadioGroup defaultValue="AM">
+				<div className="flex items-center space-x-2">
+					<RadioGroupItem value="AM" id="AM" />
+					<Label htmlFor="AM">AM</Label>
 				</div>
-			</div>
+				<div className="flex items-center space-x-2">
+					<RadioGroupItem value="PM" id="PM" />
+					<Label htmlFor="PM">PM</Label>
+				</div>
+			</RadioGroup>
 		</div>
 	);
 }

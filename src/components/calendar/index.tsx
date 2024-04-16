@@ -454,11 +454,17 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 										<CreatePost
 											className="invisible mt-px w-full group-hover:visible"
 											profileId={profileId}
+											scheduleDate={
+												new Date(selectedYear, selectedMonth, d.day)
+											}
 										/>
 									) : (
 										<CreatePost
 											className="invisible mt-px w-full"
 											profileId={profileId}
+											scheduleDate={
+												new Date(selectedYear, selectedMonth, d.day)
+											}
 										/>
 									)}
 								</div>

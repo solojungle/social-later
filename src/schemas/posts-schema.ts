@@ -56,8 +56,27 @@ export const PostFormSchema = z
 	.object({
 		content: z.string().min(1),
 		media: z.any(),
+		date: z.date(),
 	})
 	.partial()
+	.refine(
+		(data) => {
+			// Must be the same day or in the future, time is irrelevant
+			const date = data.date ? new Date(data.date) : undefined;
+			const now = new Date();
+			if (date) {
+				// Set the time of both dates to 00:00:00
+				date.setHours(0, 0, 0, 0);
+				now.setHours(0, 0, 0, 0);
+				return date >= now;
+			}
+			return false;
+		},
+		{
+			message: "Date must be in the future",
+			path: ["date"],
+		},
+	)
 	.refine(
 		(data) => {
 			const hasContent = data.content !== undefined && data.content.length > 0;

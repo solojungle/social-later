@@ -24,14 +24,8 @@ import { Form } from "../ui/form";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { MediaFormField } from "./mediaFormField";
-import { ScheduleFormField } from "./schedulePost";
+import { DatePickerFormField } from "./schedulePost/datePicker";
 import { StatusFormField } from "./statusFormField";
-
-interface PostTweetProps {
-	teamId: string;
-	profileId: string;
-	className?: string;
-}
 
 // Determine which type of file it is, image, video, gif
 function determineFileType(file: File) {
@@ -52,10 +46,12 @@ function TweetForm({
 	teamId,
 	profileId,
 	className,
+	scheduleDate,
 }: {
 	teamId: string;
 	profileId: string;
 	className?: string;
+	scheduleDate: Date;
 }) {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -88,6 +84,8 @@ function TweetForm({
 
 	async function onSubmit(data: any) {
 		setLoading(true);
+
+		const scheduledDate = data.date;
 
 		// If there is media then we need to convert it to a file and
 		// upload it to aws. Then one the backend we will get the url
@@ -134,7 +132,7 @@ function TweetForm({
 					fileId: mediaFile.id,
 					status: "published",
 					externalPostId: result.id,
-					scheduledFor: new Date(),
+					scheduledFor: scheduledDate,
 					published: true,
 					profileId,
 					authorId: teamId,
@@ -154,7 +152,7 @@ function TweetForm({
 				content: data.content,
 				status: "published",
 				externalPostId: result.id,
-				scheduledFor: new Date(),
+				scheduledFor: scheduledDate,
 				published: true,
 				profileId,
 				authorId: teamId,
@@ -196,7 +194,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
-									<ScheduleFormField form={form} />
+									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose asChild>
 											<Button type="button" variant="outline">
@@ -292,17 +290,13 @@ function TweetForm({
 	);
 }
 
-function PostTweet({ teamId, className, profileId }: PostTweetProps) {
-	return (
-		<TweetForm className={className} teamId={teamId} profileId={profileId} />
-	);
-}
-
 export function CreatePost({
 	className,
+	scheduleDate,
 	profileId,
 }: {
 	profileId: string;
+	scheduleDate: Date;
 	className?: string;
 }) {
 	const { id: teamId } = useSelectedTeamStore();
@@ -312,6 +306,11 @@ export function CreatePost({
 	}
 
 	return (
-		<PostTweet className={className} teamId={teamId} profileId={profileId} />
+		<TweetForm
+			className={className}
+			teamId={teamId}
+			profileId={profileId}
+			scheduleDate={scheduleDate}
+		/>
 	);
 }
