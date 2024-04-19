@@ -8,9 +8,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 export function TimePickerContent() {
 	const [hours, setHours] = useState("12");
 	const [minutes, setMinutes] = useState("00");
-	const [ampm, setAmpm] = useState("AM");
+	// const [ampm, setAmpm] = useState("AM");
 
-	const handleHourChange = (e, action) => {
+	const handleHourChange = (e: any, action: any) => {
 		let value = hours;
 		if (action === "increment") {
 			value =
@@ -26,7 +26,7 @@ export function TimePickerContent() {
 		setHours(value);
 	};
 
-	const handleMinuteChange = (e, action) => {
+	const handleMinuteChange = (e: any, action: any) => {
 		let value = minutes;
 		if (action === "increment") {
 			value =
@@ -42,7 +42,7 @@ export function TimePickerContent() {
 		setMinutes(value);
 	};
 
-	const handleHourKeyDown = (e) => {
+	const handleHourKeyDown = (e: any) => {
 		if (e.key === "ArrowUp") {
 			handleHourChange(e, "increment");
 		} else if (e.key === "ArrowDown") {
@@ -50,7 +50,7 @@ export function TimePickerContent() {
 		}
 	};
 
-	const handleMinuteKeyDown = (e) => {
+	const handleMinuteKeyDown = (e: any) => {
 		if (e.key === "ArrowUp") {
 			handleMinuteChange(e, "increment");
 		} else if (e.key === "ArrowDown") {
