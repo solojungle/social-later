@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 
 import { AddTeamMember } from "../addTeamMember";
 import { PostsCalendar } from "../calendar";
-import SocialProfileSwitcher from "../socialProfileSwitcher";
+import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { ResizablePanel } from "../ui/resizable";
 
 export const PublishPageContent = () => {

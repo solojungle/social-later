@@ -160,7 +160,7 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 
 type SocialProfileSwitcherProps = PopoverTriggerProps;
 
-export default function SocialProfileSwitcher({
+export function SocialProfileSwitcher({
 	className,
 }: SocialProfileSwitcherProps) {
 	const [open, setOpen] = useState(false);

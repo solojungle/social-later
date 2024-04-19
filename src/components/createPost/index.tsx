@@ -19,7 +19,7 @@ import { PostFormSchema, PostFormSchemaValues } from "@/schemas/posts-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import SocialProfileSwitcher from "../socialProfileSwitcher";
+import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";

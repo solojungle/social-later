@@ -29,13 +29,7 @@ export function StoreInitializer({
 
 	const params = useParams();
 
-	// const { currentProfileId } = useSocialProfilesStore();
-
-	// console.log(currentProfileId);
-
-	// useEffect(() => {
-	// 	useSocialProfilesStore.persist.rehydrate();
-	// }, []);
+	const { currentProfileId } = useSocialProfilesStore();
 
 	useEffect(() => {
 		if (!isInitialized.current) {
@@ -44,11 +38,11 @@ export function StoreInitializer({
 			useTeamMembersStore.setState({ members });
 			useSocialProfilesStore.setState({
 				profiles,
-				currentProfileId: profiles[0]?.id,
+				currentProfileId: currentProfileId || profiles[0]?.id,
 			});
 			isInitialized.current = true;
 		}
-	}, [user, teams, params.id, profiles, members]);
+	}, [user, teams, params.id, profiles, members, currentProfileId]);
 
 	return null;
 }
