@@ -29,21 +29,16 @@ export function StoreInitializer({
 
 	const params = useParams();
 
+	// const { currentProfileId } = useSocialProfilesStore();
+
+	// console.log(currentProfileId);
+
+	// useEffect(() => {
+	// 	useSocialProfilesStore.persist.rehydrate();
+	// }, []);
+
 	useEffect(() => {
 		if (!isInitialized.current) {
-			// if (params.id) {
-			// 	const selectedTeam = teams.find((team) => team.url === params.id);
-			// 	// Redirect them to settings if they are not a member of the team
-			// 	if (!selectedTeam) {
-			// 		window.location.href = "/settings";
-			// 		return;
-			// 	}
-			// 	useSelectedTeamStore.setState(selectedTeam || user);
-			// } else {
-			// 	useSelectedTeamStore.setState(user);
-			// }
-			// useTeamStore.setState({ teams });
-
 			useUserStore.setState(user);
 			useSelectedTeamStore.setState(teams[0] || {});
 			useTeamMembersStore.setState({ members });
