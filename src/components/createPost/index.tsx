@@ -167,7 +167,10 @@ function TweetForm({
 			<SheetTrigger asChild>
 				<Button className={className}>Post</Button>
 			</SheetTrigger>
-			<SheetContent className="w-[800px] !max-w-[80vw] pt-12" side="right">
+			<SheetContent
+				className="w-[800px] !max-w-[80vw] !overflow-scroll pt-4"
+				side="right"
+			>
 				<div className="mb-4">
 					<SocialProfileSwitcher />
 				</div>
@@ -228,6 +231,7 @@ function TweetForm({
 								>
 									<StatusFormField form={form} />
 									<MediaFormField form={form} fileRef={fileRef} />
+									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
 											asChild
@@ -257,6 +261,7 @@ function TweetForm({
 								>
 									<StatusFormField form={form} />
 									<MediaFormField form={form} fileRef={fileRef} />
+									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
 											asChild
@@ -286,6 +291,7 @@ function TweetForm({
 								>
 									<StatusFormField form={form} />
 									<MediaFormField form={form} fileRef={fileRef} />
+									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
 											asChild

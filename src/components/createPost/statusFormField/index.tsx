@@ -79,7 +79,7 @@ export function StatusFormField({ form }: StatusFormFieldProps) {
 					</FormLabel>
 					<FormControl>
 						<div className="relative shadow-sm">
-							<div className="relative">
+							<div className="relative rounded-lg border border-border">
 								<Textarea
 									{...field}
 									className="h-48 border-b-[36px] border-transparent pb-0"
