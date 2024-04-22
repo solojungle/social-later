@@ -17,14 +17,20 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 
-type FileData = {
-	id: string;
-	file: File;
-	type: "image" | "video";
+// type FileData = {
+// 	id: string;
+// 	file: File;
+// 	type: "image" | "video";
+// };
+
+const TWITTER_MAX_IMAGE_SIZE = {
+	filesize: 5 * 1024 * 1024,
+	size: "5MB",
 };
+const TWITTER_MAX_IMAGES = 4;
 
 type FileGalleryProps = {
-	files: string[] | ArrayBuffer[] | null;
+	files: (string | ArrayBuffer)[] | null;
 };
 
 function FileGallery({ files }: FileGalleryProps) {
@@ -42,7 +48,7 @@ function FileGallery({ files }: FileGalleryProps) {
 	}
 
 	return (
-		<div className="grid w-fit grid-cols-4 gap-2">
+		<div className="grid w-fit grid-cols-5 gap-2">
 			{files.map((fileData) => (
 				<div key={Math.random()} className="group relative">
 					<button
@@ -56,8 +62,8 @@ function FileGallery({ files }: FileGalleryProps) {
 					<div className="absolute z-10 h-32 w-32 rounded-md bg-black/30 opacity-0 group-hover:opacity-100" />
 					<img
 						key={Math.random()}
-						src={fileData as string}
-						alt={fileData as string}
+						src={fileData as unknown as string}
+						alt="Uploaded file"
 						className="h-32 w-32 rounded-md border border-border object-cover"
 					/>
 				</div>
@@ -78,28 +84,25 @@ function FileGallery({ files }: FileGalleryProps) {
 
 type MediaFormFieldProps = {
 	form: any;
-	fileRef: any;
-	files: FileData[];
-	onFilesChange: (files: FileData[]) => void;
 };
 
 export function MediaFormField({ form }: MediaFormFieldProps) {
-	const [preview, setPreview] = React.useState<string | ArrayBuffer | null>("");
+	const [previews, setPreviews] = React.useState<(string | ArrayBuffer)[]>([]);
 
 	const onDrop = React.useCallback(
 		(acceptedFiles: File[]) => {
-			const reader = new FileReader();
-			try {
-				if (acceptedFiles[0]) {
-					reader.onload = () => setPreview(reader.result);
-					reader.readAsDataURL(acceptedFiles[0]);
-					form.setValue("image", acceptedFiles[0]);
-					form.clearErrors("image");
-				}
-			} catch (error) {
-				setPreview(null);
-				form.resetField("image");
-			}
+			acceptedFiles.forEach((file) => {
+				const reader = new FileReader();
+				reader.onload = () => {
+					setPreviews((prev) => [
+						...prev,
+						reader.result as string | ArrayBuffer,
+					]);
+				};
+				reader.readAsDataURL(file);
+			});
+			form.setValue("image", acceptedFiles);
+			form.clearErrors("image");
 		},
 		[form],
 	);
@@ -107,8 +110,8 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
 		useDropzone({
 			onDrop,
-			maxFiles: 1,
-			maxSize: 1000000,
+			maxFiles: TWITTER_MAX_IMAGES,
+			maxSize: TWITTER_MAX_IMAGE_SIZE.filesize,
 			accept: { "image/png": [], "image/jpg": [], "image/jpeg": [] },
 		});
 
@@ -172,7 +175,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 							<p>Image must be less than 1MB and of type png, jpg, or jpeg</p>
 						)}
 					</FormMessage>
-					<FileGallery files={preview ? [preview.toString()] : []} />
+					<FileGallery files={previews} />
 				</FormItem>
 			)}
 		/>

@@ -81,7 +81,7 @@ function TweetForm({
 		resolver: zodResolver(PostFormSchema),
 	});
 
-	const fileRef = form.register("media", { required: true });
+	// const fileRef = form.register("media", { required: true });
 
 	async function onSubmit(data: any) {
 		setLoading(true);
@@ -230,7 +230,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
-									<MediaFormField form={form} fileRef={fileRef} />
+									<MediaFormField form={form} />
 									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
@@ -260,7 +260,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
-									<MediaFormField form={form} fileRef={fileRef} />
+									<MediaFormField form={form} />
 									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
@@ -290,7 +290,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
-									<MediaFormField form={form} fileRef={fileRef} />
+									<MediaFormField form={form} />
 									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
