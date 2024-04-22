@@ -7,8 +7,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/env.mjs";
 import { TRPCReactProvider } from "@/trpc/react";
 
-export const dynamic = "force-dynamic";
-
 export const metadata = {
 	metadataBase: new URL(env.NEXTAUTH_URL),
 	icons: {

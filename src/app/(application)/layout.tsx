@@ -5,6 +5,8 @@ import { ResizableLayout } from "@/components/resizableLayout";
 import { StoreInitializer } from "@/components/storeInitializer";
 import { api } from "@/trpc/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
 	title: "FeedFrenzy",
 	description: "FeedFrenzy is a social media aggregator and feed reader.",
