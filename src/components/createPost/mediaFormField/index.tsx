@@ -17,12 +17,6 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 
-// type FileData = {
-// 	id: string;
-// 	file: File;
-// 	type: "image" | "video";
-// };
-
 const TWITTER_MAX_IMAGE_SIZE = {
 	filesize: 5 * 1024 * 1024,
 	size: "5MB",
@@ -31,9 +25,10 @@ const TWITTER_MAX_IMAGES = 4;
 
 type FileGalleryProps = {
 	files: (string | ArrayBuffer)[] | null;
+	onRemoveFile: (index: number) => void;
 };
 
-function FileGallery({ files }: FileGalleryProps) {
+function FileGallery({ files, onRemoveFile }: FileGalleryProps) {
 	if (files === null) {
 		return (
 			<div className="flex space-x-2">
@@ -50,19 +45,19 @@ function FileGallery({ files }: FileGalleryProps) {
 	return (
 		// eslint-disable-next-line tailwindcss/classnames-order, tailwindcss/no-custom-classname
 		<div className={`grid w-fit grid-cols-${TWITTER_MAX_IMAGES} gap-2`}>
-			{files.map((fileData) => (
-				<div key={Math.random()} className="group relative">
+			{files.map((fileData, index) => (
+				<div key={index} className="group relative">
 					<button
 						type="button"
 						className="absolute right-3 top-3 z-20 rounded-sm border border-border bg-background opacity-0 ring-offset-background transition-opacity focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none group-hover:opacity-100 data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-						// onClick={() => onRemoveFile(fileData.id)}
+						onClick={() => onRemoveFile(index)}
 					>
 						<Cross2Icon className="h-5 w-5" />
 						<span className="sr-only">Close</span>
 					</button>
 					<div className="absolute z-10 h-32 w-32 rounded-md bg-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 					<img
-						key={Math.random()}
+						key={index}
 						src={fileData as unknown as string}
 						alt="Uploaded file"
 						className="h-32 w-32 rounded-md border border-border object-cover"
@@ -116,6 +111,12 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 		},
 		[form, previews.length],
 	);
+
+	const handleRemoveFile = (index: number) => {
+		const updatedPreviews = [...previews];
+		updatedPreviews.splice(index, 1);
+		setPreviews(updatedPreviews);
+	};
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
 		useDropzone({
@@ -182,10 +183,13 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 					</FormControl>
 					<FormMessage>
 						{fileRejections.length !== 0 && (
-							<p>Image must be less than 1MB and of type png, jpg, or jpeg</p>
+							<p>
+								Image must be less than {TWITTER_MAX_IMAGE_SIZE.size} and of
+								type png, jpg, or jpeg
+							</p>
 						)}
 					</FormMessage>
-					<FileGallery files={previews} />
+					<FileGallery files={previews} onRemoveFile={handleRemoveFile} />
 				</FormItem>
 			)}
 		/>
