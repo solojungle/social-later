@@ -89,7 +89,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 		(acceptedFiles: File[]) => {
 			// Check if we have more than the max number of files
 			if (previews.length > TWITTER_MAX_IMAGES - 1) {
-				form.setError("image", {
+				form.setError("media", {
 					type: "manual",
 					message: `You can only upload ${TWITTER_MAX_IMAGES} images`,
 				});
@@ -106,8 +106,8 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 				};
 				reader.readAsDataURL(file);
 			});
-			form.setValue("image", acceptedFiles);
-			form.clearErrors("image");
+			form.setValue("media", acceptedFiles);
+			form.clearErrors("media");
 		},
 		[form, previews.length],
 	);
@@ -129,7 +129,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 	return (
 		<FormField
 			control={form.control}
-			name="image"
+			name="media"
 			render={() => (
 				<FormItem>
 					<FormLabel
@@ -161,7 +161,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 									collisionPadding={{ right: 15 }}
 								>
 									<ul>
-										<li>Max file size: 10MB</li>
+										<li>Max file size: {TWITTER_MAX_IMAGE_SIZE.size}</li>
 										<li>Supported formats: jpg, png, gif</li>
 									</ul>
 								</HoverCardContent>
