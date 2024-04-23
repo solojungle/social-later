@@ -116,7 +116,7 @@ export function ResizableLayout({
 										title: "Settings",
 										label: "",
 										icon: SettingsIcon,
-										variant: isCurrentTab(path, "teams"),
+										variant: teamId ? isCurrentTab(path, "teams") : "disabled",
 										url: `teams/${teamId}/settings`,
 									},
 								]}

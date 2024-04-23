@@ -35,6 +35,9 @@ export function Nav({ links, isCollapsed }: NavProps) {
 							<TooltipTrigger asChild>
 								<Link
 									href={`/${link.url}`}
+									onClick={(e) =>
+										link.variant === "disabled" && e.preventDefault()
+									}
 									className={cn(
 										buttonVariants({ variant: link.variant, size: "icon" }),
 										"h-9 w-9",
@@ -59,6 +62,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
 						<Link
 							key={link.title}
 							href={`/${link.url}`}
+							onClick={(e) => link.variant === "disabled" && e.preventDefault()}
 							className={cn(
 								buttonVariants({ variant: link.variant, size: "sm" }),
 								link.variant === "default" &&
