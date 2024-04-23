@@ -37,7 +37,7 @@ function FileGallery({ files }: FileGalleryProps) {
 	if (files === null) {
 		return (
 			<div className="flex space-x-2">
-				{new Array(4).fill(null).map(() => (
+				{new Array(TWITTER_MAX_IMAGES).fill(null).map(() => (
 					<div
 						key={Math.random()}
 						className="h-32 w-32 rounded-md border bg-muted"
@@ -48,7 +48,8 @@ function FileGallery({ files }: FileGalleryProps) {
 	}
 
 	return (
-		<div className="grid w-fit grid-cols-5 gap-2">
+		// eslint-disable-next-line tailwindcss/classnames-order, tailwindcss/no-custom-classname
+		<div className={`grid w-fit grid-cols-${TWITTER_MAX_IMAGES} gap-2`}>
 			{files.map((fileData) => (
 				<div key={Math.random()} className="group relative">
 					<button
@@ -59,7 +60,7 @@ function FileGallery({ files }: FileGalleryProps) {
 						<Cross2Icon className="h-5 w-5" />
 						<span className="sr-only">Close</span>
 					</button>
-					<div className="absolute z-10 h-32 w-32 rounded-md bg-black/30 opacity-0 group-hover:opacity-100" />
+					<div className="absolute z-10 h-32 w-32 rounded-md bg-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 					<img
 						key={Math.random()}
 						src={fileData as unknown as string}
@@ -68,9 +69,9 @@ function FileGallery({ files }: FileGalleryProps) {
 					/>
 				</div>
 			))}
-			{files.length < 4 && (
+			{files.length < TWITTER_MAX_IMAGES && (
 				<>
-					{new Array(4 - files.length).fill(null).map(() => (
+					{new Array(TWITTER_MAX_IMAGES - files.length).fill(null).map(() => (
 						<div
 							key={Math.random()}
 							className="h-32 w-32 rounded-md border bg-muted transition-colors duration-300"
@@ -91,6 +92,15 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 
 	const onDrop = React.useCallback(
 		(acceptedFiles: File[]) => {
+			// Check if we have more than the max number of files
+			if (previews.length > TWITTER_MAX_IMAGES - 1) {
+				form.setError("image", {
+					type: "manual",
+					message: `You can only upload ${TWITTER_MAX_IMAGES} images`,
+				});
+				return;
+			}
+
 			acceptedFiles.forEach((file) => {
 				const reader = new FileReader();
 				reader.onload = () => {
@@ -104,7 +114,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 			form.setValue("image", acceptedFiles);
 			form.clearErrors("image");
 		},
-		[form],
+		[form, previews.length],
 	);
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
