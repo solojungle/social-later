@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { InfoIcon, UploadCloudIcon } from "lucide-react";
 import React from "react";
@@ -163,6 +164,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 									<ul>
 										<li>Max file size: {TWITTER_MAX_IMAGE_SIZE.size}</li>
 										<li>Supported formats: jpg, png, gif</li>
+										<li>Max number of files: {TWITTER_MAX_IMAGES}</li>
 									</ul>
 								</HoverCardContent>
 							</HoverCard>
