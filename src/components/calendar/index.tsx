@@ -237,11 +237,16 @@ function StyledMediaPost({
 								<ImageIcon className="h-4 w-4 text-secondary-foreground" />
 							)}
 						</div>
-						<img
-							className="aspect-video rounded-sm object-cover"
-							src={post.thumbnail || post.url}
-							alt="post content"
-						/>
+						{!post.thumbnail && (
+							<div className="aspect-video rounded-sm bg-secondary" />
+						)}
+						{post.thumbnail && (
+							<img
+								className="aspect-video rounded-sm object-cover"
+								src={post.thumbnail || post.url}
+								alt="post content"
+							/>
+						)}
 					</div>
 					<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-secondary p-2 text-xs text-secondary-foreground">
 						<div className="flex items-center justify-between">

@@ -116,6 +116,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 	const handleRemoveFile = (index: number) => {
 		const updatedPreviews = [...previews];
 		updatedPreviews.splice(index, 1);
+		form.setValue("media", updatedPreviews);
 		setPreviews(updatedPreviews);
 	};
 
