@@ -28,6 +28,17 @@ import { MediaFormField } from "./mediaFormField";
 import { DatePickerFormField } from "./schedulePost/datePicker";
 import { StatusFormField } from "./statusFormField";
 
+const RESTRICTIONS = {
+	maxFiles: 4,
+	maxSize: 5 * 1024 * 1024,
+	maxSizeInMB: "5MB",
+	accept: {
+		"image/png": [],
+		"image/jpg": [],
+		"image/jpeg": [],
+	},
+};
+
 // Determine which type of file it is, image, video, gif
 function determineFileType(file: File) {
 	if (file.type.includes("video")) {
@@ -230,7 +241,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
-									<MediaFormField form={form} />
+									<MediaFormField form={form} restrictions={RESTRICTIONS} />
 									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
@@ -260,7 +271,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
-									<MediaFormField form={form} />
+									<MediaFormField form={form} restrictions={RESTRICTIONS} />
 									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose
@@ -290,7 +301,7 @@ function TweetForm({
 									className="space-y-8"
 								>
 									<StatusFormField form={form} />
-									<MediaFormField form={form} />
+									<MediaFormField form={form} restrictions={RESTRICTIONS} />
 									<DatePickerFormField form={form} defaultDate={scheduleDate} />
 									<div className="flex justify-end gap-2">
 										<SheetClose

@@ -18,22 +18,49 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 
-const TWITTER_MAX_IMAGE_SIZE = {
-	filesize: 5 * 1024 * 1024,
-	size: "5MB",
+type HoverCardSectionProps = {
+	restrictions: {
+		maxFiles: number;
+		maxSize: number;
+		maxSizeInMB: string;
+		accept: Record<string, string[]>;
+	};
 };
-const TWITTER_MAX_IMAGES = 4;
+
+function HoverCardSection({ restrictions }: HoverCardSectionProps) {
+	return (
+		<HoverCard openDelay={200}>
+			<HoverCardTrigger className="absolute right-3 top-3 flex cursor-pointer items-center text-xs text-muted-foreground">
+				Specifications
+				<InfoIcon className="ml-1 h-4 w-4" />
+			</HoverCardTrigger>
+			<HoverCardContent className="text-xs" collisionPadding={{ right: 15 }}>
+				<ul>
+					<li>Max file size: {restrictions.maxSizeInMB}</li>
+					<li>Supported formats: jpg, png, gif</li>
+					<li>Max number of files: {restrictions.maxFiles}</li>
+				</ul>
+			</HoverCardContent>
+		</HoverCard>
+	);
+}
 
 type FileGalleryProps = {
 	files: (string | ArrayBuffer)[] | null;
 	onRemoveFile: (index: number) => void;
+	restrictions: {
+		maxFiles: number;
+		maxSize: number;
+		maxSizeInMB: string;
+		accept: Record<string, string[]>;
+	};
 };
 
-function FileGallery({ files, onRemoveFile }: FileGalleryProps) {
+function FileGallery({ files, onRemoveFile, restrictions }: FileGalleryProps) {
 	if (files === null) {
 		return (
 			<div className="flex space-x-2">
-				{new Array(TWITTER_MAX_IMAGES).fill(null).map(() => (
+				{new Array(restrictions.maxFiles).fill(null).map(() => (
 					<div
 						key={Math.random()}
 						className="h-32 w-32 rounded-md border bg-muted"
@@ -45,7 +72,7 @@ function FileGallery({ files, onRemoveFile }: FileGalleryProps) {
 
 	return (
 		// eslint-disable-next-line tailwindcss/classnames-order, tailwindcss/no-custom-classname
-		<div className={`grid w-fit grid-cols-${TWITTER_MAX_IMAGES} gap-2`}>
+		<div className={`grid w-fit grid-cols-${restrictions.maxFiles} gap-2`}>
 			{files.map((fileData, index) => (
 				<div key={index} className="group relative">
 					<button
@@ -65,14 +92,16 @@ function FileGallery({ files, onRemoveFile }: FileGalleryProps) {
 					/>
 				</div>
 			))}
-			{files.length < TWITTER_MAX_IMAGES && (
+			{files.length < restrictions.maxFiles && (
 				<>
-					{new Array(TWITTER_MAX_IMAGES - files.length).fill(null).map(() => (
-						<div
-							key={Math.random()}
-							className="h-32 w-32 rounded-md border bg-muted transition-colors duration-300"
-						/>
-					))}
+					{new Array(restrictions.maxFiles - files.length)
+						.fill(null)
+						.map(() => (
+							<div
+								key={Math.random()}
+								className="h-32 w-32 rounded-md border bg-muted transition-colors duration-300"
+							/>
+						))}
 				</>
 			)}
 		</div>
@@ -81,18 +110,24 @@ function FileGallery({ files, onRemoveFile }: FileGalleryProps) {
 
 type MediaFormFieldProps = {
 	form: any;
+	restrictions: {
+		maxFiles: number;
+		maxSize: number;
+		maxSizeInMB: string;
+		accept: Record<string, string[]>;
+	};
 };
 
-export function MediaFormField({ form }: MediaFormFieldProps) {
+export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 	const [previews, setPreviews] = React.useState<(string | ArrayBuffer)[]>([]);
 
 	const onDrop = React.useCallback(
 		(acceptedFiles: File[]) => {
 			// Check if we have more than the max number of files
-			if (previews.length > TWITTER_MAX_IMAGES - 1) {
+			if (previews.length > restrictions.maxFiles - 1) {
 				form.setError("media", {
 					type: "manual",
-					message: `You can only upload ${TWITTER_MAX_IMAGES} images`,
+					message: `You can only upload ${restrictions.maxFiles} images`,
 				});
 				return;
 			}
@@ -110,7 +145,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 			form.setValue("media", acceptedFiles);
 			form.clearErrors("media");
 		},
-		[form, previews.length],
+		[form, previews.length, restrictions.maxFiles],
 	);
 
 	const handleRemoveFile = (index: number) => {
@@ -123,9 +158,9 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
 		useDropzone({
 			onDrop,
-			maxFiles: TWITTER_MAX_IMAGES,
-			maxSize: TWITTER_MAX_IMAGE_SIZE.filesize,
-			accept: { "image/png": [], "image/jpg": [], "image/jpeg": [] },
+			maxFiles: restrictions.maxFiles,
+			maxSize: restrictions.maxSize,
+			accept: restrictions.accept,
 		});
 
 	return (
@@ -153,22 +188,7 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 								isDragActive ? "border-blue-600" : "border-primary"
 							}`}
 						>
-							<HoverCard openDelay={200}>
-								<HoverCardTrigger className="absolute right-3 top-3 flex cursor-pointer items-center text-xs text-muted-foreground">
-									Specifications
-									<InfoIcon className="ml-1 h-4 w-4" />
-								</HoverCardTrigger>
-								<HoverCardContent
-									className="text-xs"
-									collisionPadding={{ right: 15 }}
-								>
-									<ul>
-										<li>Max file size: {TWITTER_MAX_IMAGE_SIZE.size}</li>
-										<li>Supported formats: jpg, png, gif</li>
-										<li>Max number of files: {TWITTER_MAX_IMAGES}</li>
-									</ul>
-								</HoverCardContent>
-							</HoverCard>
+							<HoverCardSection restrictions={restrictions} />
 							<div
 								className={`flex flex-col items-center justify-center ${
 									isDragActive ? "opacity-50" : ""
@@ -187,12 +207,16 @@ export function MediaFormField({ form }: MediaFormFieldProps) {
 					<FormMessage>
 						{fileRejections.length !== 0 && (
 							<p>
-								Image must be less than {TWITTER_MAX_IMAGE_SIZE.size} and of
-								type png, jpg, or jpeg
+								Image must be less than {restrictions.maxFiles} and of type png,
+								jpg, or jpeg
 							</p>
 						)}
 					</FormMessage>
-					<FileGallery files={previews} onRemoveFile={handleRemoveFile} />
+					<FileGallery
+						files={previews}
+						onRemoveFile={handleRemoveFile}
+						restrictions={restrictions}
+					/>
 				</FormItem>
 			)}
 		/>
