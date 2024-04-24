@@ -13,9 +13,10 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { PostFormSchema, PostFormSchemaValues } from "@/schemas/posts-schema";
+import { DynamicPostFormSchema } from "@/schemas/posts-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -33,9 +34,7 @@ const RESTRICTIONS = {
 	maxSize: 5 * 1024 * 1024,
 	maxSizeInMB: "5MB",
 	accept: {
-		"image/png": [],
-		"image/jpg": [],
-		"image/jpeg": [],
+		"image/*": [".jpeg", ".png", ".jpg", ".gif", ".webp"],
 	},
 };
 
@@ -88,8 +87,15 @@ function TweetForm({
 		},
 	});
 
-	const form = useForm<PostFormSchemaValues>({
-		resolver: zodResolver(PostFormSchema),
+	const FormSchema = DynamicPostFormSchema({
+		size: RESTRICTIONS.maxSize,
+		acceptedTypes: ["image/jpeg", "image/jpg", "image/png", "image/gif"],
+	});
+
+	type FormSchemaValues = z.infer<typeof FormSchema>;
+
+	const form = useForm<FormSchemaValues>({
+		resolver: zodResolver(FormSchema),
 	});
 
 	// const fileRef = form.register("media", { required: true });

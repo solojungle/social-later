@@ -2,7 +2,7 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { InfoIcon, UploadCloudIcon } from "lucide-react";
 import React from "react";
-import { useDropzone } from "react-dropzone";
+import { FileRejection, useDropzone } from "react-dropzone";
 
 import {
 	FormControl,
@@ -127,13 +127,26 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 	const [previews, setPreviews] = React.useState<(string | ArrayBuffer)[]>([]);
 	const [files, setFiles] = React.useState<File[] | null>(null);
 
-	const onDrop = React.useCallback(
+	const onDropAccepted = React.useCallback(
 		(acceptedFiles: File[]) => {
 			// Check if we have more than the max number of files
 			if (previews.length > restrictions.maxFiles - 1) {
 				form.setError("media", {
 					type: "manual",
 					message: `You can only upload ${restrictions.maxFiles} images`,
+				});
+				return;
+			}
+
+			// Handle the case where the image is a duplicate
+			const newFiles = acceptedFiles.filter(
+				(file) => files && !files.some((f) => f.name === file.name),
+			);
+
+			if (newFiles.length === 0) {
+				form.setError("media", {
+					type: "manual",
+					message: "You have already uploaded this image",
 				});
 				return;
 			}
@@ -153,7 +166,17 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 			form.clearErrors("media");
 			setFiles(acceptedFiles);
 		},
-		[form, previews.length, restrictions.maxFiles],
+		[files, form, previews.length, restrictions.maxFiles],
+	);
+
+	const onDropRejected = React.useCallback(
+		(rejections: FileRejection[]) => {
+			form.setError("media", {
+				type: "manual",
+				message: rejections.length > 0 ? rejections[0]?.errors[0]?.message : "",
+			});
+		},
+		[form],
 	);
 
 	const handleRemoveFile = (index: number) => {
@@ -171,7 +194,8 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
 		useDropzone({
-			onDrop,
+			onDropAccepted,
+			onDropRejected,
 			maxFiles: restrictions.maxFiles,
 			maxSize: restrictions.maxSize,
 			accept: restrictions.accept,
@@ -218,14 +242,7 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 							</div>
 						</div>
 					</FormControl>
-					<FormMessage>
-						{fileRejections.length !== 0 && (
-							<p>
-								Image must be less than {restrictions.maxSizeInMB} and of type
-								png, jpg, or jpeg
-							</p>
-						)}
-					</FormMessage>
+					<FormMessage />
 					<FileGallery
 						files={previews}
 						onRemoveFile={handleRemoveFile}
