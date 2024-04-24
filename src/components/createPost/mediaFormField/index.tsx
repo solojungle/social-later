@@ -37,7 +37,12 @@ function HoverCardSection({ restrictions }: HoverCardSectionProps) {
 			<HoverCardContent className="text-xs" collisionPadding={{ right: 15 }}>
 				<ul>
 					<li>Max file size: {restrictions.maxSizeInMB}</li>
-					<li>Supported formats: jpg, png, gif</li>
+					<li>
+						Supported formats:{" "}
+						{Object.keys(restrictions.accept).map(
+							(key) => restrictions.accept[key]?.join(", ") ?? "",
+						)}
+					</li>
 					<li>Max number of files: {restrictions.maxFiles}</li>
 				</ul>
 			</HoverCardContent>
@@ -120,6 +125,7 @@ type MediaFormFieldProps = {
 
 export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 	const [previews, setPreviews] = React.useState<(string | ArrayBuffer)[]>([]);
+	const [files, setFiles] = React.useState<File[] | null>(null);
 
 	const onDrop = React.useCallback(
 		(acceptedFiles: File[]) => {
@@ -142,8 +148,10 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 				};
 				reader.readAsDataURL(file);
 			});
+
 			form.setValue("media", acceptedFiles);
 			form.clearErrors("media");
+			setFiles(acceptedFiles);
 		},
 		[form, previews.length, restrictions.maxFiles],
 	);
@@ -151,8 +159,14 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 	const handleRemoveFile = (index: number) => {
 		const updatedPreviews = [...previews];
 		updatedPreviews.splice(index, 1);
-		form.setValue("media", updatedPreviews);
+
+		const updatedFiles = [...(files ?? [])];
+		updatedFiles.splice(index, 1);
+
 		setPreviews(updatedPreviews);
+		setFiles(updatedFiles);
+
+		form.setValue("media", updatedFiles);
 	};
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
@@ -207,8 +221,8 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 					<FormMessage>
 						{fileRejections.length !== 0 && (
 							<p>
-								Image must be less than {restrictions.maxFiles} and of type png,
-								jpg, or jpeg
+								Image must be less than {restrictions.maxSizeInMB} and of type
+								png, jpg, or jpeg
 							</p>
 						)}
 					</FormMessage>
