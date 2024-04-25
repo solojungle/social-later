@@ -51,6 +51,49 @@ async function getTwitterClientOrRefresh({
 	return new TwitterApi(accessToken);
 }
 
+async function uploadMediaToTwitter({
+	ctx,
+	input,
+}: {
+	input: { mediaIds: string[] };
+	ctx: any;
+}) {
+	// Get the files from the database
+	const files = await ctx.db.file.findMany({
+		where: {
+			id: {
+				in: input.mediaIds,
+			},
+		},
+	});
+
+	if (!files) {
+		throw new Error("Files do not exist");
+	}
+
+	// Get all the files from AWS
+	const buffers = await Promise.all(
+		files.map(async (file: any) => {
+			const response = await fetch(
+				`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
+			);
+			return Buffer.from(await response.arrayBuffer());
+		}),
+	);
+
+	// Upload media to twitter via url
+	const mediaIds = await Promise.all(
+		buffers.map(async (buffer, index) => {
+			const mediaId = await v1client.v1.uploadMedia(buffer, {
+				mimeType: files[index]?.mime, // Add null check
+			});
+			return mediaId;
+		}),
+	);
+
+	return mediaIds;
+}
+
 export const socialProfilesRouter = createTRPCRouter({
 	getSocialProfiles: protectedProcedure
 		.input(
@@ -185,68 +228,36 @@ export const socialProfilesRouter = createTRPCRouter({
 				ctx,
 			});
 
-			const hasMedia = "mediaId" in input;
+			const hasMedia = "mediaIds" in input;
 			const hasContent = "content" in input;
 
 			if (hasContent && hasMedia) {
-				// Get the file from the database
-				const file = await ctx.db.file.findUnique({
-					where: {
-						id: input.mediaId,
-					},
-				});
-
-				if (!file) {
-					throw new Error("File does not exist");
-				}
-
-				// IF YOU CHANGE THIS URL, YOU WILL NEED TO CHANGE THE OTHER ONE AS WELL
-				const response = await fetch(
-					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
-				);
-				const buffer = Buffer.from(await response.arrayBuffer());
-
 				// Upload media to twitter via url
-				const mediaId = await v1client.v1.uploadMedia(buffer, {
-					mimeType: file.mime,
+				const mediaIds = await uploadMediaToTwitter({
+					ctx,
+					input,
 				});
 
 				// Use media_ids to tweet
 				const tweet = await loggedClient.v2.tweet(input.content, {
 					media: {
-						media_ids: [mediaId],
+						media_ids: mediaIds,
 					},
 				});
 
 				return tweet;
 			}
 			if (hasMedia) {
-				// Get the file from the database
-				const file = await ctx.db.file.findUnique({
-					where: {
-						id: input.mediaId,
-					},
-				});
-
-				if (!file) {
-					throw new Error("File does not exist");
-				}
-
-				// IF YOU CHANGE THIS URL, YOU WILL NEED TO CHANGE THE OTHER ONE AS WELL
-				const response = await fetch(
-					`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
-				);
-				const buffer = Buffer.from(await response.arrayBuffer());
-
 				// Upload media to twitter via url
-				const mediaId = await v1client.v1.uploadMedia(buffer, {
-					mimeType: file.mime,
+				const mediaIds = await uploadMediaToTwitter({
+					ctx,
+					input,
 				});
 
 				// Use media_ids to tweet
 				const tweet = await loggedClient.v2.tweet({
 					media: {
-						media_ids: [mediaId],
+						media_ids: mediaIds,
 					},
 				});
 

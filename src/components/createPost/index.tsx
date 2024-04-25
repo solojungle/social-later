@@ -98,7 +98,36 @@ function TweetForm({
 		resolver: zodResolver(FormSchema),
 	});
 
-	// const fileRef = form.register("media", { required: true });
+	async function uploadFile(file: File) {
+		const filename = file.name.split(".").shift();
+		const extension = file.name.split(".").pop();
+
+		const presignedObject = await fetchPresignedUrls({
+			fileExtension: extension || "",
+		});
+
+		await axios.put(presignedObject.signedUrl, file, {
+			headers: {
+				"Content-Type": file.type,
+			},
+		});
+
+		// Determine which type of file it is, image, video, gif
+		const mediaFileType = determineFileType(file);
+
+		const mediaFile = await createFile({
+			file: {
+				name: filename || "",
+				extension: extension || "",
+				key: presignedObject.key,
+				type: mediaFileType,
+				size: file.size,
+				mime: file.type,
+			},
+		});
+
+		return mediaFile;
+	}
 
 	async function onSubmit(data: any) {
 		setLoading(true);
@@ -109,45 +138,23 @@ function TweetForm({
 		// upload it to aws. Then one the backend we will get the url
 		// and upload it from aws to twitter.
 		if (data.media && data.media.length > 0) {
-			const imageFile = data.media[0] as File;
-			const filename = imageFile.name.split(".").shift();
-			const extension = imageFile.name.split(".").pop();
-
 			try {
-				const presignedObject = await fetchPresignedUrls({
-					fileExtension: extension || "",
-				});
-
-				await axios.put(presignedObject.signedUrl, imageFile, {
-					headers: {
-						"Content-Type": imageFile.type,
-					},
-				});
-
-				// Determine which type of file it is, image, video, gif
-				const mediaFileType = determineFileType(imageFile);
-
-				const mediaFile = await createFile({
-					file: {
-						name: filename || "",
-						extension: extension || "",
-						key: presignedObject.key,
-						type: mediaFileType,
-						size: imageFile.size,
-						mime: imageFile.type,
-					},
-				});
+				// Instead of uploading only one file, we need to upload all the files
+				// and then send the mediaIds to the backend
+				const mediaFiles = await Promise.all(
+					data.media.map((file: File) => uploadFile(file)),
+				);
 
 				const { data: result } = await tweet.mutateAsync({
 					profileId,
 					content: data.content,
-					mediaId: mediaFile.id,
+					mediaIds: mediaFiles.map((file) => file.id),
 				});
 
 				createPost.mutate({
 					title: "",
 					content: data.content || "",
-					fileId: mediaFile.id,
+					fileIds: mediaFiles.map((file) => file.id),
 					status: "published",
 					externalPostId: result.id,
 					scheduledFor: scheduledDate,
@@ -157,6 +164,7 @@ function TweetForm({
 				});
 			} finally {
 				setLoading(false);
+				form.reset();
 			}
 		} else {
 			const { data: result } = await tweet.mutateAsync({

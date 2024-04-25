@@ -17,7 +17,7 @@ export const PostsSchema = z.object({
 	id: z.string(),
 	title: z.string(),
 	content: z.string().optional().nullish(),
-	fileId: z.string().optional(),
+	fileIds: z.string().array().optional(),
 	externalPostId: z.string(),
 	status: z.string(),
 	scheduledFor: z.date(),
@@ -295,7 +295,7 @@ export const TweetSchema = z.union([
 	z.object({
 		profileId: z.string(),
 		content: z.string(),
-		mediaId: z.string(),
+		mediaIds: z.string().array(),
 	}),
 	z.object({
 		profileId: z.string(),
@@ -303,7 +303,7 @@ export const TweetSchema = z.union([
 	}),
 	z.object({
 		profileId: z.string(),
-		mediaId: z.string(),
+		mediaIds: z.string().array(),
 	}),
 ]);
 export type TweetSchemaValues = z.infer<typeof TweetSchema>;

@@ -10,21 +10,23 @@ export const postRouter = createTRPCRouter({
 		.mutation(async ({ ctx, input }) => {
 			// Because we have a file we must link the file to the post
 			// as an attachment
-			if (input.fileId) {
-				const file = await ctx.db.file.findUnique({
+			if (input.fileIds && input.fileIds.length > 0) {
+				const files = await ctx.db.file.findMany({
 					where: {
-						id: input.fileId,
+						id: {
+							in: input.fileIds,
+						},
 					},
 				});
 
-				if (!file) {
-					throw new Error("File does not exist");
+				if (!files) {
+					throw new Error("Files do not exist");
 				}
 
 				// While we create the post we must remove the fileId
 				// from the input object
 				// eslint-disable-next-line no-param-reassign
-				delete input.fileId;
+				delete input.fileIds;
 
 				const post = await ctx.db.post.create({
 					data: {
@@ -32,12 +34,17 @@ export const postRouter = createTRPCRouter({
 					},
 				});
 
-				await ctx.db.attachment.create({
-					data: {
-						postId: post.id,
-						fileId: file.id,
-					},
-				});
+				// Create the attachments
+				await Promise.all(
+					files.map(async (file) => {
+						await ctx.db.attachment.create({
+							data: {
+								postId: post.id,
+								fileId: file.id,
+							},
+						});
+					}),
+				);
 
 				return post;
 			}
