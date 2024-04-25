@@ -138,19 +138,6 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 				return;
 			}
 
-			// Handle the case where the image is a duplicate
-			const newFiles = acceptedFiles.filter(
-				(file) => files && !files.some((f) => f.name === file.name),
-			);
-
-			if (newFiles.length === 0) {
-				form.setError("media", {
-					type: "manual",
-					message: "You have already uploaded this image",
-				});
-				return;
-			}
-
 			acceptedFiles.forEach((file) => {
 				const reader = new FileReader();
 				reader.onload = () => {
@@ -162,9 +149,9 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 				reader.readAsDataURL(file);
 			});
 
-			form.setValue("media", acceptedFiles);
+			form.setValue("media", [...(files ?? []), ...acceptedFiles]);
 			form.clearErrors("media");
-			setFiles(acceptedFiles);
+			setFiles([...(files ?? []), ...acceptedFiles]);
 		},
 		[files, form, previews.length, restrictions.maxFiles],
 	);
