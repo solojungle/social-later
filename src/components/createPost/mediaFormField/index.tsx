@@ -149,9 +149,12 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 				reader.readAsDataURL(file);
 			});
 
-			form.setValue("media", [...(files ?? []), ...acceptedFiles]);
+			const combinedFiles = [...(files ?? []), ...acceptedFiles];
+
+			form.setValue("media", combinedFiles);
+			setFiles(combinedFiles);
+
 			form.clearErrors("media");
-			setFiles([...(files ?? []), ...acceptedFiles]);
 		},
 		[files, form, previews.length, restrictions.maxFiles],
 	);

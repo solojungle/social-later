@@ -40,8 +40,8 @@ export const SingleFileSchema = z
 	.refine((file) => file?.[0]?.size ?? 0 <= 3000000, `Max file size is 3MB.`);
 
 export function DynamicSizeFileSchema(size: number, acceptedTypes: string[]) {
-	// Convert size to bytes
-	const mb = size * 1024 * 1024;
+	// Convert size to mb
+	const mb = size / (1024 * 1024);
 
 	return z
 		.any()
