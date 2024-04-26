@@ -114,7 +114,7 @@ function EditPostSheetContent({
 					<div>
 						<Label>Content</Label>
 						<Textarea
-							value={post.content}
+							defaultValue={post.content}
 							placeholder="Write your post content here"
 							className="h-40"
 						/>
@@ -123,7 +123,7 @@ function EditPostSheetContent({
 			</div>
 			<SheetFooter className="flex !justify-between">
 				<AlertDialog>
-					<AlertDialogTrigger>
+					<AlertDialogTrigger asChild>
 						<Button type="button" variant="destructive">
 							Delete Post
 						</Button>
