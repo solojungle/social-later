@@ -4,13 +4,14 @@ import { useState } from "react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { TwitterTab } from "./tabs/twitterTab";
 
-function TweetForm({
+function PostForm({
 	teamId,
 	profileId,
 	className,
@@ -22,6 +23,14 @@ function TweetForm({
 	scheduleDate: Date;
 }) {
 	const [open, setOpen] = useState(false);
+
+	const { profiles } = useSocialProfilesStore();
+
+	const profileType = profiles.find((p) => p.id === profileId)?.type;
+
+	if (!profileType) {
+		return null;
+	}
 
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
@@ -65,7 +74,7 @@ export function CreatePost({
 	}
 
 	return (
-		<TweetForm
+		<PostForm
 			className={className}
 			teamId={teamId}
 			profileId={profileId}
