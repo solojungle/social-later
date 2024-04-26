@@ -221,7 +221,9 @@ function StyledMediaPost({
 	open: boolean;
 	setOpen: (open: boolean) => void;
 }) {
-	if (!post.url || !post.thumbnail) {
+	const [imageUrl, setImageUrl] = useState(post.thumbnail || post.url);
+
+	if (!imageUrl || imageUrl === null) {
 		return null;
 	}
 
@@ -237,16 +239,15 @@ function StyledMediaPost({
 								<ImageIcon className="h-4 w-4 text-secondary-foreground" />
 							)}
 						</div>
-						{!post.thumbnail && (
-							<div className="aspect-video rounded-sm bg-secondary" />
-						)}
-						{post.thumbnail && (
-							<img
-								className="aspect-video rounded-sm object-cover"
-								src={post.thumbnail || post.url}
-								alt="post content"
-							/>
-						)}
+						<img
+							className="aspect-video rounded-sm object-cover"
+							src={imageUrl}
+							onError={() => {
+								// If the thumbnail is not available, we will use the post content
+								setImageUrl(post.url);
+							}}
+							alt={post.title || "Post content"}
+						/>
 					</div>
 					<div className="absolute bottom-0 flex w-full flex-col rounded-b  bg-secondary p-2 text-xs text-secondary-foreground">
 						<div className="flex items-center justify-between">
