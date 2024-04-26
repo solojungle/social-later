@@ -3,13 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileType } from "@prisma/client";
 import axios from "axios";
-import {
-	GalleryThumbnailsIcon,
-	ImageIcon,
-	Loader2,
-	TypeIcon,
-	VideoIcon,
-} from "lucide-react";
+import { ImageIcon, Loader2, TypeIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -185,22 +179,14 @@ export function TwitterTab({
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
 		<Tabs defaultValue="status" className="w-full">
-			<TabsList className="grid w-full grid-cols-4">
+			<TabsList className="grid w-full grid-cols-2">
 				<TabsTrigger value="status">
 					<TypeIcon className="mr-2 h-4 w-4 text-muted-foreground" />
 					Status
 				</TabsTrigger>
 				<TabsTrigger value="photo">
 					<ImageIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-					Photo
-				</TabsTrigger>
-				<TabsTrigger value="video">
-					<VideoIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-					Video
-				</TabsTrigger>
-				<TabsTrigger value="carousel">
-					<GalleryThumbnailsIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-					Carousel
+					Media
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value="status" className="px-1 pt-8">
@@ -228,56 +214,6 @@ export function TwitterTab({
 				</Form>
 			</TabsContent>
 			<TabsContent value="photo" className="px-1 pt-8">
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						<StatusFormField form={form} />
-						<MediaFormField form={form} restrictions={RESTRICTIONS} />
-						<DatePickerFormField form={form} defaultDate={scheduleDate} />
-						<div className="flex justify-end gap-2">
-							<SheetClose
-								asChild
-								onClick={() => {
-									form.reset();
-								}}
-							>
-								<Button type="button" variant="outline">
-									Cancel
-								</Button>
-							</SheetClose>
-							<Button type="submit" disabled={loading}>
-								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-								Publish
-							</Button>
-						</div>
-					</form>
-				</Form>
-			</TabsContent>
-			<TabsContent value="video" className="px-1 pt-8">
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						<StatusFormField form={form} />
-						<MediaFormField form={form} restrictions={RESTRICTIONS} />
-						<DatePickerFormField form={form} defaultDate={scheduleDate} />
-						<div className="flex justify-end gap-2">
-							<SheetClose
-								asChild
-								onClick={() => {
-									form.reset();
-								}}
-							>
-								<Button type="button" variant="outline">
-									Cancel
-								</Button>
-							</SheetClose>
-							<Button type="submit" disabled={loading}>
-								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-								Publish
-							</Button>
-						</div>
-					</form>
-				</Form>
-			</TabsContent>
-			<TabsContent value="carousel" className="px-1 pt-8">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 						<StatusFormField form={form} />
