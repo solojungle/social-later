@@ -1,5 +1,6 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, UploadPartCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { env } from "@/env.mjs";
@@ -7,13 +8,76 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { s3 } from "@/server/services/aws/client";
 
 export const awsRouter = createTRPCRouter({
-	// getObjects: protectedProcedure.query(async () => {
-	// 	const listObjectsOutput = await s3.listObjectsV2({
-	// 		Bucket: env.AWS_BUCKET_NAME,
-	// 	});
+	getMultipartUploadPresignedUrl: protectedProcedure
+		.input(z.object({ key: z.string(), filePartTotal: z.number() }))
+		.mutation(async ({ input }) => {
+			const { key, filePartTotal } = input;
 
-	// 	return listObjectsOutput.Contents ?? [];
-	// }),
+			const uploadId = (
+				await s3.createMultipartUpload({
+					Bucket: env.AWS_BUCKET_NAME,
+					Key: key,
+				})
+			).UploadId;
+
+			if (!uploadId) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Could not create multipart upload",
+				});
+			}
+
+			const urls: Promise<{ url: string; partNumber: number }>[] = [];
+
+			for (let i = 1; i <= filePartTotal; i += 1) {
+				const uploadPartCommand = new UploadPartCommand({
+					Bucket: env.AWS_BUCKET_NAME,
+					Key: key,
+					UploadId: uploadId,
+					PartNumber: i,
+				});
+
+				const url = getSignedUrl(s3, uploadPartCommand).then((url) => ({
+					url,
+					partNumber: i,
+				}));
+
+				urls.push(url);
+			}
+
+			return {
+				uploadId,
+				urls: await Promise.all(urls),
+			};
+		}),
+
+	completeMultipartUpload: protectedProcedure
+		.input(
+			z.object({
+				key: z.string(),
+				uploadId: z.string(),
+				parts: z.array(
+					z.object({
+						ETag: z.string(),
+						PartNumber: z.number(),
+					}),
+				),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const { key, uploadId, parts } = input;
+
+			const completeMultipartUploadOutput = await s3.completeMultipartUpload({
+				Bucket: env.AWS_BUCKET_NAME,
+				Key: key,
+				UploadId: uploadId,
+				MultipartUpload: {
+					Parts: parts,
+				},
+			});
+
+			return completeMultipartUploadOutput;
+		}),
 
 	getStandardUploadPresignedUrl: protectedProcedure
 		.input(
