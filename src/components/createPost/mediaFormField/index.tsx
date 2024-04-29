@@ -17,6 +17,14 @@ import {
 	HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+
+type FileUpload = {
+	id: string;
+	file: File;
+	preview: (string | ArrayBuffer)[];
+	progress: number;
+};
 
 type HoverCardSectionProps = {
 	restrictions: {
@@ -51,17 +59,23 @@ function HoverCardSection({ restrictions }: HoverCardSectionProps) {
 }
 
 type FileGalleryProps = {
-	files: (string | ArrayBuffer)[] | null;
-	onRemoveFile: (index: number) => void;
+	files: FileUpload[] | null;
+	onRemoveFile: (index: string) => void;
 	restrictions: {
 		maxFiles: number;
 		maxSize: number;
 		maxSizeInMB: string;
 		accept: Record<string, string[]>;
 	};
+	isLoading: boolean;
 };
 
-function FileGallery({ files, onRemoveFile, restrictions }: FileGalleryProps) {
+function FileGallery({
+	files,
+	onRemoveFile,
+	restrictions,
+	isLoading,
+}: FileGalleryProps) {
 	if (files === null) {
 		return (
 			<div className="flex space-x-2">
@@ -78,23 +92,29 @@ function FileGallery({ files, onRemoveFile, restrictions }: FileGalleryProps) {
 	return (
 		// eslint-disable-next-line tailwindcss/classnames-order, tailwindcss/no-custom-classname
 		<div className={`grid w-fit grid-cols-${restrictions.maxFiles} gap-2`}>
-			{files.map((fileData, index) => (
-				<div key={index} className="group relative">
+			{files.map((file) => (
+				<div key={file.id} className="group relative">
 					<button
 						type="button"
 						className="absolute right-3 top-3 z-20 rounded-sm border border-border bg-background opacity-0 ring-offset-background transition-opacity focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none group-hover:opacity-100 data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-						onClick={() => onRemoveFile(index)}
+						onClick={() => onRemoveFile(file.id)}
 					>
 						<Cross2Icon className="h-5 w-5" />
 						<span className="sr-only">Close</span>
 					</button>
 					<div className="absolute z-10 h-32 w-32 rounded-md bg-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 					<img
-						key={index}
-						src={fileData as unknown as string}
+						key={file.id}
+						src={file.preview as unknown as string}
 						alt="Uploaded file"
 						className="h-32 w-32 rounded-md border border-border object-cover"
 					/>
+					{isLoading && (
+						<Progress
+							className="absolute bottom-0 w-full"
+							value={file.progress}
+						/>
+					)}
 				</div>
 			))}
 			{files.length < restrictions.maxFiles && (
@@ -121,16 +141,20 @@ type MediaFormFieldProps = {
 		maxSizeInMB: string;
 		accept: Record<string, string[]>;
 	};
+	isLoading: boolean;
 };
 
-export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
-	const [previews, setPreviews] = React.useState<(string | ArrayBuffer)[]>([]);
-	const [files, setFiles] = React.useState<File[] | null>(null);
+export function MediaFormField({
+	form,
+	restrictions,
+	isLoading,
+}: MediaFormFieldProps) {
+	const [fileUploads, setFileUploads] = React.useState<FileUpload[]>([]);
 
 	const onDropAccepted = React.useCallback(
 		(acceptedFiles: File[]) => {
 			// Check if we have more than the max number of files
-			if (previews.length > restrictions.maxFiles - 1) {
+			if (fileUploads.length > restrictions.maxFiles - 1) {
 				form.setError("media", {
 					type: "manual",
 					message: `You can only upload ${restrictions.maxFiles} images`,
@@ -141,22 +165,27 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 			acceptedFiles.forEach((file) => {
 				const reader = new FileReader();
 				reader.onload = () => {
-					setPreviews((prev) => [
+					setFileUploads((prev) => [
 						...prev,
-						reader.result as string | ArrayBuffer,
+						{
+							id: Math.random().toString(),
+							file,
+							preview: [reader.result as string | ArrayBuffer],
+							progress: 0,
+						},
 					]);
 				};
 				reader.readAsDataURL(file);
 			});
 
-			const combinedFiles = [...(files ?? []), ...acceptedFiles];
-
-			form.setValue("media", combinedFiles);
-			setFiles(combinedFiles);
+			form.setValue(
+				"media",
+				fileUploads.map((file) => file.file),
+			);
 
 			form.clearErrors("media");
 		},
-		[files, form, previews.length, restrictions.maxFiles],
+		[fileUploads, form, restrictions.maxFiles],
 	);
 
 	const onDropRejected = React.useCallback(
@@ -169,17 +198,14 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 		[form],
 	);
 
-	const handleRemoveFile = (index: number) => {
-		const updatedPreviews = [...previews];
-		updatedPreviews.splice(index, 1);
+	const handleRemoveFile = (id: string) => {
+		const updatedFiles = fileUploads.filter((file) => file.id !== id);
+		setFileUploads(updatedFiles);
 
-		const updatedFiles = [...(files ?? [])];
-		updatedFiles.splice(index, 1);
-
-		setPreviews(updatedPreviews);
-		setFiles(updatedFiles);
-
-		form.setValue("media", updatedFiles);
+		form.setValue(
+			"media",
+			updatedFiles.map((file) => file.file),
+		);
 	};
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
@@ -234,9 +260,10 @@ export function MediaFormField({ form, restrictions }: MediaFormFieldProps) {
 					</FormControl>
 					<FormMessage />
 					<FileGallery
-						files={previews}
+						files={fileUploads}
 						onRemoveFile={handleRemoveFile}
 						restrictions={restrictions}
+						isLoading={isLoading}
 					/>
 				</FormItem>
 			)}

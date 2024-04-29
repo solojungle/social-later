@@ -37,10 +37,12 @@ export const awsRouter = createTRPCRouter({
 					PartNumber: i,
 				});
 
-				const url = getSignedUrl(s3, uploadPartCommand).then((url) => ({
-					url,
-					partNumber: i,
-				}));
+				const url = getSignedUrl(s3, uploadPartCommand).then(
+					(presignedUrl) => ({
+						url: presignedUrl,
+						partNumber: i,
+					}),
+				);
 
 				urls.push(url);
 			}

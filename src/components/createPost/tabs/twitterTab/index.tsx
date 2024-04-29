@@ -1,8 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileType } from "@prisma/client";
-import axios from "axios";
 import { ImageIcon, Loader2, TypeIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +17,7 @@ import { api } from "@/trpc/react";
 import { MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { StatusFormField } from "../../statusFormField";
+import { uploadFile } from "../../utils";
 
 const RESTRICTIONS = {
 	maxFiles: 4,
@@ -28,21 +27,6 @@ const RESTRICTIONS = {
 		"image/*": [".jpeg", ".png", ".jpg", ".gif", ".webp"],
 	},
 };
-
-// Determine which type of file it is, image, video, gif
-function determineFileType(file: File) {
-	if (file.type.includes("video")) {
-		return FileType.video;
-	}
-	if (file.type.includes("gif")) {
-		return FileType.gif;
-	}
-	if (file.type.includes("image")) {
-		return FileType.image;
-	}
-
-	throw new Error("File type not supported");
-}
 
 export function TwitterTab({
 	teamId,
@@ -57,9 +41,6 @@ export function TwitterTab({
 }) {
 	const [loading, setLoading] = useState(false);
 
-	const { mutateAsync: createFile } = api.file.create.useMutation();
-	const { mutateAsync: fetchPresignedUrls } =
-		api.aws.getStandardUploadPresignedUrl.useMutation();
 	const tweet = api.socials.postTweet.useMutation({});
 
 	const utils = api.useUtils();
@@ -87,37 +68,6 @@ export function TwitterTab({
 	const form = useForm<FormSchemaValues>({
 		resolver: zodResolver(FormSchema),
 	});
-
-	async function uploadFile(file: File) {
-		const filename = file.name.split(".").shift();
-		const extension = file.name.split(".").pop();
-
-		const presignedObject = await fetchPresignedUrls({
-			fileExtension: extension || "",
-		});
-
-		await axios.put(presignedObject.signedUrl, file, {
-			headers: {
-				"Content-Type": file.type,
-			},
-		});
-
-		// Determine which type of file it is, image, video, gif
-		const mediaFileType = determineFileType(file);
-
-		const mediaFile = await createFile({
-			file: {
-				name: filename || "",
-				extension: extension || "",
-				key: presignedObject.key,
-				type: mediaFileType,
-				size: file.size,
-				mime: file.type,
-			},
-		});
-
-		return mediaFile;
-	}
 
 	async function onSubmit(data: any) {
 		setLoading(true);
@@ -217,7 +167,11 @@ export function TwitterTab({
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 						<StatusFormField form={form} />
-						<MediaFormField form={form} restrictions={RESTRICTIONS} />
+						<MediaFormField
+							form={form}
+							restrictions={RESTRICTIONS}
+							isLoading={loading}
+						/>
 						<DatePickerFormField form={form} defaultDate={scheduleDate} />
 						<div className="flex justify-end gap-2">
 							<SheetClose
