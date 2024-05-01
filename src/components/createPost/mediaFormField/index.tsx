@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 
-type FileUpload = {
+export type FileUpload = {
 	id: string;
 	file: File;
 	preview: (string | ArrayBuffer)[];
@@ -68,11 +68,13 @@ type FileGalleryProps = {
 		accept: Record<string, string[]>;
 	};
 	isLoading: boolean;
+	fileProgress: { [key: string]: { [key: number]: number } };
 };
 
 function FileGallery({
 	files,
 	onRemoveFile,
+	fileProgress,
 	restrictions,
 	isLoading,
 }: FileGalleryProps) {
@@ -112,7 +114,10 @@ function FileGallery({
 					{isLoading && (
 						<Progress
 							className="absolute bottom-0 w-full"
-							value={file.progress}
+							value={Object.values(fileProgress[file.id] ?? {}).reduce(
+								(acc, val) => acc + val,
+								0,
+							)}
 						/>
 					)}
 				</div>
@@ -135,6 +140,7 @@ function FileGallery({
 
 type MediaFormFieldProps = {
 	form: any;
+	fileProgress: { [key: string]: { [key: number]: number } };
 	restrictions: {
 		maxFiles: number;
 		maxSize: number;
@@ -147,14 +153,13 @@ type MediaFormFieldProps = {
 export function MediaFormField({
 	form,
 	restrictions,
+	fileProgress,
 	isLoading,
 }: MediaFormFieldProps) {
-	const [fileUploads, setFileUploads] = React.useState<FileUpload[]>([]);
-
 	const onDropAccepted = React.useCallback(
 		(acceptedFiles: File[]) => {
 			// Check if we have more than the max number of files
-			if (fileUploads.length > restrictions.maxFiles - 1) {
+			if (form.getValues("media") > restrictions.maxFiles - 1) {
 				form.setError("media", {
 					type: "manual",
 					message: `You can only upload ${restrictions.maxFiles} images`,
@@ -165,27 +170,24 @@ export function MediaFormField({
 			acceptedFiles.forEach((file) => {
 				const reader = new FileReader();
 				reader.onload = () => {
-					setFileUploads((prev) => [
-						...prev,
+					const updatedFiles = [
+						...(form.getValues("media") || []),
 						{
-							id: Math.random().toString(),
+							id: Math.floor(Math.random() * 1000000).toString(),
 							file,
 							preview: [reader.result as string | ArrayBuffer],
 							progress: 0,
 						},
-					]);
+					];
+
+					form.setValue("media", updatedFiles);
 				};
 				reader.readAsDataURL(file);
 			});
 
-			form.setValue(
-				"media",
-				fileUploads.map((file) => file.file),
-			);
-
 			form.clearErrors("media");
 		},
-		[fileUploads, form, restrictions.maxFiles],
+		[form, restrictions.maxFiles],
 	);
 
 	const onDropRejected = React.useCallback(
@@ -199,13 +201,11 @@ export function MediaFormField({
 	);
 
 	const handleRemoveFile = (id: string) => {
-		const updatedFiles = fileUploads.filter((file) => file.id !== id);
-		setFileUploads(updatedFiles);
-
-		form.setValue(
-			"media",
-			updatedFiles.map((file) => file.file),
+		const updatedFiles = (form.getValues("media") || []).filter(
+			(file: FileUpload) => file.id !== id,
 		);
+
+		form.setValue("media", updatedFiles);
 	};
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
@@ -260,10 +260,11 @@ export function MediaFormField({
 					</FormControl>
 					<FormMessage />
 					<FileGallery
-						files={fileUploads}
+						files={form.getValues("media") || []}
 						onRemoveFile={handleRemoveFile}
 						restrictions={restrictions}
 						isLoading={isLoading}
+						fileProgress={fileProgress}
 					/>
 				</FormItem>
 			)}

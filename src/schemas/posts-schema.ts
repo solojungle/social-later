@@ -119,7 +119,7 @@ export function DynamicPostFormSchema({
 
 					// Loop through the files and validate each one
 					for (const file of files) {
-						const result = Schema.safeParse([file]);
+						const result = Schema.safeParse([file.file]);
 						if (!result.success) {
 							return false;
 						}
@@ -147,7 +147,7 @@ export function DynamicPostFormSchema({
 
 					// Loop through the files and validate each one
 					for (const file of files) {
-						const result = Schema.safeParse([file]);
+						const result = Schema.safeParse([file.file]);
 						if (!result.success) {
 							return false;
 						}

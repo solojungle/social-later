@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { ImageIcon, Loader2, TypeIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -14,10 +15,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DynamicPostFormSchema } from "@/schemas/posts-schema";
 import { api } from "@/trpc/react";
 
-import { MediaFormField } from "../../mediaFormField";
+import { FileUpload, MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { StatusFormField } from "../../statusFormField";
-import { uploadFile } from "../../utils";
+import { determineFileType, splitFileIntoParts } from "../../utils";
 
 const RESTRICTIONS = {
 	maxFiles: 4,
@@ -39,11 +40,126 @@ export function TwitterTab({
 	setOpen: (open: boolean) => void;
 	scheduleDate: Date;
 }) {
+	const { mutateAsync: createFile } = api.file.create.useMutation();
+	const { mutateAsync: fetchMultipartPresignedUrls } =
+		api.aws.getMultipartUploadPresignedUrl.useMutation();
+	const { mutateAsync: completeMultipartUpload } =
+		api.aws.completeMultipartUpload.useMutation();
+
+	async function uploadFile(
+		uploadedFile: FileUpload,
+		onProgress: ({
+			fileId,
+			partNumber,
+			progress,
+		}: {
+			fileId: string;
+			partNumber: number;
+			progress: number;
+		}) => void = () => {},
+	) {
+		const { file } = uploadedFile;
+
+		const filename = file.name.split(".").shift();
+		const extension = file.name.split(".").pop();
+
+		const parts = splitFileIntoParts(file);
+
+		const hashKey = crypto.randomUUID();
+		const fileKey = `${hashKey}.${extension}`;
+
+		const { uploadId, urls: signedUrls } = await fetchMultipartPresignedUrls({
+			key: fileKey,
+			filePartTotal: Object.keys(parts).length,
+		});
+
+		const uploadPromises: Promise<{
+			PartNumber: number;
+			ETag: string;
+		}>[] = [];
+
+		for (const { url, partNumber } of signedUrls) {
+			const filePart = parts[partNumber] as File;
+
+			uploadPromises.push(
+				axios
+					.put(url, filePart.slice(), {
+						headers: {
+							"Content-Type": file.type,
+						},
+						onUploadProgress: (progressEvent) => {
+							const progress = Math.round(
+								((progressEvent.loaded || 1) * 100) /
+									(progressEvent.total || 1),
+							);
+							onProgress({ fileId: uploadedFile.id, partNumber, progress });
+						},
+					})
+					.then((response) => {
+						return {
+							ETag: response.headers.etag as string,
+							PartNumber: partNumber,
+						};
+					}),
+			);
+		}
+
+		const uploadedParts = await Promise.all(uploadPromises);
+
+		await completeMultipartUpload({
+			uploadId,
+			key: fileKey,
+			parts: uploadedParts,
+		});
+
+		const mediaFile = await createFile({
+			file: {
+				name: filename || "",
+				extension: extension || "",
+				key: hashKey, // In order to be consistent with the backend, we need to remove the extension
+				type: determineFileType(file),
+				size: file.size,
+				mime: file.type,
+			},
+		});
+
+		return mediaFile;
+	}
+
+	// Each file is split into parts for multipart upload
+	// and each part has a progress
+	// We need to keep track of the progress of each part
+	// so we can display it to the user
+	const [fileProgress, setFileProgress] = useState<{
+		[key: string]: { [key: number]: number };
+	}>({});
+
 	const [loading, setLoading] = useState(false);
 
 	const tweet = api.socials.postTweet.useMutation({});
 
 	const utils = api.useUtils();
+
+	const onProgress = ({
+		fileId,
+		partNumber,
+		progress,
+	}: {
+		fileId: string;
+		partNumber: number;
+		progress: number;
+	}) => {
+		setFileProgress((prevProgress) => {
+			const prevFileProgress = prevProgress[fileId] || {};
+			return {
+				...prevProgress,
+				[fileId]: {
+					...prevFileProgress,
+					[partNumber]: progress,
+				},
+			};
+		});
+	};
 
 	const createPost = api.post.create.useMutation({
 		onSuccess() {
@@ -82,7 +198,7 @@ export function TwitterTab({
 				// Instead of uploading only one file, we need to upload all the files
 				// and then send the mediaIds to the backend
 				const mediaFiles = await Promise.all(
-					data.media.map((file: File) => uploadFile(file)),
+					data.media.map((file: FileUpload) => uploadFile(file, onProgress)),
 				);
 
 				const { data: result } = await tweet.mutateAsync({
@@ -104,25 +220,28 @@ export function TwitterTab({
 				});
 			} finally {
 				setLoading(false);
-				form.reset();
 			}
 		} else {
-			const { data: result } = await tweet.mutateAsync({
-				profileId,
-				content: data.content,
-			});
+			try {
+				const { data: result } = await tweet.mutateAsync({
+					profileId,
+					content: data.content,
+				});
 
-			// There is no media so we can just create the post
-			createPost.mutate({
-				title: "",
-				content: data.content,
-				status: "published",
-				externalPostId: result.id,
-				scheduledFor: scheduledDate,
-				published: true,
-				profileId,
-				authorId: teamId,
-			});
+				// There is no media so we can just create the post
+				createPost.mutate({
+					title: "",
+					content: data.content,
+					status: "published",
+					externalPostId: result.id,
+					scheduledFor: scheduledDate,
+					published: true,
+					profileId,
+					authorId: teamId,
+				});
+			} finally {
+				setLoading(false);
+			}
 		}
 	}
 
@@ -169,6 +288,7 @@ export function TwitterTab({
 						<StatusFormField form={form} />
 						<MediaFormField
 							form={form}
+							fileProgress={fileProgress}
 							restrictions={RESTRICTIONS}
 							isLoading={loading}
 						/>
