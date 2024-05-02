@@ -100,7 +100,7 @@ function EditPostSheetContent({
 				<SheetTitle>Post View</SheetTitle>
 			</SheetHeader>
 			<div className="grid gap-4 py-4">
-				{post.url && (
+				{post.url && post.attachment?.file.type === FileType.image && (
 					<div>
 						<Label>Media</Label>
 						<img
@@ -108,6 +108,18 @@ function EditPostSheetContent({
 							alt={post.title || "Post content"}
 							className="aspect-video w-full rounded-lg object-scale-down"
 						/>
+					</div>
+				)}
+				{post.url && post.attachment?.file.type === FileType.video && (
+					<div>
+						<Label>Media</Label>
+						<video
+							src={post.url}
+							controls
+							className="aspect-video w-full rounded-lg object-scale-down"
+						>
+							<track default kind="captions" srclang="en" src="" />
+						</video>
 					</div>
 				)}
 				{post.content && post.content.length > 0 && (
