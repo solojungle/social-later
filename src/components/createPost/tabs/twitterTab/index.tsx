@@ -25,8 +25,17 @@ const RESTRICTIONS = {
 	maxSize: 5 * 1024 * 1024,
 	maxSizeInMB: "5MB",
 	accept: {
-		"image/*": [".jpeg", ".png", ".jpg", ".gif", ".webp"],
+		"image/*": [".jpeg", ".png", ".jpg", ".gif", ".webp", ".mov", ".mp4"],
 	},
+	schemaAccept: [
+		"image/jpeg",
+		"image/jpg",
+		"image/png",
+		"image/gif",
+		"image/webp",
+		"video/mov",
+		"video/mp4",
+	],
 };
 
 export function TwitterTab({
@@ -176,7 +185,7 @@ export function TwitterTab({
 
 	const FormSchema = DynamicPostFormSchema({
 		size: RESTRICTIONS.maxSize,
-		acceptedTypes: ["image/jpeg", "image/jpg", "image/png", "image/gif"],
+		acceptedTypes: RESTRICTIONS.schemaAccept,
 	});
 
 	type FormSchemaValues = z.infer<typeof FormSchema>;

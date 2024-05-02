@@ -105,12 +105,25 @@ function FileGallery({
 						<span className="sr-only">Close</span>
 					</button>
 					<div className="absolute z-10 h-32 w-32 rounded-md bg-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-					<img
-						key={file.id}
-						src={file.preview as unknown as string}
-						alt="Uploaded file"
-						className="h-32 w-32 rounded-md border border-border object-cover"
-					/>
+
+					{file.preview.length === 0 ? (
+						<div className="flex h-32 w-32 flex-col items-center justify-center rounded-md border border-border">
+							<span className="flex w-32 justify-center overflow-hidden text-ellipsis px-1 text-sm">
+								{file.file.name}
+							</span>
+							<span className="line-clamp-1 flex w-32 justify-center overflow-hidden text-ellipsis px-1 text-xs text-muted-foreground">
+								{file.file.size} bytes
+							</span>
+						</div>
+					) : (
+						<img
+							key={file.id}
+							src={file.preview as unknown as string}
+							alt="Uploaded file"
+							className="h-32 w-32 rounded-md border border-border object-cover"
+						/>
+					)}
+
 					{isLoading && (
 						<Progress
 							className="absolute bottom-0 w-full"
@@ -170,6 +183,22 @@ export function MediaFormField({
 			acceptedFiles.forEach((file) => {
 				const reader = new FileReader();
 				reader.onload = () => {
+					// If the file is a video dont create a preview
+					if (file.type.includes("video")) {
+						const updatedFiles = [
+							...(form.getValues("media") || []),
+							{
+								id: Math.floor(Math.random() * 1000000).toString(),
+								file,
+								preview: [],
+								progress: 0,
+							},
+						];
+
+						form.setValue("media", updatedFiles);
+						return;
+					}
+
 					const updatedFiles = [
 						...(form.getValues("media") || []),
 						{
