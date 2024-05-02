@@ -243,6 +243,11 @@ function StyledMediaPost({
 							className="aspect-video rounded-sm object-cover"
 							src={imageUrl}
 							onError={() => {
+								if (post.attachment?.file.type === FileType.video) {
+									setImageUrl("images/videoPlaceholder.png");
+									return;
+								}
+
 								// If the thumbnail is not available, we will use the post content
 								setImageUrl(post.url);
 							}}

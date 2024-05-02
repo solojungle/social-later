@@ -33,7 +33,7 @@ const RESTRICTIONS = {
 		"image/png",
 		"image/gif",
 		"image/webp",
-		"video/mov",
+		"video/quicktime",
 		"video/mp4",
 	],
 };
