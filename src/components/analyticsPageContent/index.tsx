@@ -1,24 +1,65 @@
 "use client";
 
 import { ArrowDownRight, ArrowUpRight, InfoIcon } from "lucide-react";
-import {
-	Bar,
-	BarChart,
-	Cell,
-	Pie,
-	PieChart,
-	ResponsiveContainer,
-	XAxis,
-	YAxis,
-} from "recharts";
 
-import { CalendarDateRangePicker } from "../dateRangePicker";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ResizablePanel } from "../ui/resizable";
 import { Separator } from "../ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { AudienceGrowth } from "./audienceGrowth";
+import { DeviceVisits } from "./deviceVisits";
 
 const data = [
+	{
+		name: "Jan",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Feb",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Mar",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Apr",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "May",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Jun",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Jul",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Aug",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Sep",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Oct",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Nov",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+	{
+		name: "Dec",
+		total: Math.floor(Math.random() * 5000) + 1000,
+	},
+];
+
+const areaChartData = [
 	{
 		name: "Jan",
 		total: Math.floor(Math.random() * 5000) + 1000,
@@ -115,19 +156,19 @@ export const StatsCard = ({
 	title,
 	value,
 	increasedBy,
-	percentage,
 	period,
 	tooltip,
 }: {
 	title: string;
 	value: string;
 	increasedBy: string;
-	percentage: number;
 	period: string;
 	tooltip: string;
 }) => {
 	let colorClass = "";
 	let arrowIcon = null;
+
+	const percentage = parseFloat(increasedBy.replace(/,/g, "")) / 100;
 
 	if (percentage > 0) {
 		// Make positive percentages green
@@ -147,37 +188,84 @@ export const StatsCard = ({
 	}
 
 	return (
-		<div className="flex flex-col rounded-lg border border-border p-5">
+		<div className="flex flex-col px-2">
 			<Tooltip delayDuration={0}>
-				<TooltipTrigger className="mb-3 flex max-w-fit items-center gap-1 text-muted-foreground">
-					<h2 className="text-sm">{title}</h2>
-					<InfoIcon className="h-4 w-4" />
+				<TooltipTrigger className="mb-1 flex max-w-fit items-center gap-1 text-muted-foreground">
+					<h2 className="text-xs">{title}</h2>
+					<InfoIcon className="h-3 w-3" />
 				</TooltipTrigger>
 				<TooltipContent side="top" className="flex w-40 items-center gap-4">
 					<p className="text-xs">{tooltip}</p>
 				</TooltipContent>
 			</Tooltip>
-			<span className="mb-1 text-3xl font-medium">{value}</span>
+			<span className="mb-1 text-4xl font-light">{value}</span>
 			<div className="flex items-center gap-px text-sm">
 				{arrowIcon}
 				<span className={colorClass}>
 					{increasedBy} ({percentage}%)
 				</span>
-				<span className="ml-1 truncate text-xs text-muted-foreground">
+				{/* <span className="ml-1 truncate text-xs text-muted-foreground">
 					vs {period}
-				</span>
+				</span> */}
 			</div>
 		</div>
 	);
 };
 
+function PerformanceSummary() {
+	return (
+		<div className="w-full rounded-sm border border-border p-3 text-sm">
+			<div className="mb-8">
+				<h2 className="font-medium">Performance Summary</h2>
+				<p className="text-muted-foreground">
+					View your key performance metrics from the reporting
+				</p>
+			</div>
+			<div className="grid grid-cols-2 gap-6 divide-x lg:grid-cols-4">
+				<StatsCard
+					title="Followers"
+					value="12,345"
+					increasedBy="2,123"
+					period="yesterday"
+					tooltip="The total number of followers on your social profile."
+				/>
+				<StatsCard
+					title="Retweets"
+					value="2,345"
+					increasedBy="324"
+					period="yesterday"
+					tooltip="The total number of followers on your social profile."
+				/>
+				<StatsCard
+					title="Likes"
+					value="100,012"
+					increasedBy="6,238"
+					period="yesterday"
+					tooltip="The total number of followers on your social profile."
+				/>
+				<StatsCard
+					title="Impressions"
+					value="220,360"
+					increasedBy="12,127"
+					period="yesterday"
+					tooltip="The total number of followers on your social profile."
+				/>
+			</div>
+		</div>
+	);
+}
+
 export const AnalyticsPageContent = () => {
+	// const { data: resp } = api.metrics.getPostMetrics.useQuery({
+	// 	id: "clvs5cszf000aso19af4tk5jx",
+	// });
+
 	return (
 		<ResizablePanel
 			id="analytics"
 			order={2}
 			defaultSize={80}
-			className="space-y-4 !overflow-scroll p-3 pb-48"
+			className="space-y-2 !overflow-scroll p-3 pb-48"
 		>
 			<div className="mb-6">
 				<h3 className="text-lg font-medium">Analytics</h3>
@@ -187,140 +275,13 @@ export const AnalyticsPageContent = () => {
 				</p>
 				<Separator className="my-6" />
 			</div>
-			<div className="!mb-8 rounded-lg bg-primary p-5">
-				<div className="flex items-center justify-between">
-					<div className="flex items-center">
-						<Avatar className="mr-4 h-20 w-20">
-							<AvatarImage src="" />
-							<AvatarFallback className="border border-border">
-								A
-							</AvatarFallback>
-						</Avatar>
-						<div>
-							<h3 className="line-clamp-1 text-xl font-semibold text-primary-foreground">
-								Profile Name
-							</h3>
-						</div>
-					</div>
-					<div className="flex space-x-8">
-						<div className="text-center text-primary-foreground">
-							<span className="text-2xl">12,123,123</span>
-							<p className="text-xs text-muted">Total Followers</p>
-						</div>
-						<div className="text-center text-primary-foreground">
-							<span className="text-2xl">12,123,123</span>
-							<p className="text-xs text-muted">Total Followers</p>
-						</div>
-						<div className="text-center text-primary-foreground">
-							<span className="text-2xl">12,123,123</span>
-							<p className="text-xs text-muted">Total Followers</p>
-						</div>
-					</div>
+			<PerformanceSummary />
+			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
+				<div className="col-span-2">
+					<AudienceGrowth />
 				</div>
-			</div>
-			<div>
-				<h4 className="text-sm font-medium">Date Range</h4>
-				<p className="text-xs text-muted-foreground">
-					Select the date range for your analytics.
-				</p>
-			</div>
-			<CalendarDateRangePicker />
-			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				<StatsCard
-					title="Followers"
-					value="12,345"
-					increasedBy="2,345"
-					percentage={20.1}
-					period="yesterday"
-					tooltip="The total number of followers on your social profile."
-				/>
-				<StatsCard
-					title="Likes"
-					value="12,345"
-					increasedBy="2,345"
-					percentage={20.1}
-					period="yesterday"
-					tooltip="The total number of likes on your social profile."
-				/>
-				<StatsCard
-					title="Impressions"
-					value="12,345"
-					increasedBy="2,345"
-					percentage={20.1}
-					period="yesterday"
-					tooltip="The total number of impressions on your social profile."
-				/>
-				<StatsCard
-					title="Followers"
-					value="12,345"
-					increasedBy="2,345"
-					percentage={20.1}
-					period="yesterday"
-					tooltip="The total number of followers on your social profile."
-				/>
-			</div>
-			<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-				<div className="flex flex-col rounded-lg border border-border p-5">
-					<div className="mb-2 space-y-2">
-						<span className="w-full text-xs font-medium text-muted-foreground">
-							Followers Overtime
-						</span>
-						<Separator />
-					</div>
-					<ResponsiveContainer width="100%" height={350}>
-						<BarChart data={data}>
-							<XAxis
-								dataKey="name"
-								stroke="#888888"
-								fontSize={12}
-								tickLine={false}
-								axisLine={false}
-							/>
-							<YAxis
-								stroke="#888888"
-								fontSize={12}
-								tickLine={false}
-								axisLine={false}
-								tickFormatter={(value) => `$${value}`}
-							/>
-							<Bar
-								dataKey="total"
-								fill="currentColor"
-								radius={[4, 4, 0, 0]}
-								className="fill-primary"
-							/>
-						</BarChart>
-					</ResponsiveContainer>
-				</div>
-				<div className="flex flex-col rounded-lg border border-border p-5">
-					<div className="mb-2 space-y-2">
-						<span className="w-full text-xs font-medium text-muted-foreground">
-							Followers Per Social Profile
-						</span>
-						<Separator />
-					</div>
-					<ResponsiveContainer width="100%" height={350}>
-						<PieChart width={400} height={400}>
-							<Pie
-								data={pieData}
-								cx="50%"
-								cy="50%"
-								labelLine={false}
-								label={renderCustomizedLabel}
-								outerRadius={80}
-								fill="#8884d8"
-								dataKey="value"
-							>
-								{data.map((entry, index) => (
-									<Cell
-										// eslint-disable-next-line react/no-array-index-key
-										key={`cell-${index}`}
-										fill={COLORS[index % COLORS.length]}
-									/>
-								))}
-							</Pie>
-						</PieChart>
-					</ResponsiveContainer>
+				<div className="col-span-1">
+					<DeviceVisits />
 				</div>
 			</div>
 		</ResizablePanel>

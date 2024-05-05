@@ -118,7 +118,7 @@ function EditPostSheetContent({
 							controls
 							className="aspect-video w-full rounded-lg object-scale-down"
 						>
-							<track default kind="captions" srclang="en" src="" />
+							<track default kind="captions" srcLang="en" src="" />
 						</video>
 					</div>
 				)}
