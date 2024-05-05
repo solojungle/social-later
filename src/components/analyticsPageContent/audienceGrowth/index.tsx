@@ -81,9 +81,9 @@ function CustomTooltip({
 }) {
 	if (active && payload && payload.length) {
 		return (
-			<div className="w-36 rounded-md bg-white text-xs shadow-sm">
+			<div className="w-36 rounded-md bg-background text-xs shadow-sm">
 				<div className="rounded-t-sm border border-border bg-muted p-1">
-					<p className="font-normal text-muted-foreground">{label}</p>
+					<p className="font-normal text-foreground">{label}</p>
 				</div>
 				<div className="flex items-center justify-between rounded-b-sm border border-t-0 border-border px-1 py-1.5">
 					<div className="flex items-center justify-center">
@@ -95,7 +95,7 @@ function CustomTooltip({
 						/>
 						<p>Followers</p>
 					</div>
-					<p className="text-muted-foreground">
+					<p className="font-medium text-foreground">
 						{formatNumber(payload[0].value)}
 					</p>
 				</div>
@@ -105,19 +105,6 @@ function CustomTooltip({
 
 	return null;
 }
-
-// const CustomTooltip = ({ active, payload, label }: { active: boolean; payload: any; label: string }) => {
-// 	if (active && payload && payload.length) {
-// 		return (
-// 			<div className="bg-white p-2 rounded-md shadow-sm">
-// 				<p className="font-normal text-muted-foreground">{label}</p>
-// 				<p className="text-muted-foreground">{payload[0].value}</p>
-// 			</div>
-// 		);
-// 	}
-
-// 	return null;
-// };
 
 function CustomActiveDot({ cx, cy }: { cx: number; cy: number }) {
 	return (
@@ -156,7 +143,11 @@ export function AudienceGrowth() {
 							<stop offset="95%" stopColor={PRIMARY_COLOR} stopOpacity={0} />
 						</linearGradient>
 					</defs>
-					<CartesianGrid vertical={false} syncWithTicks />
+					<CartesianGrid
+						className="stroke-border"
+						vertical={false}
+						syncWithTicks
+					/>
 					<XAxis
 						dataKey="name"
 						fontSize={12}
