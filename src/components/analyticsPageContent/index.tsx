@@ -221,7 +221,7 @@ function PerformanceSummary() {
 					View your key performance metrics from the reporting
 				</p>
 			</div>
-			<div className="grid grid-cols-2 gap-6 divide-x lg:grid-cols-4">
+			<div className="grid grid-cols-2 gap-6 divide-x lg:grid-cols-4 [&>*:nth-child(odd)]:border-none lg:[&>*:nth-child(odd)]:border-solid ">
 				<StatsCard
 					title="Followers"
 					value="12,345"
