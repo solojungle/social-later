@@ -1,6 +1,8 @@
 "use client";
 
-import { ArrowDownRight, ArrowUpRight, InfoIcon } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, InfoIcon, Minus } from "lucide-react";
+
+import { api } from "@/trpc/react";
 
 import { ResizablePanel } from "../ui/resizable";
 import { Separator } from "../ui/separator";
@@ -184,7 +186,7 @@ export const StatsCard = ({
 		// Make neutral percentages blue
 		colorClass = "text-blue-600";
 		// Use ArrowDownRight for neutral percentages
-		arrowIcon = <ArrowDownRight className="h-4 w-4 text-blue-600" />;
+		arrowIcon = <Minus className="h-4 w-4 text-blue-600" />;
 	}
 
 	return (
@@ -212,7 +214,48 @@ export const StatsCard = ({
 	);
 };
 
-function PerformanceSummary() {
+export interface Increase {
+	daily: number;
+	weekly: number;
+	monthly: number;
+	annually: number;
+}
+
+export interface Totals {
+	value: number;
+	increase: Increase;
+}
+
+type AudienceGrowthProps = {
+	values: {
+		followers: Totals;
+		profileClicks: Totals;
+		retweets: Totals;
+		replies: Totals;
+		likes: Totals;
+		quotes: Totals;
+		impressions: Totals;
+		urlClicks: Totals;
+	};
+};
+
+function PerformanceSummary({ values }: AudienceGrowthProps) {
+	// While the data is loading, return null
+	if (!values) {
+		return null;
+	}
+
+	const {
+		retweets,
+		likes,
+		impressions,
+		followers,
+		// profileClicks,
+		// replies,
+		// quotes,
+		// urlClicks,
+	} = values;
+
 	return (
 		<div className="w-full rounded-sm border border-border p-3 text-sm">
 			<div className="mb-8">
@@ -224,31 +267,31 @@ function PerformanceSummary() {
 			<div className="grid grid-cols-2 gap-6 divide-x lg:grid-cols-4 [&>*:nth-child(odd)]:border-none lg:[&>*:nth-child(odd)]:border-solid ">
 				<StatsCard
 					title="Followers"
-					value="12,345"
-					increasedBy="2,123"
+					value={followers.value.toString()}
+					increasedBy={followers.increase.daily.toString()}
 					period="yesterday"
-					tooltip="The total number of followers on your social profile."
+					tooltip="The total amount of followers on your social profile."
 				/>
 				<StatsCard
 					title="Retweets"
-					value="2,345"
-					increasedBy="324"
+					value={retweets.value.toString()}
+					increasedBy={retweets.increase.daily.toString()}
 					period="yesterday"
-					tooltip="The total number of followers on your social profile."
+					tooltip="The total amount of retweets that your posts have received."
 				/>
 				<StatsCard
 					title="Likes"
-					value="100,012"
-					increasedBy="6,238"
+					value={likes.value.toString()}
+					increasedBy={likes.increase.daily.toString()}
 					period="yesterday"
-					tooltip="The total number of followers on your social profile."
+					tooltip="The total amount of likes that your posts have received."
 				/>
 				<StatsCard
 					title="Impressions"
-					value="220,360"
-					increasedBy="12,127"
+					value={impressions.value.toString()}
+					increasedBy={impressions.increase.daily.toString()}
 					period="yesterday"
-					tooltip="The total number of followers on your social profile."
+					tooltip="The total amount of times that your posts have been seen by users."
 				/>
 			</div>
 		</div>
@@ -256,9 +299,11 @@ function PerformanceSummary() {
 }
 
 export const AnalyticsPageContent = () => {
-	// const { data: resp } = api.metrics.getPostMetrics.useQuery({
-	// 	id: "clvs5cszf000aso19af4tk5jx",
-	// });
+	const { data: resp } = api.metrics.getPostMetrics.useQuery({
+		id: "clvs5cszf000aso19af4tk5jx",
+	});
+
+	console.log(resp);
 
 	return (
 		<ResizablePanel
@@ -275,7 +320,7 @@ export const AnalyticsPageContent = () => {
 				</p>
 				<Separator className="my-6" />
 			</div>
-			<PerformanceSummary />
+			<PerformanceSummary values={resp?.totals} />
 			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 				<div className="col-span-2">
 					<AudienceGrowth />
