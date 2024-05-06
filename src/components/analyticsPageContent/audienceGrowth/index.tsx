@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
 	Area,
 	AreaChart,
@@ -121,6 +122,10 @@ function CustomActiveDot({ cx, cy }: { cx: number; cy: number }) {
 }
 
 export function AudienceGrowth() {
+	const [period, setPeriod] = useState<
+		"daily" | "weekly" | "monthly" | "annually"
+	>("daily");
+
 	return (
 		<div className="w-full rounded-sm border border-border p-3 text-sm">
 			<div className="mb-8 flex justify-between">
@@ -130,7 +135,7 @@ export function AudienceGrowth() {
 						See how your audience grew during the reporting period
 					</p>
 				</div>
-				<ReportRangePicker />
+				<ReportRangePicker period={period} onChange={setPeriod} />
 			</div>
 			<ResponsiveContainer width="100%" height={350}>
 				<AreaChart

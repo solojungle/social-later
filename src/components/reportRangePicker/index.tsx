@@ -9,11 +9,17 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
-export function ReportRangePicker() {
-	const defaultValue = "daily";
+type ReportRangePickerProps = {
+	period: "daily" | "weekly" | "monthly" | "annually";
+	onChange: (period: "daily" | "weekly" | "monthly" | "annually") => void;
+};
 
+export function ReportRangePicker({
+	period,
+	onChange,
+}: ReportRangePickerProps) {
 	return (
-		<Select defaultValue={defaultValue}>
+		<Select defaultValue={period} onValueChange={onChange}>
 			<SelectTrigger className="w-32">
 				<CalendarIcon className="h-4 w-4" />
 				<SelectValue placeholder="Select report range" />
