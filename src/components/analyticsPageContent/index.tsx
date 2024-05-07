@@ -303,8 +303,6 @@ export const AnalyticsPageContent = () => {
 		id: "clvs5cszf000aso19af4tk5jx",
 	});
 
-	console.log(resp);
-
 	return (
 		<ResizablePanel
 			id="analytics"
@@ -323,7 +321,7 @@ export const AnalyticsPageContent = () => {
 			<PerformanceSummary values={resp?.totals} />
 			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 				<div className="col-span-2">
-					<AudienceGrowth />
+					<AudienceGrowth metrics={resp?.metrics} />
 				</div>
 				<div className="col-span-1">
 					<DeviceVisits />

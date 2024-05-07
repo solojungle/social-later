@@ -16,57 +16,6 @@ import { cn } from "@/lib/utils";
 
 const PRIMARY_COLOR = "#2563eb";
 
-const areaChartData = [
-	{
-		name: "Jan",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Feb",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Mar",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Apr",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "May",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Jun",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Jul",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Aug",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Sep",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Oct",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Nov",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Dec",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-];
-
 function formatNumber(num: number) {
 	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
@@ -121,10 +70,170 @@ function CustomActiveDot({ cx, cy }: { cx: number; cy: number }) {
 	);
 }
 
-export function AudienceGrowth() {
+type AudienceGrowthProps = {
+	metrics:
+		| {
+				id: string;
+				date: Date;
+				postId: string;
+				profileClicks: number;
+				retweets: number;
+				replies: number;
+				likes: number;
+				quotes: number;
+				impressions: number;
+				urlClicks: number;
+		  }[]
+		| undefined;
+};
+
+export function formatData(metrics: AudienceGrowthProps["metrics"]) {
+	if (!metrics) {
+		return [];
+	}
+
+	// Filter data by period
+	const filteredData = metrics
+		.map((metric) => {
+			const date = new Date(metric.date);
+			const month = String(date.getMonth() + 1).padStart(2, "0");
+			const day = String(date.getDate()).padStart(2, "0");
+			const hours = String(date.getHours()).padStart(2, "0");
+			const minutes = String(date.getMinutes()).padStart(2, "0");
+			const dateString = `${date.getFullYear()}-${month}-${day} ${hours}:${minutes}`;
+
+			return {
+				date: dateString,
+				value: metric.profileClicks,
+			};
+		})
+		.sort((a, b) => {
+			const dateA = new Date(a.date).getTime();
+			const dateB = new Date(b.date).getTime();
+
+			return dateA - dateB;
+		});
+
+	return filteredData;
+}
+
+function fitDataToPeriod(
+	period: "daily" | "weekly" | "monthly" | "annually",
+	data: { date: string; value: number }[],
+) {
+	const dates = [];
+
+	if (period === "daily") {
+		const start = new Date(new Date().setHours(0, 0, 0, 0));
+
+		for (let hours = 0; hours <= 23; hours += 1) {
+			const date = new Date(start.getTime() + hours * 60 * 60 * 1000);
+			const hour = String(date.getHours()).padStart(2, "0");
+			const minutes = String(date.getMinutes()).padStart(2, "0");
+			const timeString = `${hour}:${minutes}`;
+
+			const timeSlot = { date: timeString, value: 0 };
+			dates.push(timeSlot);
+
+			data.forEach((dataPoint) => {
+				if (
+					new Date(dataPoint.date).toISOString().slice(0, 13) ===
+					new Date(date).toISOString().slice(0, 13)
+				) {
+					timeSlot.value = dataPoint.value;
+				}
+			});
+		}
+
+		dates.push({ date: "23:59", value: 0 });
+	}
+
+	// First 3 letters of month, followed by day of the month, last 7 days
+	if (period === "weekly") {
+		const start = new Date(new Date().setHours(0, 0, 0, 0));
+
+		for (let days = 7; days > 0; days -= 1) {
+			const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
+			const month = date.toLocaleString("default", { month: "short" });
+			const day = date.getDate();
+			const dateString = `${month} ${day}`;
+
+			const timeSlot = { date: dateString, value: 0 };
+			dates.push(timeSlot);
+
+			data.forEach((dataPoint) => {
+				if (
+					new Date(dataPoint.date).toISOString().slice(0, 10) ===
+					new Date(date).toISOString().slice(0, 10)
+				) {
+					timeSlot.value = dataPoint.value;
+				}
+			});
+		}
+	}
+
+	if (period === "monthly") {
+		const start = new Date(new Date().setHours(0, 0, 0, 0));
+
+		for (let days = 29; days >= 0; days -= 1) {
+			const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
+			const month = date.toLocaleString("default", { month: "short" });
+			const day = date.getDate();
+			const dateString = `${month} ${day}`;
+
+			const timeSlot = { date: dateString, value: 0 };
+			dates.push(timeSlot);
+
+			data.forEach((dataPoint) => {
+				if (
+					new Date(dataPoint.date).toISOString().slice(0, 10) ===
+					new Date(date).toISOString().slice(0, 10)
+				) {
+					timeSlot.value = dataPoint.value;
+				}
+			});
+		}
+	}
+
+	// Just the first 3 letters of the month, last 13 months
+	if (period === "annually") {
+		const start = new Date(new Date().setHours(0, 0, 0, 0));
+
+		for (let months = 12; months >= 0; months -= 1) {
+			const date = new Date(start.getTime());
+			date.setMonth(date.getMonth() - months);
+			const month = date.toLocaleString("default", { month: "short" });
+
+			const dateString = month;
+
+			const timeSlot = { date: dateString, value: 0 };
+			dates.push(timeSlot);
+
+			data.forEach((dataPoint) => {
+				if (
+					new Date(dataPoint.date).toISOString().slice(0, 7) ===
+					new Date(date).toISOString().slice(0, 7)
+				) {
+					timeSlot.value = dataPoint.value;
+				}
+			});
+		}
+	}
+
+	return dates;
+}
+
+export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
 	const [period, setPeriod] = useState<
 		"daily" | "weekly" | "monthly" | "annually"
 	>("daily");
+
+	if (!metrics) {
+		return null;
+	}
+
+	const filteredData = formatData(metrics);
+	const fittedData = fitDataToPeriod(period, filteredData);
 
 	return (
 		<div className="w-full rounded-sm border border-border p-3 text-sm">
@@ -139,7 +248,7 @@ export function AudienceGrowth() {
 			</div>
 			<ResponsiveContainer width="100%" height={350}>
 				<AreaChart
-					data={areaChartData}
+					data={fittedData}
 					margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
 				>
 					<defs>
@@ -154,7 +263,7 @@ export function AudienceGrowth() {
 						syncWithTicks
 					/>
 					<XAxis
-						dataKey="name"
+						dataKey="date"
 						fontSize={12}
 						tickLine={false}
 						axisLine={false}
@@ -176,7 +285,7 @@ export function AudienceGrowth() {
 						isAnimationActive={false}
 						stroke={PRIMARY_COLOR}
 						activeDot={CustomActiveDot}
-						dataKey="total"
+						dataKey="value"
 						strokeWidth={1}
 						type="monotone"
 						fill="url(#colorUv)"
