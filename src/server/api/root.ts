@@ -3,6 +3,7 @@ import { teamRouter } from "@/server/api/routers/team";
 import { userRouter } from "@/server/api/routers/user";
 import { createTRPCRouter } from "@/server/api/trpc";
 
+import { analyticsRouter } from "./routers/analytics";
 import { awsRouter } from "./routers/aws";
 import { filesRouter } from "./routers/files";
 import { invitationRouter } from "./routers/invitation";
@@ -29,6 +30,7 @@ export const appRouter = createTRPCRouter({
 	products: productsRouter,
 	socials: socialProfilesRouter,
 	metrics: metricsRouter,
+	analytics: analyticsRouter,
 });
 
 // export type definition of API

@@ -248,16 +248,17 @@ model PostMetrics {
 // The total number of followers, likes, retweets, etc. for a specific social profile
 model ChannelMetrics {
   id          String        @id @default(cuid())
-  date        DateTime      @db.Timestamptz
+  date        DateTime      @default(now()) @db.Timestamptz
   profile     SocialProfile @relation(fields: [profileId], references: [id])
   profileId   String
   followers   Int
+  tweets      Int
   likes       Int
-  retweets    Int
-  replies     Int
-  quotes      Int
-  impressions Int
-  urlClicks   Int
+  retweets    Int?
+  replies     Int?
+  quotes      Int?
+  impressions Int?
+  urlClicks   Int?
 }
 
 // model TwitterPageMetrics {

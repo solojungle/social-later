@@ -227,16 +227,18 @@ export interface Totals {
 }
 
 type AudienceGrowthProps = {
-	values: {
-		followers: Totals;
-		profileClicks: Totals;
-		retweets: Totals;
-		replies: Totals;
-		likes: Totals;
-		quotes: Totals;
-		impressions: Totals;
-		urlClicks: Totals;
-	};
+	values:
+		| {
+				followers: Totals;
+				profileClicks: Totals;
+				retweets: Totals;
+				replies: Totals;
+				likes: Totals;
+				quotes: Totals;
+				impressions: Totals;
+				urlClicks: Totals;
+		  }
+		| undefined;
 };
 
 function PerformanceSummary({ values }: AudienceGrowthProps) {
@@ -302,6 +304,10 @@ export const AnalyticsPageContent = () => {
 	const { data: resp } = api.metrics.getPostMetrics.useQuery({
 		id: "clvs5cszf000aso19af4tk5jx",
 	});
+
+	// const { data } = api.analytics.populateChannelAnalytics.useQuery();
+
+	console.log(data);
 
 	return (
 		<ResizablePanel
