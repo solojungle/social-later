@@ -7,16 +7,21 @@ import {
 	CartesianGrid,
 	ResponsiveContainer,
 	Tooltip,
+	TooltipProps,
 	XAxis,
 	YAxis,
 } from "recharts";
+import {
+	NameType,
+	ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
 import { ReportRangePicker } from "@/components/reportRangePicker";
 import { cn } from "@/lib/utils";
 
 const PRIMARY_COLOR = "#2563eb";
 
-function formatNumber(num: number) {
+function formatNumber(num: any) {
 	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
 
@@ -24,11 +29,7 @@ function CustomTooltip({
 	active,
 	payload,
 	label,
-}: {
-	active: boolean;
-	payload: any;
-	label: string;
-}) {
+}: TooltipProps<ValueType, NameType>) {
 	if (active && payload && payload.length) {
 		return (
 			<div className="w-36 rounded-md bg-background text-xs shadow-sm">
@@ -46,7 +47,7 @@ function CustomTooltip({
 						<p>Followers</p>
 					</div>
 					<p className="font-medium text-foreground">
-						{formatNumber(payload[0].value)}
+						{payload?.[0] && formatNumber(payload?.[0].value)}
 					</p>
 				</div>
 			</div>
@@ -277,7 +278,7 @@ export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
 						tickFormatter={(value) => formatNumber(value)}
 					/>
 					<Tooltip
-						content={CustomTooltip}
+						content={<CustomTooltip />}
 						cursor={{ strokeWidth: 1 }}
 						animationDuration={75}
 					/>
