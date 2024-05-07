@@ -61,99 +61,6 @@ const data = [
 	},
 ];
 
-const areaChartData = [
-	{
-		name: "Jan",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Feb",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Mar",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Apr",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "May",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Jun",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Jul",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Aug",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Sep",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Oct",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Nov",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-	{
-		name: "Dec",
-		total: Math.floor(Math.random() * 5000) + 1000,
-	},
-];
-
-const pieData = [
-	{ name: "Group A", value: 400 },
-	{ name: "Group B", value: 300 },
-	{ name: "Group C", value: 300 },
-	{ name: "Group D", value: 200 },
-];
-
-const COLORS = ["#475569", "#6B7280", "#9CA3AF", "#475569"];
-
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({
-	cx,
-	cy,
-	midAngle,
-	innerRadius,
-	outerRadius,
-	percent,
-}: {
-	cx: number;
-	cy: number;
-	midAngle: number;
-	innerRadius: number;
-	outerRadius: number;
-	percent: number;
-}) => {
-	const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-	const x = cx + radius * Math.cos(-midAngle * RADIAN);
-	const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-	return (
-		<text
-			x={x}
-			y={y}
-			fill="white"
-			textAnchor={x > cx ? "start" : "end"}
-			dominantBaseline="central"
-		>
-			{`${(percent * 100).toFixed(0)}%`}
-		</text>
-	);
-};
-
 export const StatsCard = ({
 	title,
 	value,
@@ -304,10 +211,6 @@ export const AnalyticsPageContent = () => {
 	const { data: resp } = api.metrics.getPostMetrics.useQuery({
 		id: "clvs5cszf000aso19af4tk5jx",
 	});
-
-	// const { data } = api.analytics.populateChannelAnalytics.useQuery();
-
-	console.log(data);
 
 	return (
 		<ResizablePanel
