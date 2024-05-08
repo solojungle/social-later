@@ -57,41 +57,76 @@ export const analyticsRouter = createTRPCRouter({
 			},
 		});
 
-		const account = accounts[0];
+		const profile = accounts[0];
 
-		if (!account) {
+		if (!profile) {
 			return null;
 		}
 
 		const loggedClient = await getTwitterClientOrRefresh({
-			updatedAt: account.updatedAt,
-			expiresAt: account.expiresAt,
-			accessToken: account.accessToken,
-			refreshToken: account.refreshToken,
-			socialAccountId: account.id,
+			updatedAt: profile.updatedAt,
+			expiresAt: profile.expiresAt,
+			accessToken: profile.accessToken,
+			refreshToken: profile.refreshToken,
+			socialAccountId: profile.id,
 			ctx,
 		});
 
-		const { data } = await loggedClient.v2.me({
-			"user.fields": "public_metrics",
-		});
-
-		const stats = data.public_metrics;
-
-		if (!stats) {
-			return null;
-		}
-
-		// Now push into the database
-		const resp = await ctx.db.channelMetrics.create({
-			data: {
-				profileId: account.id, // Add the 'profile' property
-				followers: stats.followers_count || 0,
-				tweets: stats.tweet_count || 0,
-				likes: stats.like_count || 0,
+		// Get all the posts within the last 30 days, and update them with the latest stats
+		const posts = await ctx.db.post.findMany({
+			where: {
+				profileId: profile.id,
+				createdAt: {
+					gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
+				},
 			},
 		});
 
-		return resp;
+		console.log(posts);
+
+		// Get the stats of the posts
+		const postIds = posts.map((post) => post.externalPostId);
+
+		console.log(postIds);
+
+		try {
+			// Get the stats of the posts
+
+			const { data: postStats } = await loggedClient.v2.userTimeline("12", {
+				exclude: "replies",
+			});
+			// const { data: postStats } = await loggedClient.v2.tweets(postIds, {
+			// 	"tweet.fields": "public_metrics",
+			// 	// "tweet.fields": "public_metrics,organic_metrics,non_public_metrics",
+			// });
+
+			console.log("postStats: ", postStats);
+
+			return postStats;
+		} catch (err) {
+			console.log(err);
+		}
+
+		// const { data } = await loggedClient.v2.me({
+		// 	"user.fields": "public_metrics",
+		// });
+
+		// const stats = data.public_metrics;
+
+		// if (!stats) {
+		// 	return null;
+		// }
+
+		// // Now push into the database
+		// const resp = await ctx.db.channelMetrics.create({
+		// 	data: {
+		// 		profileId: account.id, // Add the 'profile' property
+		// 		followers: stats.followers_count || 0,
+		// 		tweets: stats.tweet_count || 0,
+		// 		likes: stats.like_count || 0,
+		// 	},
+		// });
+
+		// return resp;
 	}),
 });

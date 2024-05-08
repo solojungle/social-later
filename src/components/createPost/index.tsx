@@ -10,6 +10,7 @@ import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { TwitterTab } from "./tabs/twitterTab";
+import { YouTubeTab } from "./tabs/youtubeTab";
 
 function PostForm({
 	teamId,
@@ -46,12 +47,22 @@ function PostForm({
 					<SocialProfileSwitcher />
 				</div>
 				<TooltipProvider delayDuration={0}>
-					<TwitterTab
-						teamId={teamId}
-						profileId={profileId}
-						setOpen={setOpen}
-						scheduleDate={scheduleDate}
-					/>
+					{profileType === "twitter" && (
+						<TwitterTab
+							teamId={teamId}
+							profileId={profileId}
+							setOpen={setOpen}
+							scheduleDate={scheduleDate}
+						/>
+					)}
+					{profileType === "youtube" && (
+						<YouTubeTab
+							teamId={teamId}
+							profileId={profileId}
+							setOpen={setOpen}
+							scheduleDate={scheduleDate}
+						/>
+					)}
 				</TooltipProvider>
 			</SheetContent>
 		</Sheet>

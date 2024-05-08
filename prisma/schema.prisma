@@ -228,7 +228,7 @@ model Invitation {
   @@unique([teamId, token])
 }
 
-// Being able to see at which time your post was viewed the most seems useful first the first day at least
+// Metrics related to the posts themselves
 model PostMetrics {
   id            String   @id @default(cuid())
   date          DateTime @db.Timestamptz
@@ -245,7 +245,7 @@ model PostMetrics {
   urlClicks     Int
 }
 
-// The total number of followers, likes, retweets, etc. for a specific social profile
+// Aggregate all post metrics for a specific social profile
 model ChannelMetrics {
   id          String        @id @default(cuid())
   date        DateTime      @default(now()) @db.Timestamptz
@@ -261,24 +261,16 @@ model ChannelMetrics {
   urlClicks   Int?
 }
 
-// model TwitterPageMetrics {
-//   id                String        @id @default(cuid())
-//   date              DateTime      @db.Timestamptz
-//   numberOfTweets    Int
-//   impressions       Int
-//   engagements       Int
-//   engagementRate    Float
-//   likes             Int
-//   retweets          Int
-//   replies           Int
-//   urlClicks         Int
-// userProfileClicks Int
-//   hashtagClicks     Int
-//   detailExpands     Int
-//   permalinkClicks   Int
-//   follows           Int
-//   mediaViews        Int
-//   mediaEngagements  Int
-//   profile           SocialProfile @relation(fields: [profileId], references: [id])
-//   profileId         String
-// }
+// Running total for all your posts
+model TotalMetrics {
+  id          String   @id @default(cuid())
+  date        DateTime @default(now()) @db.Timestamptz
+  followers   Int
+  tweets      Int
+  likes       Int
+  retweets    Int?
+  replies     Int?
+  quotes      Int?
+  impressions Int?
+  urlClicks   Int?
+}
