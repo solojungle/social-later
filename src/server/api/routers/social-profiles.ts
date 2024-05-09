@@ -1,3 +1,4 @@
+import { youtube } from "@googleapis/youtube";
 import { SocialProfileType } from "@prisma/client";
 import { TwitterApi } from "twitter-api-v2";
 import { z } from "zod";
@@ -7,6 +8,7 @@ import { TweetSchema } from "@/schemas/posts-schema";
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { client, v1client } from "@/server/services/twitter/client";
+import { getYTClientAuth } from "@/server/services/youtube/client";
 
 // This function will refresh the account if the token is expired
 // will then return the client
@@ -270,5 +272,59 @@ export const socialProfilesRouter = createTRPCRouter({
 			}
 
 			throw new Error("You must provide content or media to tweet");
+		}),
+
+	uploadYouTubeVideo: protectedProcedure
+		.input(z.object({ profileId: z.string() }))
+		.query(async ({ ctx, input }) => {
+			const { profileId: ytAccountId } = input;
+
+			// Make sure the user is apart of the team, and that the twitter account belongs to the team
+			const ytAccount = await ctx.db.socialProfile.findUnique({
+				where: {
+					id: ytAccountId,
+				},
+			});
+
+			if (!ytAccount) {
+				throw new Error("YouTube account does not exist");
+			}
+
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: ytAccount.teamId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			const clientAuth = getYTClientAuth({
+				accessToken: ytAccount.accessToken,
+				refreshToken: ytAccount.refreshToken,
+				expiresAt:
+					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
+			});
+
+			try {
+				const yt = youtube({
+					version: "v3",
+					auth: clientAuth,
+				});
+
+				const test = await yt.channels.list({
+					part: ["snippet,contentDetails,statistics"],
+					mine: true,
+				});
+
+				console.log(test);
+				return test;
+			} catch (err) {
+				console.log(err);
+			}
+
+			return "";
 		}),
 });

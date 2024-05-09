@@ -2,15 +2,16 @@
 
 import { ArrowDownRight, ArrowUpRight, InfoIcon, Minus } from "lucide-react";
 
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
-import { SocialProfileSwitcher } from "../socialProfileSwitcher";
-import { ResizablePanel } from "../ui/resizable";
-import { Separator } from "../ui/separator";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { TwitterAnalyticsTab } from "./tabs/twitter";
-import { YouTubeAnalyticsTab } from "./tabs/youtube";
+import { AudienceGrowth } from "../audienceGrowth";
+import { DeviceVisits } from "../deviceVisits";
 
 export const StatsCard = ({
 	title,
@@ -158,46 +159,33 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 	);
 }
 
-export const AnalyticsPageContent = () => {
-	const { profiles, currentProfileId } = useSocialProfilesStore();
+export const YouTubeAnalyticsTab = () => {
+	const { currentProfileId } = useSocialProfilesStore();
 
-	const { type: profileType } = profiles.find(
-		(profile) => profile.id === currentProfileId,
+	const { data: ytResp } = api.socials.uploadYouTubeVideo.useQuery(
+		{
+			profileId: currentProfileId,
+		},
+		{
+			enabled: !!currentProfileId,
+		},
 	);
 
-	const { data: resp } = api.metrics.getPostMetrics.useQuery({
-		id: "clvs5cszf000aso19af4tk5jx",
-	});
+	const resp = [];
 
-	// const { data: resp2 } = api.socials.uploadYouTubeVideo.useQuery(
-	// 	{
-	// 		profileId: currentProfileId,
-	// 	},
-	// 	{
-	// 		enabled: !!currentProfileId,
-	// 	},
-	// );
-
-	// console.log(resp2);
+	console.log(ytResp);
 
 	return (
-		<ResizablePanel
-			id="analytics"
-			order={2}
-			defaultSize={80}
-			className="space-y-2 !overflow-scroll p-3 pb-48"
-		>
-			<div className="mb-6">
-				<h3 className="text-lg font-medium">Analytics</h3>
-				<p className="mb-6 text-sm text-muted-foreground">
-					Customize your analytics view. Select your preferred data range and
-					visualizations.
-				</p>
-				<SocialProfileSwitcher />
-				<Separator className="my-6" />
+		<>
+			<PerformanceSummary values={resp?.totals} />
+			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
+				<div className="col-span-2">
+					<AudienceGrowth metrics={resp?.metrics} />
+				</div>
+				<div className="col-span-1">
+					<DeviceVisits />
+				</div>
 			</div>
-			{profileType === "twitter" && <TwitterAnalyticsTab />}
-			{profileType === "youtube" && <YouTubeAnalyticsTab />}
-		</ResizablePanel>
+		</>
 	);
 };
