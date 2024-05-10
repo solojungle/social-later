@@ -7,7 +7,13 @@ import { oauth2Client as yt } from "@/server/services/youtube/client";
 export const oauth2Router = createTRPCRouter({
 	generateYoutubeOAuth2URL: protectedProcedure.query(() => {
 		// Generate a url that asks permissions for YouTube scope
-		const scopes = ["https://www.googleapis.com/auth/youtube"];
+		const scopes = [
+			"https://www.googleapis.com/auth/youtube",
+			"https://www.googleapis.com/auth/youtube.readonly",
+			"https://www.googleapis.com/auth/youtubepartner",
+			"https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
+			"https://www.googleapis.com/auth/yt-analytics.readonly",
+		];
 
 		// TODO: add code and codeVerifier to the response
 		const codeVerifier = "";

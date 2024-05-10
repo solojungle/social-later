@@ -314,13 +314,40 @@ export const socialProfilesRouter = createTRPCRouter({
 					auth: clientAuth,
 				});
 
-				const test = await yt.channels.list({
-					part: ["snippet,contentDetails,statistics"],
+				const channels = await yt.channels.list({
+					part: ["contentDetails"],
 					mine: true,
 				});
 
-				console.log(test);
-				return test;
+				const uploadPlaylistIds = channels.data.items?.map(
+					(item) => item.contentDetails?.relatedPlaylists?.uploads,
+				);
+
+				if (!uploadPlaylistIds) {
+					throw new Error("Could not find upload playlist");
+				}
+
+				const uploadedVideo = await yt.playlistItems.list({
+					part: ["snippet"],
+					playlistId: uploadPlaylistIds[0],
+				});
+
+				const uploadedVideoIds = uploadedVideo.data.items
+					?.map((item) => item.snippet?.resourceId?.videoId) // Get videoId from resourceId
+					.filter((id) => typeof id === "string"); // Filter out non-string values
+
+				if (!uploadedVideoIds || uploadedVideoIds.length === 0) {
+					throw new Error("No uploaded videos found");
+				}
+
+				const uploadedVideoStats = await yt.videos.list({
+					part: ["statistics", "contentDetails", "snippet"],
+					id: uploadedVideoIds.filter(
+						(id) => id !== null && id !== undefined,
+					) as string[],
+				});
+
+				return uploadedVideoStats;
 			} catch (err) {
 				console.log(err);
 			}

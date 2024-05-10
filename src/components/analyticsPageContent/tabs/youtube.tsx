@@ -127,21 +127,21 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 			</div>
 			<div className="grid grid-cols-2 gap-6 divide-x lg:grid-cols-4 [&>*:nth-child(odd)]:border-none lg:[&>*:nth-child(odd)]:border-solid ">
 				<StatsCard
-					title="Followers"
+					title="Views"
 					value={followers.value.toString()}
 					increasedBy={followers.increase.daily.toString()}
 					period="yesterday"
 					tooltip="The total amount of followers on your social profile."
 				/>
 				<StatsCard
-					title="Retweets"
+					title="Watch time (hours)"
 					value={retweets.value.toString()}
 					increasedBy={retweets.increase.daily.toString()}
 					period="yesterday"
 					tooltip="The total amount of retweets that your posts have received."
 				/>
 				<StatsCard
-					title="Likes"
+					title="Subscribers"
 					value={likes.value.toString()}
 					increasedBy={likes.increase.daily.toString()}
 					period="yesterday"
@@ -162,6 +162,10 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 export const YouTubeAnalyticsTab = () => {
 	const { currentProfileId } = useSocialProfilesStore();
 
+	const { data: resp } = api.metrics.getPostMetrics.useQuery({
+		id: "clvs5cszf000aso19af4tk5jx",
+	});
+
 	const { data: ytResp } = api.socials.uploadYouTubeVideo.useQuery(
 		{
 			profileId: currentProfileId,
@@ -170,8 +174,6 @@ export const YouTubeAnalyticsTab = () => {
 			enabled: !!currentProfileId,
 		},
 	);
-
-	const resp = [];
 
 	console.log(ytResp);
 
