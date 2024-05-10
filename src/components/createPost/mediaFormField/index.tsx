@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 export type FileUpload = {
 	id: string;
@@ -92,8 +93,9 @@ function FileGallery({
 	}
 
 	return (
-		// eslint-disable-next-line tailwindcss/classnames-order, tailwindcss/no-custom-classname
-		<div className={`grid w-fit grid-cols-${restrictions.maxFiles} gap-2`}>
+		<div
+			className={cn("grid w-fit gap-2", `grid-cols-${restrictions.maxFiles}`)}
+		>
 			{files.map((file) => (
 				<div key={file.id} className="group relative">
 					<button
