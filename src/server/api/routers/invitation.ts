@@ -3,6 +3,7 @@ import { z } from "zod";
 import { InvitationSchema } from "@/schemas/invitation-schema";
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { sendgrid } from "@/server/services/sendgrid/client";
 
 export const invitationRouter = createTRPCRouter({
 	delete: protectedProcedure
@@ -175,6 +176,29 @@ export const invitationRouter = createTRPCRouter({
 			});
 
 			// 5. Send the invitation email
+			await sendgrid.send({
+				from: "from@feedfrenzy.co",
+				subject: "You've been invited to join a team on FeedFrenzy!",
+				personalizations: [
+					{
+						to: [
+							{
+								email,
+							},
+						],
+						from: {
+							name: "FeedFrenzy",
+							email: "from@feedfrenzy.co",
+						},
+
+						dynamicTemplateData: {
+							first_name: ctx.session.user.name?.split(" ")[0] || "there",
+							button_url: `https://feedfrenzy.co/invite/${invitation.token}`,
+						},
+					},
+				],
+				templateId: "d-6059f7514c6b43d39e30368022544f0b",
+			});
 
 			// 6. Return the invitation
 			return invitation;
