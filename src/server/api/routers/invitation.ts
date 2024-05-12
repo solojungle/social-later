@@ -192,7 +192,7 @@ export const invitationRouter = createTRPCRouter({
 						},
 
 						dynamicTemplateData: {
-							first_name: ctx.session.user.name?.split(" ")[0] || "there",
+							first_name: ctx.session.user.name?.split(" ")[0] || "Someone",
 							button_url: `https://feedfrenzy.co/invite/${invitation.token}`,
 						},
 					},
