@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRole } from "@prisma/client";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -32,6 +33,8 @@ import {
 import { SettingsCardBase } from "../settings-card-base";
 
 export function TeamAddMembersCard() {
+	const [isLoading, setIsLoading] = useState(false);
+
 	const { addInvitation } = useInvitationsStore();
 
 	const createInvitation = api.invitation.create.useMutation({
@@ -41,6 +44,9 @@ export function TeamAddMembersCard() {
 			toast.success("Invitation has been sent!", {
 				description: "The invitation has been sent to the recipient.",
 			});
+		},
+		onSettled: () => {
+			setIsLoading(false);
 		},
 	});
 
@@ -57,6 +63,9 @@ export function TeamAddMembersCard() {
 	});
 
 	function onSubmit(data: InvitationSchemaValues) {
+		// Set loading state
+		setIsLoading(true);
+
 		// Add teamId to the input
 		const input = {
 			...data,
@@ -73,6 +82,7 @@ export function TeamAddMembersCard() {
 					description="Invite new members by email address."
 					footerSubtitle="An email will be sent to the recipient."
 					buttonContent="Invite"
+					isLoading={isLoading}
 					content={
 						<div className="flex w-full items-start justify-between space-x-2">
 							<FormField
