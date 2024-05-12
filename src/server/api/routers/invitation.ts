@@ -179,4 +179,65 @@ export const invitationRouter = createTRPCRouter({
 			// 6. Return the invitation
 			return invitation;
 		}),
+
+	accept: protectedProcedure
+		.input(
+			z.object({
+				invitationId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { invitationId } = input;
+
+			// 1. Grab the invitation
+			const invitation = await ctx.db.invitation.findFirst({
+				where: {
+					id: invitationId,
+					hasExpired: false,
+					expires: {
+						gt: new Date(),
+					},
+				},
+			});
+
+			if (invitation === null) {
+				throw new Error("Invitation has expired");
+			}
+
+			// 2. Grab the information of the user submitting the form
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: invitation.teamId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			// Check if the user is part of the team
+			const isUserMemberOfTeam = isUserPartOfTeam !== null;
+			if (isUserMemberOfTeam) {
+				throw new Error("You are already apart of this team");
+			}
+
+			// 3. Create the userOnTeam
+			const userOnTeam = await ctx.db.userOnTeam.create({
+				data: {
+					teamId: invitation.teamId,
+					userId: ctx.session.user.id,
+					role: invitation.role,
+				},
+			});
+
+			// 4. Accept the invitation
+			await ctx.db.invitation.update({
+				where: {
+					id: invitationId,
+				},
+				data: {
+					hasExpired: true,
+					hasAccepted: true,
+				},
+			});
+
+			return userOnTeam;
+		}),
 });
