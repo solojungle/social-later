@@ -52,7 +52,22 @@ export const authOptions: NextAuthOptions = {
 	],
 	// This can be used to configure the behaviour of the JWT signing and verification.
 	// Like adding a stripe customer id to the user db model.
-	events: {},
+	events: {
+		createUser: async () => {
+			const discordWebhookUrl =
+				"https://discord.com/api/webhooks/1229337363197726730/ZWRDCPTYgKt11KU0ETPUI6Q0i6YTQ6ea0humJk4djfnQgtfiHwaK4wjb4czAWjHOrp3-";
+
+			await fetch(discordWebhookUrl, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					content: `@here A user has signed up!`,
+				}),
+			});
+		},
+	},
 };
 
 /**
