@@ -26,6 +26,24 @@ declare module "next-auth" {
 }
 
 /**
+ * Sends a notification to a Discord channel when a user signs up.
+ */
+async function notifyOnUserCreation() {
+	const discordWebhookUrl =
+		"https://discord.com/api/webhooks/1229337363197726730/ZWRDCPTYgKt11KU0ETPUI6Q0i6YTQ6ea0humJk4djfnQgtfiHwaK4wjb4czAWjHOrp3-";
+
+	await fetch(discordWebhookUrl, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			content: `@here A user has signed up!`,
+		}),
+	});
+}
+
+/**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
  * @see https://next-auth.js.org/configuration/options
@@ -54,18 +72,9 @@ export const authOptions: NextAuthOptions = {
 	// Like adding a stripe customer id to the user db model.
 	events: {
 		createUser: async () => {
-			const discordWebhookUrl =
-				"https://discord.com/api/webhooks/1229337363197726730/ZWRDCPTYgKt11KU0ETPUI6Q0i6YTQ6ea0humJk4djfnQgtfiHwaK4wjb4czAWjHOrp3-";
-
-			await fetch(discordWebhookUrl, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					content: `@here A user has signed up!`,
-				}),
-			});
+			// This is where you would send a welcome email
+			// await sendWelcomeEmail();
+			await notifyOnUserCreation();
 		},
 	},
 };
