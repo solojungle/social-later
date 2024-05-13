@@ -45,6 +45,33 @@ function LinkItems({ links }: LinkItemsProps) {
 	return (
 		<div className="grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
 			{links.map((link) => {
+				if (link.action) {
+					return (
+						<button
+							key={link.title}
+							type="button"
+							onClick={link.action}
+							className={cn(
+								buttonVariants({ variant: link.variant, size: "sm" }),
+								link.variant === "default" &&
+									"dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+								"justify-start",
+							)}
+						>
+							<link.icon className="mr-2 h-4 w-4" />
+							<span
+								className={cn(
+									"text-xs",
+									link.variant === "default" &&
+										"text-background dark:text-white",
+								)}
+							>
+								{link.title}
+							</span>
+						</button>
+					);
+				}
+
 				return (
 					<Link
 						key={link.title}
@@ -139,12 +166,9 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 										title: "Log out",
 										icon: LogOutIcon,
 										variant: "ghost",
-										url: "",
-										action: () => {
-											signOut({ redirect: false }).then(() => {
-												// Redirect to the dashboard page after signing out
-												router.push("/");
-											});
+										action: async () => {
+											await signOut({ redirect: false });
+											router.push("/login");
 										},
 									},
 								]}
