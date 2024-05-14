@@ -12,7 +12,12 @@ type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 	const searchParams = useSearchParams();
 
-	const callbackUrl = searchParams.get("callbackUrl");
+	const inviteCode = searchParams.get("inviteCode");
+	// const referralCode = searchParams.get("referralCode");
+
+	const callbackUrl = inviteCode
+		? `/publish?inviteCode=${inviteCode}`
+		: undefined;
 
 	return (
 		<div className={cn("grid w-full", className)} {...props}>
