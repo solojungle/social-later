@@ -16,13 +16,11 @@ export const StatsCard = ({
 	title,
 	value,
 	increasedBy,
-	period,
 	tooltip,
 }: {
 	title: string;
 	value: string;
 	increasedBy: string;
-	period: string;
 	tooltip: string;
 }) => {
 	let colorClass = "";
@@ -129,28 +127,24 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 					title="Followers"
 					value={followers.value.toString()}
 					increasedBy={followers.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of followers on your social profile."
 				/>
 				<StatsCard
 					title="Retweets"
 					value={retweets.value.toString()}
 					increasedBy={retweets.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of retweets that your posts have received."
 				/>
 				<StatsCard
 					title="Likes"
 					value={likes.value.toString()}
 					increasedBy={likes.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of likes that your posts have received."
 				/>
 				<StatsCard
 					title="Impressions"
 					value={impressions.value.toString()}
 					increasedBy={impressions.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of times that your posts have been seen by users."
 				/>
 			</div>

@@ -308,6 +308,8 @@ export const socialProfilesRouter = createTRPCRouter({
 					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
 			});
 
+			// const ytAnalytics = youtubeAnalytics_v2();
+
 			try {
 				const yt = youtube({
 					version: "v3",

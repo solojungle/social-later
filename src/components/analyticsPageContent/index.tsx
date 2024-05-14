@@ -3,7 +3,6 @@
 import { ArrowDownRight, ArrowUpRight, InfoIcon, Minus } from "lucide-react";
 
 import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { api } from "@/trpc/react";
 
 import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { ResizablePanel } from "../ui/resizable";
@@ -16,13 +15,11 @@ export const StatsCard = ({
 	title,
 	value,
 	increasedBy,
-	period,
 	tooltip,
 }: {
 	title: string;
 	value: string;
 	increasedBy: string;
-	period: string;
 	tooltip: string;
 }) => {
 	let colorClass = "";
@@ -64,9 +61,6 @@ export const StatsCard = ({
 				<span className={colorClass}>
 					{increasedBy} ({percentage}%)
 				</span>
-				{/* <span className="ml-1 truncate text-xs text-muted-foreground">
-					vs {period}
-				</span> */}
 			</div>
 		</div>
 	);
@@ -84,101 +78,29 @@ export interface Totals {
 	increase: Increase;
 }
 
-type AudienceGrowthProps = {
-	values:
-		| {
-				followers: Totals;
-				profileClicks: Totals;
-				retweets: Totals;
-				replies: Totals;
-				likes: Totals;
-				quotes: Totals;
-				impressions: Totals;
-				urlClicks: Totals;
-		  }
-		| undefined;
-};
-
-function PerformanceSummary({ values }: AudienceGrowthProps) {
-	// While the data is loading, return null
-	if (!values) {
-		return null;
-	}
-
-	const {
-		retweets,
-		likes,
-		impressions,
-		followers,
-		// profileClicks,
-		// replies,
-		// quotes,
-		// urlClicks,
-	} = values;
-
-	return (
-		<div className="w-full rounded-sm border border-border p-3 text-sm">
-			<div className="mb-8">
-				<h2 className="font-medium">Performance Summary</h2>
-				<p className="text-muted-foreground">
-					View your key performance metrics from the reporting
-				</p>
-			</div>
-			<div className="grid grid-cols-2 gap-6 divide-x lg:grid-cols-4 [&>*:nth-child(odd)]:border-none lg:[&>*:nth-child(odd)]:border-solid ">
-				<StatsCard
-					title="Followers"
-					value={followers.value.toString()}
-					increasedBy={followers.increase.daily.toString()}
-					period="yesterday"
-					tooltip="The total amount of followers on your social profile."
-				/>
-				<StatsCard
-					title="Retweets"
-					value={retweets.value.toString()}
-					increasedBy={retweets.increase.daily.toString()}
-					period="yesterday"
-					tooltip="The total amount of retweets that your posts have received."
-				/>
-				<StatsCard
-					title="Likes"
-					value={likes.value.toString()}
-					increasedBy={likes.increase.daily.toString()}
-					period="yesterday"
-					tooltip="The total amount of likes that your posts have received."
-				/>
-				<StatsCard
-					title="Impressions"
-					value={impressions.value.toString()}
-					increasedBy={impressions.increase.daily.toString()}
-					period="yesterday"
-					tooltip="The total amount of times that your posts have been seen by users."
-				/>
-			</div>
-		</div>
-	);
-}
+// type AudienceGrowthProps = {
+// 	values:
+// 		| {
+// 				followers: Totals;
+// 				profileClicks: Totals;
+// 				retweets: Totals;
+// 				replies: Totals;
+// 				likes: Totals;
+// 				quotes: Totals;
+// 				impressions: Totals;
+// 				urlClicks: Totals;
+// 		  }
+// 		| undefined;
+// };
 
 export const AnalyticsPageContent = () => {
 	const { profiles, currentProfileId } = useSocialProfilesStore();
 
-	const { type: profileType } = profiles.find(
+	const currentProfile = profiles.find(
 		(profile) => profile.id === currentProfileId,
 	);
 
-	const { data: resp } = api.metrics.getPostMetrics.useQuery({
-		id: "clvs5cszf000aso19af4tk5jx",
-	});
-
-	// const { data: resp2 } = api.socials.uploadYouTubeVideo.useQuery(
-	// 	{
-	// 		profileId: currentProfileId,
-	// 	},
-	// 	{
-	// 		enabled: !!currentProfileId,
-	// 	},
-	// );
-
-	// console.log(resp2);
+	const profileType = currentProfile?.type;
 
 	return (
 		<ResizablePanel

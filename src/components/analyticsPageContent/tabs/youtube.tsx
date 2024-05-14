@@ -7,7 +7,6 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 import { AudienceGrowth } from "../audienceGrowth";
@@ -17,13 +16,11 @@ export const StatsCard = ({
 	title,
 	value,
 	increasedBy,
-	period,
 	tooltip,
 }: {
 	title: string;
 	value: string;
 	increasedBy: string;
-	period: string;
 	tooltip: string;
 }) => {
 	let colorClass = "";
@@ -130,28 +127,24 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 					title="Views"
 					value={followers.value.toString()}
 					increasedBy={followers.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of followers on your social profile."
 				/>
 				<StatsCard
 					title="Watch time (hours)"
 					value={retweets.value.toString()}
 					increasedBy={retweets.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of retweets that your posts have received."
 				/>
 				<StatsCard
 					title="Subscribers"
 					value={likes.value.toString()}
 					increasedBy={likes.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of likes that your posts have received."
 				/>
 				<StatsCard
 					title="Impressions"
 					value={impressions.value.toString()}
 					increasedBy={impressions.increase.daily.toString()}
-					period="yesterday"
 					tooltip="The total amount of times that your posts have been seen by users."
 				/>
 			</div>
@@ -160,22 +153,20 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 }
 
 export const YouTubeAnalyticsTab = () => {
-	const { currentProfileId } = useSocialProfilesStore();
+	// const { currentProfileId } = useSocialProfilesStore();
 
 	const { data: resp } = api.metrics.getPostMetrics.useQuery({
 		id: "clvs5cszf000aso19af4tk5jx",
 	});
 
-	const { data: ytResp } = api.socials.uploadYouTubeVideo.useQuery(
-		{
-			profileId: currentProfileId,
-		},
-		{
-			enabled: !!currentProfileId,
-		},
-	);
-
-	console.log(ytResp);
+	// const { data: ytResp } = api.socials.uploadYouTubeVideo.useQuery(
+	// 	{
+	// 		profileId: currentProfileId,
+	// 	},
+	// 	{
+	// 		enabled: !!currentProfileId,
+	// 	},
+	// );
 
 	return (
 		<>

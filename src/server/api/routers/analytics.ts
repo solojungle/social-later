@@ -107,6 +107,8 @@ export const analyticsRouter = createTRPCRouter({
 			console.log(err);
 		}
 
+		return null;
+
 		// const { data } = await loggedClient.v2.me({
 		// 	"user.fields": "public_metrics",
 		// });
