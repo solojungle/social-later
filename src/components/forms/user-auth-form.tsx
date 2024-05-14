@@ -16,7 +16,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 	// const referralCode = searchParams.get("referralCode");
 
 	const callbackUrl = inviteCode
-		? `/publish?inviteCode=${inviteCode}`
+		? `/invites?inviteCode=${inviteCode}`
 		: undefined;
 
 	return (

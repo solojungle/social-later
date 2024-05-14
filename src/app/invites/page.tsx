@@ -1,17 +1,9 @@
-"use client";
+import { getServerAuthSession } from "@/server/auth";
 
-import { Button } from "@/components/ui/button";
+import { InvitesPageContent } from "./content";
 
-export default function InvitesPage() {
-	// const params = useSearchParams();
+export default async function InvitesPage() {
+	const session = await getServerAuthSession();
 
-	return (
-		<div className="space-y-6">
-			<h1 className="text-3xl font-semibold">Invites</h1>
-			<p>This team invited you to collaborate</p>
-			<Button>
-				<span>Accept</span>
-			</Button>
-		</div>
-	);
+	return <InvitesPageContent isLoggedIn={!!session} />;
 }
