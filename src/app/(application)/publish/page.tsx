@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 import AddSocialProfile from "@/components/addSocialProfileButton";
 import CreateTeamButton from "@/components/createTeamButton";
@@ -14,6 +15,9 @@ export default function PublishPage() {
 	const { id } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
 	const { id: userId } = useUserStore();
+	const searchParams = useSearchParams();
+
+	const inviteCode = searchParams.get("inviteCode");
 
 	if (!userId) {
 		return (
@@ -52,5 +56,5 @@ export default function PublishPage() {
 		);
 	}
 
-	return <PublishPageContent />;
+	return <PublishPageContent inviteCode={inviteCode} />;
 }

@@ -210,17 +210,18 @@ export const invitationRouter = createTRPCRouter({
 	accept: protectedProcedure
 		.input(
 			z.object({
-				invitationId: z.string(),
+				inviteCode: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const { invitationId } = input;
+			const { inviteCode } = input;
 
 			// 1. Grab the invitation
 			const invitation = await ctx.db.invitation.findFirst({
 				where: {
-					id: invitationId,
+					token: inviteCode,
 					hasExpired: false,
+					hasAccepted: false,
 					expires: {
 						gt: new Date(),
 					},
@@ -228,7 +229,7 @@ export const invitationRouter = createTRPCRouter({
 			});
 
 			if (invitation === null) {
-				throw new Error("Invitation has expired");
+				throw new Error("Invitation has expired or does not exist");
 			}
 
 			// 2. Grab the information of the user submitting the form
@@ -257,7 +258,7 @@ export const invitationRouter = createTRPCRouter({
 			// 4. Accept the invitation
 			await ctx.db.invitation.update({
 				where: {
-					id: invitationId,
+					id: invitation.id,
 				},
 				data: {
 					hasExpired: true,
