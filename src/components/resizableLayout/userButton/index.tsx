@@ -147,7 +147,7 @@ export function CollapsibleUserMenu({ isCollapsed }: { isCollapsed: boolean }) {
 							{email || name}
 							<ChevronsUpDown className="ml-auto h-4 w-4" />
 						</CollapsibleTrigger>
-						<CollapsibleContent>
+						<CollapsibleContent className="pt-4">
 							<LinkItems
 								links={[
 									{
