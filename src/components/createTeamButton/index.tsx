@@ -5,31 +5,34 @@ import { useState } from "react";
 import { Checkout } from "../navigationbar/teamSwitcher/checkout";
 import { Button } from "../ui/button";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "../ui/dialog";
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "../ui/sheet";
 
 export default function CreateTeamButton() {
 	const [showNewTeamDialog, setShowNewTeamDialog] = useState(false);
 
 	return (
-		<Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
-			<DialogTrigger asChild>
+		<Sheet open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
+			<SheetTrigger asChild>
 				<Button>Create new team</Button>
-			</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Create team</DialogTitle>
-					<DialogDescription>
+			</SheetTrigger>
+			<SheetContent
+				className="w-[800px] !max-w-[80vw] space-y-4 !overflow-scroll pt-4"
+				side="right"
+			>
+				<SheetHeader>
+					<SheetTitle>Create team</SheetTitle>
+					<SheetDescription>
 						Add a new team to manage products and customers.
-					</DialogDescription>
-				</DialogHeader>
+					</SheetDescription>
+				</SheetHeader>
 				<Checkout setDialog={setShowNewTeamDialog} />
-			</DialogContent>
-		</Dialog>
+			</SheetContent>
+		</Sheet>
 	);
 }
