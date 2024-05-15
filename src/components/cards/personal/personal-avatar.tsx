@@ -36,6 +36,7 @@ export function PersonalAvatarCard() {
 	const { members: teamMembers } = useTeamMembersStore();
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutate: deleteFile } = api.file.delete.useMutation();
+	const [filePreview, setFilePreview] = useState<string | null>(null);
 
 	const getFile = api.file.get.useQuery(
 		{
@@ -167,16 +168,40 @@ export function PersonalAvatarCard() {
 									<FormItem>
 										<FormLabel>File Upload</FormLabel>
 										<FormControl>
-											<Input id="picture" type="file" {...fileRef} />
+											<Input
+												id="picture"
+												type="file"
+												accept="image/*"
+												{...fileRef}
+												onChange={(e) => {
+													const file = e.target.files?.[0];
+													if (file) {
+														const reader = new FileReader();
+														reader.onloadend = () => {
+															setFilePreview(reader.result as string);
+														};
+														reader.readAsDataURL(file);
+													} else {
+														setFilePreview(null);
+													}
+												}}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<Avatar className="mr-2 h-20 w-20">
-								<AvatarImage src={image} alt={name} />
-								<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
-							</Avatar>
+							{filePreview ? (
+								<Avatar className="mr-2 h-20 w-20">
+									<AvatarImage src={filePreview} alt="File Preview" />
+									<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
+								</Avatar>
+							) : (
+								<Avatar className="mr-2 h-20 w-20">
+									<AvatarImage src={image} alt={name} />
+									<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
+								</Avatar>
+							)}
 						</>
 					}
 				/>
