@@ -64,65 +64,76 @@ export function ResizableLayout({
 							"min-w-[50px] transition-all duration-300 ease-in-out",
 					)}
 				>
-					<div className="flex h-full flex-col justify-between py-5">
-						<Nav
-							isCollapsed={isCollapsed}
-							links={[
-								{
-									title: "Publish",
-									label: "",
-									icon: Calendar,
-									// Check if the path matches the current path, if so set the variant to "default" else "ghost"
-									variant: isCurrentTab(path, "publish"),
-									url: "publish",
-								},
-								{
-									title: "Analytics",
-									label: "",
-									icon: PieChartIcon,
-									variant: isCurrentTab(path, "analytics"),
-									url: "analytics",
-								},
-								{
-									title: "Media Files",
-									label: "",
-									icon: FolderIcon,
-									variant: "disabled",
-									url: "media",
-								},
-							]}
-						/>
-						<div className="flex flex-col justify-between">
+					<div className="flex h-full flex-col">
+						<div className="flex items-center space-x-2 px-4 pt-3">
+							<img src="/images/logo.png" alt="logo" className="w-8" />
+							{!isCollapsed && (
+								<span className="text-lg font-bold">FeedFrenzy</span>
+							)}
+						</div>
+						<Separator className="my-3" />
+						<div className="flex h-full flex-col justify-between pb-5">
 							<Nav
 								isCollapsed={isCollapsed}
 								links={[
 									{
-										title: "Notifications",
+										title: "Publish",
 										label: "",
-										icon: BellIcon,
-										// variant: isCurrentTab(path, "notifications"),
-										variant: "disabled",
-										url: "notifications",
+										icon: Calendar,
+										// Check if the path matches the current path, if so set the variant to "default" else "ghost"
+										variant: isCurrentTab(path, "publish"),
+										url: "publish",
 									},
 									{
-										title: "Help Center",
+										title: "Analytics",
 										label: "",
-										icon: HelpCircleIcon,
-										// variant: isCurrentTab(path, "help"),
-										variant: "disabled",
-										url: "help/en",
+										icon: PieChartIcon,
+										variant: isCurrentTab(path, "analytics"),
+										url: "analytics",
 									},
 									{
-										title: "Settings",
+										title: "Media Files",
 										label: "",
-										icon: SettingsIcon,
-										variant: teamId ? isCurrentTab(path, "teams") : "disabled",
-										url: `teams/${teamId}/settings`,
+										icon: FolderIcon,
+										variant: "disabled",
+										url: "media",
 									},
 								]}
 							/>
-							<Separator className="my-3" />
-							<CollapsibleUserMenu isCollapsed={isCollapsed} />
+							<div className="flex flex-col justify-between">
+								<Nav
+									isCollapsed={isCollapsed}
+									links={[
+										{
+											title: "Notifications",
+											label: "",
+											icon: BellIcon,
+											// variant: isCurrentTab(path, "notifications"),
+											variant: "disabled",
+											url: "notifications",
+										},
+										{
+											title: "Help Center",
+											label: "",
+											icon: HelpCircleIcon,
+											// variant: isCurrentTab(path, "help"),
+											variant: "disabled",
+											url: "help/en",
+										},
+										{
+											title: "Settings",
+											label: "",
+											icon: SettingsIcon,
+											variant: teamId
+												? isCurrentTab(path, "teams")
+												: "disabled",
+											url: `teams/${teamId}/settings`,
+										},
+									]}
+								/>
+								<Separator className="my-3" />
+								<CollapsibleUserMenu isCollapsed={isCollapsed} />
+							</div>
 						</div>
 					</div>
 				</ResizablePanel>
