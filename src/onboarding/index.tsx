@@ -1,8 +1,15 @@
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 import { KYC } from "./kyc";
 
-export function Onboarding() {
+function Content() {
 	return (
-		<div className="flex h-screen flex-col items-center justify-center">
+		<>
+			<div className="flex items-center justify-center space-x-2">
+				<img src="/images/logo.png" alt="logo" className="h-8 w-8" />
+				<span className="text-lg font-bold">FeedFrenzy</span>
+			</div>
 			Which of the following best describes you?
 			<div className="flex space-x-4">
 				<button type="button">Individual</button>
@@ -41,6 +48,21 @@ export function Onboarding() {
 			<div>
 				Youre on your way! Lets get your team set up, and add a social profile
 			</div>
+		</>
+	);
+}
+
+export function Onboarding() {
+	return (
+		<div className="flex h-screen flex-col items-center justify-center">
+			<Dialog>
+				<DialogTrigger asChild>
+					<Button>Add profile</Button>
+				</DialogTrigger>
+				<DialogContent>
+					<Content />
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
