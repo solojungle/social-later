@@ -19,6 +19,7 @@ import { api } from "@/trpc/react";
 interface PaymentModalProps {
 	onBack: any;
 	formData: TeamCreationFormData | undefined;
+	setDialog: any;
 }
 
 interface TotalAmountProps {
@@ -43,7 +44,11 @@ function TotalAmount({ amount, plan }: TotalAmountProps) {
 	);
 }
 
-export function PaymentModal({ onBack, formData }: PaymentModalProps) {
+export function PaymentModal({
+	onBack,
+	formData,
+	setDialog,
+}: PaymentModalProps) {
 	const [errorMessage, setErrorMessage] = useState();
 	const [loading, setLoading] = useState(false);
 	const { addTeam } = useTeamStore();
@@ -141,7 +146,7 @@ export function PaymentModal({ onBack, formData }: PaymentModalProps) {
 				</p>
 			)}
 			<DialogFooter className="flex flex-row !justify-between">
-				<Button type="button" variant="ghost">
+				<Button type="button" variant="ghost" onClick={() => setDialog(false)}>
 					Cancel
 				</Button>
 				<div className="space-x-2">

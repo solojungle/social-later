@@ -23,7 +23,7 @@ import {
 import { api } from "@/trpc/react";
 
 type TeamSwitcherModalProps = {
-	setShowNewTeamDialog: any;
+	setDialog: any;
 	onNext: any;
 	onBack: any;
 };
@@ -88,7 +88,7 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 }
 
 export default function CreateTeamModal({
-	setShowNewTeamDialog,
+	setDialog,
 	onNext,
 }: TeamSwitcherModalProps) {
 	const products = api.products.getProducts.useQuery();
@@ -151,8 +151,8 @@ export default function CreateTeamModal({
 							<FormLabel>Subscriptions</FormLabel>
 							<ProductsSelector products={products.data ?? []} field={field} />
 							<FormDescription>
-								Creating a new team will not affect your Personal Account
-								(Hobby) or any of its projects.
+								Creating a new team will not affect your other teams or any of
+								its projects.
 							</FormDescription>
 							<FormMessage />
 						</FormItem>
@@ -162,7 +162,7 @@ export default function CreateTeamModal({
 					<Button
 						type="button"
 						variant="outline"
-						onClick={() => setShowNewTeamDialog(false)}
+						onClick={() => setDialog(false)}
 					>
 						Cancel
 					</Button>

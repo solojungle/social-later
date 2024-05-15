@@ -73,7 +73,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
 						Add a new team to manage products and customers.
 					</DialogDescription>
 				</DialogHeader>
-				<Checkout />
+				<Checkout setDialog={setShowNewTeamDialog} />
 			</DialogContent>
 		</Dialog>
 	);

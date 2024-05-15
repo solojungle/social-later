@@ -13,7 +13,11 @@ import { PaymentModal } from "./payment";
 
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-export function Checkout() {
+type CheckoutProps = {
+	setDialog: any;
+};
+
+export function Checkout({ setDialog }: CheckoutProps) {
 	// Pass the pages to the multi-step checkout hook.
 	const { currentStep, nextStep, returnStep, formData } =
 		useMultiStepCheckout();
@@ -31,13 +35,20 @@ export function Checkout() {
 				return (
 					<CreateTeamModal
 						key="0"
-						setShowNewTeamDialog={undefined}
+						setDialog={setDialog}
 						onNext={nextStep}
 						onBack={returnStep}
 					/>
 				);
 			case 1:
-				return <PaymentModal key="1" onBack={returnStep} formData={formData} />;
+				return (
+					<PaymentModal
+						key="1"
+						onBack={returnStep}
+						formData={formData}
+						setDialog={setDialog}
+					/>
+				);
 			default:
 				return null;
 		}
