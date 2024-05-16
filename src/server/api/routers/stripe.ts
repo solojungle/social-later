@@ -1,8 +1,68 @@
+import { z } from "zod";
+
+import { env } from "@/env.mjs";
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { stripe } from "@/server/services/stripe/client";
 
 export const stripeRouter = createTRPCRouter({
+	createCheckoutSession: protectedProcedure
+		.input(
+			z.object({
+				lookupKey: z.string().optional(),
+				priceId: z.string().optional(),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			if (input.lookupKey) {
+				const prices = await stripe.prices.list({
+					lookup_keys: [input.lookupKey],
+					expand: ["data.product"],
+				});
+
+				const priceId = prices.data?.[0]?.id;
+				if (!priceId) {
+					throw new Error("No price found");
+				}
+
+				const session = await stripe.checkout.sessions.create({
+					mode: "subscription",
+					ui_mode: "embedded",
+					allow_promotion_codes: true,
+					line_items: [
+						{
+							price: priceId,
+							quantity: 1,
+						},
+					],
+					// TODO: replace this cardinal sin with a proper ENV var
+					return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
+				});
+
+				return {
+					clientSecret: session.client_secret,
+				};
+			}
+
+			const session = await stripe.checkout.sessions.create({
+				mode: "subscription",
+				ui_mode: "embedded",
+				allow_promotion_codes: true,
+				line_items: [
+					{
+						price: input.priceId,
+						quantity: 1,
+					},
+				],
+				// TODO: replace this cardinal sin with a proper ENV var
+				return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
+			});
+
+			return {
+				clientSecret: session.client_secret,
+			};
+		}),
+
 	createSetupIntent: protectedProcedure
 		.input(TeamSchema.pick({ id: true }))
 		.mutation(async ({ ctx, input }) => {
