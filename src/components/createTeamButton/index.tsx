@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Checkout } from "../navigationbar/teamSwitcher/checkout";
+import { EmbeddedCheckout } from "../navigationbar/teamSwitcher/embeddedCheckout";
 import { Button } from "../ui/button";
 import {
 	Sheet,
@@ -22,7 +22,7 @@ export default function CreateTeamButton() {
 				<Button>Create new team</Button>
 			</SheetTrigger>
 			<SheetContent
-				className="w-[800px] !max-w-[80vw] space-y-4 !overflow-scroll pt-4"
+				className="w-[500px] !max-w-[80vw] space-y-4 !overflow-scroll pt-4"
 				side="right"
 			>
 				<SheetHeader>
@@ -31,7 +31,8 @@ export default function CreateTeamButton() {
 						Add a new team to manage products and customers.
 					</SheetDescription>
 				</SheetHeader>
-				<Checkout setDialog={setShowNewTeamDialog} />
+				{/* <Checkout setDialog={setShowNewTeamDialog} /> */}
+				<EmbeddedCheckout setDialog={setShowNewTeamDialog} />
 			</SheetContent>
 		</Sheet>
 	);

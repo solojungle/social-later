@@ -1,8 +1,8 @@
 "use client";
 
 import { CheckCircle2, Loader2, XCircleIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
@@ -10,18 +10,20 @@ import { api } from "@/trpc/react";
 type SuccessPageContentProps = {
 	customer: string;
 	subscription: string;
+	product: string;
 };
 
 function SuccessPageContent({
 	customer,
 	subscription,
+	product,
 }: SuccessPageContentProps) {
+	const hasCreatedTeam = useRef(false);
 	const { addTeam } = useTeamStore();
-
-	const [countdown, setCountdown] = useState(3);
+	const router = useRouter();
 
 	const {
-		mutateAsync: createTeam,
+		mutateAsync: createTeamViaEmbed,
 		isLoading,
 		isError,
 		isSuccess,
@@ -31,42 +33,28 @@ function SuccessPageContent({
 				...data.team,
 			});
 
-			// Set a timer to redirect to the publish page
-			const timer = setInterval(() => {
-				setCountdown((prevCountdown) => prevCountdown - 1);
-			}, 1000);
-
-			setTimeout(() => {
-				clearInterval(timer);
-				window.location.href = `/teams/${data.team.id}/publish`;
-			}, 3000);
+			router.push("/publish");
 		},
 	});
 
 	useEffect(() => {
-		if (customer && subscription && !isLoading && !isSuccess && !isError) {
-			createTeam({
+		if (!hasCreatedTeam.current) {
+			createTeamViaEmbed({
 				customer,
 				subscription,
+				product,
 			});
+			hasCreatedTeam.current = true;
 		}
-	}, [createTeam, customer, isError, isLoading, isSuccess, subscription]);
+	}, [customer, subscription, product, createTeamViaEmbed]);
 
 	return (
 		<div className="flex h-screen flex-col items-center  justify-center text-center text-lg">
 			<CheckCircle2 className="mb-6 h-16 w-16 text-green-500" />
 			<h1>Thank you for your purchase!</h1>
-			<div>{isLoading ? <p>Creating team...</p> : null}</div>
+			<div>{isLoading ? <p>Creating your team...</p> : null}</div>
 			<div>
 				{isError ? <p>Failed to create team, please contact support!</p> : null}
-			</div>
-			<div>
-				{isSuccess ? (
-					<p>
-						Team created successfully! Redirecting you to the publish page in{" "}
-						{countdown} seconds.
-					</p>
-				) : null}
 			</div>
 		</div>
 	);
@@ -93,6 +81,7 @@ export function CheckoutPageContent() {
 	const {
 		data: checkout,
 		isFetching,
+		isSuccess,
 		isError,
 	} = api.stripe.getCheckoutSessionStatus.useQuery(
 		{
@@ -122,6 +111,7 @@ export function CheckoutPageContent() {
 		<SuccessPageContent
 			customer={checkout.customer}
 			subscription={checkout.subscription}
+			product={checkout.product}
 		/>
 	);
 }

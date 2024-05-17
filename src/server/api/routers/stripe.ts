@@ -1,3 +1,4 @@
+import Stripe from "stripe";
 import { z } from "zod";
 
 import { env } from "@/env.mjs";
@@ -36,7 +37,7 @@ export const stripeRouter = createTRPCRouter({
 						},
 					],
 					// TODO: replace this cardinal sin with a proper ENV var
-					return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
+					return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?sessionId={CHECKOUT_SESSION_ID}`,
 				});
 
 				return {
@@ -55,11 +56,39 @@ export const stripeRouter = createTRPCRouter({
 					},
 				],
 				// TODO: replace this cardinal sin with a proper ENV var
-				return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
+				return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?sessionId={CHECKOUT_SESSION_ID}`,
 			});
 
 			return {
 				clientSecret: session.client_secret,
+			};
+		}),
+
+	getCheckoutSessionStatus: protectedProcedure
+		.input(z.object({ sessionId: z.string() }))
+		.query(async ({ input }) => {
+			const session = await stripe.checkout.sessions.retrieve(input.sessionId, {
+				expand: ["subscription"],
+			});
+
+			if (!session) {
+				throw new Error("Session not found");
+			}
+
+			if (!session.customer_details) {
+				throw new Error("No customer details");
+			}
+
+			const subscription = session.subscription as Stripe.Subscription;
+			const productId = subscription.items?.data[0]?.price?.product as string;
+
+			return {
+				status: session.status as string,
+				payment_status: session.payment_status as string,
+				customer_email: session.customer_details.email as string,
+				customer: session.customer as string,
+				subscription: subscription.id as string,
+				product: productId,
 			};
 		}),
 

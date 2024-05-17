@@ -5,6 +5,58 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { stripe } from "@/server/services/stripe/client";
 
 export const teamRouter = createTRPCRouter({
+	createViaEmbed: protectedProcedure
+		.input(
+			z.object({
+				customer: z.string(),
+				subscription: z.string(),
+				product: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const internalProduct = await ctx.db.stripeProduct.findFirst({
+				where: {
+					stripeProductId: input.product,
+				},
+			});
+
+			if (!internalProduct) {
+				throw new Error("No internal product found");
+			}
+
+			const team = await ctx.db.team.create({
+				data: {
+					name: crypto.randomUUID(),
+					image: `https://avatar.vercel.sh/${
+						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
+					}.png`,
+					internalProductId: internalProduct.id,
+					stripeCustomerId: input.customer,
+					stripeSubscriptionId: input.subscription,
+					stripeSubscriptionStatus: "active",
+					members: {
+						create: {
+							user: {
+								connect: {
+									id: ctx.session.user.id,
+								},
+							},
+							role: "OWNER",
+						},
+					},
+				},
+			});
+
+			// Update stripe customer metadata with the team id
+			await stripe.customers.update(input.customer, {
+				metadata: {
+					teamId: team.id,
+				},
+			});
+
+			return team;
+		}),
+
 	create: protectedProcedure
 		.input(
 			z.object({
