@@ -26,7 +26,6 @@ function SuccessPageContent({
 		mutateAsync: createTeamViaEmbed,
 		isLoading,
 		isError,
-		isSuccess,
 	} = api.team.createViaEmbed.useMutation({
 		onSuccess: (data: any) => {
 			addTeam({
@@ -81,7 +80,6 @@ export function CheckoutPageContent() {
 	const {
 		data: checkout,
 		isFetching,
-		isSuccess,
 		isError,
 	} = api.stripe.getCheckoutSessionStatus.useQuery(
 		{
