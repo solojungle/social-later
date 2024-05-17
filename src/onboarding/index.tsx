@@ -5,7 +5,7 @@ import { KYC } from "./kyc";
 
 function Content() {
 	return (
-		<>
+		<div className="">
 			<div className="flex items-center justify-center space-x-2">
 				<img src="/images/logo.png" alt="logo" className="h-8 w-8" />
 				<span className="text-lg font-bold">FeedFrenzy</span>
@@ -48,7 +48,7 @@ function Content() {
 			<div>
 				Youre on your way! Lets get your team set up, and add a social profile
 			</div>
-		</>
+		</div>
 	);
 }
 
@@ -59,7 +59,7 @@ export function Onboarding() {
 				<DialogTrigger asChild>
 					<Button>Add profile</Button>
 				</DialogTrigger>
-				<DialogContent>
+				<DialogContent className="min-h-[80vh] min-w-[80vw]">
 					<Content />
 				</DialogContent>
 			</Dialog>
