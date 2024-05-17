@@ -21,9 +21,9 @@ export default function Hero() {
 					className="text-5xl md:text-6xl"
 				>
 					Social Media Management. <br />
-					<span className="font-tiempos italic">
+					{/* <span className="font-tiempos italic">
 						Easy, Productive, Organized.
-					</span>
+					</span> */}
 				</motion.h1>
 				<motion.p
 					initial={{ y: 100, opacity: 0 }}
