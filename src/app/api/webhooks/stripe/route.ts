@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 
 import { NextRequest } from "next/server";
+import Stripe from "stripe";
 
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
@@ -30,49 +31,32 @@ export async function POST(req: NextRequest) {
 		});
 	}
 
+	if (!event.type.startsWith("customer.subscription")) {
+		return new Response("OK", {
+			status: 200,
+		});
+	}
+
+	const subscription = event.data.object as Stripe.Subscription;
+
 	// Handle the event
 	switch (event.type) {
-		case "payment_intent.succeeded":
-			if (
-				event.data.object.customer === null ||
-				typeof event.data.object.customer === "string"
-			) {
-				return new Response("Bad request", {
-					status: 400,
-				});
-			}
-
-			// Fulfill the purchased goods or services.
-			db.team.update({
+		case "customer.subscription.paused":
+		case "customer.subscription.resumed":
+		case "customer.subscription.updated":
+		case "customer.subscription.deleted":
+			// Update the teams subscription in your database.
+			await db.team.update({
 				where: {
-					stripeCustomerId: event.data.object.customer.id,
+					stripeSubscriptionId: subscription.id,
 				},
 				data: {
-					stripeSubscriptionStatus: "active",
+					stripeSubscriptionStatus: subscription.status,
 				},
 			});
 			break;
-		case "payment_intent.payment_failed":
-			// Send an email or push notification to request another payment method.
-			break;
-		case "payment_intent.processing":
-			// Wait for the initiated payment to succeed or fail.
-			break;
-		case "invoice.paid":
-			// Continue to provision the subscription as payments continue to be made.
-			// Store the status in your database and check when a user accesses your service.
-			// This approach helps you avoid hitting rate limits.
-			break;
-		case "invoice.payment_failed":
-			// The payment failed or the customer does not have a valid payment method.
-			// The subscription becomes past_due. Notify your customer and send them to the
-			// customer portal to update their payment information.
-			break;
-		case "customer.subscription.deleted":
-			// Cancel the subscription.
-			break;
 		default:
-		// console.log(`Unhandled event type ${event.type}`);
+			break;
 	}
 
 	return new Response("OK", {
