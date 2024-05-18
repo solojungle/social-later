@@ -2,14 +2,17 @@ import { TeamDeleteCard } from "@/components/cards/teams/team-delete";
 import { TeamLeaveCard } from "@/components/cards/teams/team-leave";
 import { TeamNameCard } from "@/components/cards/teams/team-name";
 import { TeamUrlCard } from "@/components/cards/teams/team-url";
+import { useTeamMembersStore } from "@/stores/team-members";
 
 export function GeneralTeamForm() {
+	const { members } = useTeamMembersStore();
+
 	return (
 		<>
 			<TeamNameCard />
 			<TeamUrlCard />
 			{/* <TeamAvatarCard /> */}
-			<TeamLeaveCard />
+			{members.length > 1 && <TeamLeaveCard />}
 			<TeamDeleteCard />
 		</>
 	);
