@@ -236,7 +236,7 @@ export const teamRouter = createTRPCRouter({
 				.map((member) => {
 					return {
 						...member.user,
-						role: member.role.toLowerCase(),
+						role: member.role,
 						name: member.user.name ?? "",
 						email: member.user.email ?? "",
 						image: member.user.image ?? "",

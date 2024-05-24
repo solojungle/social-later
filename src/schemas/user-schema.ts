@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { z } from "zod";
 
 // Define Zod schema for team
@@ -39,7 +40,7 @@ export const TeamMembers = UserSchema.pick({
 	email: true,
 	image: true,
 }).extend({
-	role: z.string(),
+	role: z.nativeEnum(UserRole),
 });
 
 export type TeamMembersSchemaValues = z.infer<typeof TeamMembers>;

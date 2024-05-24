@@ -1,15 +1,18 @@
-import { useSession } from "next-auth/react";
+import { UserRole } from "@prisma/client";
 
-import { TeamDeleteCard } from "@/components/cards/teams/team-delete";
 import { TeamLeaveCard } from "@/components/cards/teams/team-leave";
 import { TeamNameCard } from "@/components/cards/teams/team-name";
 import { TeamUrlCard } from "@/components/cards/teams/team-url";
 import { useTeamMembersStore } from "@/stores/team-members";
+import { useUserStore } from "@/stores/user";
+
+import { TeamDeleteCard } from "../cards/teams/team-delete";
 
 export function GeneralTeamForm() {
 	const { members } = useTeamMembersStore();
+	const { id: userId } = useUserStore();
 
-	const { data: session } = useSession();
+	const userRole = members.find((member) => member.id === userId)?.role;
 
 	return (
 		<>
@@ -17,7 +20,7 @@ export function GeneralTeamForm() {
 			<TeamUrlCard />
 			{/* <TeamAvatarCard /> */}
 			{members.length > 1 && <TeamLeaveCard />}
-			{session?.user?.role === "OWNER" && <TeamDeleteCard />}
+			{userRole === UserRole.OWNER && <TeamDeleteCard />}
 		</>
 	);
 }
