@@ -38,8 +38,6 @@ export default function SettingsLayout() {
 					<TabsTrigger value="general">General</TabsTrigger>
 					<TabsTrigger value="members">Members</TabsTrigger>
 					<TabsTrigger value="billing">Billing</TabsTrigger>
-					{/* <TabsTrigger value="notifications">Notifications</TabsTrigger>
-					<TabsTrigger value="security">Security</TabsTrigger> */}
 				</TabsList>
 				<TabsContent value="general">
 					<GeneralTeamSettingsPage />
@@ -50,12 +48,6 @@ export default function SettingsLayout() {
 				<TabsContent value="billing">
 					<BillingPage />
 				</TabsContent>
-				{/* <TabsContent value="notifications">
-					<SettingsNotificationsPage />
-				</TabsContent>
-				<TabsContent value="security">
-					<SettingsSecurityPage />
-				</TabsContent> */}
 			</Tabs>
 		</ResizablePanel>
 	);
