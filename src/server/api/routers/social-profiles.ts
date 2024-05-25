@@ -96,6 +96,28 @@ async function uploadMediaToTwitter({
 	return mediaIds;
 }
 
+async function getVideoFileBuffer({ ctx, input }: { ctx: any; input: any }) {
+	// Get the files from the database
+	const video = await ctx.db.file.findUnique({
+		where: {
+			id: {
+				in: input.videoId,
+			},
+		},
+	});
+
+	if (!video) {
+		throw new Error("Video does not exist");
+	}
+
+	// Get all the files from AWS
+	const buffer = await fetch(
+		`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${video.key}.${video.extension}`,
+	);
+
+	return Buffer.from(await buffer.arrayBuffer());
+}
+
 export const socialProfilesRouter = createTRPCRouter({
 	getSocialProfiles: protectedProcedure
 		.input(
@@ -275,7 +297,14 @@ export const socialProfilesRouter = createTRPCRouter({
 		}),
 
 	uploadYouTubeVideo: protectedProcedure
-		.input(z.object({ profileId: z.string() }))
+		.input(
+			z.object({
+				profileId: z.string(),
+				videoUrl: z.string(),
+				title: z.string(),
+				description: z.string(),
+			}),
+		)
 		.query(async ({ ctx, input }) => {
 			const { profileId: ytAccountId } = input;
 
@@ -308,52 +337,110 @@ export const socialProfilesRouter = createTRPCRouter({
 					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
 			});
 
-			// const ytAnalytics = youtubeAnalytics_v2();
+			const yt = youtube({
+				version: "v3",
+				auth: clientAuth,
+			});
 
-			try {
-				const yt = youtube({
-					version: "v3",
-					auth: clientAuth,
-				});
+			const response = await yt.videos.insert({
+				part: ["snippet", "status"],
+				requestBody: {
+					snippet: {
+						title: input.title,
+						description: input.description,
+					},
+					status: {
+						privacyStatus: "public",
+					},
+				},
+				media: {
+					body: getVideoFileBuffer({ ctx, input }),
+				},
+			});
 
-				const channels = await yt.channels.list({
-					part: ["contentDetails"],
-					mine: true,
-				});
-
-				const uploadPlaylistIds = channels.data.items?.map(
-					(item) => item.contentDetails?.relatedPlaylists?.uploads,
-				);
-
-				if (!uploadPlaylistIds) {
-					throw new Error("Could not find upload playlist");
-				}
-
-				const uploadedVideo = await yt.playlistItems.list({
-					part: ["snippet"],
-					playlistId: uploadPlaylistIds[0],
-				});
-
-				const uploadedVideoIds = uploadedVideo.data.items
-					?.map((item) => item.snippet?.resourceId?.videoId) // Get videoId from resourceId
-					.filter((id) => typeof id === "string"); // Filter out non-string values
-
-				if (!uploadedVideoIds || uploadedVideoIds.length === 0) {
-					throw new Error("No uploaded videos found");
-				}
-
-				const uploadedVideoStats = await yt.videos.list({
-					part: ["statistics", "contentDetails", "snippet"],
-					id: uploadedVideoIds.filter(
-						(id) => id !== null && id !== undefined,
-					) as string[],
-				});
-
-				return uploadedVideoStats;
-			} catch (err) {
-				console.log(err);
-			}
-
-			return "";
+			return response;
 		}),
+
+	// getYtAnalytics: protectedProcedure
+	// 	.input(z.object({ profileId: z.string() }))
+	// 	.query(async ({ ctx, input }) => {
+	// 		const { profileId: ytAccountId } = input;
+
+	// 		// Make sure the user is apart of the team, and that the twitter account belongs to the team
+	// 		const ytAccount = await ctx.db.socialProfile.findUnique({
+	// 			where: {
+	// 				id: ytAccountId,
+	// 			},
+	// 		});
+
+	// 		if (!ytAccount) {
+	// 			throw new Error("YouTube account does not exist");
+	// 		}
+
+	// 		const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+	// 			where: {
+	// 				teamId: ytAccount.teamId,
+	// 				userId: ctx.session.user.id,
+	// 			},
+	// 		});
+
+	// 		if (!isUserPartOfTeam) {
+	// 			throw new Error("You are not apart of this team");
+	// 		}
+
+	// 		const clientAuth = getYTClientAuth({
+	// 			accessToken: ytAccount.accessToken,
+	// 			refreshToken: ytAccount.refreshToken,
+	// 			expiresAt:
+	// 				ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
+	// 		});
+
+	// 		// const ytAnalytics = youtubeAnalytics_v2();
+
+	// 		try {
+	// 			const yt = youtube({
+	// 				version: "v3",
+	// 				auth: clientAuth,
+	// 			});
+
+	// 			const channels = await yt.channels.list({
+	// 				part: ["contentDetails"],
+	// 				mine: true,
+	// 			});
+
+	// 			const uploadPlaylistIds = channels.data.items?.map(
+	// 				(item) => item.contentDetails?.relatedPlaylists?.uploads,
+	// 			);
+
+	// 			if (!uploadPlaylistIds) {
+	// 				throw new Error("Could not find upload playlist");
+	// 			}
+
+	// 			const uploadedVideo = await yt.playlistItems.list({
+	// 				part: ["snippet"],
+	// 				playlistId: uploadPlaylistIds[0],
+	// 			});
+
+	// 			const uploadedVideoIds = uploadedVideo.data.items
+	// 				?.map((item) => item.snippet?.resourceId?.videoId) // Get videoId from resourceId
+	// 				.filter((id) => typeof id === "string"); // Filter out non-string values
+
+	// 			if (!uploadedVideoIds || uploadedVideoIds.length === 0) {
+	// 				throw new Error("No uploaded videos found");
+	// 			}
+
+	// 			const uploadedVideoStats = await yt.videos.list({
+	// 				part: ["statistics", "contentDetails", "snippet"],
+	// 				id: uploadedVideoIds.filter(
+	// 					(id) => id !== null && id !== undefined,
+	// 				) as string[],
+	// 			});
+
+	// 			return uploadedVideoStats;
+	// 		} catch (err) {
+	// 			console.log(err);
+	// 		}
+
+	// 		return "";
+	// 	}),
 });
