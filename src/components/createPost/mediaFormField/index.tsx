@@ -137,18 +137,15 @@ function FileGallery({
 					)}
 				</div>
 			))}
-			{files.length < restrictions.maxFiles && (
-				<>
-					{new Array(restrictions.maxFiles - files.length)
-						.fill(null)
-						.map(() => (
-							<div
-								key={Math.random()}
-								className="h-32 w-32 rounded-md border bg-muted transition-colors duration-300"
-							/>
-						))}
-				</>
-			)}
+			{files.length < restrictions.maxFiles &&
+				new Array(restrictions.maxFiles - files.length)
+					.fill(null)
+					.map(() => (
+						<div
+							key={Math.random()}
+							className="h-32 w-32 rounded-md border bg-muted transition-colors duration-300"
+						/>
+					))}
 		</div>
 	);
 }
