@@ -59,6 +59,38 @@ function HoverCardSection({ restrictions }: HoverCardSectionProps) {
 	);
 }
 
+/**
+ * grid-cols cannot be dynamic, so we need to return all possible values as a string
+ * @param numberOfFiles - Number of files to display
+ * @returns
+ */
+function returnNumberOfColumns(numberOfFiles: number) {
+	switch (numberOfFiles) {
+		case 1:
+			return "grid-cols-1";
+		case 2:
+			return "grid-cols-2";
+		case 3:
+			return "grid-cols-3";
+		case 4:
+			return "grid-cols-4";
+		case 5:
+			return "grid-cols-5";
+		case 6:
+			return "grid-cols-6";
+		case 7:
+			return "grid-cols-7";
+		case 8:
+			return "grid-cols-8";
+		case 9:
+			return "grid-cols-9";
+		case 10:
+			return "grid-cols-10";
+		default:
+			return "grid-cols-1";
+	}
+}
+
 type FileGalleryProps = {
 	files: FileUpload[] | null;
 	onRemoveFile: (index: string) => void;
@@ -94,7 +126,10 @@ function FileGallery({
 
 	return (
 		<div
-			className={cn("grid w-fit gap-2", `grid-cols-${restrictions.maxFiles}`)}
+			className={cn(
+				"grid w-fit gap-2",
+				returnNumberOfColumns(restrictions.maxFiles),
+			)}
 		>
 			{files.map((file) => (
 				<div key={file.id} className="group relative">
