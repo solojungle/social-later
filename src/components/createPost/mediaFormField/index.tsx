@@ -186,7 +186,6 @@ function FileGallery({
 }
 
 type MediaFormFieldProps = {
-	title: string;
 	valueName: string;
 	form: any;
 	fileProgress: { [key: string]: { [key: number]: number } };
