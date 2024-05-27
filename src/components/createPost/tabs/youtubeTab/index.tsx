@@ -234,6 +234,7 @@ export function YouTubeTab({
 				setLoading(false);
 			}
 		}
+	}
 
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
