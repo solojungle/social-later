@@ -146,7 +146,9 @@ export function YouTubeTab({
 
 	const [loading, setLoading] = useState(false);
 
-	const tweet = api.socials.postTweet.useMutation({});
+	// const tweet = api.socials.postTweet.useMutation({});
+
+	const uploadVideo = api.socials.uploadVideo.useMutation();
 
 	const utils = api.useUtils();
 
@@ -211,11 +213,11 @@ export function YouTubeTab({
 					data.media.map((file: FileUpload) => uploadFile(file, onProgress)),
 				);
 
-				const { data: result } = await tweet.mutateAsync({
-					profileId,
-					content: data.content,
-					mediaIds: mediaFiles.map((file) => file.id),
-				});
+				// const { data: result } = await tweet.mutateAsync({
+				// 	profileId,
+				// 	content: data.content,
+				// 	mediaIds: mediaFiles.map((file) => file.id),
+				// });
 
 				createPost.mutate({
 					title: "",
@@ -231,29 +233,7 @@ export function YouTubeTab({
 			} finally {
 				setLoading(false);
 			}
-		} else {
-			try {
-				const { data: result } = await tweet.mutateAsync({
-					profileId,
-					content: data.content,
-				});
-
-				// There is no media so we can just create the post
-				createPost.mutate({
-					title: "",
-					content: data.content,
-					status: "published",
-					externalPostId: result.id,
-					scheduledFor: scheduledDate,
-					published: true,
-					profileId,
-					authorId: teamId,
-				});
-			} finally {
-				setLoading(false);
-			}
 		}
-	}
 
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
