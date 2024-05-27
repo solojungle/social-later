@@ -305,7 +305,7 @@ export const socialProfilesRouter = createTRPCRouter({
 				description: z.string(),
 			}),
 		)
-		.query(async ({ ctx, input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const { profileId: ytAccountId } = input;
 
 			// Make sure the user is apart of the team, and that the twitter account belongs to the team
