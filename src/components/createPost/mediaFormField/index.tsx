@@ -186,6 +186,8 @@ function FileGallery({
 }
 
 type MediaFormFieldProps = {
+	title: string;
+	valueName: string;
 	form: any;
 	fileProgress: { [key: string]: { [key: number]: number } };
 	restrictions: {
@@ -198,6 +200,7 @@ type MediaFormFieldProps = {
 };
 
 export function MediaFormField({
+	valueName,
 	form,
 	restrictions,
 	fileProgress,
@@ -206,8 +209,8 @@ export function MediaFormField({
 	const onDropAccepted = React.useCallback(
 		(acceptedFiles: File[]) => {
 			// Check if we have more than the max number of files
-			if (form.getValues("media") > restrictions.maxFiles - 1) {
-				form.setError("media", {
+			if (form.getValues(valueName) > restrictions.maxFiles - 1) {
+				form.setError(valueName, {
 					type: "manual",
 					message: `You can only upload ${restrictions.maxFiles} images`,
 				});
@@ -220,7 +223,7 @@ export function MediaFormField({
 					// If the file is a video dont create a preview
 					if (file.type.includes("video")) {
 						const updatedFiles = [
-							...(form.getValues("media") || []),
+							...(form.getValues(valueName) || []),
 							{
 								id: Math.floor(Math.random() * 1000000).toString(),
 								file,
@@ -229,12 +232,12 @@ export function MediaFormField({
 							},
 						];
 
-						form.setValue("media", updatedFiles);
+						form.setValue(valueName, updatedFiles);
 						return;
 					}
 
 					const updatedFiles = [
-						...(form.getValues("media") || []),
+						...(form.getValues(valueName) || []),
 						{
 							id: Math.floor(Math.random() * 1000000).toString(),
 							file,
@@ -243,32 +246,32 @@ export function MediaFormField({
 						},
 					];
 
-					form.setValue("media", updatedFiles);
+					form.setValue(valueName, updatedFiles);
 				};
 				reader.readAsDataURL(file);
 			});
 
-			form.clearErrors("media");
+			form.clearErrors(valueName);
 		},
-		[form, restrictions.maxFiles],
+		[form, restrictions.maxFiles, valueName],
 	);
 
 	const onDropRejected = React.useCallback(
 		(rejections: FileRejection[]) => {
-			form.setError("media", {
+			form.setError(valueName, {
 				type: "manual",
 				message: rejections.length > 0 ? rejections[0]?.errors[0]?.message : "",
 			});
 		},
-		[form],
+		[form, valueName],
 	);
 
 	const handleRemoveFile = (id: string) => {
-		const updatedFiles = (form.getValues("media") || []).filter(
+		const updatedFiles = (form.getValues(valueName) || []).filter(
 			(file: FileUpload) => file.id !== id,
 		);
 
-		form.setValue("media", updatedFiles);
+		form.setValue(valueName, updatedFiles);
 	};
 
 	const { getRootProps, getInputProps, isDragActive, fileRejections } =
@@ -283,13 +286,13 @@ export function MediaFormField({
 	return (
 		<FormField
 			control={form.control}
-			name="media"
+			name={valueName}
 			render={() => (
 				<FormItem>
 					<FormLabel
 						className={`${fileRejections.length !== 0 && "text-destructive"}`}
 					>
-						Media
+						<p className="capitalize">{valueName}</p>
 						<span
 							className={
 								form.formState.errors.image || fileRejections.length !== 0
@@ -323,7 +326,7 @@ export function MediaFormField({
 					</FormControl>
 					<FormMessage />
 					<FileGallery
-						files={form.getValues("media") || []}
+						files={form.getValues(valueName) || []}
 						onRemoveFile={handleRemoveFile}
 						restrictions={restrictions}
 						isLoading={isLoading}
