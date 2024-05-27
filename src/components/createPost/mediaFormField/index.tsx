@@ -208,7 +208,7 @@ export function MediaFormField({
 	const onDropAccepted = React.useCallback(
 		(acceptedFiles: File[]) => {
 			// Check if we have more than the max number of files
-			if (form.getValues(valueName) > restrictions.maxFiles - 1) {
+			if (form.getValues(valueName).length > restrictions.maxFiles - 1) {
 				form.setError(valueName, {
 					type: "manual",
 					message: `You can only upload ${restrictions.maxFiles} images`,
