@@ -52,9 +52,13 @@ function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
 
 type StatusFormFieldProps = {
 	form: any;
+	valueName: string;
 };
 
-export function DescriptionFormField({ form }: StatusFormFieldProps) {
+export function DescriptionFormField({
+	form,
+	valueName = "content",
+}: StatusFormFieldProps) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [charCount, setCharCount] = useState(0);
 	const [maxCharCount] = useState(200);
@@ -68,7 +72,7 @@ export function DescriptionFormField({ form }: StatusFormFieldProps) {
 	return (
 		<FormField
 			control={form.control}
-			name="content"
+			name={valueName}
 			render={({ field }) => (
 				<FormItem>
 					<FormLabel className="flex justify-between">
