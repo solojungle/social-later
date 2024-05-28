@@ -91,7 +91,7 @@ function returnNumberOfColumns(numberOfFiles: number) {
 	}
 }
 
-type FileGalleryProps = {
+export type FileGalleryProps = {
 	files: FileUpload[] | null;
 	onRemoveFile: (index: string) => void;
 	restrictions: {
@@ -104,7 +104,7 @@ type FileGalleryProps = {
 	fileProgress: { [key: string]: { [key: number]: number } };
 };
 
-function FileGallery({
+export function FileGallery({
 	files,
 	onRemoveFile,
 	fileProgress,
@@ -185,7 +185,7 @@ function FileGallery({
 	);
 }
 
-type MediaFormFieldProps = {
+export type MediaFormFieldProps = {
 	valueName: string;
 	form: any;
 	fileProgress: { [key: string]: { [key: number]: number } };
