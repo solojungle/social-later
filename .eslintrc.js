@@ -46,6 +46,7 @@ module.exports = {
     "airbnb-typescript",
     "next/core-web-vitals",
     "plugin:prettier/recommended",
+    "plugin:storybook/recommended"
   ],
   ignorePatterns: [
     ".eslintrc.js",
