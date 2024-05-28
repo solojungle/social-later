@@ -296,6 +296,7 @@ export function TwitterTab({
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 						<StatusFormField form={form} />
 						<MediaFormField
+							valueName="media"
 							form={form}
 							fileProgress={fileProgress}
 							restrictions={RESTRICTIONS}
