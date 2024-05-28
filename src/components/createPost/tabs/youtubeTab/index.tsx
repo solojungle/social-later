@@ -1,43 +1,26 @@
 "use client";
 
+// eslint-disable-next-line simple-import-sort/imports
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { ImageIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { SheetClose } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DynamicPostFormSchema } from "@/schemas/posts-schema";
-import { api } from "@/trpc/react";
+import { YouTubeFormSchema } from "@/schemas/new-file-schema";
 
+import { api } from "@/trpc/react";
+import axios from "axios";
+import { toast } from "sonner";
 import { DescriptionFormField } from "../../descriptionFormField";
 import { FileUpload, MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { TitleFormField } from "../../titleFormField";
 import { determineFileType, splitFileIntoParts } from "../../utils";
-
-const RESTRICTIONS = {
-	maxFiles: 4,
-	maxSize: 5 * 1024 * 1024,
-	maxSizeInMB: "5MB",
-	accept: {
-		"image/*": [".jpeg", ".png", ".jpg", ".gif", ".webp", ".mov", ".mp4"],
-	},
-	schemaAccept: [
-		"image/jpeg",
-		"image/jpg",
-		"image/png",
-		"image/gif",
-		"image/webp",
-		"video/quicktime",
-		"video/mp4",
-	],
-};
 
 export function YouTubeTab({
 	teamId,
@@ -136,19 +119,14 @@ export function YouTubeTab({
 		return mediaFile;
 	}
 
-	// Each file is split into parts for multipart upload
-	// and each part has a progress
-	// We need to keep track of the progress of each part
-	// so we can display it to the user
 	const [fileProgress, setFileProgress] = useState<{
 		[key: string]: { [key: number]: number };
 	}>({});
 
 	const [loading, setLoading] = useState(false);
 
-	// const tweet = api.socials.postTweet.useMutation({});
-
-	const uploadVideo = api.socials.uploadVideo.useMutation();
+	const { mutateAsync: uploadVideo } =
+		api.socials.uploadYouTubeVideo.useMutation({});
 
 	const utils = api.useUtils();
 
@@ -186,15 +164,16 @@ export function YouTubeTab({
 		},
 	});
 
-	const FormSchema = DynamicPostFormSchema({
-		size: RESTRICTIONS.maxSize,
-		acceptedTypes: RESTRICTIONS.schemaAccept,
-	});
-
-	type FormSchemaValues = z.infer<typeof FormSchema>;
-
+	type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
 	const form = useForm<FormSchemaValues>({
-		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			title: "",
+			description: "",
+			video: [],
+			thumbnail: [],
+			date: scheduleDate,
+		},
+		resolver: zodResolver(YouTubeFormSchema),
 	});
 
 	async function onSubmit(data: any) {
@@ -202,37 +181,49 @@ export function YouTubeTab({
 
 		const scheduledDate = data.date;
 
-		// If there is media then we need to convert it to a file and
-		// upload it to aws. Then one the backend we will get the url
-		// and upload it from aws to twitter.
-		if (data.media && data.media.length > 0) {
-			try {
-				// Instead of uploading only one file, we need to upload all the files
-				// and then send the mediaIds to the backend
-				const mediaFiles = await Promise.all(
-					data.media.map((file: FileUpload) => uploadFile(file, onProgress)),
-				);
+		try {
+			// Instead of uploading only one file, we need to upload all the files
+			// and then send the mediaIds to the backend
 
-				// const { data: result } = await tweet.mutateAsync({
-				// 	profileId,
-				// 	content: data.content,
-				// 	mediaIds: mediaFiles.map((file) => file.id),
-				// });
+			const filesToUpload = [...data.thumbnail, ...data.video];
 
-				createPost.mutate({
-					title: "",
-					content: data.content || "",
-					fileIds: mediaFiles.map((file) => file.id),
-					status: "published",
-					externalPostId: result.id,
-					scheduledFor: scheduledDate,
-					published: true,
-					profileId,
-					authorId: teamId,
-				});
-			} finally {
-				setLoading(false);
+			const mediaFiles = await Promise.all(
+				filesToUpload.map((file: FileUpload) => uploadFile(file, onProgress)),
+			);
+
+			if (
+				mediaFiles.length !== 2 ||
+				mediaFiles[0] === undefined ||
+				mediaFiles[1] === undefined
+			) {
+				throw new Error("Media files are not uploaded correctly");
 			}
+
+			const { data: result } = await uploadVideo({
+				profileId,
+				title: data.title,
+				description: data.description,
+				thumbnailUrl: mediaFiles[0].url,
+				videoUrl: mediaFiles[1].url,
+			});
+
+			if (!result || !result.id) {
+				throw new Error("Failed to upload video to YouTube");
+			}
+
+			createPost.mutate({
+				title: "",
+				content: data.content || "",
+				fileIds: mediaFiles.map((file) => file.id),
+				status: "published",
+				externalPostId: result.id,
+				scheduledFor: scheduledDate,
+				published: true,
+				profileId,
+				authorId: teamId,
+			});
+		} finally {
+			setLoading(false);
 		}
 	}
 
@@ -249,17 +240,35 @@ export function YouTubeTab({
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 						<TitleFormField form={form} />
-						<DescriptionFormField form={form} />
+						<DescriptionFormField form={form} valueName="description" />
+						{/* Thumbnails upload */}
 						<MediaFormField
+							valueName="thumbnail"
 							form={form}
 							fileProgress={fileProgress}
-							restrictions={RESTRICTIONS}
+							restrictions={{
+								maxFiles: 1,
+								maxSize: 2 * 1024 * 1024,
+								maxSizeInMB: "2MB",
+								accept: {
+									"image/*": [".jpeg", ".png", ".jpg"],
+								},
+							}}
 							isLoading={loading}
 						/>
+						{/* Video file upload */}
 						<MediaFormField
+							valueName="video"
 							form={form}
 							fileProgress={fileProgress}
-							restrictions={RESTRICTIONS}
+							restrictions={{
+								maxFiles: 1,
+								maxSize: 262144 * 1024 * 1024,
+								maxSizeInMB: "256GB",
+								accept: {
+									"video/*": [".webp", ".mov", ".mp4"],
+								},
+							}}
 							isLoading={loading}
 						/>
 						<DatePickerFormField form={form} defaultDate={scheduleDate} />

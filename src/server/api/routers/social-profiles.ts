@@ -1,5 +1,6 @@
 import { youtube } from "@googleapis/youtube";
 import { SocialProfileType } from "@prisma/client";
+import { Readable } from "stream";
 import { TwitterApi } from "twitter-api-v2";
 import { z } from "zod";
 
@@ -96,26 +97,11 @@ async function uploadMediaToTwitter({
 	return mediaIds;
 }
 
-async function getVideoFileBuffer({ ctx, input }: { ctx: any; input: any }) {
-	// Get the files from the database
-	const video = await ctx.db.file.findUnique({
-		where: {
-			id: {
-				in: input.videoId,
-			},
-		},
-	});
-
-	if (!video) {
-		throw new Error("Video does not exist");
-	}
-
+async function getVideoFileBuffer({ url }: { url: string }) {
 	// Get all the files from AWS
-	const buffer = await fetch(
-		`https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${video.key}.${video.extension}`,
-	);
+	const buffer = await fetch(url);
 
-	return Buffer.from(await buffer.arrayBuffer());
+	return Readable.from(Buffer.from(await buffer.arrayBuffer()));
 }
 
 export const socialProfilesRouter = createTRPCRouter({
@@ -301,6 +287,7 @@ export const socialProfilesRouter = createTRPCRouter({
 			z.object({
 				profileId: z.string(),
 				videoUrl: z.string(),
+				thumbnailUrl: z.string(),
 				title: z.string(),
 				description: z.string(),
 			}),
@@ -354,7 +341,7 @@ export const socialProfilesRouter = createTRPCRouter({
 					},
 				},
 				media: {
-					body: getVideoFileBuffer({ ctx, input }),
+					body: await getVideoFileBuffer({ url: input.videoUrl }),
 				},
 			});
 
