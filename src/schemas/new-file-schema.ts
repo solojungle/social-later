@@ -1,18 +1,20 @@
 import { z } from "zod";
 
 // Helper function for file schema
-export function fileSchema(size: number, acceptedTypes: string[]) {
+function fileSchema(size: number, acceptedTypes: string[]) {
 	const mb = Math.floor(size / (1024 * 1024));
-	return z.object({
-		file: z.object({
-			type: z.string().refine((type) => acceptedTypes.includes(type), {
-				message: "File type is not supported.",
-			}),
-			size: z.number().refine((fileSize) => fileSize <= size, {
-				message: `Max file size is ${mb}MB.`,
-			}),
-		}),
-	});
+
+	// z.any is used because anything else will prevent it from being uploaded (it limits whats passed to backend)
+	return z
+		.any()
+		.refine(
+			(file) => acceptedTypes.includes(file.file?.type as string),
+			"File type is not supported.",
+		)
+		.refine(
+			(file) => file.file?.size ?? size >= 0,
+			`Max file size is ${mb}MB.`,
+		);
 }
 
 // Helper function for future date schema
@@ -30,15 +32,13 @@ function futureDateSchema() {
 	);
 }
 
-// YouTubeFormSchema
 export const YouTubeFormSchema = z
 	.object({
-		title: z.string().min(1, { message: "Title is required" }),
-		description: z.string().min(1, { message: "Description is required" }),
+		title: z.string().min(1),
+		description: z.string().min(1),
 		thumbnail: z
 			.array(fileSchema(2 * 1024 * 1024, ["image/png", "image/jpeg"]))
-			.min(1, { message: "At least one thumbnail is required" }),
-		date: futureDateSchema(),
+			.min(1),
 		video: z
 			.array(
 				fileSchema(256 * 1024 * 1024 * 1024, [
@@ -47,9 +47,8 @@ export const YouTubeFormSchema = z
 					"video/mov",
 				]),
 			)
-			.min(1, {
-				message: "At least one video is required",
-			}),
+			.min(1),
+		date: futureDateSchema(),
 	})
 	.refine((data) => !!data.date, {
 		message: "Date is required",
