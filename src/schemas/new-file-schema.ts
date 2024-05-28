@@ -39,9 +39,17 @@ export const YouTubeFormSchema = z
 			.array(fileSchema(2 * 1024 * 1024, ["image/png", "image/jpeg"]))
 			.min(1, { message: "At least one thumbnail is required" }),
 		date: futureDateSchema(),
-		video: z.array(fileSchema(256000000000, ["video/*"])).min(1, {
-			message: "At least one video is required",
-		}),
+		video: z
+			.array(
+				fileSchema(256 * 1024 * 1024 * 1024, [
+					"video/mp4",
+					"video/mpeg",
+					"video/mov",
+				]),
+			)
+			.min(1, {
+				message: "At least one video is required",
+			}),
 	})
 	.refine((data) => !!data.date, {
 		message: "Date is required",
