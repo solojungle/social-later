@@ -10,7 +10,7 @@ import {
 import { api } from "@/trpc/react";
 
 import { AudienceGrowth } from "../audienceGrowth";
-import { DeviceVisits } from "../deviceVisits";
+import { ViewsComparisons } from "../viewsComparisons";
 
 export const StatsCard = ({
 	title,
@@ -176,7 +176,7 @@ export const YouTubeAnalyticsTab = () => {
 					<AudienceGrowth metrics={resp?.metrics} />
 				</div>
 				<div className="col-span-1">
-					<DeviceVisits />
+					<ViewsComparisons />
 				</div>
 			</div>
 		</>
