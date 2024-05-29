@@ -17,6 +17,7 @@ import {
 } from "recharts/types/component/DefaultTooltipContent";
 
 import { ReportRangePicker } from "@/components/reportRangePicker";
+import { DataTypePicker } from "@/components/youtubeDataTypePicker";
 import { cn } from "@/lib/utils";
 
 const PRIMARY_COLOR = "#2563eb";
@@ -225,6 +226,7 @@ function fitDataToPeriod(
 }
 
 export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
+	const [type, setType] = useState<"subscribers" | "views">("views");
 	const [period, setPeriod] = useState<
 		"daily" | "weekly" | "monthly" | "annually"
 	>("daily");
@@ -245,7 +247,10 @@ export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
 						See how your audience grew during the reporting period
 					</p>
 				</div>
-				<ReportRangePicker period={period} onChange={setPeriod} />
+				<div className="flex space-x-1">
+					<DataTypePicker type={type} onChange={setType} />
+					<ReportRangePicker period={period} onChange={setPeriod} />
+				</div>
 			</div>
 			<ResponsiveContainer width="100%" height={350}>
 				<AreaChart
