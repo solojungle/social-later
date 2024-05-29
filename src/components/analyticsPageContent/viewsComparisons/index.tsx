@@ -5,7 +5,31 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { cn } from "@/lib/utils";
 
 function formatNumber(num: any) {
-	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	// return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	const numString = num.toString();
+	const numLength = numString.length;
+
+	if (numLength < 4) {
+		return numString;
+	}
+
+	if (numLength < 7) {
+		return `${numString.slice(0, -3)}K`;
+	}
+
+	if (numLength < 10) {
+		return `${(num / 1000000).toFixed(1)}M`;
+	}
+
+	if (numLength < 13) {
+		return `${(num / 1000000000).toFixed(1)}B`;
+	}
+
+	if (numLength < 16) {
+		return `${(num / 1000000000000).toFixed(1)}T`;
+	}
+
+	return numString;
 }
 
 const CustomTooltip = ({
@@ -49,8 +73,8 @@ const CustomTooltip = ({
 
 export function ViewsComparisons() {
 	const data = [
-		{ name: "Long Views", value: 20 },
-		{ name: "Short Views", value: 20 },
+		{ name: "Long Views", value: 432323423 },
+		{ name: "Short Views", value: 432323423 },
 	];
 
 	const longViews = data[0]?.value ?? 0;
