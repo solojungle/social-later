@@ -73,8 +73,8 @@ const CustomTooltip = ({
 
 export function ViewsComparisons() {
 	const data = [
-		{ name: "Long Views", value: 432323423 },
-		{ name: "Short Views", value: 432323423 },
+		{ name: "Long Views", value: 0 },
+		{ name: "Short Views", value: 0 },
 	];
 
 	const longViews = data[0]?.value ?? 0;

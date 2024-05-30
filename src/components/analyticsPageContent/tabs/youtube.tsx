@@ -1,12 +1,15 @@
 "use client";
 
 import { ArrowDownRight, ArrowUpRight, InfoIcon, Minus } from "lucide-react";
+import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 import { AudienceGrowth } from "../audienceGrowth";
@@ -130,16 +133,16 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 					tooltip="The total amount of views on your social profile."
 				/>
 				<StatsCard
-					title="Watch time (hours)"
-					value={retweets.value.toString()}
-					increasedBy={retweets.increase.daily.toString()}
-					tooltip="The total amount of hours that people have viewed your posts."
-				/>
-				<StatsCard
 					title="Subscribers"
 					value={likes.value.toString()}
 					increasedBy={likes.increase.daily.toString()}
 					tooltip="The total amount of subscribers that your channel has."
+				/>
+				<StatsCard
+					title="Watch time (hours)"
+					value={retweets.value.toString()}
+					increasedBy={retweets.increase.daily.toString()}
+					tooltip="The total amount of hours that people have viewed your posts."
 				/>
 				<StatsCard
 					title="Impressions"
@@ -153,7 +156,7 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 }
 
 export const YouTubeAnalyticsTab = () => {
-	// const { currentProfileId } = useSocialProfilesStore();
+	const { currentProfileId } = useSocialProfilesStore();
 
 	const { data: resp } = api.metrics.getPostMetrics.useQuery({
 		id: "clvs5cszf000aso19af4tk5jx",
@@ -168,8 +171,26 @@ export const YouTubeAnalyticsTab = () => {
 	// 	},
 	// );
 
+	const { mutateAsync: createBulkYouTubeReport } =
+		api.socials.getBulkYouTubeReport.useMutation({
+			onSuccess: () => {
+				toast.success("Successfully called API.", {});
+			},
+		});
+
 	return (
 		<>
+			<Button
+				onClick={async () => {
+					const { data: reportInfo } = await createBulkYouTubeReport({
+						profileId: currentProfileId,
+					});
+
+					console.log(reportInfo);
+				}}
+			>
+				Generate Bulk Report
+			</Button>
 			<PerformanceSummary values={resp?.totals} />
 			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 				<div className="col-span-2">

@@ -20,8 +20,8 @@ export function DataTypePicker({ type, onChange }: ReportRangePickerProps) {
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>
-					<SelectItem value="subscribers">Subscribers</SelectItem>
 					<SelectItem value="views">Views</SelectItem>
+					<SelectItem value="subscribers">Subscribers</SelectItem>
 				</SelectGroup>
 			</SelectContent>
 		</Select>
