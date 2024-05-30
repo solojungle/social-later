@@ -127,25 +127,25 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 					title="Views"
 					value={followers.value.toString()}
 					increasedBy={followers.increase.daily.toString()}
-					tooltip="The total amount of followers on your social profile."
+					tooltip="The total amount of views on your social profile."
 				/>
 				<StatsCard
 					title="Watch time (hours)"
 					value={retweets.value.toString()}
 					increasedBy={retweets.increase.daily.toString()}
-					tooltip="The total amount of retweets that your posts have received."
+					tooltip="The total amount of hours that people have viewed your posts."
 				/>
 				<StatsCard
 					title="Subscribers"
 					value={likes.value.toString()}
 					increasedBy={likes.increase.daily.toString()}
-					tooltip="The total amount of likes that your posts have received."
+					tooltip="The total amount of subscribers that your channel has."
 				/>
 				<StatsCard
 					title="Impressions"
 					value={impressions.value.toString()}
 					increasedBy={impressions.increase.daily.toString()}
-					tooltip="The total amount of times that your posts have been seen by users."
+					tooltip="The total amount of times that your posts have been seen by other users."
 				/>
 			</div>
 		</div>
