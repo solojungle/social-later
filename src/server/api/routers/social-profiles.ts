@@ -416,4 +416,59 @@ export const socialProfilesRouter = createTRPCRouter({
 
 			return response;
 		}),
+
+	getBulkYouTubeReport: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { profileId: ytAccountId } = input;
+
+			// Make sure the user is apart of the team, and that the account belongs to the team
+			const ytAccount = await ctx.db.socialProfile.findUnique({
+				where: {
+					id: ytAccountId,
+				},
+			});
+
+			if (!ytAccount) {
+				throw new Error("YouTube account does not exist");
+			}
+
+			// Check if the job exists for the account
+			if (!ytAccount.youtubeReportId) {
+				throw new Error("No bulk report job exists");
+			}
+
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: ytAccount.teamId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			const clientAuth = getYTClientAuth({
+				accessToken: ytAccount.accessToken,
+				refreshToken: ytAccount.refreshToken,
+				expiresAt:
+					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
+			});
+
+			const youtubereporting = google.youtubereporting({
+				version: "v1",
+				auth: clientAuth,
+			});
+
+			const response = await youtubereporting.jobs.reports.list({
+				jobId: ytAccount.youtubeReportId,
+			});
+
+			return response;
+		}),
 });
