@@ -1,7 +1,19 @@
 "use client";
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+	Cell,
+	Pie,
+	PieChart,
+	ResponsiveContainer,
+	Tooltip,
+	TooltipProps,
+} from "recharts";
+import {
+	NameType,
+	ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
+import { twColors } from "@/lib/tailwind";
 import { cn } from "@/lib/utils";
 
 function formatNumber(num: any) {
@@ -32,13 +44,13 @@ function formatNumber(num: any) {
 	return numString;
 }
 
+const PRIMARY_COLOR = twColors?.primary?.DEFAULT as string;
+const SECONDARY_COLOR = twColors?.secondary?.DEFAULT as string;
+
 const CustomTooltip = ({
 	active,
 	payload,
-}: {
-	active: boolean;
-	payload: { name: string; value: number }[];
-}) => {
+}: TooltipProps<ValueType, NameType>) => {
 	if (active && payload && payload.length) {
 		if (!payload[0]) {
 			return null;
@@ -56,13 +68,18 @@ const CustomTooltip = ({
 						<div
 							className={cn(
 								"mr-1.5 h-2 w-2 rounded-full",
-								{ "bg-red-600": name === "Long Views" },
-								{ "bg-blue-600": name === "Short Views" },
+								{ "bg-primary": name === "Long Views" },
+								{ "bg-secondary": name === "Short Views" },
 							)}
 						/>
 						<p>Views</p>
 					</div>
-					<p className="font-medium text-foreground">{formatNumber(value)}%</p>
+					<p className="font-medium text-foreground">
+						{(value ?? "0")
+							.toString()
+							.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}
+						%
+					</p>
 				</div>
 			</div>
 		);
@@ -100,14 +117,14 @@ export function ViewsComparisons() {
 			<div className="flex items-center justify-between">
 				<div className="flex flex-col space-y-4">
 					<div className="flex w-max items-center justify-center space-x-2">
-						<div className="h-16 w-2 rounded-lg bg-red-600" />
+						<div className="h-16 w-2 rounded-lg bg-primary" />
 						<div>
 							<p className="line-clamp-1 text-xs">Long Views</p>
 							<p className="text-lg font-medium">{formatNumber(longViews)}</p>
 						</div>
 					</div>
 					<div className="flex w-max items-center justify-center space-x-2">
-						<div className="h-16 w-2 rounded-lg bg-blue-600" />
+						<div className="h-16 w-2 rounded-lg bg-secondary" />
 						<div>
 							<p className="line-clamp-1 text-xs">Short Views</p>
 							<p className="text-lg font-medium">{formatNumber(shortViews)}</p>
@@ -124,11 +141,10 @@ export function ViewsComparisons() {
 							cy="50%"
 							outerRadius={100}
 							innerRadius={70}
-							fill="#8884d8"
 						>
 							{[
-								{ name: "Long Views", fill: "#ff0000" },
-								{ name: "Short Views", fill: "#0000ff" },
+								{ name: "Long Views", fill: PRIMARY_COLOR },
+								{ name: "Short Views", fill: SECONDARY_COLOR },
 							].map((entry, index) => (
 								<Cell key={`cell-${index}`} fill={entry.fill} />
 							))}

@@ -1,6 +1,8 @@
 import { type Config } from "tailwindcss";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fontFamily } from "tailwindcss/defaultTheme";
 
+/** @type {import('tailwindcss').Config} */
 export default {
 	darkMode: ["class"],
 	safelist: ["dark"],
