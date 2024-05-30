@@ -1,5 +1,6 @@
 import { youtube } from "@googleapis/youtube";
 import { SocialProfileType } from "@prisma/client";
+import { google } from "googleapis";
 import { Readable } from "stream";
 import { TwitterApi } from "twitter-api-v2";
 import { z } from "zod";
@@ -348,86 +349,71 @@ export const socialProfilesRouter = createTRPCRouter({
 			return response;
 		}),
 
-	// getYtAnalytics: protectedProcedure
-	// 	.input(z.object({ profileId: z.string() }))
-	// 	.query(async ({ ctx, input }) => {
-	// 		const { profileId: ytAccountId } = input;
+	createBulkYouTubeReport: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { profileId: ytAccountId } = input;
 
-	// 		// Make sure the user is apart of the team, and that the twitter account belongs to the team
-	// 		const ytAccount = await ctx.db.socialProfile.findUnique({
-	// 			where: {
-	// 				id: ytAccountId,
-	// 			},
-	// 		});
+			// Make sure the user is apart of the team, and that the account belongs to the team
+			const ytAccount = await ctx.db.socialProfile.findUnique({
+				where: {
+					id: ytAccountId,
+				},
+			});
 
-	// 		if (!ytAccount) {
-	// 			throw new Error("YouTube account does not exist");
-	// 		}
+			if (!ytAccount) {
+				throw new Error("YouTube account does not exist");
+			}
 
-	// 		const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-	// 			where: {
-	// 				teamId: ytAccount.teamId,
-	// 				userId: ctx.session.user.id,
-	// 			},
-	// 		});
+			// Check if we already have a job running
+			if (ytAccount.youtubeReportId) {
+				throw new Error("A bulk report job is already running");
+			}
 
-	// 		if (!isUserPartOfTeam) {
-	// 			throw new Error("You are not apart of this team");
-	// 		}
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: ytAccount.teamId,
+					userId: ctx.session.user.id,
+				},
+			});
 
-	// 		const clientAuth = getYTClientAuth({
-	// 			accessToken: ytAccount.accessToken,
-	// 			refreshToken: ytAccount.refreshToken,
-	// 			expiresAt:
-	// 				ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
-	// 		});
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
 
-	// 		// const ytAnalytics = youtubeAnalytics_v2();
+			const clientAuth = getYTClientAuth({
+				accessToken: ytAccount.accessToken,
+				refreshToken: ytAccount.refreshToken,
+				expiresAt:
+					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
+			});
 
-	// 		try {
-	// 			const yt = youtube({
-	// 				version: "v3",
-	// 				auth: clientAuth,
-	// 			});
+			const youtubereporting = google.youtubereporting({
+				version: "v1",
+				auth: clientAuth,
+			});
 
-	// 			const channels = await yt.channels.list({
-	// 				part: ["contentDetails"],
-	// 				mine: true,
-	// 			});
+			const response = await youtubereporting.jobs.create({
+				requestBody: {
+					reportTypeId: "channel_basic_a2",
+					name: "Bulk Report",
+				},
+			});
 
-	// 			const uploadPlaylistIds = channels.data.items?.map(
-	// 				(item) => item.contentDetails?.relatedPlaylists?.uploads,
-	// 			);
+			// Update the social profile with the report id
+			await ctx.db.socialProfile.update({
+				where: {
+					id: ytAccountId,
+				},
+				data: {
+					youtubeReportId: response.data.id,
+				},
+			});
 
-	// 			if (!uploadPlaylistIds) {
-	// 				throw new Error("Could not find upload playlist");
-	// 			}
-
-	// 			const uploadedVideo = await yt.playlistItems.list({
-	// 				part: ["snippet"],
-	// 				playlistId: uploadPlaylistIds[0],
-	// 			});
-
-	// 			const uploadedVideoIds = uploadedVideo.data.items
-	// 				?.map((item) => item.snippet?.resourceId?.videoId) // Get videoId from resourceId
-	// 				.filter((id) => typeof id === "string"); // Filter out non-string values
-
-	// 			if (!uploadedVideoIds || uploadedVideoIds.length === 0) {
-	// 				throw new Error("No uploaded videos found");
-	// 			}
-
-	// 			const uploadedVideoStats = await yt.videos.list({
-	// 				part: ["statistics", "contentDetails", "snippet"],
-	// 				id: uploadedVideoIds.filter(
-	// 					(id) => id !== null && id !== undefined,
-	// 				) as string[],
-	// 			});
-
-	// 			return uploadedVideoStats;
-	// 		} catch (err) {
-	// 			console.log(err);
-	// 		}
-
-	// 		return "";
-	// 	}),
+			return response;
+		}),
 });
