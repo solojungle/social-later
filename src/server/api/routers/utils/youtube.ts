@@ -1,0 +1,95 @@
+export const fetchYouTubeChannel = async (db, profileId) => {
+	const youtubeChannel = await db.socialProfile.findUnique({
+		where: { id: profileId },
+	});
+	if (!youtubeChannel) throw new Error("YouTube channel does not exist");
+	if (!youtubeChannel.youtubeJobId)
+		throw new Error("No bulk report job exists");
+	return youtubeChannel;
+};
+
+export const verifyUserTeamMembership = async (db, userId, teamId) => {
+	const isUserPartOfTeam = await db.userOnTeam.findFirst({
+		where: { teamId, userId },
+	});
+	if (!isUserPartOfTeam) throw new Error("You are not apart of this team");
+};
+
+export const initializeYouTubeReportingClient = (youtubeChannel) => {
+	const clientAuth = getYTClientAuth({
+		accessToken: youtubeChannel.accessToken,
+		refreshToken: youtubeChannel.refreshToken,
+		expiresAt: youtubeChannel.expiresAt.getTime() - new Date().getTime(),
+	});
+	return google.youtubereporting({ version: "v1", auth: clientAuth });
+};
+
+export const fetchLatestReportTimestamp = async (db, profileId) => {
+	const latestReport = await db.youTubeVideoReport.findFirst({
+		where: { profileId },
+		orderBy: { create_time: "desc" },
+	});
+	return latestReport?.create_time;
+};
+
+export const fetchAllReports = async (
+	youtubereporting,
+	jobId,
+	initialLatestReportTimestamp,
+) => {
+	const reports = [];
+	let nextPageToken;
+	do {
+		// eslint-disable-next-line no-await-in-loop
+		const response = await youtubereporting.jobs.reports.list({
+			jobId,
+			createdAfter: initialLatestReportTimestamp
+				? new Date(initialLatestReportTimestamp).toISOString()
+				: undefined,
+			pageToken: nextPageToken,
+		});
+		if (!response.data.reports) return [];
+		reports.push(...response.data.reports);
+		nextPageToken = response.data.nextPageToken;
+	} while (nextPageToken);
+	return reports;
+};
+
+export const fetchNewReports = async (db, reports, profileId) => {
+	const reportIds = reports.map((report) => report.id).filter((id) => id);
+	const existingReports = await db.youTubeVideoReport.findMany({
+		where: { report_id: { in: reportIds } },
+	});
+	return reports.filter(
+		(report) =>
+			!existingReports.some((existing) => existing.report_id === report.id),
+	);
+};
+
+export const downloadReports = async (youtubereporting, newReports) => {
+	return Promise.all(
+		newReports.map((report) =>
+			youtubereporting.media.download(
+				{ resourceName: "Bulk Report" },
+				{ url: report.downloadUrl ?? "" },
+			),
+		),
+	);
+};
+
+export const saveReports = async (db, downloads, profileId) => {
+	return Promise.all(
+		downloads.map(async (download) => {
+			const jsonResult = JSON.parse(download.data.toString());
+			return db.youTubeVideoReport.create({
+				data: {
+					profileId,
+					report_id: jsonResult.report_id,
+					create_time: jsonResult.create_time,
+					start_time: jsonResult.start_time,
+					end_time: jsonResult.end_time,
+				},
+			});
+		}),
+	);
+};
