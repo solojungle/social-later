@@ -12,6 +12,17 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { client, v1client } from "@/server/services/twitter/client";
 import { getYTClientAuth } from "@/server/services/youtube/client";
 
+import {
+	cleanReports,
+	downloadReports,
+	fetchAllReports,
+	fetchLatestReportTimestamp,
+	fetchYouTubeChannel,
+	initializeYouTubeReportingClient,
+	saveReports,
+	verifyUserTeamMembership,
+} from "./utils/youtube";
+
 // This function will refresh the account if the token is expired
 // will then return the client
 async function getTwitterClientOrRefresh({
@@ -370,7 +381,7 @@ export const socialProfilesRouter = createTRPCRouter({
 			}
 
 			// Check if we already have a job running
-			if (ytAccount.youtubeReportId) {
+			if (ytAccount.youtubeJobId) {
 				throw new Error("A bulk report job is already running");
 			}
 
@@ -410,7 +421,7 @@ export const socialProfilesRouter = createTRPCRouter({
 					id: ytAccountId,
 				},
 				data: {
-					youtubeReportId: response.data.id,
+					youtubeJobId: response.data.id,
 				},
 			});
 
@@ -418,6 +429,50 @@ export const socialProfilesRouter = createTRPCRouter({
 		}),
 
 	getBulkYouTubeReport: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { profileId } = input;
+			const { db, session } = ctx;
+
+			// Get the youtube channel, and verify the user is apart of the team
+			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+			await verifyUserTeamMembership(
+				db,
+				session.user.id,
+				youtubeChannel.teamId,
+			);
+
+			// Initialize the youtube reporting client
+			const youtubereporting = initializeYouTubeReportingClient(youtubeChannel);
+
+			// Fetch all the reports and the latest report timestamp
+			const initialLatestReportTimestamp = await fetchLatestReportTimestamp(
+				db,
+				profileId,
+			);
+			const reports = await fetchAllReports(
+				youtubereporting,
+				youtubeChannel.youtubeJobId,
+				initialLatestReportTimestamp,
+			);
+
+			if (reports.length === 0) return null;
+
+			const newReports = await cleanReports(db, reports, profileId);
+			if (newReports.length === 0) return null;
+
+			const downloads = await downloadReports(youtubereporting, newReports);
+
+			const savedReports = await saveReports(db, downloads, profileId);
+
+			return savedReports;
+		}),
+
+	getRealtimeYouTubeAnalytics: protectedProcedure
 		.input(
 			z.object({
 				profileId: z.string(),
@@ -435,11 +490,6 @@ export const socialProfilesRouter = createTRPCRouter({
 
 			if (!ytAccount) {
 				throw new Error("YouTube account does not exist");
-			}
-
-			// Check if the job exists for the account
-			if (!ytAccount.youtubeReportId) {
-				throw new Error("No bulk report job exists");
 			}
 
 			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
@@ -460,13 +510,14 @@ export const socialProfilesRouter = createTRPCRouter({
 					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
 			});
 
-			const youtubereporting = google.youtubereporting({
-				version: "v1",
+			const yt = youtube({
+				version: "v3",
 				auth: clientAuth,
 			});
 
-			const response = await youtubereporting.jobs.reports.list({
-				jobId: ytAccount.youtubeReportId,
+			const response = await yt.channels.list({
+				part: ["statistics"],
+				mine: true,
 			});
 
 			return response;

@@ -1,3 +1,7 @@
+import { google, youtubereporting_v1 } from "googleapis";
+
+import { getYTClientAuth } from "@/server/services/youtube/client";
+
 export const fetchYouTubeChannel = async (db, profileId) => {
 	const youtubeChannel = await db.socialProfile.findUnique({
 		where: { id: profileId },
@@ -33,9 +37,9 @@ export const fetchLatestReportTimestamp = async (db, profileId) => {
 };
 
 export const fetchAllReports = async (
-	youtubereporting,
-	jobId,
-	initialLatestReportTimestamp,
+	youtubereporting: youtubereporting_v1.Youtubereporting,
+	jobId: any,
+	initialLatestReportTimestamp: any,
 ) => {
 	const reports = [];
 	let nextPageToken;
@@ -55,7 +59,7 @@ export const fetchAllReports = async (
 	return reports;
 };
 
-export const fetchNewReports = async (db, reports, profileId) => {
+export const cleanReports = async (db, reports, profileId) => {
 	const reportIds = reports.map((report) => report.id).filter((id) => id);
 	const existingReports = await db.youTubeVideoReport.findMany({
 		where: { report_id: { in: reportIds } },

@@ -134,21 +134,22 @@ enum SocialProfileType {
 }
 
 model SocialProfile {
-  id             String            @id @default(cuid())
-  username       String
-  name           String?
-  accessToken    String
-  refreshToken   String
-  avatar         String
-  type           SocialProfileType
-  teamId         String
-  youtubeJobId   String? // This is the ID of the job that will generate a report every 24 hours
-  team           Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  expiresAt      DateTime
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
-  post           Post[]
-  ChannelMetrics ChannelMetrics[]
+  id                 String               @id @default(cuid())
+  username           String
+  name               String?
+  accessToken        String
+  refreshToken       String
+  avatar             String
+  type               SocialProfileType
+  teamId             String
+  youtubeJobId       String? // This is the ID of the job that will generate a report every 24 hours
+  team               Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  expiresAt          DateTime
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  post               Post[]
+  ChannelMetrics     ChannelMetrics[]
+  YouTubeVideoReport YouTubeVideoReport[]
 
   @@unique([username, teamId])
 }
@@ -276,13 +277,49 @@ model TotalMetrics {
   urlClicks   Int?
 }
 
-// model YouTubePostMetrics {
-//   id        Int      @default(autoincrement())
-//   date      DateTime @db.Timestamptz
-//   likes     Int
-//   dislikes  Int
-//   views     Int
-//   logged_at DateTime @default(now())
+model YouTubeVideoReport {
+  id                               Int      @default(autoincrement())
+  logged_at                        DateTime @default(now()) // The time the report was logged (on our service)
+  create_time                      DateTime // The time the report was created
+  start_time                       DateTime // The starting time range of the report
+  end_time                         DateTime // The ending time range of the report
+  date                             DateTime @db.Timestamptz // Attribute provided by the report
+  report_id                        String
+  channel_id                       String
+  video_id                         String
+  live_or_on_demand                String
+  subscribed_status                String
+  country_code                     String
+  views                            Int
+  comments                         Int
+  likes                            Int
+  dislikes                         Int
+  shares                           Int
+  watch_time_minutes               Float
+  average_view_duration_seconds    Float
+  average_view_duration_percentage Float
+  annotation_impressions           Int
+  annotation_clickable_impressions Int
+  annotation_clicks                Int
+  annotation_click_through_rate    Float
+  annotation_closable_impressions  Int
+  annotation_closes                Int
+  annotation_close_rate            Float
+  card_teaser_impressions          Int
+  card_teaser_clicks               Int
+  card_teaser_click_rate           Float
+  card_impressions                 Int
+  card_clicks                      Int
+  card_click_rate                  Float
+  subscribers_gained               Int
+  subscribers_lost                 Int
+  videos_added_to_playlists        Int
+  videos_removed_from_playlists    Int
+  red_views                        Int
+  red_watch_time_minutes           Float
 
-//   @@unique([id, logged_at])
-// }
+  profile   SocialProfile @relation(fields: [profileId], references: [id])
+  profileId String
+
+  @@unique([id, logged_at])
+}
