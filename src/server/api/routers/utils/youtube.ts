@@ -7,8 +7,6 @@ export const fetchYouTubeChannel = async (db, profileId) => {
 		where: { id: profileId },
 	});
 	if (!youtubeChannel) throw new Error("YouTube channel does not exist");
-	if (!youtubeChannel.youtubeJobId)
-		throw new Error("No bulk report job exists");
 	return youtubeChannel;
 };
 

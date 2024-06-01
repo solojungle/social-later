@@ -446,6 +446,10 @@ export const socialProfilesRouter = createTRPCRouter({
 				youtubeChannel.teamId,
 			);
 
+			// This is the first time the user is trying to get the report
+			// Instead of creating a side effect, we will return null
+			if (!youtubeChannel.youtubeJobId) return null;
+
 			// Initialize the youtube reporting client
 			const youtubereporting = initializeYouTubeReportingClient(youtubeChannel);
 
@@ -454,6 +458,8 @@ export const socialProfilesRouter = createTRPCRouter({
 				db,
 				profileId,
 			);
+
+			// List all the reports, that have been created after the latest report
 			const reports = await fetchAllReports(
 				youtubereporting,
 				youtubeChannel.youtubeJobId,
@@ -462,6 +468,7 @@ export const socialProfilesRouter = createTRPCRouter({
 
 			if (reports.length === 0) return null;
 
+			// Remove any reports that have already been saved, and null reports
 			const newReports = await cleanReports(db, reports, profileId);
 			if (newReports.length === 0) return null;
 
