@@ -144,12 +144,12 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 					increasedBy={retweets.increase.daily.toString()}
 					tooltip="The total amount of hours that people have viewed your posts."
 				/>
-				<StatsCard
+				{/* <StatsCard
 					title="Impressions"
 					value={impressions.value.toString()}
 					increasedBy={impressions.increase.daily.toString()}
 					tooltip="The total amount of times that your posts have been seen by other users."
-				/>
+				/> */}
 			</div>
 		</div>
 	);
