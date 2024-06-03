@@ -18,9 +18,9 @@ import {
 
 import { ReportRangePicker } from "@/components/reportRangePicker";
 import { DataTypePicker } from "@/components/youtubeDataTypePicker";
-import { cn } from "@/lib/utils";
+import { twColors } from "@/lib/tailwind";
 
-const PRIMARY_COLOR = "#2563eb";
+const PRIMARY_COLOR = twColors?.primary?.DEFAULT as string;
 
 function formatNumber(num: any) {
 	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -39,12 +39,7 @@ function CustomTooltip({
 				</div>
 				<div className="flex items-center justify-between rounded-b-sm border border-t-0 border-border px-1 py-1.5">
 					<div className="flex items-center justify-center">
-						<div
-							className={cn(
-								"mr-1.5 h-2 w-2 rounded-full",
-								`bg-[${PRIMARY_COLOR}]`,
-							)}
-						/>
+						<div className="mr-1.5 h-2 w-2 rounded-full bg-primary" />
 						<p>Followers</p>
 					</div>
 					<p className="font-medium text-foreground">

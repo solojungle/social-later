@@ -1,8 +1,13 @@
+import { Prisma, PrismaClient } from "@prisma/client";
+import { DefaultArgs } from "@prisma/client/runtime/library";
 import { google, youtubereporting_v1 } from "googleapis";
 
 import { getYTClientAuth } from "@/server/services/youtube/client";
 
-export const fetchYouTubeChannel = async (db, profileId) => {
+export const fetchYouTubeChannel = async (
+	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+	profileId: string,
+) => {
 	const youtubeChannel = await db.socialProfile.findUnique({
 		where: { id: profileId },
 	});
@@ -10,14 +15,22 @@ export const fetchYouTubeChannel = async (db, profileId) => {
 	return youtubeChannel;
 };
 
-export const verifyUserTeamMembership = async (db, userId, teamId) => {
+export const verifyUserTeamMembership = async (
+	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+	userId: string,
+	teamId: any,
+) => {
 	const isUserPartOfTeam = await db.userOnTeam.findFirst({
 		where: { teamId, userId },
 	});
 	if (!isUserPartOfTeam) throw new Error("You are not apart of this team");
 };
 
-export const initializeYouTubeReportingClient = (youtubeChannel) => {
+export const initializeYouTubeReportingClient = (youtubeChannel: {
+	accessToken: any;
+	refreshToken: any;
+	expiresAt: { getTime: () => number };
+}) => {
 	const clientAuth = getYTClientAuth({
 		accessToken: youtubeChannel.accessToken,
 		refreshToken: youtubeChannel.refreshToken,
@@ -26,7 +39,10 @@ export const initializeYouTubeReportingClient = (youtubeChannel) => {
 	return google.youtubereporting({ version: "v1", auth: clientAuth });
 };
 
-export const fetchLatestReportTimestamp = async (db, profileId) => {
+export const fetchLatestReportTimestamp = async (
+	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+	profileId: string,
+) => {
 	const latestReport = await db.youTubeVideoReport.findFirst({
 		where: { profileId },
 		orderBy: { create_time: "desc" },
@@ -57,7 +73,11 @@ export const fetchAllReports = async (
 	return reports;
 };
 
-export const cleanReports = async (db, reports, profileId) => {
+export const cleanReports = async (
+	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+	reports: any[],
+	profileId: string,
+) => {
 	const reportIds = reports.map((report) => report.id).filter((id) => id);
 	const existingReports = await db.youTubeVideoReport.findMany({
 		where: { report_id: { in: reportIds } },
@@ -68,7 +88,10 @@ export const cleanReports = async (db, reports, profileId) => {
 	);
 };
 
-export const downloadReports = async (youtubereporting, newReports) => {
+export const downloadReports = async (
+	youtubereporting: youtubereporting_v1.Youtubereporting,
+	newReports: any[],
+) => {
 	return Promise.all(
 		newReports.map((report) =>
 			youtubereporting.media.download(
@@ -79,12 +102,17 @@ export const downloadReports = async (youtubereporting, newReports) => {
 	);
 };
 
-export const saveReports = async (db, downloads, profileId) => {
+export const saveReports = async (
+	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+	downloads: any[],
+	profileId: string,
+) => {
 	return Promise.all(
 		downloads.map(async (download) => {
 			const jsonResult = JSON.parse(download.data.toString());
 			return db.youTubeVideoReport.create({
 				data: {
+					...jsonResult,
 					profileId,
 					report_id: jsonResult.report_id,
 					create_time: jsonResult.create_time,
