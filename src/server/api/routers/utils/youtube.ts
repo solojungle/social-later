@@ -20,8 +20,8 @@ export const verifyUserTeamMembership = async (
 	userId: string,
 	teamId: any,
 ) => {
-	const isUserPartOfTeam = await db.userOnTeam.findFirst({
-		where: { teamId, userId },
+	const isUserPartOfTeam = await db.userOnTeam.findUnique({
+		where: { userId_teamId: { teamId, userId } },
 	});
 	if (!isUserPartOfTeam) throw new Error("You are not apart of this team");
 };
@@ -76,7 +76,6 @@ export const fetchAllReports = async (
 export const cleanReports = async (
 	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
 	reports: any[],
-	profileId: string,
 ) => {
 	const reportIds = reports.map((report) => report.id).filter((id) => id);
 	const existingReports = await db.youTubeVideoReport.findMany({
@@ -88,11 +87,35 @@ export const cleanReports = async (
 	);
 };
 
+// Converts single single csv into an object
+export const convertCSVToObject = (csv: string) => {
+	const [headerLine, dataLine] = csv.trim().split("\n");
+
+	if (!headerLine) {
+		throw new Error("Invalid CSV format");
+	}
+
+	if (!dataLine) {
+		return {};
+	}
+
+	const headers = headerLine.split(",");
+	const data = dataLine.split(",");
+
+	const resultObject: { [key: string]: any } = {};
+
+	headers.forEach((header, index) => {
+		resultObject[header] = data[index];
+	});
+
+	return resultObject;
+};
+
 export const downloadReports = async (
 	youtubereporting: youtubereporting_v1.Youtubereporting,
 	newReports: any[],
 ) => {
-	return Promise.all(
+	const downloads = await Promise.all(
 		newReports.map((report) =>
 			youtubereporting.media.download(
 				{ resourceName: "Bulk Report" },
@@ -100,6 +123,24 @@ export const downloadReports = async (
 			),
 		),
 	);
+
+	// Convert the download data to an object
+	downloads.forEach((download) => {
+		// eslint-disable-next-line no-param-reassign
+		download.data = convertCSVToObject(download.data.toString());
+	});
+
+	// Now add the reports id, startTime, endTime, createTime to the download object
+	return downloads.map((download, index) => {
+		const report = newReports[index];
+		return {
+			data: download.data,
+			report_id: report.id,
+			start_time: report.startTime,
+			end_time: report.endTime,
+			create_time: report.createTime,
+		};
+	});
 };
 
 export const saveReports = async (
@@ -107,19 +148,16 @@ export const saveReports = async (
 	downloads: any[],
 	profileId: string,
 ) => {
-	return Promise.all(
-		downloads.map(async (download) => {
-			const jsonResult = JSON.parse(download.data.toString());
-			return db.youTubeVideoReport.create({
-				data: {
-					...jsonResult,
-					profileId,
-					report_id: jsonResult.report_id,
-					create_time: jsonResult.create_time,
-					start_time: jsonResult.start_time,
-					end_time: jsonResult.end_time,
-				},
-			});
-		}),
-	);
+	const result = await db.youTubeVideoReport.createMany({
+		data: downloads.map((download) => ({
+			...download.data,
+			profileId,
+			report_id: download.report_id,
+			create_time: download.create_time,
+			start_time: download.start_time,
+			end_time: download.end_time,
+		})),
+	});
+
+	return result;
 };

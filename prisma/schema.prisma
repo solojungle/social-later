@@ -280,43 +280,43 @@ model TotalMetrics {
 model YouTubeVideoReport {
   id                               Int      @default(autoincrement())
   logged_at                        DateTime @default(now()) // The time the report was logged (on our service)
+  report_id                        String
   create_time                      DateTime // The time the report was created
   start_time                       DateTime // The starting time range of the report
   end_time                         DateTime // The ending time range of the report
-  date                             DateTime @db.Timestamptz // Attribute provided by the report
-  report_id                        String
-  channel_id                       String
-  video_id                         String
-  live_or_on_demand                String
-  subscribed_status                String
-  country_code                     String
-  views                            Int
-  comments                         Int
-  likes                            Int
-  dislikes                         Int
-  shares                           Int
-  watch_time_minutes               Float
-  average_view_duration_seconds    Float
-  average_view_duration_percentage Float
-  annotation_impressions           Int
-  annotation_clickable_impressions Int
-  annotation_clicks                Int
-  annotation_click_through_rate    Float
-  annotation_closable_impressions  Int
-  annotation_closes                Int
-  annotation_close_rate            Float
-  card_teaser_impressions          Int
-  card_teaser_clicks               Int
-  card_teaser_click_rate           Float
-  card_impressions                 Int
-  card_clicks                      Int
-  card_click_rate                  Float
-  subscribers_gained               Int
-  subscribers_lost                 Int
-  videos_added_to_playlists        Int
-  videos_removed_from_playlists    Int
-  red_views                        Int
-  red_watch_time_minutes           Float
+  date                             String? // Attribute provided by the report`
+  channel_id                       String?
+  video_id                         String?
+  live_or_on_demand                String?
+  subscribed_status                String?
+  country_code                     String?
+  views                            String?
+  comments                         String?
+  likes                            String?
+  dislikes                         String?
+  shares                           String?
+  watch_time_minutes               String?
+  average_view_duration_seconds    String?
+  average_view_duration_percentage String?
+  annotation_impressions           String?
+  annotation_clickable_impressions String?
+  annotation_clicks                String?
+  annotation_click_through_rate    String?
+  annotation_closable_impressions  String?
+  annotation_closes                String?
+  annotation_close_rate            String?
+  card_teaser_impressions          String?
+  card_teaser_clicks               String?
+  card_teaser_click_rate           String?
+  card_impressions                 String?
+  card_clicks                      String?
+  card_click_rate                  String?
+  subscribers_gained               String?
+  subscribers_lost                 String?
+  videos_added_to_playlists        String?
+  videos_removed_from_playlists    String?
+  red_views                        String?
+  red_watch_time_minutes           String?
 
   profile   SocialProfile @relation(fields: [profileId], references: [id])
   profileId String

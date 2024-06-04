@@ -182,7 +182,7 @@ export const YouTubeAnalyticsTab = () => {
 		<>
 			<Button
 				onClick={async () => {
-					const { data: reportInfo } = await createBulkYouTubeReport({
+					const reportInfo = await createBulkYouTubeReport({
 						profileId: currentProfileId,
 					});
 

@@ -469,7 +469,7 @@ export const socialProfilesRouter = createTRPCRouter({
 			if (reports.length === 0) return null;
 
 			// Remove any reports that have already been saved, and null reports
-			const newReports = await cleanReports(db, reports, profileId);
+			const newReports = await cleanReports(db, reports);
 			if (newReports.length === 0) return null;
 
 			const downloads = await downloadReports(youtubereporting, newReports);
