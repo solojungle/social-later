@@ -74,28 +74,22 @@ export const StatsCard = ({
 };
 
 export interface Increase {
-	daily: number;
-	weekly: number;
-	monthly: number;
-	annually: number;
+	daily: string;
+	weekly: string;
+	monthly: string;
+	annually: string;
 }
 
 export interface Totals {
-	value: number;
+	value: string;
 	increase: Increase;
 }
 
 type AudienceGrowthProps = {
 	values:
 		| {
-				followers: Totals;
-				profileClicks: Totals;
-				retweets: Totals;
-				replies: Totals;
-				likes: Totals;
-				quotes: Totals;
-				impressions: Totals;
-				urlClicks: Totals;
+				views: Totals;
+				subscribers: Totals;
 		  }
 		| undefined;
 };
@@ -106,16 +100,7 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 		return null;
 	}
 
-	const {
-		retweets,
-		likes,
-		impressions,
-		followers,
-		// profileClicks,
-		// replies,
-		// quotes,
-		// urlClicks,
-	} = values;
+	const { views, subscribers } = values;
 
 	return (
 		<div className="w-full rounded-sm border border-border p-3 text-sm">
@@ -128,22 +113,22 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 			<div className="grid grid-cols-2 gap-6 divide-x lg:grid-cols-4 [&>*:nth-child(odd)]:border-none lg:[&>*:nth-child(odd)]:border-solid ">
 				<StatsCard
 					title="Views"
-					value={followers.value.toString()}
-					increasedBy={followers.increase.daily.toString()}
+					value={views.value}
+					increasedBy={views.increase.daily}
 					tooltip="The total amount of views on your social profile."
 				/>
 				<StatsCard
 					title="Subscribers"
-					value={likes.value.toString()}
-					increasedBy={likes.increase.daily.toString()}
+					value={subscribers.value}
+					increasedBy={subscribers.increase.daily}
 					tooltip="The total amount of subscribers that your channel has."
 				/>
-				<StatsCard
+				{/* <StatsCard
 					title="Watch time (hours)"
 					value={retweets.value.toString()}
 					increasedBy={retweets.increase.daily.toString()}
 					tooltip="The total amount of hours that people have viewed your posts."
-				/>
+				/> */}
 				{/* <StatsCard
 					title="Impressions"
 					value={impressions.value.toString()}
@@ -162,14 +147,18 @@ export const YouTubeAnalyticsTab = () => {
 		id: "clvs5cszf000aso19af4tk5jx",
 	});
 
-	// const { data: ytResp } = api.socials.uploadYouTubeVideo.useQuery(
-	// 	{
-	// 		profileId: currentProfileId,
-	// 	},
-	// 	{
-	// 		enabled: !!currentProfileId,
-	// 	},
-	// );
+	const {
+		data: analytics,
+		isFetching,
+		isError,
+	} = api.socials.getRealtimeYouTubeAnalytics.useQuery(
+		{
+			profileId: currentProfileId,
+		},
+		{
+			enabled: !!currentProfileId,
+		},
+	);
 
 	const { mutateAsync: createBulkYouTubeReport } =
 		api.socials.getBulkYouTubeReport.useMutation({
@@ -178,6 +167,34 @@ export const YouTubeAnalyticsTab = () => {
 			},
 		});
 
+	if (isFetching) {
+		return <p>Loading...</p>;
+	}
+
+	const counts = analytics?.data?.items[0]?.statistics;
+
+	// Format the data for the performance summary
+	const performanceData = {
+		views: {
+			value: counts?.viewCount,
+			increase: {
+				daily: "0",
+				weekly: "0",
+				monthly: "0",
+				annually: "0",
+			},
+		},
+		subscribers: {
+			value: counts?.subscriberCount,
+			increase: {
+				daily: "0",
+				weekly: "0",
+				monthly: "0",
+				annually: "0",
+			},
+		},
+	};
+
 	return (
 		<>
 			<Button
@@ -185,13 +202,11 @@ export const YouTubeAnalyticsTab = () => {
 					const reportInfo = await createBulkYouTubeReport({
 						profileId: currentProfileId,
 					});
-
-					console.log(reportInfo);
 				}}
 			>
 				Generate Bulk Report
 			</Button>
-			<PerformanceSummary values={resp?.totals} />
+			<PerformanceSummary values={performanceData} />
 			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 				<div className="col-span-2">
 					<AudienceGrowth metrics={resp?.metrics} />
