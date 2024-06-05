@@ -239,7 +239,7 @@ export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
 	const [type, setType] = useState<"subscribers" | "views">("views");
 	const [period, setPeriod] = useState<
 		"daily" | "weekly" | "monthly" | "annually"
-	>("daily");
+	>("weekly");
 
 	if (!metrics) {
 		return null;
