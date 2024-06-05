@@ -105,6 +105,14 @@ export function formatData(
 			const minutes = String(date.getMinutes()).padStart(2, "0");
 			const dateString = `${date.getFullYear()}-${month}-${day} ${hours}:${minutes}`;
 
+			const value = metric[type] as number;
+			if (value === undefined) {
+				return {
+					date: dateString,
+					value: 0,
+				};
+			}
+
 			return {
 				date: dateString,
 				value: metric[type] as number,
