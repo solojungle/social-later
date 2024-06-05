@@ -160,6 +160,19 @@ export const YouTubeAnalyticsTab = () => {
 		},
 	);
 
+	const {
+		data: reports,
+		isFetching: isReportsFetching,
+		isError: isReportsError,
+	} = api.analytics.getYouTubeAnalytics.useQuery(
+		{
+			profileId: currentProfileId,
+		},
+		{
+			enabled: !!currentProfileId,
+		},
+	);
+
 	const { mutateAsync: createBulkYouTubeReport } =
 		api.socials.getBulkYouTubeReport.useMutation({
 			onSuccess: () => {
@@ -209,7 +222,7 @@ export const YouTubeAnalyticsTab = () => {
 			<PerformanceSummary values={performanceData} />
 			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 				<div className="col-span-2">
-					<AudienceGrowth metrics={resp?.metrics} />
+					<AudienceGrowth metrics={reports} />
 				</div>
 				<div className="col-span-1">
 					<ViewsComparisons />

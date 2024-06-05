@@ -30,7 +30,8 @@ function CustomTooltip({
 	active,
 	payload,
 	label,
-}: TooltipProps<ValueType, NameType>) {
+	type,
+}: TooltipProps<ValueType, NameType> & { type: string }) {
 	if (active && payload && payload.length) {
 		return (
 			<div className="w-36 rounded-md bg-background text-xs shadow-sm">
@@ -40,7 +41,7 @@ function CustomTooltip({
 				<div className="flex items-center justify-between rounded-b-sm border border-t-0 border-border px-1 py-1.5">
 					<div className="flex items-center justify-center">
 						<div className="mr-1.5 h-2 w-2 rounded-full bg-primary" />
-						<p>Followers</p>
+						<p className="capitalize">{type}</p>
 					</div>
 					<p className="font-medium text-foreground">
 						{payload?.[0] && formatNumber(payload?.[0].value)}
@@ -72,19 +73,24 @@ type AudienceGrowthProps = {
 		| {
 				id: string;
 				date: Date;
-				postId: string;
-				profileClicks: number;
-				retweets: number;
-				replies: number;
-				likes: number;
-				quotes: number;
-				impressions: number;
-				urlClicks: number;
+				views: string;
+				comments: string;
+				likes: string;
+				dislikes: string;
+				shares: string;
+				watch_time_minutes: string;
+				subscribers_gained: string;
+				subscribers_lost: string;
+
+				[key: string]: number | string | Date; // Add index signature
 		  }[]
 		| undefined;
 };
 
-export function formatData(metrics: AudienceGrowthProps["metrics"]) {
+export function formatData(
+	metrics: AudienceGrowthProps["metrics"],
+	type: string,
+) {
 	if (!metrics) {
 		return [];
 	}
@@ -101,7 +107,7 @@ export function formatData(metrics: AudienceGrowthProps["metrics"]) {
 
 			return {
 				date: dateString,
-				value: metric.profileClicks,
+				value: metric[type] as number,
 			};
 		})
 		.sort((a, b) => {
@@ -221,6 +227,7 @@ function fitDataToPeriod(
 }
 
 export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
+	// This is the field that will be used to determine the type of data to display
 	const [type, setType] = useState<"subscribers" | "views">("views");
 	const [period, setPeriod] = useState<
 		"daily" | "weekly" | "monthly" | "annually"
@@ -230,7 +237,7 @@ export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
 		return null;
 	}
 
-	const filteredData = formatData(metrics);
+	const filteredData = formatData(metrics, type);
 	const fittedData = fitDataToPeriod(period, filteredData);
 
 	return (
@@ -278,7 +285,7 @@ export function AudienceGrowth({ metrics }: AudienceGrowthProps) {
 						tickFormatter={(value) => formatNumber(value)}
 					/>
 					<Tooltip
-						content={<CustomTooltip />}
+						content={<CustomTooltip type={type} />}
 						cursor={{ strokeWidth: 1 }}
 						animationDuration={75}
 					/>

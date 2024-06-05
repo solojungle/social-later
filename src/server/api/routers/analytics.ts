@@ -1,134 +1,104 @@
 /* eslint-disable no-await-in-loop */
-import { TwitterApi } from "twitter-api-v2";
+
+import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { client } from "@/server/services/twitter/client";
 
-// This function will refresh the account if the token is expired
-// will then return the client
-async function getTwitterClientOrRefresh({
-	updatedAt,
-	expiresAt,
-	accessToken,
-	refreshToken,
-	socialAccountId,
-	ctx,
-}: {
-	updatedAt: Date;
-	expiresAt: Date;
-	accessToken: string;
-	refreshToken: string;
-	socialAccountId: string;
-	ctx: any;
-}) {
-	if (expiresAt <= new Date()) {
-		// TODO: this is giving me issues constantly
-		const {
-			client: refreshedClient,
-			accessToken: refreshedAccessToken,
-			refreshToken: refreshedRefreshToken,
-			expiresIn: refreshedExpiresIn,
-		} = await client.refreshOAuth2Token(refreshToken);
-
-		await ctx.db.socialProfile.update({
-			where: {
-				id: socialAccountId,
-			},
-			data: {
-				accessToken: refreshedAccessToken,
-				refreshToken: refreshedRefreshToken,
-				expiresAt: new Date(updatedAt.getTime() + refreshedExpiresIn),
-			},
-		});
-
-		return refreshedClient;
-	}
-
-	return new TwitterApi(accessToken);
-}
+import { fetchYouTubeChannel, verifyUserTeamMembership } from "./utils/youtube";
 
 export const analyticsRouter = createTRPCRouter({
-	// A cron job that will run every 24 hours to get the analytics of the last 24 hours of every account in the database
-	populateChannelAnalytics: protectedProcedure.query(async ({ ctx }) => {
-		// Get all the accounts
-		const accounts = await ctx.db.socialProfile.findMany({
-			where: {
-				type: "twitter",
-			},
-		});
+	getYouTubeAnalytics: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { profileId } = input;
+			const { db, session } = ctx;
 
-		const profile = accounts[0];
+			// Get the youtube channel, and verify the user is apart of the team
+			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+			await verifyUserTeamMembership(
+				db,
+				session.user.id,
+				youtubeChannel.teamId,
+			);
 
-		if (!profile) {
-			return null;
-		}
-
-		const loggedClient = await getTwitterClientOrRefresh({
-			updatedAt: profile.updatedAt,
-			expiresAt: profile.expiresAt,
-			accessToken: profile.accessToken,
-			refreshToken: profile.refreshToken,
-			socialAccountId: profile.id,
-			ctx,
-		});
-
-		// Get all the posts within the last 30 days, and update them with the latest stats
-		const posts = await ctx.db.post.findMany({
-			where: {
-				profileId: profile.id,
-				createdAt: {
-					gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
+			const reports = await db.youTubeVideoReport.findMany({
+				where: {
+					profileId,
 				},
-			},
-		});
-
-		console.log(posts);
-
-		// Get the stats of the posts
-		const postIds = posts.map((post) => post.externalPostId);
-
-		console.log(postIds);
-
-		try {
-			// Get the stats of the posts
-
-			const { data: postStats } = await loggedClient.v2.userTimeline("12", {
-				exclude: "replies",
 			});
-			// const { data: postStats } = await loggedClient.v2.tweets(postIds, {
-			// 	"tweet.fields": "public_metrics",
-			// 	// "tweet.fields": "public_metrics,organic_metrics,non_public_metrics",
-			// });
 
-			console.log("postStats: ", postStats);
+			// start_time, views, comments, likes, dislikes, shares, watch_time_minutes, subscribers_gained, subscribers_lost
+			const analytics = reports
+				.map((report) => ({
+					id: String(report.id),
+					date: report.start_time,
+					views: report.views ?? "null",
+					comments: report.comments ?? "null",
+					likes: report.likes ?? "null",
+					dislikes: report.dislikes ?? "null",
+					shares: report.shares ?? "null",
+					watch_time_minutes: report.watch_time_minutes ?? "null",
+					subscribers_gained: report.subscribers_gained ?? "null",
+					subscribers_lost: report.subscribers_lost ?? "null",
+				}))
+				.sort(
+					(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+				);
 
-			return postStats;
-		} catch (err) {
-			console.log(err);
-		}
+			// Set the first value to the first report to 0 if its null
+			if (
+				analytics.length > 0 &&
+				analytics[0] &&
+				analytics[0].views === "null"
+			) {
+				analytics[0].views = "0";
+				analytics[0].comments = "0";
+				analytics[0].likes = "0";
+				analytics[0].dislikes = "0";
+				analytics[0].shares = "0";
+				analytics[0].watch_time_minutes = "0";
+				analytics[0].subscribers_gained = "0";
+				analytics[0].subscribers_lost = "0";
+			}
 
-		return null;
+			// Update analytics with cumulative values
+			for (let i = 1; i < analytics.length; i += 1) {
+				const prev = analytics[i - 1];
+				const curr = analytics[i];
 
-		// const { data } = await loggedClient.v2.me({
-		// 	"user.fields": "public_metrics",
-		// });
+				if (curr && prev) {
+					if (curr.views === "null") {
+						const currentId = { id: curr.id, date: curr.date };
+						Object.assign(curr, prev);
+						curr.id = currentId.id;
+						curr.date = currentId.date;
+					} else {
+						curr.views = String(Number(prev.views) + Number(curr.views));
+						curr.comments = String(
+							Number(prev.comments) + Number(curr.comments),
+						);
+						curr.likes = String(Number(prev.likes) + Number(curr.likes));
+						curr.dislikes = String(
+							Number(prev.dislikes) + Number(curr.dislikes),
+						);
+						curr.shares = String(Number(prev.shares) + Number(curr.shares));
+						curr.watch_time_minutes = String(
+							Number(prev.watch_time_minutes) + Number(curr.watch_time_minutes),
+						);
+						curr.subscribers_gained = String(
+							Number(prev.subscribers_gained) + Number(curr.subscribers_gained),
+						);
+						curr.subscribers_lost = String(
+							Number(prev.subscribers_lost) + Number(curr.subscribers_lost),
+						);
+					}
+				}
+			}
 
-		// const stats = data.public_metrics;
-
-		// if (!stats) {
-		// 	return null;
-		// }
-
-		// // Now push into the database
-		// const resp = await ctx.db.channelMetrics.create({
-		// 	data: {
-		// 		profileId: account.id, // Add the 'profile' property
-		// 		followers: stats.followers_count || 0,
-		// 		tweets: stats.tweet_count || 0,
-		// 		likes: stats.like_count || 0,
-		// 	},
-		// });
-
-		// return resp;
-	}),
+			return analytics;
+		}),
 });
