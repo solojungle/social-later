@@ -143,7 +143,7 @@ function fitDataToPeriod(
 					new Date(dataPoint.date).toISOString().slice(0, 13) ===
 					new Date(date).toISOString().slice(0, 13)
 				) {
-					timeSlot.value = dataPoint.value;
+					timeSlot.value = Number(dataPoint.value);
 				}
 			});
 		}
@@ -169,7 +169,7 @@ function fitDataToPeriod(
 					new Date(dataPoint.date).toISOString().slice(0, 10) ===
 					new Date(date).toISOString().slice(0, 10)
 				) {
-					timeSlot.value = dataPoint.value;
+					timeSlot.value = Number(dataPoint.value);
 				}
 			});
 		}
@@ -192,7 +192,7 @@ function fitDataToPeriod(
 					new Date(dataPoint.date).toISOString().slice(0, 10) ===
 					new Date(date).toISOString().slice(0, 10)
 				) {
-					timeSlot.value = dataPoint.value;
+					timeSlot.value = Number(dataPoint.value);
 				}
 			});
 		}
@@ -217,7 +217,7 @@ function fitDataToPeriod(
 					new Date(dataPoint.date).toISOString().slice(0, 7) ===
 					new Date(date).toISOString().slice(0, 7)
 				) {
-					timeSlot.value = dataPoint.value;
+					timeSlot.value = Number(dataPoint.value);
 				}
 			});
 		}
