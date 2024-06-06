@@ -135,7 +135,7 @@ function fitDataToPeriod(
 	const dates = [];
 
 	if (period === "daily") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0));
+		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
 
 		for (let hours = 0; hours <= 23; hours += 1) {
 			const date = new Date(start.getTime() + hours * 60 * 60 * 1000);
@@ -161,7 +161,7 @@ function fitDataToPeriod(
 
 	// First 3 letters of month, followed by day of the month, last 7 days
 	if (period === "weekly") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0));
+		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
 
 		for (let days = 7; days > 0; days -= 1) {
 			const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
@@ -184,7 +184,7 @@ function fitDataToPeriod(
 	}
 
 	if (period === "monthly") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0));
+		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
 
 		for (let days = 29; days >= 0; days -= 1) {
 			const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
@@ -208,7 +208,7 @@ function fitDataToPeriod(
 
 	// Just the first 3 letters of the month, last 13 months
 	if (period === "annually") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0));
+		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
 
 		for (let months = 12; months >= 0; months -= 1) {
 			const date = new Date(start.getTime());
