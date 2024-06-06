@@ -133,102 +133,56 @@ function fitDataToPeriod(
 	data: { date: string; value: number }[],
 ) {
 	const dates = [];
+	const now = new Date().setHours(0, 0, 0, 0);
+	const start = new Date(now - 86400000);
 
-	if (period === "daily") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
+	const addTimeSlot = (date: Date, format: any) => {
+		const dateString = date.toLocaleString("default", format);
+		const timeSlot = { date: dateString, value: 0 };
+		dates.push(timeSlot);
+		data.forEach((dataPoint) => {
+			if (
+				new Date(dataPoint.date)
+					.toISOString()
+					.startsWith(date.toISOString().slice(0, format.year ? 7 : 10))
+			) {
+				timeSlot.value = Number(dataPoint.value);
+			}
+		});
+	};
 
-		for (let hours = 0; hours <= 23; hours += 1) {
-			const date = new Date(start.getTime() + hours * 60 * 60 * 1000);
-			const hour = String(date.getHours()).padStart(2, "0");
-			const minutes = String(date.getMinutes()).padStart(2, "0");
-			const timeString = `${hour}:${minutes}`;
+	switch (period) {
+		case "daily":
+			for (let hours = 0; hours <= 23; hours += 1) {
+				const date = new Date(start.getTime() + hours * 60 * 60 * 1000);
+				addTimeSlot(date, { hour: "2-digit", minute: "2-digit" });
+			}
+			dates.push({ date: "23:59", value: 0 });
+			break;
 
-			const timeSlot = { date: timeString, value: 0 };
-			dates.push(timeSlot);
+		case "weekly":
+			for (let days = 7; days > 0; days -= 1) {
+				const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
+				addTimeSlot(date, { month: "short", day: "numeric" });
+			}
+			break;
 
-			data.forEach((dataPoint) => {
-				if (
-					new Date(dataPoint.date).toISOString().slice(0, 13) ===
-					new Date(date).toISOString().slice(0, 13)
-				) {
-					timeSlot.value = Number(dataPoint.value);
-				}
-			});
-		}
+		case "monthly":
+			for (let days = 29; days >= 0; days -= 1) {
+				const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
+				addTimeSlot(date, { month: "short", day: "numeric" });
+			}
+			break;
 
-		dates.push({ date: "23:59", value: 0 });
-	}
-
-	// First 3 letters of month, followed by day of the month, last 7 days
-	if (period === "weekly") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
-
-		for (let days = 7; days > 0; days -= 1) {
-			const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
-			const month = date.toLocaleString("default", { month: "short" });
-			const day = date.getDate();
-			const dateString = `${month} ${day}`;
-
-			const timeSlot = { date: dateString, value: 0 };
-			dates.push(timeSlot);
-
-			data.forEach((dataPoint) => {
-				if (
-					new Date(dataPoint.date).toISOString().slice(0, 10) ===
-					new Date(date).toISOString().slice(0, 10)
-				) {
-					timeSlot.value = Number(dataPoint.value);
-				}
-			});
-		}
-	}
-
-	if (period === "monthly") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
-
-		for (let days = 29; days >= 0; days -= 1) {
-			const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
-			const month = date.toLocaleString("default", { month: "short" });
-			const day = date.getDate();
-			const dateString = `${month} ${day}`;
-
-			const timeSlot = { date: dateString, value: 0 };
-			dates.push(timeSlot);
-
-			data.forEach((dataPoint) => {
-				if (
-					new Date(dataPoint.date).toISOString().slice(0, 10) ===
-					new Date(date).toISOString().slice(0, 10)
-				) {
-					timeSlot.value = Number(dataPoint.value);
-				}
-			});
-		}
-	}
-
-	// Just the first 3 letters of the month, last 13 months
-	if (period === "annually") {
-		const start = new Date(new Date().setHours(0, 0, 0, 0) - 86400000);
-
-		for (let months = 12; months >= 0; months -= 1) {
-			const date = new Date(start.getTime());
-			date.setMonth(date.getMonth() - months);
-			const month = date.toLocaleString("default", { month: "short" });
-
-			const dateString = month;
-
-			const timeSlot = { date: dateString, value: 0 };
-			dates.push(timeSlot);
-
-			data.forEach((dataPoint) => {
-				if (
-					new Date(dataPoint.date).toISOString().slice(0, 7) ===
-					new Date(date).toISOString().slice(0, 7)
-				) {
-					timeSlot.value = Number(dataPoint.value);
-				}
-			});
-		}
+		case "annually":
+			for (let months = 12; months >= 0; months -= 1) {
+				const date = new Date(start);
+				date.setMonth(date.getMonth() - months);
+				addTimeSlot(date, { month: "short", year: "numeric" });
+			}
+			break;
+		default:
+			break;
 	}
 
 	return dates;
