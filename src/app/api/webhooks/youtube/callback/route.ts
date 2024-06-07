@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
+import { initializeYouTubeReportingClient } from "@/server/api/routers/utils/youtube";
 import { db } from "@/server/db";
 import { oauth2Client } from "@/server/services/youtube/client";
 
@@ -13,7 +14,6 @@ export async function GET(req: NextRequest) {
 	// Get the code and state from the URL query
 	const url = req.nextUrl;
 	const code = url.searchParams.get("code");
-
 	// TODO: Currently not using a code_verifier, but it should be used
 	const cookieStore = cookies();
 	const teamId = cookieStore.get("teamId")?.value;
@@ -53,6 +53,29 @@ export async function GET(req: NextRequest) {
 
 		const channels = data.items || [];
 
+		const youtubeReporting = initializeYouTubeReportingClient({
+			accessToken,
+			refreshToken,
+			expiresAt: new Date(Date.now() + expiresIn),
+		});
+
+		// Check to see if the user has any jobs
+		const jobs = await youtubeReporting.jobs.list();
+		let job = jobs.data?.jobs?.find((j) => j.name === "Bulk Report");
+
+		// if there is no job we create one
+		// this job is used across all channels
+		if (!job) {
+			const response = await youtubeReporting.jobs.create({
+				requestBody: {
+					reportTypeId: "channel_basic_a2",
+					name: "Bulk Report",
+				},
+			});
+
+			job = response.data;
+		}
+
 		await Promise.all(
 			channels.map(async (channel) => {
 				const { snippet } = channel;
@@ -80,6 +103,7 @@ export async function GET(req: NextRequest) {
 						teamId,
 						avatar: thumbnailURL || "",
 						username: customUrl || "",
+						youtubeJobId: job?.id,
 					},
 					update: {
 						accessToken,

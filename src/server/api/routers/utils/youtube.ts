@@ -26,6 +26,19 @@ export const verifyUserTeamMembership = async (
 	if (!isUserPartOfTeam) throw new Error("You are not apart of this team");
 };
 
+export const initializeYouTubeAnalyticsClient = (youtubeChannel: {
+	accessToken: any;
+	refreshToken: any;
+	expiresAt: { getTime: () => number };
+}) => {
+	const clientAuth = getYTClientAuth({
+		accessToken: youtubeChannel.accessToken,
+		refreshToken: youtubeChannel.refreshToken,
+		expiresAt: youtubeChannel.expiresAt.getTime() - new Date().getTime(),
+	});
+	return google.youtubeAnalytics({ version: "v2", auth: clientAuth });
+};
+
 export const initializeYouTubeReportingClient = (youtubeChannel: {
 	accessToken: any;
 	refreshToken: any;
@@ -110,6 +123,31 @@ export const convertCSVToObject = (csv: string) => {
 
 	return resultObject;
 };
+
+// export const createReportingJob = async (
+// 	youtubereporting: youtubereporting_v1.Youtubereporting,
+// 	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+// 	profileId: string,
+// ) => {
+// 	const response = await youtubereporting.jobs.create({
+// 		requestBody: {
+// 			reportTypeId: "channel_basic_a2",
+// 			name: "Bulk Report",
+// 		},
+// 	});
+
+// 	// Update the social profile with the report id
+// 	await db.socialProfile.update({
+// 		where: {
+// 			id: profileId,
+// 		},
+// 		data: {
+// 			youtubeJobId: response.data.id,
+// 		},
+// 	});
+
+// 	return response;
+// };
 
 export const downloadReports = async (
 	youtubereporting: youtubereporting_v1.Youtubereporting,
