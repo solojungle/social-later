@@ -101,8 +101,9 @@ export async function GET(req: NextRequest) {
 						expiresAt: new Date(Date.now() + expiresIn),
 						type: "youtube",
 						teamId,
-						avatar: thumbnailURL || "",
-						username: customUrl || "",
+						avatar: thumbnailURL ?? "",
+						username: channel.id ?? "",
+						name: customUrl ?? "",
 						youtubeJobId: job?.id,
 					},
 					update: {
