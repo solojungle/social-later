@@ -164,7 +164,7 @@ export const YouTubeAnalyticsTab = () => {
 		data: reports,
 		isFetching: isReportsFetching,
 		isError: isReportsError,
-	} = api.analytics.getYouTubeAnalytics.useQuery(
+	} = api.analytics.getYouTubeAnalyticsUsingReports.useQuery(
 		{
 			profileId: currentProfileId,
 		},
