@@ -88,14 +88,19 @@ const CustomTooltip = ({
 	return null;
 };
 
-export function ViewsComparisons() {
-	const data = [
-		{ name: "Long Views", value: 0 },
-		{ name: "Short Views", value: 0 },
-	];
+type ViewsProps = {
+	data: {
+		shorts: string;
+		long: string;
+		stories: string;
+		liveStreams: string;
+		other: string;
+	};
+};
 
-	const longViews = data[0]?.value ?? 0;
-	const shortViews = data[1]?.value ?? 0;
+export function ViewsComparisons({ data }: ViewsProps) {
+	const longViews = Number(data?.long) ?? 0;
+	const shortViews = Number(data?.shorts) ?? 0;
 
 	const percentages = [
 		{

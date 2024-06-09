@@ -26,6 +26,19 @@ export const verifyUserTeamMembership = async (
 	if (!isUserPartOfTeam) throw new Error("You are not apart of this team");
 };
 
+export const initializeYouTubeDataClient = (youtubeChannel: {
+	accessToken: any;
+	refreshToken: any;
+	expiresAt: { getTime: () => number };
+}) => {
+	const clientAuth = getYTClientAuth({
+		accessToken: youtubeChannel.accessToken,
+		refreshToken: youtubeChannel.refreshToken,
+		expiresAt: youtubeChannel.expiresAt.getTime() - new Date().getTime(),
+	});
+	return google.youtube({ version: "v3", auth: clientAuth });
+};
+
 export const initializeYouTubeAnalyticsClient = (youtubeChannel: {
 	accessToken: any;
 	refreshToken: any;

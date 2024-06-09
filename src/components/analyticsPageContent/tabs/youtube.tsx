@@ -173,6 +173,15 @@ export const YouTubeAnalyticsTab = () => {
 		},
 	);
 
+	const { data: shortLongViews } = api.socials.getShortsVsLongsViews.useQuery(
+		{
+			profileId: currentProfileId,
+		},
+		{
+			enabled: !!currentProfileId,
+		},
+	);
+
 	const { mutateAsync: createBulkYouTubeReport } =
 		api.socials.getBulkYouTubeReport.useMutation({
 			onSuccess: () => {
@@ -225,7 +234,7 @@ export const YouTubeAnalyticsTab = () => {
 					<AudienceGrowth metrics={reports} />
 				</div>
 				<div className="col-span-1">
-					<ViewsComparisons />
+					<ViewsComparisons data={shortLongViews} />
 				</div>
 			</div>
 		</>

@@ -1,6 +1,5 @@
 import { youtube } from "@googleapis/youtube";
 import { SocialProfileType } from "@prisma/client";
-import { google } from "googleapis";
 import { Readable } from "stream";
 import { TwitterApi } from "twitter-api-v2";
 import { z } from "zod";
@@ -18,6 +17,8 @@ import {
 	fetchAllReports,
 	fetchLatestReportTimestamp,
 	fetchYouTubeChannel,
+	initializeYouTubeAnalyticsClient,
+	initializeYouTubeDataClient,
 	initializeYouTubeReportingClient,
 	saveReports,
 	verifyUserTeamMembership,
@@ -360,73 +361,36 @@ export const socialProfilesRouter = createTRPCRouter({
 			return response;
 		}),
 
-	createBulkYouTubeReport: protectedProcedure
-		.input(
-			z.object({
-				profileId: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { profileId: ytAccountId } = input;
+	// createBulkYouTubeReport: protectedProcedure
+	// 	.input(
+	// 		z.object({
+	// 			profileId: z.string(),
+	// 		}),
+	// 	)
+	// 	.mutation(async ({ ctx, input }) => {
+	// 		const { profileId } = input;
+	// 		const { db, session } = ctx;
 
-			// Make sure the user is apart of the team, and that the account belongs to the team
-			const ytAccount = await ctx.db.socialProfile.findUnique({
-				where: {
-					id: ytAccountId,
-				},
-			});
+	// 		// Fetch the YouTube channel details
+	// 		const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+	// 		await verifyUserTeamMembership(
+	// 			db,
+	// 			session.user.id,
+	// 			youtubeChannel.teamId,
+	// 		);
 
-			if (!ytAccount) {
-				throw new Error("YouTube account does not exist");
-			}
+	// 		// Check if we already have a job running
+	// 		if (youtubeChannel.youtubeJobId) {
+	// 			throw new Error("A bulk report job is already running");
+	// 		}
 
-			// Check if we already have a job running
-			if (ytAccount.youtubeJobId) {
-				throw new Error("A bulk report job is already running");
-			}
+	// 		// Initialize the youtube reporting client
+	// 		const youtubereporting = initializeYouTubeReportingClient(youtubeChannel);
 
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: ytAccount.teamId,
-					userId: ctx.session.user.id,
-				},
-			});
+	// 		const response = createReportingJob(youtubereporting, db, profileId);
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
-
-			const clientAuth = getYTClientAuth({
-				accessToken: ytAccount.accessToken,
-				refreshToken: ytAccount.refreshToken,
-				expiresAt:
-					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
-			});
-
-			const youtubereporting = google.youtubereporting({
-				version: "v1",
-				auth: clientAuth,
-			});
-
-			const response = await youtubereporting.jobs.create({
-				requestBody: {
-					reportTypeId: "channel_basic_a2",
-					name: "Bulk Report",
-				},
-			});
-
-			// Update the social profile with the report id
-			await ctx.db.socialProfile.update({
-				where: {
-					id: ytAccountId,
-				},
-				data: {
-					youtubeJobId: response.data.id,
-				},
-			});
-
-			return response;
-		}),
+	// 		return response;
+	// 	}),
 
 	getBulkYouTubeReport: protectedProcedure
 		.input(
@@ -528,5 +492,94 @@ export const socialProfilesRouter = createTRPCRouter({
 			});
 
 			return response;
+		}),
+
+	getShortsVsLongsViews: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { profileId } = input;
+			const { db, session } = ctx;
+
+			// Get the youtube channel, and verify the user is apart of the team
+			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+			await verifyUserTeamMembership(
+				db,
+				session.user.id,
+				youtubeChannel.teamId,
+			);
+
+			// Initialize the youtube reporting client
+			const youtubereporting = initializeYouTubeAnalyticsClient(youtubeChannel);
+
+			const youtubedata = initializeYouTubeDataClient(youtubeChannel);
+
+			// Your channel ID, remove first two characters, and add "UU" to the beginning
+			const uploadPlaylistId = `UU${youtubeChannel.username.slice(2)}`;
+
+			const videos = await youtubedata.playlistItems.list({
+				part: ["snippet"],
+				playlistId: uploadPlaylistId,
+			});
+
+			const videoIds = videos.data.items?.map(
+				(video) => video?.snippet?.resourceId?.videoId,
+			);
+
+			if (!videoIds) {
+				throw new Error("No videos found");
+			}
+
+			const { data } = await youtubereporting.reports.query({
+				ids: "channel==MINE",
+				startDate: "2019-01-01",
+				endDate: new Date().toISOString().split("T")[0],
+				metrics: "views",
+				dimensions: "video,creatorContentType",
+				filters: `video==${videoIds.join(",")}`,
+			});
+
+			// We're assuming that the columnHeaders are always in the same order
+			const { rows } = data;
+
+			const videoViews = {
+				shorts: 0,
+				long: 0,
+				stories: 0,
+				liveStreams: 0,
+				other: 0,
+			};
+
+			if (!rows) {
+				return videoViews;
+			}
+
+			rows.forEach((row) => {
+				const viewType = row[1].toLowerCase();
+				const views = row[2];
+
+				switch (viewType) {
+					case "shorts":
+						videoViews.shorts += views;
+						break;
+					case "videoondemand":
+						videoViews.long += views;
+						break;
+					case "story":
+						videoViews.stories += views;
+						break;
+					case "livestream":
+						videoViews.liveStreams += views;
+						break;
+					default:
+						videoViews.other += views;
+						break;
+				}
+			});
+
+			return videoViews;
 		}),
 });
