@@ -134,7 +134,7 @@ function fitDataToPeriod(
 ) {
 	const dates = [];
 	const now = new Date().setHours(0, 0, 0, 0);
-	const start = new Date(now - 86400000);
+	const start = new Date(now);
 
 	const addTimeSlot = (date: Date, format: any) => {
 		const dateString = date.toLocaleString("default", format);
@@ -161,7 +161,7 @@ function fitDataToPeriod(
 			break;
 
 		case "weekly":
-			for (let days = 7; days > 0; days -= 1) {
+			for (let days = 6; days >= 0; days -= 1) {
 				const date = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
 				addTimeSlot(date, { month: "short", day: "numeric" });
 			}
