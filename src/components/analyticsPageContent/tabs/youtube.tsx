@@ -1,9 +1,7 @@
 "use client";
 
 import { ArrowDownRight, ArrowUpRight, InfoIcon, Minus } from "lucide-react";
-import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
@@ -182,12 +180,12 @@ export const YouTubeAnalyticsTab = () => {
 		},
 	);
 
-	const { mutateAsync: createBulkYouTubeReport } =
-		api.socials.getBulkYouTubeReport.useMutation({
-			onSuccess: () => {
-				toast.success("Successfully called API.", {});
-			},
-		});
+	// const { mutateAsync: createBulkYouTubeReport } =
+	// 	api.socials.getBulkYouTubeReport.useMutation({
+	// 		onSuccess: () => {
+	// 			toast.success("Successfully called API.", {});
+	// 		},
+	// 	});
 
 	if (isFetching) {
 		return <p>Loading...</p>;
@@ -219,7 +217,7 @@ export const YouTubeAnalyticsTab = () => {
 
 	return (
 		<>
-			<Button
+			{/* <Button
 				onClick={async () => {
 					const reportInfo = await createBulkYouTubeReport({
 						profileId: currentProfileId,
@@ -227,7 +225,7 @@ export const YouTubeAnalyticsTab = () => {
 				}}
 			>
 				Generate Bulk Report
-			</Button>
+			</Button> */}
 			<PerformanceSummary values={performanceData} />
 			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 				<div className="col-span-2">
