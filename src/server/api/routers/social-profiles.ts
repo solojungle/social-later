@@ -494,6 +494,49 @@ export const socialProfilesRouter = createTRPCRouter({
 			return response;
 		}),
 
+	getLast10YouTubeVideos: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { profileId } = input;
+			const { db, session } = ctx;
+
+			// Get the youtube channel, and verify the user is apart of the team
+			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+			await verifyUserTeamMembership(
+				db,
+				session.user.id,
+				youtubeChannel.teamId,
+			);
+
+			// Initialize the youtube reporting client
+			const youtubedata = initializeYouTubeDataClient(youtubeChannel);
+
+			// Your channel ID, remove first two characters, and add "UU" to the beginning
+			const uploadPlaylistId = `UU${youtubeChannel.username.slice(2)}`;
+
+			const videos = await youtubedata.playlistItems.list({
+				part: ["snippet"],
+				playlistId: uploadPlaylistId,
+			});
+
+			// Return an array of the last 10 videos
+			const last10Videos = videos.data.items?.slice(0, 10);
+
+			if (!last10Videos) {
+				return [];
+			}
+
+			return last10Videos.map((video) => ({
+				thumbnail: video?.snippet?.thumbnails?.default?.url,
+				title: video?.snippet?.title,
+				url: `https://www.youtube.com/watch?v=${video?.snippet?.resourceId?.videoId}`,
+			}));
+		}),
+
 	getShortsVsLongsViews: protectedProcedure
 		.input(
 			z.object({

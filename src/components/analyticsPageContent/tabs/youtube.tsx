@@ -187,6 +187,17 @@ export const YouTubeAnalyticsTab = () => {
 		},
 	);
 
+	// getLast10YouTubeVideos
+	const { data: last10Videos, isFetching: isLast10VideosFetching } =
+		api.socials.getLast10YouTubeVideos.useQuery(
+			{
+				profileId: currentProfileId,
+			},
+			{
+				enabled: !!currentProfileId,
+			},
+		);
+
 	// const { mutateAsync: createBulkYouTubeReport } =
 	// 	api.socials.getBulkYouTubeReport.useMutation({
 	// 		onSuccess: () => {
@@ -194,7 +205,7 @@ export const YouTubeAnalyticsTab = () => {
 	// 		},
 	// 	});
 
-	if (isFetching) {
+	if (isFetching || isLast10VideosFetching) {
 		return (
 			<div className="flex h-full items-center justify-center">
 				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
@@ -234,13 +245,10 @@ export const YouTubeAnalyticsTab = () => {
 			</div>
 			<div className="col-span-1 space-y-2">
 				<MostRecentVideo
-					data={{
-						shorts: "",
-						long: "",
-						stories: "",
-						liveStreams: "",
-						other: "",
-					}}
+					thumbnail={last10Videos[0]?.thumbnail}
+					title={last10Videos?.[0]?.title}
+					url={last10Videos?.[0]?.url}
+					views="0"
 				/>
 				<ViewsComparisons data={shortLongViews} />
 			</div>
