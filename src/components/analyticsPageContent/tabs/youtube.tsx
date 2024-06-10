@@ -17,6 +17,7 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 import { AudienceGrowth } from "../audienceGrowth";
+import { MostRecentVideo } from "../mostRecentVideo";
 import { ViewsComparisons } from "../viewsComparisons";
 
 export const StatsCard = ({
@@ -226,25 +227,23 @@ export const YouTubeAnalyticsTab = () => {
 	};
 
 	return (
-		<>
-			{/* <Button
-				onClick={async () => {
-					const reportInfo = await createBulkYouTubeReport({
-						profileId: currentProfileId,
-					});
-				}}
-			>
-				Generate Bulk Report
-			</Button> */}
-			<PerformanceSummary values={performanceData} />
-			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
-				<div className="col-span-2">
-					<AudienceGrowth metrics={reports} />
-				</div>
-				<div className="col-span-1">
-					<ViewsComparisons data={shortLongViews} />
-				</div>
+		<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
+			<div className="col-span-2 space-y-2">
+				<PerformanceSummary values={performanceData} />
+				<AudienceGrowth metrics={reports} />
 			</div>
-		</>
+			<div className="col-span-1 space-y-2">
+				<MostRecentVideo
+					data={{
+						shorts: "",
+						long: "",
+						stories: "",
+						liveStreams: "",
+						other: "",
+					}}
+				/>
+				<ViewsComparisons data={shortLongViews} />
+			</div>
+		</div>
 	);
 };

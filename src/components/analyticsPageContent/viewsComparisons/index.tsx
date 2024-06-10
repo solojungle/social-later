@@ -16,7 +16,7 @@ import {
 import { twColors } from "@/lib/tailwind";
 import { cn } from "@/lib/utils";
 
-function formatNumber(num: any) {
+export function formatNumber(num: any) {
 	// return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 	const numString = num.toString();
 	const numLength = numString.length;
@@ -114,7 +114,7 @@ export function ViewsComparisons({ data }: ViewsProps) {
 	];
 
 	return (
-		<div className="h-full w-full rounded-sm border border-border p-3 text-sm">
+		<div className="w-full rounded-sm border border-border p-3 text-sm">
 			<div className="mb-8">
 				<h2 className="font-medium">Long Format Video vs. Shorts Views</h2>
 				<p className="text-muted-foreground">Last 365 Days - Estimated</p>
