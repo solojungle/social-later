@@ -223,4 +223,200 @@ export const analyticsRouter = createTRPCRouter({
 
 			return historicalData;
 		}),
+
+	combinedYouTubeAnalytics: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { profileId } = input;
+			const { db, session } = ctx;
+
+			// Get the YouTube channel, and verify the user is part of the team
+			const ytAccount = await db.socialProfile.findUnique({
+				where: {
+					id: profileId,
+				},
+			});
+
+			if (!ytAccount) {
+				throw new Error("YouTube account does not exist");
+			}
+
+			const isUserPartOfTeam = await db.userOnTeam.findFirst({
+				where: {
+					teamId: ytAccount.teamId,
+					userId: session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not part of this team");
+			}
+
+			const youtubeAnalytics = initializeYouTubeAnalyticsClient(ytAccount);
+			const youtubeDataClient = initializeYouTubeDataClient(ytAccount);
+
+			// Fetch historical data
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+			const endDate = today.toISOString().split("T")[0];
+			const startDate = new Date(
+				new Date().setFullYear(new Date().getFullYear() - 1),
+			)
+				.toISOString()
+				.split("T")[0];
+
+			const historicalRequest = {
+				dimensions: "day",
+				startDate,
+				endDate,
+				ids: "channel==MINE",
+				metrics:
+					"views,estimatedMinutesWatched,averageViewDuration,averageViewPercentage,subscribersGained",
+				sort: "day",
+			};
+
+			const historicalResponse =
+				await youtubeAnalytics.reports.query(historicalRequest);
+			const historicalData =
+				historicalResponse.data?.rows?.map((row) => ({
+					date: row[0],
+					views: Number(row[1]),
+					watch_time_minutes: Number(row[2]),
+					average_view_duration: Number(row[3]),
+					average_view_percentage: Number(row[4]),
+					subscribers_gained: Number(row[5]),
+				})) || [];
+
+			// Fetch real-time data
+			const realtimeResponse = await youtubeDataClient.channels.list({
+				part: ["statistics"],
+				mine: true,
+			});
+
+			let realtimeAnalytics = {
+				viewCount: 0,
+				subscriberCount: 0,
+			};
+
+			if (realtimeResponse?.data?.items) {
+				const { viewCount, subscriberCount } =
+					realtimeResponse.data.items[0].statistics;
+				realtimeAnalytics = {
+					viewCount: Number(viewCount),
+					subscriberCount: Number(subscriberCount),
+				};
+
+				if (historicalData.length > 0) {
+					const lastHistoricalDate = new Date(
+						historicalData[historicalData.length - 1].date,
+					);
+					const diffDays = Math.floor(
+						(today - lastHistoricalDate) / (1000 * 60 * 60 * 24),
+					);
+
+					for (let i = 0; i < diffDays - 1; i += 1) {
+						const nextDate = new Date(lastHistoricalDate);
+						nextDate.setDate(lastHistoricalDate.getDate() + i + 1);
+						const nextDateString = nextDate.toISOString().split("T")[0];
+
+						historicalData.push({
+							date: nextDateString,
+							views: 0,
+							watch_time_minutes: 0,
+							average_view_duration: 0,
+							average_view_percentage: 0,
+							subscribers_gained: 0,
+						});
+					}
+
+					historicalData.push({
+						date: today.toISOString().split("T")[0],
+						views: realtimeAnalytics.viewCount,
+						watch_time_minutes: 0,
+						average_view_duration: 0,
+						average_view_percentage: 0,
+						subscribers_gained: realtimeAnalytics.subscriberCount,
+					});
+
+					for (let i = 1; i < historicalData.length; i += 1) {
+						historicalData[i].views += historicalData[i - 1].views;
+						historicalData[i].watch_time_minutes +=
+							historicalData[i - 1].watch_time_minutes;
+						historicalData[i].subscribers_gained +=
+							historicalData[i - 1].subscribers_gained;
+					}
+				}
+			}
+
+			// Fetch video views by type
+			const uploadPlaylistId = `UU${ytAccount.username.slice(2)}`;
+			const videos = await youtubeDataClient.playlistItems.list({
+				part: ["snippet"],
+				playlistId: uploadPlaylistId,
+			});
+
+			const videoIds = videos.data.items?.map(
+				(video) => video?.snippet?.resourceId?.videoId,
+			);
+			const videoViews = {
+				shorts: 0,
+				long: 0,
+				stories: 0,
+				liveStreams: 0,
+				other: 0,
+			};
+
+			if (videoIds) {
+				const viewTypeResponse = await youtubeAnalytics.reports.query({
+					ids: "channel==MINE",
+					startDate: "2019-01-01",
+					endDate,
+					metrics: "views",
+					dimensions: "video,creatorContentType",
+					filters: `video==${videoIds.join(",")}`,
+				});
+
+				viewTypeResponse.data?.rows?.forEach((row) => {
+					const viewType = row[1].toLowerCase();
+					const views = Number(row[2]);
+
+					switch (viewType) {
+						case "shorts":
+							videoViews.shorts += views;
+							break;
+						case "videoondemand":
+							videoViews.long += views;
+							break;
+						case "story":
+							videoViews.stories += views;
+							break;
+						case "livestream":
+							videoViews.liveStreams += views;
+							break;
+						default:
+							videoViews.other += views;
+							break;
+					}
+				});
+			}
+
+			// Fetch the last 10 videos
+			const last10Videos =
+				videos.data.items?.slice(0, 10)?.map((video) => ({
+					thumbnail: video?.snippet?.thumbnails?.default?.url,
+					title: video?.snippet?.title,
+					url: `https://www.youtube.com/watch?v=${video?.snippet?.resourceId?.videoId}`,
+				})) || [];
+
+			return {
+				historicalData,
+				realtimeAnalytics,
+				videoViews,
+				last10Videos,
+			};
+		}),
 });

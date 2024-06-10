@@ -148,48 +148,8 @@ function PerformanceSummary({ values }: AudienceGrowthProps) {
 export const YouTubeAnalyticsTab = () => {
 	const { currentProfileId } = useSocialProfilesStore();
 
-	const { data: resp } = api.metrics.getPostMetrics.useQuery({
-		id: "clvs5cszf000aso19af4tk5jx",
-	});
-
-	const {
-		data: analytics,
-		isFetching,
-		isError,
-	} = api.socials.getRealtimeYouTubeAnalytics.useQuery(
-		{
-			profileId: currentProfileId,
-		},
-		{
-			enabled: !!currentProfileId,
-		},
-	);
-
-	const {
-		data: reports,
-		isFetching: isReportsFetching,
-		isError: isReportsError,
-	} = api.analytics.getYouTubeAnalyticsUsingReports.useQuery(
-		{
-			profileId: currentProfileId,
-		},
-		{
-			enabled: !!currentProfileId,
-		},
-	);
-
-	const { data: shortLongViews } = api.socials.getShortsVsLongsViews.useQuery(
-		{
-			profileId: currentProfileId,
-		},
-		{
-			enabled: !!currentProfileId,
-		},
-	);
-
-	// getLast10YouTubeVideos
-	const { data: last10Videos, isFetching: isLast10VideosFetching } =
-		api.socials.getLast10YouTubeVideos.useQuery(
+	const { data, isFetching, isError } =
+		api.analytics.combinedYouTubeAnalytics.useQuery(
 			{
 				profileId: currentProfileId,
 			},
@@ -198,14 +158,7 @@ export const YouTubeAnalyticsTab = () => {
 			},
 		);
 
-	// const { mutateAsync: createBulkYouTubeReport } =
-	// 	api.socials.getBulkYouTubeReport.useMutation({
-	// 		onSuccess: () => {
-	// 			toast.success("Successfully called API.", {});
-	// 		},
-	// 	});
-
-	if (isFetching || isLast10VideosFetching) {
+	if (isFetching || isError || !data) {
 		return (
 			<div className="flex h-full items-center justify-center">
 				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
@@ -213,7 +166,7 @@ export const YouTubeAnalyticsTab = () => {
 		);
 	}
 
-	const counts = analytics?.data?.items[0]?.statistics;
+	const counts = data?.realtimeAnalytics;
 
 	// Format the data for the performance summary
 	const performanceData = {
@@ -241,16 +194,16 @@ export const YouTubeAnalyticsTab = () => {
 		<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 			<div className="col-span-2 space-y-2">
 				<PerformanceSummary values={performanceData} />
-				<AudienceGrowth metrics={reports} />
+				<AudienceGrowth metrics={data?.historicalData} />
 			</div>
 			<div className="col-span-1 space-y-2">
 				<MostRecentVideo
-					thumbnail={last10Videos[0]?.thumbnail}
-					title={last10Videos?.[0]?.title}
-					url={last10Videos?.[0]?.url}
+					thumbnail={data.last10Videos[0]?.thumbnail}
+					title={data.last10Videos?.[0]?.title}
+					url={data.last10Videos?.[0]?.url}
 					views="0"
 				/>
-				<ViewsComparisons data={shortLongViews} />
+				<ViewsComparisons data={data?.videoViews} />
 			</div>
 		</div>
 	);
