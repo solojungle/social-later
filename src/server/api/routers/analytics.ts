@@ -342,7 +342,7 @@ export const analyticsRouter = createTRPCRouter({
 						subscribers_gained: realtimeAnalytics.subscriberCount,
 					});
 
-					for (let i = 1; i < historicalData.length; i += 1) {
+					for (let i = 1; i < historicalData.length - 1; i += 1) {
 						historicalData[i].views += historicalData[i - 1].views;
 						historicalData[i].watch_time_minutes +=
 							historicalData[i - 1].watch_time_minutes;
