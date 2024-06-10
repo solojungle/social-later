@@ -177,13 +177,16 @@ export const analyticsRouter = createTRPCRouter({
 				const lastHistoricalDate = new Date(
 					historicalData[historicalData.length - 1].date,
 				);
+
 				const today = new Date();
-				const diffDays = Math.ceil(
+				today.setHours(0, 0, 0, 0);
+
+				const diffDays = Math.floor(
 					(today - lastHistoricalDate) / (1000 * 60 * 60 * 24),
 				);
 
 				// Fill in missing days with 0 values
-				for (let i = 0; i < diffDays; i += 1) {
+				for (let i = 0; i < diffDays - 1; i += 1) {
 					const nextDate = new Date(lastHistoricalDate);
 					nextDate.setDate(lastHistoricalDate.getDate() + i + 1);
 					const nextDateString = nextDate.toISOString().split("T")[0];
