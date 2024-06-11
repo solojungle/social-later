@@ -52,6 +52,7 @@ module.exports = {
     ".eslintrc.js",
     "webpack.config.js",
 		"src/components/ui/*",
+		"src/stories/*",
     "build/",
     "node_modules/",
     ".vscode/"

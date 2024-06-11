@@ -90,17 +90,17 @@ const CustomTooltip = ({
 
 type ViewsProps = {
 	data: {
-		shorts: string;
-		long: string;
-		stories: string;
-		liveStreams: string;
-		other: string;
+		shorts: number;
+		long: number;
+		stories: number;
+		liveStreams: number;
+		other: number;
 	};
 };
 
 export function ViewsComparisons({ data }: ViewsProps) {
-	const longViews = Number(data?.long) ?? 0;
-	const shortViews = Number(data?.shorts) ?? 0;
+	const longViews = data?.long ?? 0;
+	const shortViews = data?.shorts ?? 0;
 
 	const percentages = [
 		{
@@ -150,8 +150,8 @@ export function ViewsComparisons({ data }: ViewsProps) {
 							{[
 								{ name: "Long Views", fill: PRIMARY_COLOR },
 								{ name: "Short Views", fill: SECONDARY_COLOR },
-							].map((entry, index) => (
-								<Cell key={`cell-${index}`} fill={entry.fill} />
+							].map((entry) => (
+								<Cell key={`cell-${entry.name}`} fill={entry.fill} />
 							))}
 						</Pie>
 						<Tooltip

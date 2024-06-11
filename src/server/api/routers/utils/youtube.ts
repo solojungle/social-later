@@ -1,6 +1,7 @@
+/* eslint-disable no-await-in-loop */
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
-import { google, youtubereporting_v1 } from "googleapis";
+import { google, youtubeAnalytics_v2, youtubereporting_v1 } from "googleapis";
 
 import { getYTClientAuth } from "@/server/services/youtube/client";
 
@@ -84,8 +85,7 @@ export const fetchAllReports = async (
 	const reports = [];
 	let nextPageToken;
 	do {
-		// eslint-disable-next-line no-await-in-loop
-		const response = await youtubereporting.jobs.reports.list({
+		const response: any = await youtubereporting.jobs.reports.list({
 			jobId,
 			createdAfter: initialLatestReportTimestamp
 				? new Date(initialLatestReportTimestamp).toISOString()
@@ -211,4 +211,43 @@ export const saveReports = async (
 	});
 
 	return result;
+};
+
+export const fetchHistoricalData = async (
+	youtubeAnalytics: youtubeAnalytics_v2.Youtubeanalytics,
+) => {
+	// Fetch historical data
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	const endDate = today.toISOString().split("T")[0];
+	const startDate = new Date(
+		new Date().setFullYear(new Date().getFullYear() - 1),
+	)
+		.toISOString()
+		.split("T")[0];
+
+	const historicalRequest = {
+		dimensions: "day",
+		startDate,
+		endDate,
+		ids: "channel==MINE",
+		metrics:
+			"views,estimatedMinutesWatched,averageViewDuration,averageViewPercentage,subscribersGained",
+		sort: "day",
+	};
+
+	const historicalResponse =
+		await youtubeAnalytics.reports.query(historicalRequest);
+
+	const historicalData =
+		historicalResponse.data?.rows?.map((row) => ({
+			date: row[0],
+			views: Number(row[1]),
+			watch_time_minutes: Number(row[2]),
+			average_view_duration: Number(row[3]),
+			average_view_percentage: Number(row[4]),
+			subscribers_gained: Number(row[5]),
+		})) || [];
+
+	return historicalData;
 };

@@ -32,25 +32,4 @@ export const Empty: Story = {
 	},
 };
 
-export const WithOne: Story = {
-	args: {
-		files: [
-			{
-				id: "1",
-				file: new File([""], "file1"),
-				preview:
-					"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
-				progress: 0,
-			},
-		],
-		onRemoveFile: () => {},
-		fileProgress: {},
-		restrictions: {
-			maxFiles: 4,
-			maxSize: 0,
-			maxSizeInMB: "",
-			accept: {},
-		},
-		isLoading: false,
-	},
-};
+
