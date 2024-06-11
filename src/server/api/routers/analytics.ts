@@ -157,8 +157,8 @@ export const analyticsRouter = createTRPCRouter({
 				date: row[0],
 				views: Number(row[1]),
 				watch_time_minutes: Number(row[2]),
-				average_view_duration: Number(row[3]),
-				average_view_percentage: Number(row[4]),
+				// average_view_duration: Number(row[3]),
+				// average_view_percentage: Number(row[4]),
 				subscribers_gained: Number(row[5]),
 			}));
 
