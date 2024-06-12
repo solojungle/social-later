@@ -1,12 +1,13 @@
 "use client";
 
-import { Folder, PlusIcon, Search } from "lucide-react";
+import { FileIcon, Folder, PlusIcon, Search } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
+import { FilterBy } from "./filterBy";
 import { PagePagination } from "./pagination";
 import { SortBy } from "./sortBy";
 
@@ -66,15 +67,22 @@ export function MediaPageContent() {
 						/>
 					</div>
 					<SortBy />
+					<FilterBy />
 				</div>
-				<div className="ml-4 space-x-2">
+				<div className="ml-4 flex space-x-2">
 					<Button>
 						<PlusIcon className="mr-1 h-5 w-5" />
-						Add New Folder
+						<Folder className="h-5 w-5 lg:invisible" />
+						<span className="sr-only line-clamp-1 lg:not-sr-only">
+							Add Folder
+						</span>
 					</Button>
 					<Button variant="secondary">
 						<PlusIcon className="mr-1 h-5 w-5" />
-						Add New Assets
+						<FileIcon className="h-5 w-5 lg:invisible" />
+						<span className="sr-only line-clamp-1 lg:not-sr-only">
+							Add Assets
+						</span>
 					</Button>
 				</div>
 			</div>
@@ -86,7 +94,7 @@ export function MediaPageContent() {
 					{folders.map((folder) => (
 						<div
 							key={folder.id}
-							className="flex items-center rounded-sm border border-border bg-secondary p-2 text-xs text-secondary-foreground shadow-sm"
+							className="flex items-center rounded-sm border border-border bg-background p-2 text-xs text-foreground shadow-sm"
 						>
 							<Checkbox className="mr-4" />
 							<Folder className="mr-4 h-6 w-6" />

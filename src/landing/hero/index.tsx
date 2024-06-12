@@ -43,11 +43,7 @@ export default function Hero() {
 				className="space-y-3"
 			>
 				<motion.div whileHover={{ scale: 1.05 }}>
-					<Button
-						size="lg"
-						variant="secondary"
-						className="flex items-center justify-center"
-					>
+					<Button size="lg" className="flex items-center justify-center">
 						Start a 14-day free trial <ArrowUpRight className="ml-2 h-5 w-5" />
 					</Button>
 				</motion.div>
