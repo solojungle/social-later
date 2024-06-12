@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Hero() {
 	return (
-		<section className="flex h-[calc(100vh-64px)] w-full flex-col items-center justify-center space-y-14">
+		<section className="flex h-[calc(100vh-225px)] w-full flex-col items-center justify-center space-y-14">
 			<motion.div
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}

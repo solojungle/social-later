@@ -3,8 +3,8 @@ import { NavigationMenu } from "./navigationMenu";
 
 export default async function LandingPage() {
 	return (
-		<main className="absolute top-0 z-[-2] h-screen w-screen bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
-			<div className="flex w-full flex-col items-center justify-center text-white">
+		<main className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,orange)]">
+			<div className="flex w-full flex-col justify-center">
 				<NavigationMenu />
 				<Hero />
 			</div>
