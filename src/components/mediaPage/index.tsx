@@ -6,16 +6,8 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
-import {
-	Pagination,
-	PaginationContent,
-	PaginationEllipsis,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
-} from "../ui/pagination";
 import { Separator } from "../ui/separator";
+import { PagePagination } from "./pagination";
 import { SortBy } from "./sortBy";
 
 // Dummy data for folders and assets
@@ -165,22 +157,9 @@ export function MediaPageContent() {
 				</div>
 			</div>
 
-			<Pagination>
-				<PaginationContent>
-					<PaginationItem>
-						<PaginationPrevious href="#" />
-					</PaginationItem>
-					<PaginationItem>
-						<PaginationLink href="#">1</PaginationLink>
-					</PaginationItem>
-					<PaginationItem>
-						<PaginationEllipsis />
-					</PaginationItem>
-					<PaginationItem>
-						<PaginationNext href="#" />
-					</PaginationItem>
-				</PaginationContent>
-			</Pagination>
+			<div className="my-8">
+				<PagePagination />
+			</div>
 		</div>
 	);
 }

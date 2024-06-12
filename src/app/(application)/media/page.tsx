@@ -6,7 +6,7 @@ export default function MediaPage() {
 		<ResizablePanel
 			id="media"
 			order={2}
-			className="!overflow-scroll p-3 pb-48"
+			className="!overflow-scroll p-3 pb-0"
 			defaultSize={80}
 		>
 			<div className="mb-6">
