@@ -95,7 +95,7 @@ export function ResizableLayout({
 										title: "Media Files",
 										label: "",
 										icon: FolderIcon,
-										variant: "disabled",
+										variant: isCurrentTab(path, "media"),
 										url: "media",
 									},
 								]}
