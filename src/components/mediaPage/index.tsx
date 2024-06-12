@@ -60,7 +60,7 @@ export function MediaPageContent() {
 	});
 
 	return (
-		<div className="media-page-content">
+		<div className="">
 			{/* Search Bar */}
 			<div className="mb-6 flex items-center justify-between">
 				<div className="flex space-x-2">
@@ -94,13 +94,15 @@ export function MediaPageContent() {
 					{folders.map((folder) => (
 						<div
 							key={folder.id}
-							className="flex items-center rounded-sm border border-border p-2 text-xs shadow-sm"
+							className="flex items-center rounded-sm border border-border bg-secondary p-2 text-xs text-secondary-foreground shadow-sm"
 						>
 							<Checkbox className="mr-4" />
 							<Folder className="mr-4 h-6 w-6" />
 							<div>
 								<div className="font-medium">{folder.name}</div>
-								<div className="text-gray-600">{folder.count} assets</div>
+								<div className="text-muted-foreground">
+									{folder.count} assets
+								</div>
 							</div>
 						</div>
 					))}
@@ -150,7 +152,7 @@ export function MediaPageContent() {
 								alt={asset.name}
 								className="aspect-video w-full grow rounded-t-md object-cover"
 							/>
-							<div className="flex h-14 items-center rounded-b-md border-t border-border bg-gray-100 p-2">
+							<div className="flex h-14 items-center rounded-b-md border-t border-border bg-muted p-2">
 								<div className="w-full">
 									<div className="mb-px text-sm font-medium">{asset.name}</div>
 									<div className="text-xs uppercase text-muted-foreground">
