@@ -62,10 +62,12 @@ model Attachment {
   id        String   @id @default(cuid())
   fileId    String   @unique
   postId    String
+  teamId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   file      File     @relation(fields: [fileId], references: [id])
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 enum FileType {
@@ -123,6 +125,7 @@ model Team {
   stripeCard               StripeCard[]
   socialProfile            SocialProfile[]
   post                     Post[]
+  Attachment               Attachment[]
 }
 
 enum SocialProfileType {

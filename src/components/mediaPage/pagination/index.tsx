@@ -24,7 +24,7 @@ const table = {
 	getState: () => ({
 		pagination: {
 			pageIndex: 0,
-			pageSize: 10,
+			pageSize: 2,
 		},
 	}),
 	setPageSize: (pageSize: number) => {},
@@ -56,7 +56,7 @@ export function PagePagination() {
 							<SelectValue placeholder={table.getState().pagination.pageSize} />
 						</SelectTrigger>
 						<SelectContent side="top">
-							{[2, 4, 6, 8, 10].map((pageSize) => (
+							{[2, 4, 8].map((pageSize) => (
 								<SelectItem key={pageSize} value={`${pageSize}`}>
 									{pageSize}
 								</SelectItem>

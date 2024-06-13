@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import { Separator } from "../ui/separator";
 import { AllAssets } from "./allAssets";
-import { Folders } from "./folders";
 import { SearchBar } from "./searchbar";
 
 // Dummy data for folders and assets
@@ -50,9 +49,9 @@ export function MediaPageContent() {
 
 	return (
 		<div>
-			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-			<Folders folders={folders} />
 			<Separator className="my-4" />
+			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+			{/* <Folders folders={folders} /> */}
 			<AllAssets assets={sortedAssets} />
 		</div>
 	);

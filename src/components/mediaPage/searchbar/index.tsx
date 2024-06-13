@@ -1,4 +1,4 @@
-import { FileIcon, Folder, PlusIcon, Search } from "lucide-react";
+import { Folder, PlusIcon, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,16 +32,16 @@ export function SearchBar({ searchTerm, setSearchTerm }: Props) {
 					<PlusIcon className="mr-1 h-5 w-5" />
 					<Folder className="h-5 w-5 lg:invisible" />
 					<span className="sr-only line-clamp-1 lg:not-sr-only">
-						Add Folder
+						Add Assets
 					</span>
 				</Button>
-				<Button variant="secondary">
+				{/* <Button variant="secondary">
 					<PlusIcon className="mr-1 h-5 w-5" />
 					<FileIcon className="h-5 w-5 lg:invisible" />
 					<span className="sr-only line-clamp-1 lg:not-sr-only">
 						Add Assets
 					</span>
-				</Button>
+				</Button> */}
 			</div>
 		</div>
 	);
