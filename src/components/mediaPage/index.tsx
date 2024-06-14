@@ -7,14 +7,14 @@ import { AllAssets } from "./allAssets";
 import { SearchBar } from "./searchbar";
 
 // Dummy data for folders and assets
-const folders = [
-	{ id: 1, name: "Articles", count: 16 },
-	{ id: 2, name: "Covers", count: 32 },
-	{ id: 3, name: "Pictures", count: 927 },
-	{ id: 4, name: "Team", count: 83 },
-	{ id: 5, name: "Testimonials", count: 146 },
-	{ id: 6, name: "Videos", count: 58 },
-];
+// const folders = [
+// 	{ id: 1, name: "Articles", count: 16 },
+// 	{ id: 2, name: "Covers", count: 32 },
+// 	{ id: 3, name: "Pictures", count: 927 },
+// 	{ id: 4, name: "Team", count: 83 },
+// 	{ id: 5, name: "Testimonials", count: 146 },
+// 	{ id: 6, name: "Videos", count: 58 },
+// ];
 
 const assets = [
 	{ id: 1, name: "landscape.png", type: "image/png", size: "3209×2500" },
@@ -34,8 +34,9 @@ const assets = [
 
 export function MediaPageContent() {
 	const [searchTerm, setSearchTerm] = useState("");
-	const [sortedBy, setSortedBy] = useState("name");
-	const [filterBy, setFilterBy] = useState("all");
+	const [sortedBy] = useState("name");
+	// const [sortedBy, setSortedBy] = useState("name");
+	// const [filterBy, setFilterBy] = useState("all");
 
 	const filteredAssets = assets.filter((asset) =>
 		asset.name.toLowerCase().includes(searchTerm.toLowerCase()),

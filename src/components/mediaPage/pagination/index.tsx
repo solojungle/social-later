@@ -27,9 +27,13 @@ const table = {
 			pageSize: 2,
 		},
 	}),
-	setPageSize: (pageSize: number) => {},
+	setPageSize: (pageSize: number) => {
+		console.log(pageSize);
+	},
 	getPageCount: () => 0,
-	setPageIndex: (pageIndex: number) => {},
+	setPageIndex: (pageIndex: number) => {
+		console.log(pageIndex);
+	},
 	previousPage: () => {},
 	nextPage: () => {},
 	getCanPreviousPage: () => false,

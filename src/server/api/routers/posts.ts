@@ -6,7 +6,11 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
 	create: protectedProcedure
-		.input(PostsSchema.omit({ id: true }))
+		.input(
+			PostsSchema.omit({ id: true, attachment: true }).extend({
+				fileIds: z.array(z.string()).optional(),
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
 			// Because we have a file we must link the file to the post
 			// as an attachment

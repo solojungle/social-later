@@ -11,10 +11,7 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
-import {
-	PostsSchemaValues,
-	PostWithAttachmentsSchemaValues,
-} from "@/schemas/posts-schema";
+import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
 import { api } from "@/trpc/react";
 
 import { CreatePost } from "../createPost";
@@ -45,7 +42,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface PostsProps {
 	profileId: string;
-	posts: PostWithAttachmentsSchemaValues[] | undefined;
+	posts: any;
 }
 
 async function deletePost({
@@ -374,7 +371,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 		isNextOrPreviousMonth: boolean;
 		isPreviousDay: boolean;
 		isToday?: boolean;
-		posts: PostsSchemaValues[];
+		posts: typeof posts;
 	}[];
 
 	// Add the previous month days
@@ -403,7 +400,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 			isNextOrPreviousMonth: false,
 			isPreviousDay: date <= new Date(),
 			isToday,
-			posts: posts.filter((p) => {
+			posts: posts.filter((p: any) => {
 				const postDate = new Date(p.scheduledFor);
 				return postDate.toDateString() === date.toDateString();
 			}),
