@@ -12,19 +12,42 @@ import { DynamicSizeFileSchema, SingleFileSchema } from "./file-schema";
 
 // export type MediaSchemaValues = z.infer<typeof MediaSchema>;
 
+export const AttachmentWithFileSchema = z.object({
+	id: z.string(),
+	fileId: z.string(),
+	postId: z.string(),
+	teamId: z.string(),
+	createdAt: z.date(),
+	updatedAt: z.date(),
+	file: z.object({
+		id: z.string(),
+		name: z.string(),
+		size: z.number(),
+		mime: z.string(),
+		extension: z.string(),
+		type: z.string(),
+		height: z.number().nullable(),
+		width: z.number().nullable(),
+		key: z.string(),
+		createdAt: z.date(),
+		updatedAt: z.date(),
+	}),
+});
+
+export type AttachmentWithFileValues = z.infer<typeof AttachmentWithFileSchema>;
+
 // Define Zod schema
 export const PostsSchema = z.object({
 	id: z.string(),
 	title: z.string(),
 	content: z.string().optional().nullish(),
-	fileIds: z.string().array().optional(),
-	externalPostId: z.string(),
+	published: z.boolean(),
 	status: z.string(),
 	scheduledFor: z.date(),
-	published: z.boolean(),
+	externalPostId: z.string(),
 	profileId: z.string(),
 	authorId: z.string(),
-	url: z.string().optional().nullish(),
+	attachment: z.array(AttachmentWithFileSchema),
 });
 
 export type PostsSchemaValues = z.infer<typeof PostsSchema>;
@@ -324,33 +347,11 @@ export const CreatePostSchema = z.union([
 
 export type CreatePostSchemaValues = z.infer<typeof CreatePostSchema>;
 
-export const AttachmentWithFileSchema = z.object({
-	id: z.string(),
-	fileId: z.string(),
-	postId: z.string(),
-	createdAt: z.date(),
-	updatedAt: z.date(),
-	file: z.object({
-		id: z.string(),
-		name: z.string(),
-		size: z.number(),
-		mime: z.string(),
-		extension: z.string(),
-		type: z.string(),
-		height: z.number().nullable(),
-		width: z.number().nullable(),
-		key: z.string(),
-		createdAt: z.date(),
-		updatedAt: z.date(),
-	}),
-});
-
-export type AttachmentWithFileValues = z.infer<typeof AttachmentWithFileSchema>;
-
 export const PostWithAttachmentsSchema = PostsSchema.extend({
-	attachment: AttachmentWithFileSchema.nullable().optional(),
-	url: z.string().optional().nullish(),
-	thumbnail: z.string().optional().nullish(),
+	attachment: AttachmentWithFileSchema.extend({
+		thumbnail: z.string().nullable(),
+		url: z.string().nullable(),
+	}).array(),
 });
 
 export type PostWithAttachmentsSchemaValues = z.infer<

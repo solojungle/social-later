@@ -41,6 +41,7 @@ export const postRouter = createTRPCRouter({
 							data: {
 								postId: post.id,
 								fileId: file.id,
+								teamId: post.authorId,
 							},
 						});
 					}),
@@ -127,38 +128,32 @@ export const postRouter = createTRPCRouter({
 			// Get the file for each attachment
 			const postsWithFiles = await Promise.all(
 				posts.map(async (post) => {
-					const attachment = await ctx.db.attachment.findFirst({
-						where: {
-							postId: post.id,
-						},
-						include: {
-							file: true,
-						},
+					const attachments = await ctx.db.attachment.findMany({
+						where: { postId: post.id },
+						include: { file: true },
 					});
 
-					// Add a url to make it easier to access the file
-					if (attachment?.file) {
-						// If its a video we remove its extension and add .jpg
-						if (attachment.file.type === "video") {
+					const attachmentsWithUrls = attachments.map((attachment) => {
+						if (attachment?.file) {
+							const { key, extension, type } = attachment.file;
+							const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
+							const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
+
 							return {
-								...post,
-								attachment,
-								url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${attachment.file.key}.${attachment.file.extension}`,
-								thumbnail: `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${attachment.file.key}.jpg`,
+								...attachment,
+								url: `${baseUrl}.${extension}`,
+								thumbnail:
+									type === "video"
+										? `${thumbnailBaseUrl}.jpg`
+										: `${thumbnailBaseUrl}.${extension}`,
 							};
 						}
-
-						return {
-							...post,
-							attachment,
-							url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${attachment.file.key}.${attachment.file.extension}`,
-							thumbnail: `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${attachment.file.key}.${attachment.file.extension}`,
-						};
-					}
+						return attachment;
+					});
 
 					return {
 						...post,
-						attachment,
+						attachment: attachmentsWithUrls,
 					};
 				}),
 			);

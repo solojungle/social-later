@@ -91,6 +91,33 @@ function EditPostSheetContent({
 	});
 	const [loading, setLoading] = useState(false);
 
+	// Helper function to render attachments
+	const renderAttachment = (attachment: any) => {
+		if (attachment.file.type === FileType.image) {
+			return (
+				<img
+					key={attachment.url}
+					src={attachment.url}
+					alt={attachment.alt || "Post content"}
+					className="aspect-video w-full rounded-lg object-scale-down"
+				/>
+			);
+		}
+		if (attachment.file.type === FileType.video) {
+			return (
+				<video
+					key={attachment.url}
+					src={attachment.url}
+					controls
+					className="aspect-video w-full rounded-lg object-scale-down"
+				>
+					<track default kind="captions" srcLang="en" src="" />
+				</video>
+			);
+		}
+		return null;
+	};
+
 	return (
 		<SheetContent
 			className="w-[600px] !max-w-[80vw] overflow-scroll"
@@ -100,26 +127,15 @@ function EditPostSheetContent({
 				<SheetTitle>Post View</SheetTitle>
 			</SheetHeader>
 			<div className="grid gap-4 py-4">
-				{post.url && post.attachment?.file.type === FileType.image && (
+				{/* Render multiple attachments */}
+				{post.attachment && post.attachment.length > 0 && (
 					<div>
 						<Label>Media</Label>
-						<img
-							src={post.url}
-							alt={post.title || "Post content"}
-							className="aspect-video w-full rounded-lg object-scale-down"
-						/>
-					</div>
-				)}
-				{post.url && post.attachment?.file.type === FileType.video && (
-					<div>
-						<Label>Media</Label>
-						<video
-							src={post.url}
-							controls
-							className="aspect-video w-full rounded-lg object-scale-down"
-						>
-							<track default kind="captions" srcLang="en" src="" />
-						</video>
+						<div className="space-y-4">
+							{post.attachment.map((attachment) =>
+								renderAttachment(attachment),
+							)}
+						</div>
 					</div>
 				)}
 				{post.content && post.content.length > 0 && (
@@ -233,7 +249,11 @@ function StyledMediaPost({
 	open: boolean;
 	setOpen: (open: boolean) => void;
 }) {
-	const [imageUrl, setImageUrl] = useState(post.thumbnail || post.url);
+	const postAttachment = post.attachment[0];
+
+	const [imageUrl, setImageUrl] = useState(
+		postAttachment && (postAttachment.thumbnail ?? postAttachment.url),
+	);
 
 	if (!imageUrl || imageUrl === null) {
 		return null;
@@ -245,7 +265,8 @@ function StyledMediaPost({
 				<div className="relative m-px rounded-sm border border-border shadow-md">
 					<div className="flex flex-col">
 						<div className="absolute right-2 top-2 rounded-sm bg-secondary p-1">
-							{post.attachment?.file.type === FileType.video ? (
+							{post.attachment &&
+							post.attachment[0]?.file.type === FileType.video ? (
 								<VideoIcon className="h-4 w-4 text-secondary-foreground" />
 							) : (
 								<ImageIcon className="h-4 w-4 text-secondary-foreground" />
@@ -255,13 +276,16 @@ function StyledMediaPost({
 							className="aspect-video rounded-sm object-cover"
 							src={imageUrl}
 							onError={() => {
-								if (post.attachment?.file.type === FileType.video) {
+								if (
+									post.attachment &&
+									post.attachment[0]?.file.type === FileType.video
+								) {
 									setImageUrl("images/videoPlaceholder.png");
 									return;
 								}
 
 								// If the thumbnail is not available, we will use the post content
-								setImageUrl(post.url);
+								setImageUrl((postAttachment && postAttachment.url) ?? "");
 							}}
 							alt={post.title || "Post content"}
 						/>
@@ -291,21 +315,25 @@ function StyledMediaPost({
 
 // This is the component that will be rendered on a day of the calendar
 // It will show the posts that are scheduled for that day
-function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
+function Posts({
+	posts = [],
+}: {
+	posts: PostWithAttachmentsSchemaValues[] | undefined;
+}) {
 	const [open, setOpen] = useState(false);
 
 	if (posts.length === 0) {
 		return null;
 	}
 
-	const postToDisplay = posts[0];
+	const post = posts[0];
 
-	if (!postToDisplay) {
+	if (!post) {
 		return null;
 	}
 
-	if (postToDisplay.url) {
-		return StyledMediaPost({ post: postToDisplay, open, setOpen });
+	if (post.attachment.length > 0) {
+		return StyledMediaPost({ post, open, setOpen });
 	}
 
 	return (
@@ -314,20 +342,18 @@ function Posts({ posts = [] }: { posts: PostsSchemaValues[] | undefined }) {
 				<div className="m-px flex aspect-video flex-col rounded-sm border border-border bg-secondary p-2 text-xs text-secondary-foreground shadow-md">
 					<div className="flex items-center justify-between">
 						<span className="mb-1 font-medium">
-							{postToDisplay.scheduledFor.toLocaleString("en-US", {
+							{post.scheduledFor.toLocaleString("en-US", {
 								hour: "numeric",
 								minute: "numeric",
 								hour12: true,
 							})}
 						</span>
-						{StyledStatus({ status: postToDisplay.status })}
+						{StyledStatus({ status: post.status })}
 					</div>
-					<span>
-						{postToDisplay.content && postToDisplay.content.slice(0, 50)}
-					</span>
+					<span>{post.content && post.content.slice(0, 50)}</span>
 				</div>
 			</SheetTrigger>
-			<EditPostSheetContent post={postToDisplay} setOpen={setOpen} />
+			<EditPostSheetContent post={post} setOpen={setOpen} />
 		</Sheet>
 	);
 }
