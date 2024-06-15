@@ -24,6 +24,7 @@ export default function CreateTeamButton() {
 			<SheetContent
 				className="w-[500px] !max-w-[80vw] space-y-4 !overflow-scroll pt-4"
 				side="right"
+				onInteractOutside={(e) => e.preventDefault()}
 			>
 				<SheetHeader>
 					<SheetTitle>Create team</SheetTitle>
