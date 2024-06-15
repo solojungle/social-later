@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { api } from "@/trpc/react";
+
 import { Separator } from "../ui/separator";
 import { AllAssets } from "./allAssets";
 import { SearchBar } from "./searchbar";
@@ -33,18 +36,43 @@ const assets = [
 ];
 
 export function MediaPageContent() {
+	const { id: teamId } = useSelectedTeamStore();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortedBy] = useState("name");
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
 
-	const filteredAssets = assets.filter((asset) =>
+	const { data: attachments } = api.attachment.getAll.useQuery(
+		{ teamId },
+		{
+			enabled: !!teamId,
+		},
+	);
+
+	// We dont need the other information from the attachments
+	const onlyFiles = attachments?.map((attachment) => {
+		return {
+			...attachment.file,
+			thumbnail: attachment.thumbnail,
+		};
+	});
+
+	if (!attachments || !onlyFiles) {
+		return null;
+	}
+
+	const filteredAssets = onlyFiles.filter((asset) =>
 		asset.name.toLowerCase().includes(searchTerm.toLowerCase()),
 	);
 
 	const sortedAssets = filteredAssets.sort((a, b) => {
 		if (sortedBy === "name") return a.name.localeCompare(b.name);
-		if (sortedBy === "size") return a.size.localeCompare(b.size);
+		if (sortedBy === "size") {
+			const sizeA = String(a.size);
+			const sizeB = String(b.size);
+
+			return sizeA.localeCompare(sizeB);
+		}
 		return 0;
 	});
 

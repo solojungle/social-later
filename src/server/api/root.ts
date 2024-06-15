@@ -4,6 +4,7 @@ import { userRouter } from "@/server/api/routers/user";
 import { createTRPCRouter } from "@/server/api/trpc";
 
 import { analyticsRouter } from "./routers/analytics";
+import { attachmentsRouter } from "./routers/attachments";
 import { awsRouter } from "./routers/aws";
 import { filesRouter } from "./routers/files";
 import { invitationRouter } from "./routers/invitation";
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
 	team: teamRouter,
 	invitation: invitationRouter,
 	file: filesRouter,
+	attachment: attachmentsRouter,
 	stripe: stripeRouter,
 	oauth2: oauth2Router,
 	aws: awsRouter,
