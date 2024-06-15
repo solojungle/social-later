@@ -39,7 +39,11 @@ export const attachmentsRouter = createTRPCRouter({
 								: `${thumbnailBaseUrl}.${extension}`,
 					};
 				}
-				return attachment;
+				return {
+					...attachment,
+					url: "",
+					thumbnail: "",
+				};
 			});
 
 			return attachmentsWithUrls;
