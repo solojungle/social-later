@@ -11,7 +11,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
-} from "../ui/sheet";
+} from "../ui/checkoutSheet";
 
 export default function CreateTeamButton() {
 	const [showNewTeamDialog, setShowNewTeamDialog] = useState(false);
