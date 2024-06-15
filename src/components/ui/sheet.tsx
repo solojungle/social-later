@@ -59,8 +59,7 @@ const SheetContent = React.forwardRef<
 >(({ side = "right", className, children, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
-		{/* iframe (stripes popups) was not working with SheetPrimitive.Content, had to change it */}
-    <div
+    <SheetPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
       {...props}
@@ -70,7 +69,7 @@ const SheetContent = React.forwardRef<
         <Cross2Icon className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
-    </div>
+    </SheetPrimitive.Content>
   </SheetPortal>
 ))
 SheetContent.displayName = SheetPrimitive.Content.displayName
