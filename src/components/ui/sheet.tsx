@@ -1,9 +1,9 @@
 "use client"
 
-import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -59,7 +59,8 @@ const SheetContent = React.forwardRef<
 >(({ side = "right", className, children, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
-    <SheetPrimitive.Content
+		{/* iframe (stripes popups) was not working with SheetPrimitive.Content, had to change it */}
+    <div
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
       {...props}
@@ -69,7 +70,7 @@ const SheetContent = React.forwardRef<
         <Cross2Icon className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
-    </SheetPrimitive.Content>
+    </div>
   </SheetPortal>
 ))
 SheetContent.displayName = SheetPrimitive.Content.displayName
@@ -127,14 +128,7 @@ const SheetDescription = React.forwardRef<
 SheetDescription.displayName = SheetPrimitive.Description.displayName
 
 export {
-  Sheet,
-  SheetPortal,
-  SheetOverlay,
-  SheetTrigger,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetFooter,
-  SheetTitle,
-  SheetDescription,
+	Sheet, SheetClose,
+	SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger
 }
+
