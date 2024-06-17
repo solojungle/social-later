@@ -22,22 +22,27 @@ const SupportedSites = [
 	{
 		name: "Facebook",
 		disabled: true,
+		logo: "/logos/facebook_logo.png",
 	},
 	{
 		name: "Instagram",
 		disabled: true,
+		logo: "/logos/instagram_logo.png",
 	},
 	{
 		name: "Pinterest",
 		disabled: true,
+		logo: "/logos/pinterest_logo.png",
 	},
 	{
 		name: "TikTok",
 		disabled: true,
+		logo: "/logos/tiktok_logo.png",
 	},
 	{
 		name: "Snapchat",
 		disabled: true,
+		logo: "/logos/snapchat_logo.png",
 	},
 ];
 
@@ -57,9 +62,9 @@ export function ProfileCards() {
 						)}
 					>
 						<img
-							src={`https://logo.clearbit.com/${site.name.toLowerCase()}.com`}
+							src={site.logo}
 							alt={`${site.name} logo`}
-							className="mb-2 h-8 w-8"
+							className="mb-2 h-12 w-12"
 						/>
 						<p className="font-medium">{site.name}</p>
 					</span>
