@@ -72,9 +72,10 @@ export async function GET(req: NextRequest) {
 
 		await db.socialProfile.upsert({
 			where: {
-				username_teamId: {
+				username_teamId_type: {
 					username: userObject.username,
 					teamId,
+					type: "twitter",
 				},
 			},
 			create: {
