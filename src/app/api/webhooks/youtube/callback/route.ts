@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
 	const cookieStore = cookies();
 	const teamId = cookieStore.get("teamId")?.value;
 
+	console.log("CODE", code);
+	console.log("TEAMID", teamId);
+
 	// You denied the app or your session expired
 	if (!code || !teamId) {
 		throw new Error("Invalid code or teamId");
@@ -35,6 +38,8 @@ export async function GET(req: NextRequest) {
 			refresh_token: refreshToken,
 			expiry_date: expiresIn,
 		} = tokens;
+
+		console.log("TOKENS", tokens);
 
 		// No tokens
 		if (!refreshToken || !accessToken || !expiresIn) {
