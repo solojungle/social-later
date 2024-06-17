@@ -10,6 +10,8 @@ import { oauth2Client } from "@/server/services/youtube/client";
  * This is the callback route for YouTube OAuth.
  */
 export async function GET(req: NextRequest) {
+	console.log("CALLED");
+
 	// Get the code and state from the URL query
 	const url = req.nextUrl;
 	const code = url.searchParams.get("code");
@@ -19,7 +21,8 @@ export async function GET(req: NextRequest) {
 
 	// You denied the app or your session expired
 	if (!code || !teamId) {
-		redirect("/publish");
+		throw new Error("Invalid code or teamId");
+		// redirect("/publish");
 	}
 
 	// Delete the cookies
@@ -35,7 +38,8 @@ export async function GET(req: NextRequest) {
 
 		// No tokens
 		if (!refreshToken || !accessToken || !expiresIn) {
-			redirect("/publish");
+			throw new Error("Invalid tokens");
+			// redirect("/publish");
 		}
 
 		// Get the user object from ChannelProfileDetails
@@ -89,9 +93,10 @@ export async function GET(req: NextRequest) {
 
 				return db.socialProfile.upsert({
 					where: {
-						username_teamId: {
+						username_teamId_type: {
 							username: customUrl || "",
 							teamId,
+							type: "youtube",
 						},
 					},
 					create: {
@@ -113,6 +118,9 @@ export async function GET(req: NextRequest) {
 				});
 			}),
 		);
+	} catch (err) {
+		console.error(err);
+		throw new Error("Failed to get YouTube channel");
 	} finally {
 		// Successful
 		redirect("/publish");
