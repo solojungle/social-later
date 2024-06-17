@@ -22,6 +22,11 @@ export const oauth2Router = createTRPCRouter({
 		const url = yt.generateAuthUrl({
 			access_type: "offline",
 			scope: scopes,
+			// https://github.com/googleapis/google-api-python-client/issues/213
+			// The oauth2 server will only ever mint one refresh token at a time
+			// if you request another access token via the flow it will operate
+			// as if you only asked for an access token.
+			prompt: "consent",
 		});
 
 		// Redirect your user to {url}, store {state} and {codeVerifier} into a DB/Redis/memory after user redirection
