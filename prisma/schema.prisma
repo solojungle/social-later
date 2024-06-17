@@ -154,7 +154,7 @@ model SocialProfile {
   ChannelMetrics     ChannelMetrics[]
   YouTubeVideoReport YouTubeVideoReport[]
 
-  @@unique([username, teamId])
+  @@unique([username, teamId, type])
 }
 
 model StripeProduct {
