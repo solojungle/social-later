@@ -77,7 +77,7 @@ export function MediaPageContent() {
 	});
 
 	return (
-		<div>
+		<div className="h-full">
 			<Separator className="my-4" />
 			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 			{/* <Folders folders={folders} /> */}

@@ -38,10 +38,10 @@ export function AllAssets({ assets }: Props) {
 	}
 
 	return (
-		<div>
-			<div>
+		<div className="flex h-full flex-col">
+			<div className="grow">
 				<h3 className="mb-4 font-medium">All Assets</h3>
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 ">
 					{assets.map((asset) => (
 						<div
 							key={asset.id}
@@ -54,9 +54,12 @@ export function AllAssets({ assets }: Props) {
 							/>
 							<div className="flex h-14 items-center rounded-b-md border-t border-border bg-muted p-2">
 								<div className="w-full">
-									<div className="mb-px text-sm font-medium">
+									<p
+										className="mb-px truncate text-sm font-medium"
+										title={`${asset.name}.${asset.extension}`}
+									>
 										{asset.name}.{asset.extension}
-									</div>
+									</p>
 									<div className="text-xs uppercase text-muted-foreground">
 										{asset.mime} - {formatSizeBytes(asset.size)}
 									</div>
@@ -67,7 +70,7 @@ export function AllAssets({ assets }: Props) {
 				</div>
 			</div>
 
-			<div className="my-8">
+			<div className="sticky bottom-0">
 				<PagePagination />
 			</div>
 		</div>
