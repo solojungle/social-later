@@ -12,7 +12,7 @@ function Block(props: BlockProps) {
 	return (
 		<div
 			className={`flex h-8 w-8 items-center justify-center rounded-sm p-1 transition-colors ${
-				props.view === props.type && "bg-white text-primary"
+				props.view === props.type && "bg-white text-primary shadow-sm"
 			}`}
 		>
 			<props.icon className="h-4" />
