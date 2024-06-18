@@ -1,3 +1,9 @@
+import { Trash2Icon } from "lucide-react";
+import { useState } from "react";
+
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
+
 import { PagePagination } from "../pagination";
 
 type Props = {
@@ -24,6 +30,8 @@ function formatSizeBytes(sizeBytes: any) {
 }
 
 export function AllAssets({ assets }: Props) {
+	const [selected, setSelected] = useState<any[]>([]);
+
 	if (!assets || assets.length === 0) {
 		return (
 			<div className="flex h-96 items-center justify-center">
@@ -45,14 +53,37 @@ export function AllAssets({ assets }: Props) {
 					{assets.map((asset) => (
 						<div
 							key={asset.id}
-							className="flex flex-col rounded-md border border-border"
+							className={cn(
+								"group relative flex flex-col rounded-md border border-border",
+								selected.includes(asset.id) &&
+									"ring-offset-px ring-2 ring-primary",
+							)}
 						>
-							<img
-								src={asset.thumbnail}
-								alt={asset.name}
-								className="aspect-video w-full grow rounded-t-md object-cover"
-							/>
-							<div className="flex h-14 items-center rounded-b-md border-t border-border bg-muted p-2">
+							<div className="relative group-hover:cursor-pointer">
+								<img
+									src={asset.thumbnail}
+									alt={asset.name}
+									className="aspect-video w-full grow rounded-t-md object-cover"
+								/>
+								<div className="absolute inset-0 flex items-center justify-center rounded-t-md bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+									<div className="absolute top-0 flex w-full justify-between p-2 text-white">
+										<Trash2Icon className="w-5" />
+										<Checkbox
+											className="!h-5 !w-5 !bg-white !text-black"
+											checked={selected.includes(asset.id)}
+											onCheckedChange={(checked) => {
+												if (checked) {
+													setSelected([...selected, asset.id]);
+												} else {
+													setSelected(selected.filter((id) => id !== asset.id));
+												}
+											}}
+										/>
+									</div>
+									<span className="select-none text-sm text-white">View</span>
+								</div>
+							</div>
+							<div className="flex h-14 items-center rounded-b-md border-t border-border bg-muted p-2 group-hover:cursor-pointer">
 								<div className="w-full">
 									<p
 										className="mb-px truncate text-sm font-medium"
