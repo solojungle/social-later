@@ -403,7 +403,9 @@ export const analyticsRouter = createTRPCRouter({
 			// Fetch the last 10 videos
 			const last10Videos =
 				videos.data.items?.slice(0, 10)?.map((video) => ({
-					thumbnail: video?.snippet?.thumbnails?.default?.url,
+					thumbnail:
+						video?.snippet?.thumbnails?.medium?.url ??
+						video?.snippet?.thumbnails?.default?.url,
 					title: video?.snippet?.title,
 					url: `https://www.youtube.com/watch?v=${video?.snippet?.resourceId?.videoId}`,
 				})) || [];
