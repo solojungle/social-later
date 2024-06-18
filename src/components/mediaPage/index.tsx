@@ -1,5 +1,6 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { useSelectedTeamStore } from "@/stores/selected-team";
@@ -42,12 +43,24 @@ export function MediaPageContent() {
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
 
-	const { data: attachments } = api.attachment.getAll.useQuery(
+	const {
+		data: attachments,
+		isFetching,
+		isLoading,
+	} = api.attachment.getAll.useQuery(
 		{ teamId },
 		{
 			enabled: !!teamId,
 		},
 	);
+
+	if (isFetching || isLoading) {
+		return (
+			<div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center">
+				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
 
 	// We dont need the other information from the attachments
 	const onlyFiles = attachments?.map((attachment) => {

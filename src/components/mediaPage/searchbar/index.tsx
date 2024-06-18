@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 
 import { FilterBy } from "../filterBy";
 import { SortBy } from "../sortBy";
+import { ToggleView } from "../toggleView";
 
 type Props = {
 	searchTerm: string;
@@ -26,6 +27,7 @@ export function SearchBar({ searchTerm, setSearchTerm }: Props) {
 				</div>
 				<SortBy />
 				<FilterBy />
+				<ToggleView defaultView="grid" />
 			</div>
 			<div className="ml-4 flex space-x-2">
 				<Button>
