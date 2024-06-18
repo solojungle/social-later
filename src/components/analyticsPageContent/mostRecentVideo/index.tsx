@@ -2,8 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 
-import { formatNumber } from "../viewsComparisons";
-
 type Props = {
 	thumbnail: string;
 	title: string;
@@ -26,15 +24,15 @@ export function MostRecentVideo({ thumbnail, title, views, url }: Props) {
 					<img
 						src={thumbnail}
 						alt="thumbnail"
-						className="aspect-video w-full rounded-lg"
+						className="aspect-video w-full rounded-lg object-cover"
 					/>
 				</a>
 				<div className="w-full">
-					<p className="mb-4 line-clamp-1">{title}</p>
-					<div className="flex space-x-2">
+					<p className="mb-4 line-clamp-1 font-medium">{title}</p>
+					{/* <div className="flex space-x-2">
 						<p>Total views -</p>
 						<p className="font-medium">{formatNumber(views)}</p>
-					</div>
+					</div> */}
 				</div>
 			</div>
 			<Button className="w-full" size="sm" disabled>
