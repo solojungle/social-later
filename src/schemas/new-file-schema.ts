@@ -35,10 +35,10 @@ function futureDateSchema() {
 export const YouTubeFormSchema = z
 	.object({
 		title: z.string().min(1),
-		description: z.string().min(1),
+		description: z.string().optional(),
 		thumbnail: z
 			.array(fileSchema(2 * 1024 * 1024, ["image/png", "image/jpeg"]))
-			.min(1),
+			.optional(),
 		video: z
 			.array(
 				fileSchema(256 * 1024 * 1024 * 1024, [

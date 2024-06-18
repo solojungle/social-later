@@ -24,6 +24,19 @@ function formatSizeBytes(sizeBytes: any) {
 }
 
 export function AllAssets({ assets }: Props) {
+	if (!assets || assets.length === 0) {
+		return (
+			<div className="flex h-96 items-center justify-center">
+				<div className="text-center">
+					<h3 className="text-lg font-medium">No assets found</h3>
+					<p className="text-sm text-muted-foreground">
+						Please upload some assets to see them here.
+					</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div>
 			<div>

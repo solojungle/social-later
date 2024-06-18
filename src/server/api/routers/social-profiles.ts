@@ -300,9 +300,9 @@ export const socialProfilesRouter = createTRPCRouter({
 			z.object({
 				profileId: z.string(),
 				videoUrl: z.string(),
-				thumbnailUrl: z.string(),
+				thumbnailUrl: z.string().optional(),
 				title: z.string(),
-				description: z.string(),
+				description: z.string().optional(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {

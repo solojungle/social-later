@@ -145,7 +145,7 @@ export function FileGallery({
 
 					{file.preview.length === 0 ? (
 						<div className="flex h-32 w-32 flex-col items-center justify-center rounded-md border border-border">
-							<span className="flex w-32 justify-center overflow-hidden text-ellipsis px-1 text-sm">
+							<span className="flex w-32 justify-start overflow-hidden truncate px-1 text-sm">
 								{file.file.name}
 							</span>
 							<span className="line-clamp-1 flex w-32 justify-center overflow-hidden text-ellipsis px-1 text-xs text-muted-foreground">

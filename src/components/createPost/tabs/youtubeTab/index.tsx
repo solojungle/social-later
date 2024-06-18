@@ -185,26 +185,20 @@ export function YouTubeTab({
 			// Instead of uploading only one file, we need to upload all the files
 			// and then send the mediaIds to the backend
 
-			const filesToUpload = [...data.thumbnail, ...data.video];
-
+			const filesToUpload = [...(data.thumbnail || []), ...data.video];
 			const mediaFiles = await Promise.all(
 				filesToUpload.map((file: FileUpload) => uploadFile(file, onProgress)),
 			);
 
-			if (
-				mediaFiles.length !== 2 ||
-				mediaFiles[0] === undefined ||
-				mediaFiles[1] === undefined
-			) {
-				throw new Error("Media files are not uploaded correctly");
-			}
+			const thumbnail = mediaFiles.find((file) => file.mime.includes("image"));
+			const video = mediaFiles.find((file) => file.mime.includes("video"));
 
 			const { data: result } = await uploadVideo({
 				profileId,
 				title: data.title,
 				description: data.description,
-				thumbnailUrl: mediaFiles[0].url,
-				videoUrl: mediaFiles[1].url,
+				thumbnailUrl: thumbnail?.url ?? "",
+				videoUrl: video?.url ?? "",
 			});
 
 			if (!result || !result.id) {
@@ -241,21 +235,6 @@ export function YouTubeTab({
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 						<TitleFormField form={form} />
 						<DescriptionFormField form={form} valueName="description" />
-						{/* Thumbnails upload */}
-						<MediaFormField
-							valueName="thumbnail"
-							form={form}
-							fileProgress={fileProgress}
-							restrictions={{
-								maxFiles: 1,
-								maxSize: 2 * 1024 * 1024,
-								maxSizeInMB: "2MB",
-								accept: {
-									"image/*": [".jpeg", ".png", ".jpg"],
-								},
-							}}
-							isLoading={loading}
-						/>
 						{/* Video file upload */}
 						<MediaFormField
 							valueName="video"
@@ -267,6 +246,21 @@ export function YouTubeTab({
 								maxSizeInMB: "256GB",
 								accept: {
 									"video/*": [".webp", ".mov", ".mp4"],
+								},
+							}}
+							isLoading={loading}
+						/>
+						{/* Thumbnails upload */}
+						<MediaFormField
+							valueName="thumbnail"
+							form={form}
+							fileProgress={fileProgress}
+							restrictions={{
+								maxFiles: 1,
+								maxSize: 2 * 1024 * 1024,
+								maxSizeInMB: "2MB",
+								accept: {
+									"image/*": [".jpeg", ".png", ".jpg"],
 								},
 							}}
 							isLoading={loading}
