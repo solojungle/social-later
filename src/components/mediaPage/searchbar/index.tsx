@@ -1,4 +1,4 @@
-import { Folder, PlusIcon, Search } from "lucide-react";
+import { Folder, PlusIcon, Search, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,9 @@ export function SearchBar({ searchTerm, setSearchTerm }: Props) {
 				<SortBy />
 				<FilterBy />
 				<ToggleView defaultView="grid" />
+				<Button size="icon" variant="outline" className="shrink-0">
+					<Trash2 className="h-4" />
+				</Button>
 			</div>
 			<div className="ml-4 flex space-x-2">
 				<Button>

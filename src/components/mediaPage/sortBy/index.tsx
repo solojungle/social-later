@@ -10,7 +10,7 @@ export function SortBy() {
 	return (
 		<div className="flex items-center space-x-2">
 			<Select>
-				<SelectTrigger className="">
+				<SelectTrigger>
 					<SelectValue placeholder="Sort by" />
 				</SelectTrigger>
 				<SelectContent>

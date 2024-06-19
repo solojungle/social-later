@@ -40,6 +40,8 @@ export function MediaPageContent() {
 	const { id: teamId } = useSelectedTeamStore();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortedBy] = useState("name");
+	const [selected, setSelected] = useState<any[]>([]);
+
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
 
@@ -94,7 +96,11 @@ export function MediaPageContent() {
 			<Separator className="my-4" />
 			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 			{/* <Folders folders={folders} /> */}
-			<AllAssets assets={sortedAssets} />
+			<AllAssets
+				assets={sortedAssets}
+				selected={selected}
+				setSelected={setSelected}
+			/>
 		</div>
 	);
 }

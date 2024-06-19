@@ -1,14 +1,9 @@
 import { Trash2Icon } from "lucide-react";
-import { useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
 import { PagePagination } from "../pagination";
-
-type Props = {
-	assets: any[];
-};
 
 function formatSizeBytes(sizeBytes: any) {
 	if (sizeBytes >= 1073741824) {
@@ -29,9 +24,13 @@ function formatSizeBytes(sizeBytes: any) {
 	return `${sizeBytes} bytes`;
 }
 
-export function AllAssets({ assets }: Props) {
-	const [selected, setSelected] = useState<any[]>([]);
+type Props = {
+	assets: any[];
+	selected: any[];
+	setSelected: any;
+};
 
+export function AllAssets({ assets, selected, setSelected }: Props) {
 	if (!assets || assets.length === 0) {
 		return (
 			<div className="flex h-96 items-center justify-center">
