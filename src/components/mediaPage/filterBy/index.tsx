@@ -12,9 +12,9 @@ export function FilterBy() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button className="flex justify-start" variant="outline">
-					<ListFilter className="h-4" />
-					<span className="sr-only sm:not-sr-only">Filter</span>
+				<Button variant="outline" className="h-9 w-9 md:w-auto">
+					<ListFilter className="h-4 shrink-0" />
+					<span className="sr-only md:not-sr-only">Filter</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="start">
