@@ -44,12 +44,17 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 		);
 	}
 
+	// Creating a post with an already existing asset will create a duplicate
+	const dedupedAssets = assets.filter(
+		(v, i, a) => a.findIndex((t) => t.fileId === v.fileId) === i,
+	);
+
 	return (
 		<div className="flex h-full flex-col">
 			<div className="grow">
 				<h3 className="mb-4 font-medium">All Assets</h3>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 ">
-					{assets.map((asset) => (
+					{dedupedAssets.map((asset) => (
 						<div
 							key={asset.id}
 							className={cn(
