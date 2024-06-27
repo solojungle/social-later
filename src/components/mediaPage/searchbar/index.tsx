@@ -33,7 +33,12 @@ export function SearchBar({ searchTerm, setSearchTerm, selected }: Props) {
 				<SortBy />
 				<FilterBy />
 				<ToggleView defaultView="grid" />
-				<Button size="icon" variant="outline" className="shrink-0">
+				<Button
+					size="icon"
+					variant="outline"
+					className="shrink-0"
+					disabled={!selected || selected.length === 0}
+				>
 					<Trash2 className="h-4" />
 				</Button>
 			</div>

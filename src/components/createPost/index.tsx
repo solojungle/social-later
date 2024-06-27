@@ -46,7 +46,7 @@ function PostForm({
 				</Button>
 			</SheetTrigger>
 			<SheetContent
-				className="w-[800px] !max-w-[80vw] !overflow-scroll pt-4"
+				className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0 pt-4"
 				side="right"
 			>
 				<div className="mb-4">

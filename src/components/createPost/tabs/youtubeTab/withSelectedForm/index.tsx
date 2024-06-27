@@ -2,7 +2,6 @@
 
 // eslint-disable-next-line simple-import-sort/imports
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -10,14 +9,13 @@ import { DescriptionFormField } from "@/components/createPost/descriptionFormFie
 import { DatePickerFormField } from "@/components/createPost/schedulePost/datePicker";
 import { TitleFormField } from "@/components/createPost/titleFormField";
 import { formatSizeBytes } from "@/components/mediaPage/allAssets";
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { SheetClose } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { BaseYoutubeSchema } from "@/schemas/new-file-schema";
 import { api } from "@/trpc/react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { CancelSubmitBar } from "../../cancelSubmitBar";
 
 export function WithSelectedForm({
 	teamId,
@@ -153,22 +151,7 @@ export function WithSelectedForm({
 					<TitleFormField form={form} />
 					<DescriptionFormField form={form} valueName="description" />
 					<DatePickerFormField form={form} defaultDate={currentDate} />
-					<div className="flex justify-end gap-2">
-						<SheetClose
-							asChild
-							onClick={() => {
-								form.reset();
-							}}
-						>
-							<Button type="button" variant="outline">
-								Cancel
-							</Button>
-						</SheetClose>
-						<Button type="submit" disabled={loading}>
-							{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-							Publish
-						</Button>
-					</div>
+					<CancelSubmitBar loading={loading} form={form} />
 				</form>
 			</Form>
 		</>

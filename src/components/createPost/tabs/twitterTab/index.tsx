@@ -1,20 +1,19 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon, Loader2, TypeIcon } from "lucide-react";
+import { ImageIcon, TypeIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { SheetClose } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DynamicPostFormSchema } from "@/schemas/posts-schema";
 
 import { MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { StatusFormField } from "../../statusFormField";
+import { CancelSubmitBar } from "../cancelSubmitBar";
 
 const RESTRICTIONS = {
 	maxFiles: 4,
@@ -268,22 +267,7 @@ export function TwitterTab({
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 						<StatusFormField form={form} />
 						<DatePickerFormField form={form} defaultDate={scheduleDate} />
-						<div className="flex justify-end gap-2">
-							<SheetClose
-								asChild
-								onClick={() => {
-									form.reset();
-								}}
-							>
-								<Button type="button" variant="outline">
-									Cancel
-								</Button>
-							</SheetClose>
-							<Button type="submit" disabled={loading}>
-								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-								Publish
-							</Button>
-						</div>
+						<CancelSubmitBar loading={loading} form={form} />
 					</form>
 				</Form>
 			</TabsContent>
@@ -299,22 +283,7 @@ export function TwitterTab({
 							isLoading={loading}
 						/>
 						<DatePickerFormField form={form} defaultDate={scheduleDate} />
-						<div className="flex justify-end gap-2">
-							<SheetClose
-								asChild
-								onClick={() => {
-									form.reset();
-								}}
-							>
-								<Button type="button" variant="outline">
-									Cancel
-								</Button>
-							</SheetClose>
-							<Button type="submit" disabled={loading}>
-								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-								Publish
-							</Button>
-						</div>
+						<CancelSubmitBar loading={loading} form={form} />
 					</form>
 				</Form>
 			</TabsContent>

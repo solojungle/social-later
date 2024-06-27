@@ -2,14 +2,12 @@
 
 // eslint-disable-next-line simple-import-sort/imports
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon, Loader2 } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { SheetClose } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { YouTubeFormSchema } from "@/schemas/new-file-schema";
 
@@ -21,6 +19,7 @@ import { FileUpload, MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { TitleFormField } from "../../titleFormField";
 import { determineFileType, splitFileIntoParts } from "../../utils";
+import { CancelSubmitBar } from "../cancelSubmitBar";
 import { WithSelectedForm } from "./withSelectedForm";
 
 export function YouTubeTab({
@@ -280,22 +279,7 @@ export function YouTubeTab({
 								isLoading={loading}
 							/>
 							<DatePickerFormField form={form} defaultDate={scheduleDate} />
-							<div className="flex justify-end gap-2">
-								<SheetClose
-									asChild
-									onClick={() => {
-										form.reset();
-									}}
-								>
-									<Button type="button" variant="outline">
-										Cancel
-									</Button>
-								</SheetClose>
-								<Button type="submit" disabled={loading}>
-									{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-									Publish
-								</Button>
-							</div>
+							<CancelSubmitBar loading={loading} form={form} />
 						</form>
 					</Form>
 				)}
