@@ -1,7 +1,9 @@
 import { Folder, PlusIcon, Search, Trash2 } from "lucide-react";
 
+import { CreatePost } from "@/components/createPost";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { FilterBy } from "../filterBy";
 import { SortBy } from "../sortBy";
@@ -10,9 +12,12 @@ import { ToggleView } from "../toggleView";
 type Props = {
 	searchTerm: string;
 	setSearchTerm: (searchTerm: string) => void;
+	selected: any[];
 };
 
-export function SearchBar({ searchTerm, setSearchTerm }: Props) {
+export function SearchBar({ searchTerm, setSearchTerm, selected }: Props) {
+	const { currentProfileId: profileId } = useSocialProfilesStore();
+
 	return (
 		<div className="mb-6 flex items-center justify-between">
 			<div className="flex space-x-2">
@@ -33,6 +38,12 @@ export function SearchBar({ searchTerm, setSearchTerm }: Props) {
 				</Button>
 			</div>
 			<div className="ml-4 flex space-x-2">
+				<CreatePost
+					profileId={profileId}
+					scheduleDate={new Date()}
+					disabled={!profileId || selected.length === 0}
+					selected={selected}
+				/>
 				<Button>
 					<PlusIcon className="mr-1 h-5 w-5" />
 					<Folder className="h-5 w-5 lg:invisible" />
@@ -40,13 +51,6 @@ export function SearchBar({ searchTerm, setSearchTerm }: Props) {
 						Add Assets
 					</span>
 				</Button>
-				{/* <Button variant="secondary">
-					<PlusIcon className="mr-1 h-5 w-5" />
-					<FileIcon className="h-5 w-5 lg:invisible" />
-					<span className="sr-only line-clamp-1 lg:not-sr-only">
-						Add Assets
-					</span>
-				</Button> */}
 			</div>
 		</div>
 	);

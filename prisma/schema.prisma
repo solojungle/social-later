@@ -60,7 +60,7 @@ model User {
 // since mySQL does not support arrays
 model Attachment {
   id        String   @id @default(cuid())
-  fileId    String   @unique
+  fileId    String
   postId    String
   teamId    String
   createdAt DateTime @default(now())

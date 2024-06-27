@@ -69,6 +69,7 @@ export function MediaPageContent() {
 		return {
 			...attachment.file,
 			thumbnail: attachment.thumbnail,
+			url: attachment.url,
 		};
 	});
 
@@ -94,7 +95,11 @@ export function MediaPageContent() {
 	return (
 		<div className="h-full">
 			<Separator className="my-4" />
-			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+			<SearchBar
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+				selected={selected}
+			/>
 			{/* <Folders folders={folders} /> */}
 			<AllAssets
 				assets={sortedAssets}

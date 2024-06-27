@@ -21,17 +21,20 @@ import { FileUpload, MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { TitleFormField } from "../../titleFormField";
 import { determineFileType, splitFileIntoParts } from "../../utils";
+import { WithSelectedForm } from "./withSelectedForm";
 
 export function YouTubeTab({
 	teamId,
 	profileId,
 	setOpen,
 	scheduleDate,
+	selected,
 }: {
 	teamId: string;
 	profileId: string;
 	setOpen: (open: boolean) => void;
 	scheduleDate: Date;
+	selected?: any[];
 }) {
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutateAsync: fetchMultipartPresignedUrls } =
@@ -206,7 +209,7 @@ export function YouTubeTab({
 			}
 
 			createPost.mutate({
-				title: "",
+				title: data.title || "",
 				content: data.content || "",
 				fileIds: mediaFiles.map((file) => file.id),
 				status: "published",
@@ -231,59 +234,71 @@ export function YouTubeTab({
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value="video" className="px-1 pt-8">
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						<TitleFormField form={form} />
-						<DescriptionFormField form={form} valueName="description" />
-						{/* Video file upload */}
-						<MediaFormField
-							valueName="video"
-							form={form}
-							fileProgress={fileProgress}
-							restrictions={{
-								maxFiles: 1,
-								maxSize: 262144 * 1024 * 1024,
-								maxSizeInMB: "256GB",
-								accept: {
-									"video/*": [".webp", ".mov", ".mp4"],
-								},
-							}}
-							isLoading={loading}
-						/>
-						{/* Thumbnails upload */}
-						<MediaFormField
-							valueName="thumbnail"
-							form={form}
-							fileProgress={fileProgress}
-							restrictions={{
-								maxFiles: 1,
-								maxSize: 2 * 1024 * 1024,
-								maxSizeInMB: "2MB",
-								accept: {
-									"image/*": [".jpeg", ".png", ".jpg"],
-								},
-							}}
-							isLoading={loading}
-						/>
-						<DatePickerFormField form={form} defaultDate={scheduleDate} />
-						<div className="flex justify-end gap-2">
-							<SheetClose
-								asChild
-								onClick={() => {
-									form.reset();
+				{selected && selected.length > 0 && (
+					<WithSelectedForm
+						teamId={teamId}
+						profileId={profileId}
+						setOpen={setOpen}
+						currentDate={scheduleDate}
+						selected={selected}
+					/>
+				)}
+
+				{!selected && (
+					<Form {...form}>
+						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+							<TitleFormField form={form} />
+							<DescriptionFormField form={form} valueName="description" />
+							{/* Video file upload */}
+							<MediaFormField
+								valueName="video"
+								form={form}
+								fileProgress={fileProgress}
+								restrictions={{
+									maxFiles: 1,
+									maxSize: 262144 * 1024 * 1024,
+									maxSizeInMB: "256GB",
+									accept: {
+										"video/*": [".webp", ".mov", ".mp4"],
+									},
 								}}
-							>
-								<Button type="button" variant="outline">
-									Cancel
+								isLoading={loading}
+							/>
+							{/* Thumbnails upload */}
+							<MediaFormField
+								valueName="thumbnail"
+								form={form}
+								fileProgress={fileProgress}
+								restrictions={{
+									maxFiles: 1,
+									maxSize: 2 * 1024 * 1024,
+									maxSizeInMB: "2MB",
+									accept: {
+										"image/*": [".jpeg", ".png", ".jpg"],
+									},
+								}}
+								isLoading={loading}
+							/>
+							<DatePickerFormField form={form} defaultDate={scheduleDate} />
+							<div className="flex justify-end gap-2">
+								<SheetClose
+									asChild
+									onClick={() => {
+										form.reset();
+									}}
+								>
+									<Button type="button" variant="outline">
+										Cancel
+									</Button>
+								</SheetClose>
+								<Button type="submit" disabled={loading}>
+									{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+									Publish
 								</Button>
-							</SheetClose>
-							<Button type="submit" disabled={loading}>
-								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-								Publish
-							</Button>
-						</div>
-					</form>
-				</Form>
+							</div>
+						</form>
+					</Form>
+				)}
 			</TabsContent>
 		</Tabs>
 	);

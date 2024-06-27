@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 import { PagePagination } from "../pagination";
 
-function formatSizeBytes(sizeBytes: any) {
+export function formatSizeBytes(sizeBytes: any) {
 	if (sizeBytes >= 1073741824) {
 		// 1 GB = 1,073,741,824 bytes
 		const sizeGB = sizeBytes / 1073741824;
@@ -69,12 +69,14 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 										<Trash2Icon className="w-5" />
 										<Checkbox
 											className="!h-5 !w-5 !bg-white !text-black"
-											checked={selected.includes(asset.id)}
+											checked={selected.some((item) => item.id === asset.id)}
 											onCheckedChange={(checked) => {
 												if (checked) {
-													setSelected([...selected, asset.id]);
+													setSelected([...selected, asset]);
 												} else {
-													setSelected(selected.filter((id) => id !== asset.id));
+													setSelected(
+														selected.filter((item) => item.id !== asset.id),
+													);
 												}
 											}}
 										/>

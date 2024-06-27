@@ -32,25 +32,30 @@ function futureDateSchema() {
 	);
 }
 
-export const YouTubeFormSchema = z
-	.object({
-		title: z.string().min(1),
-		description: z.string().optional(),
-		thumbnail: z
-			.array(fileSchema(2 * 1024 * 1024, ["image/png", "image/jpeg"]))
-			.optional(),
-		video: z
-			.array(
-				fileSchema(256 * 1024 * 1024 * 1024, [
-					"video/mp4",
-					"video/mpeg",
-					"video/mov",
-				]),
-			)
-			.min(1),
-		date: futureDateSchema(),
-	})
-	.refine((data) => !!data.date, {
+export const BaseYoutubeSchema = z.object({
+	title: z.string().min(1),
+	description: z.string().optional(),
+	thumbnail: z
+		.array(fileSchema(2 * 1024 * 1024, ["image/png", "image/jpeg"]))
+		.optional(),
+	video: z
+		.array(
+			fileSchema(256 * 1024 * 1024 * 1024, [
+				"video/mp4",
+				"video/mpeg",
+				"video/mov",
+			]),
+		)
+		.min(1),
+	date: futureDateSchema(),
+});
+
+// Seperating from base schema to allow other schemas to omit/extend
+// transform and refine are considered effects, not objects.
+export const YouTubeFormSchema = BaseYoutubeSchema.refine(
+	(data) => !!data.date,
+	{
 		message: "Date is required",
 		path: ["date"],
-	});
+	},
+);

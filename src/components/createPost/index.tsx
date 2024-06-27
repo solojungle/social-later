@@ -12,17 +12,21 @@ import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { TwitterTab } from "./tabs/twitterTab";
 import { YouTubeTab } from "./tabs/youtubeTab";
 
+interface PostFormProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	teamId: string;
+	profileId: string;
+	scheduleDate: Date;
+	selected?: any[];
+}
+
 function PostForm({
 	teamId,
 	profileId,
 	className,
 	scheduleDate,
-}: {
-	teamId: string;
-	profileId: string;
-	className?: string;
-	scheduleDate: Date;
-}) {
+	selected,
+	...props
+}: PostFormProps) {
 	const [open, setOpen] = useState(false);
 
 	const { profiles } = useSocialProfilesStore();
@@ -37,7 +41,9 @@ function PostForm({
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild>
-				<Button className={className}>Post</Button>
+				<Button className={className} {...props}>
+					Post
+				</Button>
 			</SheetTrigger>
 			<SheetContent
 				className="w-[800px] !max-w-[80vw] !overflow-scroll pt-4"
@@ -61,6 +67,7 @@ function PostForm({
 							profileId={profileId}
 							setOpen={setOpen}
 							scheduleDate={scheduleDate}
+							selected={selected}
 						/>
 					)}
 				</TooltipProvider>
@@ -69,15 +76,20 @@ function PostForm({
 	);
 }
 
+interface CreatePostProps
+	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	profileId: string;
+	scheduleDate: Date;
+	selected?: any[];
+}
+
 export function CreatePost({
 	className,
 	scheduleDate,
 	profileId,
-}: {
-	profileId: string;
-	scheduleDate: Date;
-	className?: string;
-}) {
+	selected,
+	...props
+}: CreatePostProps) {
 	const { id: teamId } = useSelectedTeamStore();
 
 	if (!teamId || teamId === "" || !profileId || profileId === "") {
@@ -90,6 +102,8 @@ export function CreatePost({
 			teamId={teamId}
 			profileId={profileId}
 			scheduleDate={scheduleDate}
+			selected={selected}
+			{...props}
 		/>
 	);
 }
