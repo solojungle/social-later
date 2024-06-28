@@ -52,55 +52,52 @@ export const attachmentsRouter = createTRPCRouter({
 		}),
 
 	delete: protectedProcedure
-		.input(z.array(z.string()))
+		.input(z.object({ attachmentIds: z.array(z.string()) }))
 		.mutation(async ({ ctx, input }) => {
-			// If there exists a post that uses this attachment, we should not delete it
-			const posts = await ctx.db.post.findFirst({
+			const attachments = await ctx.db.attachment.findMany({
 				where: {
-					attachment: {
-						some: {
-							id: {
-								in: input,
-							},
-						},
+					id: {
+						in: input.attachmentIds,
 					},
+				},
+				include: {
+					file: true,
 				},
 			});
 
-			if (posts) {
-				throw new Error("Cannot delete attachment that is in use");
+			if (!attachments || attachments.length === 0) {
+				throw new Error("Attachments not found");
 			}
 
-			const files = await ctx.db.file.findMany({
-				where: {
-					attachment: {
-						some: {
-							id: {
-								in: input,
-							},
-						},
-					},
-				},
-			});
+			// Remove any attachments with postIds that are not null
+			const attachmentsWithoutPosts = attachments.filter(
+				(a) => a.postId !== null,
+			);
 
-			if (!files || files.length === 0) {
-				throw new Error("Files not found");
+			if (attachmentsWithoutPosts.length > 0) {
+				throw new Error("Cannot delete attachments that are attached to posts");
 			}
 
-			const deletePromises = files.map(async (f) => {
-				return deleteS3Object(f.key);
-			});
+			// Filter out duplicate files
+			const uniqueAttachments = attachmentsWithoutPosts.filter(
+				(value, index, self) =>
+					self.findIndex((t) => t.file.key === value.file.key) === index,
+			);
+
+			const deletePromises = uniqueAttachments.map(async (a) =>
+				deleteS3Object(a.file.key),
+			);
 
 			await Promise.allSettled(deletePromises);
 
-			const deleteFiles = ctx.db.file.deleteMany({
+			const deletedFiles = await ctx.db.file.deleteMany({
 				where: {
 					id: {
-						in: input,
+						in: uniqueAttachments.map((a) => a.fileId),
 					},
 				},
 			});
 
-			return deleteFiles;
+			return deletedFiles;
 		}),
 });
