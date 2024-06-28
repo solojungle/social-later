@@ -72,7 +72,7 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 						<AvatarImage
 							src={profile.avatar}
 							alt={profile.name || profile.username}
-							className="!rounded-sm border border-border bg-white"
+							className="!rounded-sm border border-border bg-background"
 						/>
 						<AvatarFallback className="!rounded-sm border border-border">
 							{(profile.name && profile.name[0]?.toUpperCase()) ??
@@ -138,7 +138,7 @@ function SocialProfileSwitcherPopoverTrigger({
 						<AvatarImage
 							src={selectedProfile.avatar}
 							alt={selectedProfile.name ?? selectedProfile.username}
-							className="!rounded-sm border border-border bg-white"
+							className="!rounded-sm border border-border bg-background"
 						/>
 						<AvatarFallback className="!rounded-sm border border-border">
 							{(selectedProfile.name &&

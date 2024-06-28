@@ -25,7 +25,7 @@ export function AddTeamMember() {
 				{avatarStack.length > 2 && (
 					<Avatar
 						key={3}
-						className="flex h-8 w-8 items-center justify-center bg-white"
+						className="flex h-8 w-8 items-center justify-center bg-background"
 					>
 						<AvatarFallback className="border border-border text-xs font-medium">
 							+{Math.min(members.length - avatarStack.length, 99)}

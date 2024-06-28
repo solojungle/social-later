@@ -13,7 +13,7 @@ interface Props {
 
 export function CancelSubmitBar({ loading, form }: Props) {
 	return (
-		<div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-white py-4">
+		<div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-background py-4">
 			<SheetClose
 				asChild
 				onClick={() => {

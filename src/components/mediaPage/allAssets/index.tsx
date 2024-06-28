@@ -70,10 +70,10 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 									className="aspect-video w-full grow rounded-t-md object-cover"
 								/>
 								<div className="absolute inset-0 flex items-center justify-center rounded-t-md bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-									<div className="absolute top-0 flex w-full justify-between p-2 text-white">
-										<Trash2Icon className="w-5" />
+									<div className="absolute top-0 flex w-full justify-between p-2">
+										<Trash2Icon className="w-5 text-white" />
 										<Checkbox
-											className="!h-5 !w-5 !bg-white !text-black"
+											className="!h-5 !w-5 !bg-background !text-foreground"
 											checked={selected.some((item) => item.id === asset.id)}
 											onCheckedChange={(checked) => {
 												if (checked) {
