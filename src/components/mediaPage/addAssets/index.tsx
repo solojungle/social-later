@@ -10,7 +10,13 @@ import { MediaFormField } from "@/components/createPost/mediaFormField";
 import { CancelSubmitBar } from "@/components/createPost/tabs/cancelSubmitBar";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
 import { YouTubeFormSchema } from "@/schemas/new-file-schema";
 
 function Content() {
@@ -79,6 +85,10 @@ export function AddAssets() {
 				className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0"
 				side="right"
 			>
+				<SheetTitle>Add Assets</SheetTitle>
+				<SheetDescription className="mb-8">
+					Upload images, videos, and other media files to your library.
+				</SheetDescription>
 				<Content />
 			</SheetContent>
 		</Sheet>
