@@ -61,12 +61,12 @@ model User {
 model Attachment {
   id        String   @id @default(cuid())
   fileId    String
-  postId    String
+  postId    String?
   teamId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  file      File     @relation(fields: [fileId], references: [id])
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: SetNull)
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
   team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 

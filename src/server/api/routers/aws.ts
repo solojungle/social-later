@@ -7,6 +7,8 @@ import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { s3 } from "@/server/services/aws/client";
 
+import { deleteS3Object } from "./utils/aws";
+
 export const awsRouter = createTRPCRouter({
 	getMultipartUploadPresignedUrl: protectedProcedure
 		.input(z.object({ key: z.string(), filePartTotal: z.number() }))
@@ -108,16 +110,7 @@ export const awsRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const resp = await s3.deleteObject({
-				Bucket: env.AWS_BUCKET_NAME,
-				Key: input.key,
-			});
-
-			// Making the assumption that all media files will also have a thumbnail :)
-			await s3.deleteObject({
-				Bucket: `${env.AWS_BUCKET_NAME}-thumbnails`,
-				Key: input.key,
-			});
+			const resp = await deleteS3Object(input.key);
 
 			return resp;
 		}),

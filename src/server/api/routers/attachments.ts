@@ -3,6 +3,8 @@ import { z } from "zod";
 import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
+import { deleteS3Object } from "./utils/aws";
+
 export const attachmentsRouter = createTRPCRouter({
 	getAll: protectedProcedure
 		.input(
@@ -47,5 +49,58 @@ export const attachmentsRouter = createTRPCRouter({
 			});
 
 			return attachmentsWithUrls;
+		}),
+
+	delete: protectedProcedure
+		.input(z.array(z.string()))
+		.mutation(async ({ ctx, input }) => {
+			// If there exists a post that uses this attachment, we should not delete it
+			const posts = await ctx.db.post.findFirst({
+				where: {
+					attachment: {
+						some: {
+							id: {
+								in: input,
+							},
+						},
+					},
+				},
+			});
+
+			if (posts) {
+				throw new Error("Cannot delete attachment that is in use");
+			}
+
+			const files = await ctx.db.file.findMany({
+				where: {
+					attachment: {
+						some: {
+							id: {
+								in: input,
+							},
+						},
+					},
+				},
+			});
+
+			if (!files || files.length === 0) {
+				throw new Error("Files not found");
+			}
+
+			const deletePromises = files.map(async (f) => {
+				return deleteS3Object(f.key);
+			});
+
+			await Promise.allSettled(deletePromises);
+
+			const deleteFiles = ctx.db.file.deleteMany({
+				where: {
+					id: {
+						in: input,
+					},
+				},
+			});
+
+			return deleteFiles;
 		}),
 });
