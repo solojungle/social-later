@@ -4,6 +4,8 @@ import { env } from "@/env.mjs";
 import { PostsSchema } from "@/schemas/posts-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
+import { createAttachments } from "./utils/attachments";
+
 export const postRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(
@@ -38,22 +40,18 @@ export const postRouter = createTRPCRouter({
 					},
 				});
 
-				// Create the attachments
-				await Promise.all(
-					files.map(async (file) => {
-						await ctx.db.attachment.create({
-							data: {
-								postId: post.id,
-								fileId: file.id,
-								teamId: post.authorId,
-							},
-						});
-					}),
+				await createAttachments(
+					files.map((file) => ({
+						teamId: post.authorId,
+						postId: post.id,
+						fileId: file.id,
+					})),
 				);
 
 				return post;
 			}
 
+			// There are no files so we can just create the post
 			return ctx.db.post.create({
 				data: {
 					...input,

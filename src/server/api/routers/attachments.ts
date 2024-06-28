@@ -3,6 +3,7 @@ import { z } from "zod";
 import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
+import { createAttachments } from "./utils/attachments";
 import { deleteS3Object } from "./utils/aws";
 
 export const attachmentsRouter = createTRPCRouter({
@@ -101,24 +102,17 @@ export const attachmentsRouter = createTRPCRouter({
 			return deletedFiles;
 		}),
 
-	// This will create an attachment without a postId, i.e. the user is uploading an media file from the media library
-	createIndependentAsset: protectedProcedure
+	create: protectedProcedure
 		.input(
-			z.object({
-				teamId: z.string(),
-				fileId: z.string(),
-			}),
+			z.array(
+				z.object({
+					teamId: z.string(),
+					fileId: z.string(),
+					postId: z.string().optional(),
+				}),
+			),
 		)
-		.mutation(async ({ ctx, input }) => {
-			const { teamId, fileId } = input;
-
-			const attachment = await ctx.db.attachment.create({
-				data: {
-					teamId,
-					fileId,
-				},
-			});
-
-			return attachment;
+		.mutation(async ({ input }) => {
+			return createAttachments(input);
 		}),
 });
