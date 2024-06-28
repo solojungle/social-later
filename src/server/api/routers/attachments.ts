@@ -100,4 +100,25 @@ export const attachmentsRouter = createTRPCRouter({
 
 			return deletedFiles;
 		}),
+
+	// This will create an attachment without a postId, i.e. the user is uploading an media file from the media library
+	createIndependentAsset: protectedProcedure
+		.input(
+			z.object({
+				teamId: z.string(),
+				fileId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { teamId, fileId } = input;
+
+			const attachment = await ctx.db.attachment.create({
+				data: {
+					teamId,
+					fileId,
+				},
+			});
+
+			return attachment;
+		}),
 });
