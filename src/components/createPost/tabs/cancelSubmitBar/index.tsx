@@ -9,9 +9,10 @@ import { SheetClose } from "@/components/ui/sheet";
 interface Props {
 	loading: boolean;
 	form: any;
+	action?: string;
 }
 
-export function CancelSubmitBar({ loading, form }: Props) {
+export function CancelSubmitBar({ loading, form, action = "Publish" }: Props) {
 	return (
 		<div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-background py-4">
 			<SheetClose
@@ -26,7 +27,7 @@ export function CancelSubmitBar({ loading, form }: Props) {
 			</SheetClose>
 			<Button type="submit" disabled={loading}>
 				{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-				Publish
+				{action}
 			</Button>
 		</div>
 	);

@@ -1,10 +1,11 @@
-import { Folder, PlusIcon, Search, Trash2 } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 
 import { CreatePost } from "@/components/createPost";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
+import { AddAssets } from "../addAssets";
 import { FilterBy } from "../filterBy";
 import { SortBy } from "../sortBy";
 import { ToggleView } from "../toggleView";
@@ -49,13 +50,7 @@ export function SearchBar({ searchTerm, setSearchTerm, selected }: Props) {
 					disabled={!profileId || selected.length === 0}
 					selected={selected}
 				/>
-				<Button>
-					<PlusIcon className="mr-1 h-5 w-5" />
-					<Folder className="h-5 w-5 lg:invisible" />
-					<span className="sr-only line-clamp-1 lg:not-sr-only">
-						Add Assets
-					</span>
-				</Button>
+				<AddAssets />
 			</div>
 		</div>
 	);
