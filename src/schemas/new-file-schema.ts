@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Helper function for file schema
-function fileSchema(size: number, acceptedTypes: string[]) {
+export function fileSchema(size: number, acceptedTypes: string[]) {
 	const mb = Math.floor(size / (1024 * 1024));
 
 	// z.any is used because anything else will prevent it from being uploaded (it limits whats passed to backend)

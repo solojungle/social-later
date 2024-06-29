@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { MediaFormField } from "@/components/createPost/mediaFormField";
 import { CancelSubmitBar } from "@/components/createPost/tabs/cancelSubmitBar";
+import { FileUpload, OnProgress, uploadFile } from "@/components/fileUpload";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -17,29 +18,74 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { YouTubeFormSchema } from "@/schemas/new-file-schema";
+import { fileSchema } from "@/schemas/new-file-schema";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { api } from "@/trpc/react";
 
-function Content() {
+const UploadSchema = z.object({
+	media: z
+		.array(
+			fileSchema(256 * 1024 * 1024 * 1024, [
+				"video/mp4",
+				"video/mpeg",
+				"video/mov",
+				"image/png",
+				"image/jpeg",
+				"image/jpg",
+				"image/gif",
+			]),
+		)
+		.min(1),
+});
+
+function Content({ teamId }: { teamId: string }) {
 	const [loading, setLoading] = useState(false);
-
-	function onSubmit(data: any) {
-		console.log(data);
-	}
-
-	type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
-	const form = useForm<FormSchemaValues>({
-		defaultValues: {
-			title: "",
-			description: "",
-			video: [],
-			thumbnail: [],
-		},
-		resolver: zodResolver(YouTubeFormSchema),
-	});
-
+	const { mutateAsync: createFile } = api.file.create.useMutation();
+	const { mutateAsync: fetchMultipartPresignedUrls } =
+		api.aws.getMultipartUploadPresignedUrl.useMutation();
+	const { mutateAsync: completeMultipartUpload } =
+		api.aws.completeMultipartUpload.useMutation();
 	const [fileProgress, setFileProgress] = useState<{
 		[key: string]: { [key: number]: number };
 	}>({});
+	const { mutateAsync: createAttachment } = api.attachment.create.useMutation();
+
+	async function onSubmit(data: any) {
+		setLoading(true);
+		try {
+			const filesToUpload = [...data.media];
+			const mediaFiles = await Promise.all(
+				filesToUpload.map((file: FileUpload) =>
+					uploadFile({
+						uploadedFile: file,
+						onProgress: OnProgress,
+						fetchMultipartPresignedUrls,
+						completeMultipartUpload,
+						setFileProgress,
+						createFile,
+					}),
+				),
+			);
+
+			// Create attachments with no post
+			await createAttachment(
+				mediaFiles.map((file) => ({
+					fileId: file.id,
+					teamId,
+				})),
+			);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	type FormSchemaValues = z.infer<typeof UploadSchema>;
+	const form = useForm<FormSchemaValues>({
+		defaultValues: {
+			media: [],
+		},
+		resolver: zodResolver(UploadSchema),
+	});
 
 	return (
 		<Form {...form}>
@@ -49,7 +95,7 @@ function Content() {
 			>
 				<div className="h-full">
 					<MediaFormField
-						valueName="Media Files"
+						valueName="media"
 						form={form}
 						fileProgress={fileProgress}
 						restrictions={{
@@ -70,6 +116,8 @@ function Content() {
 }
 
 export function AddAssets() {
+	const { id: teamId } = useSelectedTeamStore();
+
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
@@ -89,196 +137,8 @@ export function AddAssets() {
 				<SheetDescription className="mb-8">
 					Upload images, videos, and other media files to your library.
 				</SheetDescription>
-				<Content />
+				{teamId && <Content teamId={teamId} />}
 			</SheetContent>
 		</Sheet>
 	);
 }
-
-// const { mutateAsync: createFile } = api.file.create.useMutation();
-// const { mutateAsync: fetchMultipartPresignedUrls } =
-// 	api.aws.getMultipartUploadPresignedUrl.useMutation();
-// const { mutateAsync: completeMultipartUpload } =
-// 	api.aws.completeMultipartUpload.useMutation();
-
-// async function uploadFile(
-// 	uploadedFile: FileUpload,
-// 	onProgress: ({
-// 		fileId,
-// 		partNumber,
-// 		progress,
-// 	}: {
-// 		fileId: string;
-// 		partNumber: number;
-// 		progress: number;
-// 	}) => void = () => {},
-// ) {
-// 	const { file } = uploadedFile;
-
-// 	const filename = file.name.split(".").shift();
-// 	const extension = file.name.split(".").pop();
-
-// 	const parts = splitFileIntoParts(file);
-
-// 	const hashKey = crypto.randomUUID();
-// 	const fileKey = `${hashKey}.${extension}`;
-
-// 	const { uploadId, urls: signedUrls } = await fetchMultipartPresignedUrls({
-// 		key: fileKey,
-// 		filePartTotal: Object.keys(parts).length,
-// 	});
-
-// 	const uploadPromises: Promise<{
-// 		PartNumber: number;
-// 		ETag: string;
-// 	}>[] = [];
-
-// 	for (const { url, partNumber } of signedUrls) {
-// 		const filePart = parts[partNumber] as File;
-
-// 		uploadPromises.push(
-// 			axios
-// 				.put(url, filePart.slice(), {
-// 					headers: {
-// 						"Content-Type": file.type,
-// 					},
-// 					onUploadProgress: (progressEvent) => {
-// 						const progress = Math.round(
-// 							((progressEvent.loaded || 1) * 100) /
-// 								(progressEvent.total || 1),
-// 						);
-// 						onProgress({ fileId: uploadedFile.id, partNumber, progress });
-// 					},
-// 				})
-// 				.then((response) => {
-// 					return {
-// 						ETag: response.headers.etag as string,
-// 						PartNumber: partNumber,
-// 					};
-// 				}),
-// 		);
-// 	}
-
-// 	const uploadedParts = await Promise.all(uploadPromises);
-
-// 	await completeMultipartUpload({
-// 		uploadId,
-// 		key: fileKey,
-// 		parts: uploadedParts,
-// 	});
-
-// 	const mediaFile = await createFile({
-// 		file: {
-// 			name: filename || "",
-// 			extension: extension || "",
-// 			key: hashKey, // In order to be consistent with the backend, we need to remove the extension
-// 			type: determineFileType(file),
-// 			size: file.size,
-// 			mime: file.type,
-// 		},
-// 	});
-
-// 	return mediaFile;
-// }
-
-// const [fileProgress, setFileProgress] = useState<{
-// 	[key: string]: { [key: number]: number };
-// }>({});
-
-// const [loading, setLoading] = useState(false);
-
-// const { mutateAsync: uploadVideo } =
-// 	api.socials.uploadYouTubeVideo.useMutation({});
-
-// const utils = api.useUtils();
-
-// const onProgress = ({
-// 	fileId,
-// 	partNumber,
-// 	progress,
-// }: {
-// 	fileId: string;
-// 	partNumber: number;
-// 	progress: number;
-// }) => {
-// 	setFileProgress((prevProgress) => {
-// 		const prevFileProgress = prevProgress[fileId] || {};
-// 		return {
-// 			...prevProgress,
-// 			[fileId]: {
-// 				...prevFileProgress,
-// 				[partNumber]: progress,
-// 			},
-// 		};
-// 	});
-// };
-
-// const createPost = api.post.create.useMutation({
-// 	onSuccess() {
-// 		toast.success("Successfully created your post!", {});
-// 	},
-// 	onSettled() {
-// 		setLoading(false);
-// 		setOpen(false);
-
-// 		// Invalidate the query so we can refetch the data
-// 		utils.post.getAll.invalidate();
-// 	},
-// });
-
-// type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
-// const form = useForm<FormSchemaValues>({
-// 	defaultValues: {
-// 		title: "",
-// 		description: "",
-// 		video: [],
-// 		thumbnail: [],
-// 		date: scheduleDate,
-// 	},
-// 	resolver: zodResolver(YouTubeFormSchema),
-// });
-
-// async function onSubmit(data: any) {
-// 	setLoading(true);
-
-// 	const scheduledDate = data.date;
-
-// 	try {
-// 		// Instead of uploading only one file, we need to upload all the files
-// 		// and then send the mediaIds to the backend
-
-// 		const filesToUpload = [...(data.thumbnail || []), ...data.video];
-// 		const mediaFiles = await Promise.all(
-// 			filesToUpload.map((file: FileUpload) => uploadFile(file, onProgress)),
-// 		);
-
-// 		const thumbnail = mediaFiles.find((file) => file.mime.includes("image"));
-// 		const video = mediaFiles.find((file) => file.mime.includes("video"));
-
-// 		const { data: result } = await uploadVideo({
-// 			profileId,
-// 			title: data.title,
-// 			description: data.description,
-// 			thumbnailUrl: thumbnail?.url ?? "",
-// 			videoUrl: video?.url ?? "",
-// 		});
-
-// 		if (!result || !result.id) {
-// 			throw new Error("Failed to upload video to YouTube");
-// 		}
-
-// 		createPost.mutate({
-// 			title: data.title || "",
-// 			content: data.content || "",
-// 			fileIds: mediaFiles.map((file) => file.id),
-// 			status: "published",
-// 			externalPostId: result.id,
-// 			scheduledFor: scheduledDate,
-// 			published: true,
-// 			profileId,
-// 			authorId: teamId,
-// 		});
-// 	} finally {
-// 		setLoading(false);
-// 	}
-// }

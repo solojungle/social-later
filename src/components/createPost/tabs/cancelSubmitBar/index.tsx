@@ -10,9 +10,15 @@ interface Props {
 	loading: boolean;
 	form: any;
 	action?: string;
+	disabled?: boolean;
 }
 
-export function CancelSubmitBar({ loading, form, action = "Publish" }: Props) {
+export function CancelSubmitBar({
+	loading,
+	form,
+	action = "Publish",
+	disabled,
+}: Props) {
 	return (
 		<div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-background py-4">
 			<SheetClose
@@ -25,7 +31,7 @@ export function CancelSubmitBar({ loading, form, action = "Publish" }: Props) {
 					Cancel
 				</Button>
 			</SheetClose>
-			<Button type="submit" disabled={loading}>
+			<Button type="submit" disabled={loading || disabled}>
 				{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 				{action}
 			</Button>
