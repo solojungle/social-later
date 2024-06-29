@@ -11,14 +11,13 @@ import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { YouTubeFormSchema } from "@/schemas/new-file-schema";
 
+import { OnProgress, uploadFile } from "@/components/fileUpload";
 import { api } from "@/trpc/react";
-import axios from "axios";
 import { toast } from "sonner";
 import { DescriptionFormField } from "../../descriptionFormField";
 import { FileUpload, MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { TitleFormField } from "../../titleFormField";
-import { determineFileType, splitFileIntoParts } from "../../utils";
 import { CancelSubmitBar } from "../cancelSubmitBar";
 import { WithSelectedForm } from "./withSelectedForm";
 
@@ -35,124 +34,18 @@ export function YouTubeTab({
 	scheduleDate: Date;
 	selected?: any[];
 }) {
+	const [loading, setLoading] = useState(false);
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutateAsync: fetchMultipartPresignedUrls } =
 		api.aws.getMultipartUploadPresignedUrl.useMutation();
 	const { mutateAsync: completeMultipartUpload } =
 		api.aws.completeMultipartUpload.useMutation();
-
-	async function uploadFile(
-		uploadedFile: FileUpload,
-		onProgress: ({
-			fileId,
-			partNumber,
-			progress,
-		}: {
-			fileId: string;
-			partNumber: number;
-			progress: number;
-		}) => void = () => {},
-	) {
-		const { file } = uploadedFile;
-
-		const filename = file.name.split(".").shift();
-		const extension = file.name.split(".").pop();
-
-		const parts = splitFileIntoParts(file);
-
-		const hashKey = crypto.randomUUID();
-		const fileKey = `${hashKey}.${extension}`;
-
-		const { uploadId, urls: signedUrls } = await fetchMultipartPresignedUrls({
-			key: fileKey,
-			filePartTotal: Object.keys(parts).length,
-		});
-
-		const uploadPromises: Promise<{
-			PartNumber: number;
-			ETag: string;
-		}>[] = [];
-
-		for (const { url, partNumber } of signedUrls) {
-			const filePart = parts[partNumber] as File;
-
-			uploadPromises.push(
-				axios
-					.put(url, filePart.slice(), {
-						headers: {
-							"Content-Type": file.type,
-						},
-						onUploadProgress: (progressEvent) => {
-							const progress = Math.round(
-								((progressEvent.loaded || 1) * 100) /
-									(progressEvent.total || 1),
-							);
-							onProgress({ fileId: uploadedFile.id, partNumber, progress });
-						},
-					})
-					.then((response) => {
-						return {
-							ETag: response.headers.etag as string,
-							PartNumber: partNumber,
-						};
-					}),
-			);
-		}
-
-		const uploadedParts = await Promise.all(uploadPromises);
-
-		await completeMultipartUpload({
-			uploadId,
-			key: fileKey,
-			parts: uploadedParts,
-		});
-
-		const mediaFile = await createFile({
-			file: {
-				name: filename || "",
-				extension: extension || "",
-				key: hashKey, // In order to be consistent with the backend, we need to remove the extension
-				type: determineFileType(file),
-				size: file.size,
-				mime: file.type,
-			},
-		});
-
-		return mediaFile;
-	}
-
 	const [fileProgress, setFileProgress] = useState<{
 		[key: string]: { [key: number]: number };
 	}>({});
-
-	const [loading, setLoading] = useState(false);
-
 	const { mutateAsync: uploadVideo } =
 		api.socials.uploadYouTubeVideo.useMutation({});
-
 	const utils = api.useUtils();
-
-	const onProgress = ({
-		fileId,
-		partNumber,
-		progress,
-	}: {
-		fileId: string;
-		partNumber: number;
-		progress: number;
-	}) => {
-		setFileProgress((prevProgress) => {
-			const prevFileProgress = prevProgress[fileId] || {};
-			return {
-				...prevProgress,
-				[fileId]: {
-					...prevFileProgress,
-					[partNumber]: progress,
-				},
-			};
-		});
-	};
-
 	const createPost = api.post.create.useMutation({
 		onSuccess() {
 			toast.success("Successfully created your post!", {});
@@ -189,7 +82,16 @@ export function YouTubeTab({
 
 			const filesToUpload = [...(data.thumbnail || []), ...data.video];
 			const mediaFiles = await Promise.all(
-				filesToUpload.map((file: FileUpload) => uploadFile(file, onProgress)),
+				filesToUpload.map((file: FileUpload) =>
+					uploadFile({
+						uploadedFile: file,
+						onProgress: OnProgress,
+						fetchMultipartPresignedUrls,
+						completeMultipartUpload,
+						setFileProgress,
+						createFile,
+					}),
+				),
 			);
 
 			const thumbnail = mediaFiles.find((file) => file.mime.includes("image"));
