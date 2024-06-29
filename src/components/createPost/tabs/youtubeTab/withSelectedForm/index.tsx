@@ -110,7 +110,7 @@ export function WithSelectedForm({
 	return (
 		<>
 			{selected && selected.length > 0 && (
-				<div className="mb-4 grid grid-cols-3">
+				<div className="mb-4 grid grid-cols-3 gap-1">
 					{selected.map((file) => {
 						return (
 							<div
