@@ -6,8 +6,10 @@ import { useState } from "react";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+import { AlertDialog } from "../ui/alert-dialog";
 import { Separator } from "../ui/separator";
 import { AllAssets } from "./allAssets";
+import { DeleteAssetContent } from "./deleteAsset";
 import { SearchBar } from "./searchbar";
 
 // Dummy data for folders and assets
@@ -41,6 +43,7 @@ export function MediaPageContent() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortedBy] = useState("name");
 	const [selected, setSelected] = useState<any[]>([]);
+	const [open, setOpen] = useState(false);
 
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
@@ -94,13 +97,16 @@ export function MediaPageContent() {
 
 	return (
 		<div className="h-full">
+			<AlertDialog open={open} onOpenChange={setOpen}>
+				<DeleteAssetContent />
+			</AlertDialog>
 			<Separator className="my-4" />
 			<SearchBar
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 				selected={selected}
+				setOpen={setOpen}
 			/>
-			{/* <Folders folders={folders} /> */}
 			<AllAssets
 				assets={sortedAssets}
 				selected={selected}

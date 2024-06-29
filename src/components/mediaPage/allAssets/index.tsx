@@ -1,5 +1,3 @@
-import { Trash2Icon } from "lucide-react";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
@@ -70,8 +68,7 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 									className="aspect-video w-full grow rounded-t-md object-cover"
 								/>
 								<div className="absolute inset-0 flex items-center justify-center rounded-t-md bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-									<div className="absolute top-0 flex w-full justify-between p-2">
-										<Trash2Icon className="w-5 text-white" />
+									<div className="absolute top-0 flex w-full justify-end p-2">
 										<Checkbox
 											className="!h-5 !w-5 !bg-background !text-foreground"
 											checked={selected.some((item) => item.id === asset.id)}

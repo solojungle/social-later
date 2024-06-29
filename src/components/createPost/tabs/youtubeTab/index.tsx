@@ -79,7 +79,6 @@ export function YouTubeTab({
 		try {
 			// Instead of uploading only one file, we need to upload all the files
 			// and then send the mediaIds to the backend
-
 			const filesToUpload = [...(data.thumbnail || []), ...data.video];
 			const mediaFiles = await Promise.all(
 				filesToUpload.map((file: FileUpload) =>

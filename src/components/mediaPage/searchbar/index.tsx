@@ -14,9 +14,15 @@ type Props = {
 	searchTerm: string;
 	setSearchTerm: (searchTerm: string) => void;
 	selected: any[];
+	setOpen: (open: boolean) => void;
 };
 
-export function SearchBar({ searchTerm, setSearchTerm, selected }: Props) {
+export function SearchBar({
+	searchTerm,
+	setSearchTerm,
+	selected,
+	setOpen,
+}: Props) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
 	return (
@@ -38,9 +44,10 @@ export function SearchBar({ searchTerm, setSearchTerm, selected }: Props) {
 					size="icon"
 					variant="outline"
 					className="shrink-0"
+					onClick={() => setOpen(true)}
 					disabled={!selected || selected.length === 0}
 				>
-					<Trash2 className="h-4" />
+					<Trash2 className="w-4" />
 				</Button>
 			</div>
 			<div className="ml-4 flex space-x-2">
