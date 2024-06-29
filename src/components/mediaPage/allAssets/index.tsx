@@ -46,7 +46,7 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 
 	// Creating a post with an already existing asset will create a duplicate
 	const dedupedAssets = assets.filter(
-		(v, i, a) => a.findIndex((t) => t.fileId === v.fileId) === i,
+		(v, i, a) => a.findIndex((t) => t.id === v.id) === i,
 	);
 
 	return (
