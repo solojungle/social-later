@@ -55,9 +55,10 @@ export const attachmentsRouter = createTRPCRouter({
 	delete: protectedProcedure
 		.input(z.object({ attachmentIds: z.array(z.string()) }))
 		.mutation(async ({ ctx, input }) => {
+			// We find the attachments based on their fileIds
 			const attachments = await ctx.db.attachment.findMany({
 				where: {
-					id: {
+					fileId: {
 						in: input.attachmentIds,
 					},
 				},
@@ -72,10 +73,10 @@ export const attachmentsRouter = createTRPCRouter({
 
 			// Remove any attachments with postIds that are not null
 			const attachmentsWithoutPosts = attachments.filter(
-				(a) => a.postId !== null,
+				(a) => a.postId === null,
 			);
 
-			if (attachmentsWithoutPosts.length > 0) {
+			if (attachmentsWithoutPosts.length !== attachments.length) {
 				throw new Error("Cannot delete attachments that are attached to posts");
 			}
 
