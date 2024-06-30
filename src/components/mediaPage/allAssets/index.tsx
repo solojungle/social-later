@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +29,25 @@ type Props = {
 	selected: any[];
 	setSelected: any;
 };
+
+function AssetPreview({ asset }: { asset: any }) {
+	const [url, setUrl] = useState(asset.thumbnail ?? asset.url);
+
+	return (
+		<img
+			src={url}
+			alt={asset.name}
+			className="aspect-video w-full grow rounded-t-md object-cover"
+			onError={() => {
+				if (asset.type === "image") {
+					return setUrl(asset.url);
+				}
+
+				return setUrl("images/videoPlaceholder.png");
+			}}
+		/>
+	);
+}
 
 export function AllAssets({ assets, selected, setSelected }: Props) {
 	if (!assets || assets.length === 0) {
@@ -62,11 +83,7 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 							)}
 						>
 							<div className="relative group-hover:cursor-pointer">
-								<img
-									src={asset.thumbnail}
-									alt={asset.name}
-									className="aspect-video w-full grow rounded-t-md object-cover"
-								/>
+								<AssetPreview asset={asset} />
 								<div className="absolute inset-0 flex items-center justify-center rounded-t-md bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
 									<div className="absolute top-0 flex w-full justify-end p-2">
 										<Checkbox

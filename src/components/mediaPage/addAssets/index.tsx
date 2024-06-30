@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Folder, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { MediaFormField } from "@/components/createPost/mediaFormField";
@@ -38,7 +39,14 @@ const UploadSchema = z.object({
 		.min(1),
 });
 
-function Content({ teamId }: { teamId: string }) {
+function Content({
+	teamId,
+	setOpen,
+}: {
+	teamId: string;
+	setOpen: (show: boolean) => void;
+}) {
+	const utils = api.useUtils();
 	const [loading, setLoading] = useState(false);
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutateAsync: fetchMultipartPresignedUrls } =
@@ -48,7 +56,12 @@ function Content({ teamId }: { teamId: string }) {
 	const [fileProgress, setFileProgress] = useState<{
 		[key: string]: { [key: number]: number };
 	}>({});
-	const { mutateAsync: createAttachment } = api.attachment.create.useMutation();
+	const { mutateAsync: createAttachment } = api.attachment.create.useMutation({
+		onSuccess() {
+			utils.attachment.getAll.invalidate();
+			toast.success("Successfully uploaded your assets!", {});
+		},
+	});
 
 	async function onSubmit(data: any) {
 		setLoading(true);
@@ -76,6 +89,7 @@ function Content({ teamId }: { teamId: string }) {
 			);
 		} finally {
 			setLoading(false);
+			setOpen(false);
 		}
 	}
 
@@ -100,10 +114,11 @@ function Content({ teamId }: { teamId: string }) {
 						fileProgress={fileProgress}
 						restrictions={{
 							maxFiles: 5,
-							maxSize: 2 * 1024 * 1024,
+							maxSize: 10 * 1024 * 1024,
 							maxSizeInMB: "2MB",
 							accept: {
 								"image/*": [".jpeg", ".png", ".jpg"],
+								"video/*": [".mp4", ".mov", ".mpeg"],
 							},
 						}}
 						isLoading={loading}
@@ -118,8 +133,9 @@ function Content({ teamId }: { teamId: string }) {
 export function AddAssets() {
 	const { id: teamId } = useSelectedTeamStore();
 
+	const [open, setOpen] = useState(false);
 	return (
-		<Sheet>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild>
 				<Button>
 					<PlusIcon className="mr-1 h-5 w-5" />
@@ -137,7 +153,7 @@ export function AddAssets() {
 				<SheetDescription className="mb-8">
 					Upload images, videos, and other media files to your library.
 				</SheetDescription>
-				{teamId && <Content teamId={teamId} />}
+				{teamId && <Content teamId={teamId} setOpen={setOpen} />}
 			</SheetContent>
 		</Sheet>
 	);
