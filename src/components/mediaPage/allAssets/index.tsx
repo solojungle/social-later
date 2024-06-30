@@ -57,7 +57,7 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 							key={asset.id}
 							className={cn(
 								"group relative flex flex-col rounded-md border border-border",
-								selected.includes(asset.id) &&
+								selected.some((item) => item.id === asset.id) &&
 									"ring-offset-px ring-2 ring-primary",
 							)}
 						>
