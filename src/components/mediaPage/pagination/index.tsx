@@ -36,13 +36,19 @@ const table = {
 	},
 	previousPage: () => {},
 	nextPage: () => {},
-	getCanPreviousPage: () => false,
-	getCanNextPage: () => false,
 };
 
-export function PagePagination() {
+export function PagePagination({ pagination }: { pagination: any }) {
+	const {
+		fetchNextPage,
+		fetchPreviousPage,
+		hasNextPage,
+		hasPreviousPage,
+		isRefetching,
+	} = pagination;
+
 	return (
-		<div className="flex items-center justify-between px-2 py-8">
+		<div className="mt-4 flex items-center justify-between border-t border-border bg-background px-2 py-4">
 			<div className="flex-1 text-sm text-muted-foreground">
 				{table.getFilteredSelectedRowModel().rows.length} of{" "}
 				{table.getFilteredRowModel().rows.length} row(s) selected.
@@ -77,7 +83,7 @@ export function PagePagination() {
 						variant="outline"
 						className="hidden h-8 w-8 p-0 lg:flex"
 						onClick={() => table.setPageIndex(0)}
-						disabled={!table.getCanPreviousPage()}
+						disabled={!hasPreviousPage}
 					>
 						<span className="sr-only">Go to first page</span>
 						<DoubleArrowLeftIcon className="h-4 w-4" />
@@ -85,8 +91,8 @@ export function PagePagination() {
 					<Button
 						variant="outline"
 						className="h-8 w-8 p-0"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
+						onClick={() => fetchPreviousPage()}
+						disabled={!hasPreviousPage}
 					>
 						<span className="sr-only">Go to previous page</span>
 						<ChevronLeftIcon className="h-4 w-4" />
@@ -94,8 +100,8 @@ export function PagePagination() {
 					<Button
 						variant="outline"
 						className="h-8 w-8 p-0"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
+						onClick={() => fetchNextPage()}
+						disabled={!hasNextPage}
 					>
 						<span className="sr-only">Go to next page</span>
 						<ChevronRightIcon className="h-4 w-4" />
@@ -104,7 +110,7 @@ export function PagePagination() {
 						variant="outline"
 						className="hidden h-8 w-8 p-0 lg:flex"
 						onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-						disabled={!table.getCanNextPage()}
+						disabled={!hasNextPage}
 					>
 						<span className="sr-only">Go to last page</span>
 						<DoubleArrowRightIcon className="h-4 w-4" />

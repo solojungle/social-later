@@ -28,6 +28,7 @@ type Props = {
 	assets: any[];
 	selected: any[];
 	setSelected: any;
+	pagination: any;
 };
 
 function AssetPreview({ asset }: { asset: any }) {
@@ -49,7 +50,12 @@ function AssetPreview({ asset }: { asset: any }) {
 	);
 }
 
-export function AllAssets({ assets, selected, setSelected }: Props) {
+export function AllAssets({
+	assets,
+	selected,
+	setSelected,
+	pagination,
+}: Props) {
 	if (!assets || assets.length === 0) {
 		return (
 			<div className="flex h-96 items-center justify-center">
@@ -122,7 +128,7 @@ export function AllAssets({ assets, selected, setSelected }: Props) {
 			</div>
 
 			<div className="sticky bottom-0">
-				<PagePagination />
+				<PagePagination pagination={pagination} />
 			</div>
 		</div>
 	);

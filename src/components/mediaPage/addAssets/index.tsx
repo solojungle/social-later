@@ -23,20 +23,21 @@ import { fileSchema } from "@/schemas/new-file-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
+// These are the restrictions for the media files that can be uploaded
+const mediaFileTypes = [
+	"image/jpeg",
+	"image/png",
+	"image/jpg",
+	"video/mp4",
+	"video/mov",
+	"video/mpeg",
+];
+const mediaFileExtensions = {
+	"": mediaFileTypes.map((fileType: string) => `.${fileType.split("/")[1]}`),
+};
+
 const UploadSchema = z.object({
-	media: z
-		.array(
-			fileSchema(256 * 1024 * 1024 * 1024, [
-				"video/mp4",
-				"video/mpeg",
-				"video/mov",
-				"image/png",
-				"image/jpeg",
-				"image/jpg",
-				"image/gif",
-			]),
-		)
-		.min(1),
+	media: z.array(fileSchema(256 * 1024 * 1024 * 1024, mediaFileTypes)).min(1),
 });
 
 function Content({
@@ -116,10 +117,7 @@ function Content({
 							maxFiles: 5,
 							maxSize: 10 * 1024 * 1024,
 							maxSizeInMB: "2MB",
-							accept: {
-								"image/*": [".jpeg", ".png", ".jpg"],
-								"video/*": [".mp4", ".mov", ".mpeg"],
-							},
+							accept: mediaFileExtensions,
 						}}
 						isLoading={loading}
 					/>

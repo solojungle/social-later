@@ -22,14 +22,26 @@ export function MediaPageContent() {
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
 
-	const { data, isLoading, isFetching } =
-		api.attachment.getAll.useInfiniteQuery(
-			{ teamId, limit: 50 },
-			{
-				enabled: !!teamId,
-				getNextPageParam: (lastPage: any) => lastPage.nextCursor,
-			},
-		);
+	const {
+		data,
+		isLoading,
+		isFetching,
+		isFetchingNextPage,
+		fetchNextPage,
+		hasNextPage,
+		fetchPreviousPage,
+		hasPreviousPage,
+		isRefetching,
+	} = api.attachment.getAll.useInfiniteQuery(
+		{ teamId, limit: 50 },
+		{
+			enabled: !!teamId,
+			getNextPageParam: (lastPage) => (lastPage ? lastPage.nextCursor : 0),
+			getPreviousPageParam: (firstPage) =>
+				firstPage ? firstPage.nextCursor : 0,
+			trpc: { context: { skipBatch: true } },
+		},
+	);
 
 	if (isFetching || isLoading) {
 		return (
@@ -39,6 +51,7 @@ export function MediaPageContent() {
 		);
 	}
 
+	// Because we're using infinite query
 	const attachments = data?.pages.flatMap((page) => page.items);
 
 	// We dont need the other information from the attachments
@@ -85,6 +98,14 @@ export function MediaPageContent() {
 				assets={sortedAssets}
 				selected={selected}
 				setSelected={setSelected}
+				pagination={{
+					isFetchingNextPage,
+					fetchNextPage,
+					hasNextPage,
+					isRefetching,
+					hasPreviousPage,
+					fetchPreviousPage,
+				}}
 			/>
 		</div>
 	);
