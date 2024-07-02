@@ -22,16 +22,14 @@ export function MediaPageContent() {
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
 
-	const {
-		data: attachments,
-		isFetching,
-		isLoading,
-	} = api.attachment.getAll.useQuery(
-		{ teamId },
-		{
-			enabled: !!teamId,
-		},
-	);
+	const { data, isLoading, isFetching } =
+		api.attachment.getAll.useInfiniteQuery(
+			{ teamId, limit: 50 },
+			{
+				enabled: !!teamId,
+				getNextPageParam: (lastPage: any) => lastPage.nextCursor,
+			},
+		);
 
 	if (isFetching || isLoading) {
 		return (
@@ -40,6 +38,8 @@ export function MediaPageContent() {
 			</div>
 		);
 	}
+
+	const attachments = data?.pages.flatMap((page) => page.items);
 
 	// We dont need the other information from the attachments
 	const onlyFiles = attachments?.map((attachment) => {

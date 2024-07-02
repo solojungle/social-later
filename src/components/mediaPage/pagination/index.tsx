@@ -30,7 +30,7 @@ const table = {
 	setPageSize: (pageSize: number) => {
 		console.log(pageSize);
 	},
-	getPageCount: () => 0,
+	getPageCount: () => 1,
 	setPageIndex: (pageIndex: number) => {
 		console.log(pageIndex);
 	},

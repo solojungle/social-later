@@ -11,13 +11,15 @@ export const attachmentsRouter = createTRPCRouter({
 		.input(
 			z.object({
 				teamId: z.string(),
+				limit: z.number().min(1).max(100).nullish(),
+				cursor: z.string().nullish(),
 			}),
 		)
 		.query(async ({ ctx, input }) => {
-			const { teamId } = input;
+			const { teamId, cursor } = input;
+			const limit = input.limit ?? 50;
 
 			// TODO: check auth
-
 			const attachments = await ctx.db.attachment.findMany({
 				where: {
 					teamId,
@@ -25,7 +27,18 @@ export const attachmentsRouter = createTRPCRouter({
 				include: {
 					file: true,
 				},
+				take: limit + 1,
+				cursor: cursor ? { id: cursor } : undefined,
+				orderBy: {
+					id: "asc",
+				},
 			});
+
+			let nextCursor: typeof cursor | undefined;
+			if (attachments.length > limit) {
+				const nextItem = attachments.pop();
+				nextCursor = nextItem!.id;
+			}
 
 			const attachmentsWithUrls = attachments.map((attachment) => {
 				if (attachment?.file) {
@@ -49,7 +62,7 @@ export const attachmentsRouter = createTRPCRouter({
 				};
 			});
 
-			return attachmentsWithUrls;
+			return { items: attachmentsWithUrls, nextCursor };
 		}),
 
 	delete: protectedProcedure
