@@ -27,6 +27,7 @@ export const attachmentsRouter = createTRPCRouter({
 				include: {
 					file: true,
 				},
+				distinct: ["fileId"],
 				take: limit + 1,
 				cursor: cursor ? { id: cursor } : undefined,
 				orderBy: {

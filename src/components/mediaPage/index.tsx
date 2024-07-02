@@ -36,9 +36,8 @@ export function MediaPageContent() {
 		{ teamId, limit: 50 },
 		{
 			enabled: !!teamId,
-			getNextPageParam: (lastPage) => (lastPage ? lastPage.nextCursor : 0),
-			getPreviousPageParam: (firstPage) =>
-				firstPage ? firstPage.nextCursor : 0,
+			getNextPageParam: (lastPage) => lastPage.nextCursor,
+			getPreviousPageParam: (firstPage) => firstPage.nextCursor,
 			trpc: { context: { skipBatch: true } },
 		},
 	);
