@@ -48,9 +48,12 @@ function HoverCardSection({ restrictions }: HoverCardSectionProps) {
 					<li>Max file size: {restrictions.maxSizeInMB}</li>
 					<li>
 						Supported formats:{" "}
-						{Object.keys(restrictions.accept).map(
-							(key) => restrictions.accept[key]?.join(", ") ?? "",
-						)}
+						{Object.keys(restrictions.accept).map((key, index) => (
+							<React.Fragment key={key}>
+								{index > 0 && ", "}
+								{restrictions.accept[key]?.join(", ") ?? ""}
+							</React.Fragment>
+						))}
 					</li>
 					<li>Max number of files: {restrictions.maxFiles}</li>
 				</ul>
