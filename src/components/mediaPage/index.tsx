@@ -18,6 +18,8 @@ export function MediaPageContent() {
 	const [sortedBy] = useState("name");
 	const [selected, setSelected] = useState<any[]>([]);
 	const [open, setOpen] = useState(false);
+	const [currentPage, setCurrentPage] = useState(0);
+	const [pageSize, setPageSize] = useState<2 | 4 | 8>(2);
 
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
@@ -30,19 +32,18 @@ export function MediaPageContent() {
 		fetchNextPage,
 		hasNextPage,
 		fetchPreviousPage,
-		hasPreviousPage,
 		isRefetching,
 	} = api.attachment.getAll.useInfiniteQuery(
-		{ teamId, limit: 50 },
+		{ teamId, limit: 8 },
 		{
 			enabled: !!teamId,
 			getNextPageParam: (lastPage) => lastPage.nextCursor,
 			getPreviousPageParam: (firstPage) => firstPage.nextCursor,
-			trpc: { context: { skipBatch: true } },
+			// trpc: { context: { skipBatch: true } }, // not sure if this is needed
 		},
 	);
 
-	if (isFetching || isLoading) {
+	if (isFetching || isRefetching || isLoading) {
 		return (
 			<div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center">
 				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
@@ -50,8 +51,8 @@ export function MediaPageContent() {
 		);
 	}
 
-	// Because we're using infinite query
-	const attachments = data?.pages.flatMap((page) => page.items);
+	// const attachments = data?.pages.flatMap((page) => page.items);
+	const attachments = data?.pages[currentPage]?.items ?? [];
 
 	// We dont need the other information from the attachments
 	const onlyFiles = attachments?.map((attachment) => {
@@ -102,8 +103,13 @@ export function MediaPageContent() {
 					fetchNextPage,
 					hasNextPage,
 					isRefetching,
-					hasPreviousPage,
 					fetchPreviousPage,
+					setPageSize,
+					pageSize,
+					setCurrentPage,
+					currentPage,
+					totalPages: data?.pages[0]?.totalPages ?? 0,
+					totalCount: data?.pages[0]?.totalCount ?? 0,
 				}}
 			/>
 		</div>
