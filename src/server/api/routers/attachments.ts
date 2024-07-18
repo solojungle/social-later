@@ -11,13 +11,13 @@ export const attachmentsRouter = createTRPCRouter({
 		.input(
 			z.object({
 				teamId: z.string(),
-				limit: z.number().min(1).max(100).nullish(),
+				limit: z.number().min(8).max(32).nullish(),
 				cursor: z.string().nullish(),
 			}),
 		)
 		.query(async ({ ctx, input }) => {
 			const { teamId, cursor } = input;
-			const limit = input.limit ?? 50;
+			const limit = input.limit ?? 8;
 
 			const totalCount = await ctx.db.attachment.count({
 				where: {

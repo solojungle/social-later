@@ -34,7 +34,7 @@ export function MediaPageContent() {
 		fetchPreviousPage,
 		isRefetching,
 	} = api.attachment.getAll.useInfiniteQuery(
-		{ teamId, limit: 8 },
+		{ teamId, limit: 4 * pageSize },
 		{
 			enabled: !!teamId,
 			getNextPageParam: (lastPage) => lastPage.nextCursor,
