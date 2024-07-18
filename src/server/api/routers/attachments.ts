@@ -19,6 +19,14 @@ export const attachmentsRouter = createTRPCRouter({
 			const { teamId, cursor } = input;
 			const limit = input.limit ?? 50;
 
+			const totalCount = await ctx.db.attachment.count({
+				where: {
+					teamId,
+				},
+			});
+
+			const totalPages = Math.ceil(totalCount / limit);
+
 			// TODO: check auth
 			const attachments = await ctx.db.attachment.findMany({
 				where: {
@@ -63,7 +71,7 @@ export const attachmentsRouter = createTRPCRouter({
 				};
 			});
 
-			return { items: attachmentsWithUrls, nextCursor };
+			return { items: attachmentsWithUrls, nextCursor, totalPages, totalCount };
 		}),
 
 	delete: protectedProcedure
