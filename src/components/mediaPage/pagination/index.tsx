@@ -76,12 +76,11 @@ export function PagePagination({ pagination }: { pagination: any }) {
 						variant="outline"
 						className="h-8 w-8 p-0"
 						onClick={() => {
-							if (totalPages <= currentPage + 1) {
-								fetchNextPage();
-							}
+							fetchNextPage();
+
 							setCurrentPage(currentPage + 1);
 						}}
-						disabled={!hasNextPage || isFetchingNextPage}
+						disabled={currentPage + 1 >= totalPages || isFetchingNextPage}
 					>
 						<span className="sr-only">Go to next page</span>
 						<ChevronRightIcon className="h-4 w-4" />
