@@ -94,7 +94,7 @@ export function PagePagination({ pagination }: { pagination: any }) {
 							}
 							setCurrentPage(totalPages - 1);
 						}}
-						disabled={!hasNextPage || isFetchingNextPage}
+						disabled={currentPage + 1 >= totalPages}
 					>
 						<span className="sr-only">Go to last page</span>
 						<DoubleArrowRightIcon className="h-4 w-4" />
