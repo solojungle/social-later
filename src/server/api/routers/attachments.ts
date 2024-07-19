@@ -19,11 +19,17 @@ export const attachmentsRouter = createTRPCRouter({
 			const { teamId, cursor } = input;
 			const limit = input.limit ?? 8;
 
-			const totalCount = await ctx.db.attachment.count({
-				where: {
-					teamId,
-				},
-			});
+			const countResult = await ctx.db.$queryRaw<
+				{
+					count: number;
+				}[]
+			>`SELECT COUNT(DISTINCT "fileId")
+				FROM "Attachment"
+				WHERE "teamId" = ${teamId}
+			`;
+
+			// Remove the 'n' at the end of the result to get number
+			const totalCount = Number(countResult[0]?.count) ?? 0;
 
 			const totalPages = Math.ceil(totalCount / limit);
 
