@@ -2,7 +2,6 @@ import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
 	DoubleArrowLeftIcon,
-	DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ export function PagePagination({ pagination }: { pagination: any }) {
 		setCurrentPage,
 		isFetchingNextPage,
 		currentPage,
+		loadedPageLength,
 		totalPages,
 		setPageSize,
 		pageSize,
@@ -74,8 +74,11 @@ export function PagePagination({ pagination }: { pagination: any }) {
 					<Button
 						variant="outline"
 						className="h-8 w-8 p-0"
-						onClick={() => {
-							fetchNextPage();
+						onClick={async () => {
+							// The next page has not yet been populated
+							if (loadedPageLength <= currentPage + 1) {
+								await fetchNextPage();
+							}
 
 							setCurrentPage(currentPage + 1);
 						}}
@@ -84,12 +87,12 @@ export function PagePagination({ pagination }: { pagination: any }) {
 						<span className="sr-only">Go to next page</span>
 						<ChevronRightIcon className="h-4 w-4" />
 					</Button>
-					<Button
+					{/* <Button
 						variant="outline"
 						className="hidden h-8 w-8 p-0 lg:flex"
-						onClick={() => {
-							if (totalPages <= currentPage + 1) {
-								fetchNextPage();
+						onClick={async () => {
+							if (loadedPageLength <= totalPages - 1) {
+								await fetchAllPagesToEnd();
 							}
 							setCurrentPage(totalPages - 1);
 						}}
@@ -97,7 +100,7 @@ export function PagePagination({ pagination }: { pagination: any }) {
 					>
 						<span className="sr-only">Go to last page</span>
 						<DoubleArrowRightIcon className="h-4 w-4" />
-					</Button>
+					</Button> */}
 				</div>
 			</div>
 		</div>

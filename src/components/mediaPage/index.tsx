@@ -27,7 +27,6 @@ export function MediaPageContent() {
 	const {
 		data,
 		isLoading,
-		isFetching,
 		isFetchingNextPage,
 		fetchNextPage,
 		hasNextPage,
@@ -43,7 +42,7 @@ export function MediaPageContent() {
 		},
 	);
 
-	if (isFetching || isRefetching || isLoading) {
+	if (isLoading) {
 		return (
 			<div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center">
 				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
@@ -102,6 +101,7 @@ export function MediaPageContent() {
 					isFetchingNextPage,
 					fetchNextPage,
 					hasNextPage,
+					loadedPageLength: data?.pages.length ?? 0,
 					isRefetching,
 					fetchPreviousPage,
 					setPageSize,
