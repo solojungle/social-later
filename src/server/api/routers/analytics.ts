@@ -355,9 +355,22 @@ export const analyticsRouter = createTRPCRouter({
 				playlistId: uploadPlaylistId,
 			});
 
+			// Fetch the last 10 videos
+			const last10Videos =
+				videos.data.items?.slice(0, 10)?.map((video) => ({
+					id: video?.snippet?.resourceId?.videoId,
+					views: 0,
+					thumbnail:
+						video?.snippet?.thumbnails?.medium?.url ??
+						video?.snippet?.thumbnails?.default?.url,
+					title: video?.snippet?.title,
+					url: `https://www.youtube.com/watch?v=${video?.snippet?.resourceId?.videoId}`,
+				})) || [];
+
 			const videoIds = videos.data.items?.map(
 				(video) => video?.snippet?.resourceId?.videoId,
 			);
+
 			const videoViews = {
 				shorts: 0,
 				long: 0,
@@ -374,6 +387,18 @@ export const analyticsRouter = createTRPCRouter({
 					metrics: "views",
 					dimensions: "video,creatorContentType",
 					filters: `video==${videoIds.join(",")}`,
+				});
+
+				// For last 10 videos we're adding views
+				last10Videos.forEach((video) => {
+					const videoView = viewTypeResponse.data?.rows?.find(
+						(row) => row[0] === video.id,
+					);
+
+					if (videoView) {
+						// eslint-disable-next-line no-param-reassign
+						video.views = Number(videoView[2]);
+					}
 				});
 
 				viewTypeResponse.data?.rows?.forEach((row) => {
@@ -399,16 +424,6 @@ export const analyticsRouter = createTRPCRouter({
 					}
 				});
 			}
-
-			// Fetch the last 10 videos
-			const last10Videos =
-				videos.data.items?.slice(0, 10)?.map((video) => ({
-					thumbnail:
-						video?.snippet?.thumbnails?.medium?.url ??
-						video?.snippet?.thumbnails?.default?.url,
-					title: video?.snippet?.title,
-					url: `https://www.youtube.com/watch?v=${video?.snippet?.resourceId?.videoId}`,
-				})) || [];
 
 			return {
 				historicalData,

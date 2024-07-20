@@ -67,7 +67,7 @@ export const YouTubeAnalyticsTab = () => {
 					thumbnail={data.last10Videos[0]?.thumbnail ?? ""}
 					title={data.last10Videos?.[0]?.title ?? ""}
 					url={data.last10Videos?.[0]?.url ?? ""}
-					views="0"
+					views={String(data.last10Videos?.[0]?.views)}
 				/>
 				<ViewsComparisons data={data?.videoViews} />
 			</div>
