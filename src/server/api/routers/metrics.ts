@@ -11,9 +11,9 @@ export const metricsRouter = createTRPCRouter({
 				id: z.string(),
 			}),
 		)
-		.query(async ({ ctx, input }) => {
+		.query(async ({ ctx }) => {
 			// Get the channel id from the session
-			const { id } = input;
+			// const { id } = input;
 
 			// Get the metrics for the channel
 			const metrics = await ctx.db.postMetrics.findMany();

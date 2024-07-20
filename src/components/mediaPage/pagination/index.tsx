@@ -17,7 +17,6 @@ import {
 export function PagePagination({ pagination }: { pagination: any }) {
 	const {
 		fetchNextPage,
-		hasNextPage,
 		setCurrentPage,
 		isFetchingNextPage,
 		currentPage,
