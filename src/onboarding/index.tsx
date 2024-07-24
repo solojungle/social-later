@@ -1,4 +1,8 @@
+"use client";
+
 import { ArrowUpRight } from "lucide-react";
+import Confetti from "react-confetti";
+import { useTimeout, useWindowSize } from "react-use";
 
 import { Button } from "@/components/ui/button";
 
@@ -17,7 +21,7 @@ function Option({ title, description, children }: any) {
 function OptionBadge({ children }: any) {
 	return (
 		// eslint-disable-next-line tailwindcss/classnames-order
-		<div className="bg-success-foreground/40 text-success relative mt-2 flex w-auto items-center gap-0.5 rounded-lg p-1 pr-1.5 text-xs font-medium md:absolute md:right-4 md:top-4 md:mt-0">
+		<div className="relative mt-2 flex w-auto items-center gap-0.5 rounded-lg bg-success-foreground/40 p-1 pr-1.5 text-xs font-medium text-success md:absolute md:right-4 md:top-4 md:mt-0">
 			{children}
 		</div>
 	);
@@ -35,7 +39,7 @@ function OptionGroup({ title, description, children }: any) {
 	);
 }
 
-export function Onboarding() {
+function FirstPage() {
 	return (
 		<div className="flex flex-col justify-center p-5">
 			<OptionGroup
@@ -94,4 +98,88 @@ export function Onboarding() {
 			</Button>
 		</div>
 	);
+}
+
+function SecondPage() {
+	return (
+		<div className="flex flex-col justify-center p-5">
+			<OptionGroup title="How many people work at your company?">
+				<Option title="0 – 10" />
+				<Option title="11 – 50" />
+				<Option title="51 – 100" />
+				<Option title="101 – 500" />
+				<Option title="501 – 1000" />
+				<Option title="1000+" />
+			</OptionGroup>
+			<Button
+				disabled
+				className="group relative h-[64px] w-full cursor-not-allowed self-center rounded-[8px] border border-gray-100 bg-gray-100 text-lg font-semibold text-gray-500 transition ease-in-out md:max-w-[540px]"
+			>
+				Continue
+				<div className="absolute right-[16px] top-[16px] hidden md:block">
+					<div className="h-[32px] w-[32px] rounded-lg bg-gray-200 text-[16px] font-medium leading-[32px] text-gray-500 transition ease-in-out">
+						↩
+					</div>
+				</div>
+			</Button>
+		</div>
+	);
+}
+
+function SuccessPage() {
+	const { width, height } = useWindowSize();
+
+	// after 2 seconds, stop the confetti animation
+	const [showConfetti] = useTimeout(4000);
+
+	return (
+		<div className="flex flex-col justify-center p-5">
+			<Confetti
+				width={width}
+				height={height}
+				numberOfPieces={200}
+				initialVelocityY={50}
+				gravity={0.03}
+				tweenDuration={10000}
+				recycle={!showConfetti()}
+			/>
+
+			<div className="mb-8 text-2xl font-bold">Congratulations!</div>
+			<div className="mb-8">
+				You've completed the onboarding process. You can now start using
+				FeedFrenzy.
+			</div>
+			<div className="mb-8">
+				Here is contact information for our support team:
+				<div className="mt-4">
+					Email:{" "}
+					<a href="mailto:ali.awari.0@gmail.com">ali.awari.0@gmail.com</a>
+				</div>
+				<div className="mt-4">
+					Phone: <a href="tel:+923000000000">+923000000000</a>
+				</div>
+			</div>
+			<div className="mb-8">
+				Here is a link to our documentation:
+				<div className="mt-4">
+					<a href="https://feedfrenzy.com/docs">https://feedfrenzy.com/docs</a>
+				</div>
+			</div>
+			<Button
+				disabled
+				className="group relative h-[64px] w-full cursor-not-allowed self-center rounded-[8px] border border-gray-100 bg-gray-100 text-lg font-semibold text-gray-500 transition ease-in-out md:max-w-[540px]"
+			>
+				Continue
+				<div className="absolute right-[16px] top-[16px] hidden md:block">
+					<div className="h-[32px] w-[32px] rounded-lg bg-gray-200 text-[16px] font-medium leading-[32px] text-gray-500 transition ease-in-out">
+						↩
+					</div>
+				</div>
+			</Button>
+		</div>
+	);
+}
+
+export function Onboarding() {
+	return <SuccessPage />;
 }
