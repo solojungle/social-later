@@ -6,6 +6,7 @@ import Confetti from "react-confetti";
 import { useTimeout } from "react-use";
 import { useWindowSize } from "usehooks-ts";
 
+import { Countdown } from "@/components/countdown";
 import { Button } from "@/components/ui/button";
 
 function Option({ title, description, children }: any) {
@@ -158,15 +159,12 @@ function SuccessPage() {
 				</div>
 				<div className="mb-12 text-lg">
 					You will be redirected to the Nexus, where you can start discovering
-					exactly what FeedFrenzy can do for you.
+					FeedFrenzy.
 				</div>
-
-				<Button className="group relative h-[64px] w-full self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
+				<Button className="group relative h-[64px] w-full justify-between self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
 					Access FeedFrenzy
-					<div className="absolute right-[16px] top-[16px] hidden md:block">
-						<div className="h-[32px] w-[32px] rounded-lg bg-gray-200 text-[16px] font-medium leading-[32px] text-gray-500 transition ease-in-out">
-							↩
-						</div>
+					<div className="flex h-5 w-5 items-center justify-center rounded-lg border border-border bg-primary p-5 text-primary-foreground">
+						<Countdown />
 					</div>
 				</Button>
 			</div>
