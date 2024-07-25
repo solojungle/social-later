@@ -3,7 +3,8 @@
 import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { ArrowUpRight } from "lucide-react";
 import Confetti from "react-confetti";
-import { useTimeout, useWindowSize } from "react-use";
+import { useTimeout } from "react-use";
+import { useWindowSize } from "usehooks-ts";
 
 import { Button } from "@/components/ui/button";
 
@@ -128,7 +129,9 @@ function SecondPage() {
 }
 
 function SuccessPage() {
-	const { width, height } = useWindowSize();
+	const { width = 0, height = 0 } = useWindowSize({
+		initializeWithValue: false,
+	});
 
 	// after 2 seconds, stop the confetti animation
 	const [showConfetti] = useTimeout(4000);
