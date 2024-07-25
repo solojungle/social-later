@@ -1,6 +1,6 @@
 import { ResizablePanel } from "@/components/ui/resizable";
 
-export const WorkspacePageContent = () => {
+export const NexusPageContent = () => {
 	return (
 		<ResizablePanel
 			id="calendar"

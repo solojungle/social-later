@@ -151,10 +151,10 @@ function SuccessPage() {
 			<div className="mb-4 flex flex-col space-y-1 md:mx-auto md:max-w-[540px] md:pt-[48px] lg:pt-[64px] xl:pt-[88px]">
 				<CheckCircledIcon className="mb-4 h-24 w-24 self-center text-success" />
 				<div className="mb-8 text-2xl font-bold">
-					Congratulations! You're now ready to use FeedFrenzy!
+					Congratulations! You&apos;re now ready to use FeedFrenzy!
 				</div>
 				<div className="mb-8">
-					You've completed the onboarding process. You can now start using
+					You&apos;ve completed the onboarding process. You can now start using
 					FeedFrenzy.
 				</div>
 				<div className="mb-8">

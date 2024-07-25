@@ -5,9 +5,9 @@ import { Loader2 } from "lucide-react";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { useUserStore } from "@/stores/user";
 
-import { WorkspacePageContent } from "./content";
+import { NexusPageContent } from "./content";
 
-export default function WorkspacePage() {
+export default function NexusPage() {
 	const { id: userId } = useUserStore();
 
 	if (!userId) {
@@ -20,5 +20,5 @@ export default function WorkspacePage() {
 		);
 	}
 
-	return <WorkspacePageContent />;
+	return <NexusPageContent />;
 }
