@@ -137,7 +137,7 @@ function SuccessPage() {
 	const [showConfetti] = useTimeout(4000);
 
 	return (
-		<div className="flex flex-col justify-center p-5">
+		<div className="flex h-screen flex-col p-5">
 			<Confetti
 				width={width}
 				height={height}
@@ -148,33 +148,19 @@ function SuccessPage() {
 				recycle={!showConfetti()}
 			/>
 
-			<div className="mb-4 flex flex-col space-y-1 md:mx-auto md:max-w-[540px] md:pt-[48px] lg:pt-[64px] xl:pt-[88px]">
+			<div className="mb-4 flex flex-col md:mx-auto md:max-w-[540px] md:pt-[48px] lg:pt-[64px] xl:pt-[88px]">
 				<CheckCircledIcon className="mb-4 h-24 w-24 self-center text-success" />
+				<div className="mb-1 text-sm font-semibold uppercase">
+					Congratulations!
+				</div>
 				<div className="mb-8 text-2xl font-bold">
-					Congratulations! You&apos;re now ready to use FeedFrenzy!
+					You&apos;re now ready to use FeedFrenzy!
 				</div>
-				<div className="mb-8">
-					You&apos;ve completed the onboarding process. You can now start using
-					FeedFrenzy.
+				<div className="mb-12 text-lg">
+					You will be redirected to the Nexus, where you can start discovering
+					exactly what FeedFrenzy can do for you.
 				</div>
-				<div className="mb-8">
-					Here is contact information for our support team:
-					<div className="mt-4">
-						Email:{" "}
-						<a href="mailto:ali.awari.0@gmail.com">ali.awari.0@gmail.com</a>
-					</div>
-					<div className="mt-4">
-						Phone: <a href="tel:+923000000000">+923000000000</a>
-					</div>
-				</div>
-				<div className="mb-8">
-					Here is a link to our documentation:
-					<div className="mt-4">
-						<a href="https://feedfrenzy.com/docs">
-							https://feedfrenzy.com/docs
-						</a>
-					</div>
-				</div>
+
 				<Button className="group relative h-[64px] w-full self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
 					Access FeedFrenzy
 					<div className="absolute right-[16px] top-[16px] hidden md:block">
