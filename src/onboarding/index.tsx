@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { ArrowUpRight } from "lucide-react";
 import Confetti from "react-confetti";
 import { useTimeout, useWindowSize } from "react-use";
@@ -144,38 +145,42 @@ function SuccessPage() {
 				recycle={!showConfetti()}
 			/>
 
-			<div className="mb-8 text-2xl font-bold">Congratulations!</div>
-			<div className="mb-8">
-				You've completed the onboarding process. You can now start using
-				FeedFrenzy.
-			</div>
-			<div className="mb-8">
-				Here is contact information for our support team:
-				<div className="mt-4">
-					Email:{" "}
-					<a href="mailto:ali.awari.0@gmail.com">ali.awari.0@gmail.com</a>
+			<div className="mb-4 flex flex-col space-y-1 md:mx-auto md:max-w-[540px] md:pt-[48px] lg:pt-[64px] xl:pt-[88px]">
+				<CheckCircledIcon className="mb-4 h-24 w-24 self-center text-success" />
+				<div className="mb-8 text-2xl font-bold">
+					Congratulations! You're now ready to use FeedFrenzy!
 				</div>
-				<div className="mt-4">
-					Phone: <a href="tel:+923000000000">+923000000000</a>
+				<div className="mb-8">
+					You've completed the onboarding process. You can now start using
+					FeedFrenzy.
 				</div>
-			</div>
-			<div className="mb-8">
-				Here is a link to our documentation:
-				<div className="mt-4">
-					<a href="https://feedfrenzy.com/docs">https://feedfrenzy.com/docs</a>
-				</div>
-			</div>
-			<Button
-				disabled
-				className="group relative h-[64px] w-full cursor-not-allowed self-center rounded-[8px] border border-gray-100 bg-gray-100 text-lg font-semibold text-gray-500 transition ease-in-out md:max-w-[540px]"
-			>
-				Continue
-				<div className="absolute right-[16px] top-[16px] hidden md:block">
-					<div className="h-[32px] w-[32px] rounded-lg bg-gray-200 text-[16px] font-medium leading-[32px] text-gray-500 transition ease-in-out">
-						↩
+				<div className="mb-8">
+					Here is contact information for our support team:
+					<div className="mt-4">
+						Email:{" "}
+						<a href="mailto:ali.awari.0@gmail.com">ali.awari.0@gmail.com</a>
+					</div>
+					<div className="mt-4">
+						Phone: <a href="tel:+923000000000">+923000000000</a>
 					</div>
 				</div>
-			</Button>
+				<div className="mb-8">
+					Here is a link to our documentation:
+					<div className="mt-4">
+						<a href="https://feedfrenzy.com/docs">
+							https://feedfrenzy.com/docs
+						</a>
+					</div>
+				</div>
+				<Button className="group relative h-[64px] w-full self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
+					Access FeedFrenzy
+					<div className="absolute right-[16px] top-[16px] hidden md:block">
+						<div className="h-[32px] w-[32px] rounded-lg bg-gray-200 text-[16px] font-medium leading-[32px] text-gray-500 transition ease-in-out">
+							↩
+						</div>
+					</div>
+				</Button>
+			</div>
 		</div>
 	);
 }
