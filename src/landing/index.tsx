@@ -166,10 +166,10 @@ function Lol() {
 // Probably from arcade.software
 function ProductShowCase() {
 	return (
-		<div className="mb-20 flex items-center justify-center">
+		<div className="mb-20 flex max-w-6xl items-center justify-center self-center p-1">
 			<img
 				alt="Browser preview of the product"
-				className="max-w-6xl"
+				className="object-cover"
 				src="/images/browser-preview-min.png"
 			/>
 		</div>
@@ -180,13 +180,13 @@ function ProductShowCase() {
 // Answers the question: Who Is This For?
 function ProductOfferings() {
 	return (
-		<section className="h-screen w-full flex-col justify-center space-y-14 bg-stone-200 px-4 py-20 md:px-10 lg:px-44">
+		<section className="w-full flex-col justify-center space-y-14 bg-stone-200 px-4 py-20 md:px-10 lg:px-44">
 			<div>
 				<h2 className="font-vollkorn text-6xl font-bold">
 					Plan, approve, achieve.
 				</h2>
-				<p className="mt-4 text-lg">
-					Manage all your social media tasks in one place.
+				<p className="mt-2 text-lg">
+					Made specifically for the type of people who want to be
 				</p>
 			</div>
 			<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
