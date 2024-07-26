@@ -6,10 +6,12 @@ import { ResizablePanel } from "@/components/ui/resizable";
 
 function ArticleCards() {
 	return (
-		<article className="group relative col-span-1 grid h-[141px] w-full select-none items-end justify-start overflow-hidden rounded-lg border border-border bg-white p-5 shadow-card hover:bg-[#F8FCFE]">
+		<article className="group relative col-span-1 grid h-[141px] w-full select-none items-end justify-start overflow-hidden rounded-lg border border-border bg-background p-5 shadow-card hover:bg-primary-foreground/50">
 			<div>
-				<h2 className="text-sm font-semibold">How to Create an Arcade</h2>
-				<p className="mt-0.5 text-xs text-gray-600">
+				<h2 className="text-sm font-semibold text-foreground">
+					How to Create an Arcade
+				</h2>
+				<p className="mt-0.5 text-xs text-muted-foreground">
 					A four-step guide to getting started
 				</p>
 			</div>
@@ -69,7 +71,7 @@ function NewsCard() {
 
 function SeeMoreNewsCard() {
 	return (
-		<article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
+		<article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
 			<p className="text-sm font-semibold text-primary">See More</p>
 			<ArrowRight className="ml-1 h-4 w-4 text-primary" />
 		</article>
