@@ -27,6 +27,7 @@ export default {
 				geistMono: ["var(--font-geist-mono)"],
 				beausite: ["BeausiteClassic", "sans-serif"],
 				tiempos: ["TiemposHeadline", "sans-serif"],
+				vollkorn: ["Vollkorn", "serif"],
 			},
 			colors: {
 				border: "hsl(var(--border))",

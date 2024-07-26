@@ -7,23 +7,20 @@ import { Button } from "@/components/ui/button";
 
 export default function Hero() {
 	return (
-		<section className="flex h-[calc(100vh-225px)] w-full flex-col items-center justify-center space-y-14">
+		<section className="flex h-[calc(100vh-225px)] w-full flex-col justify-center space-y-14 px-4 md:px-10 lg:px-44">
 			<motion.div
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ staggerChildren: 0.3 }}
-				className="container space-y-10 text-center leading-tight tracking-tight md:max-w-4xl"
+				className="space-y-10 leading-tight tracking-tight md:max-w-4xl"
 			>
 				<motion.h1
 					initial={{ y: 100, opacity: 0 }}
 					animate={{ y: 0, opacity: 1 }}
 					transition={{ duration: 0.4 }}
-					className="text-5xl md:text-6xl"
+					className="font-vollkorn text-6xl md:text-7xl"
 				>
-					Social Media Management. <br />
-					{/* <span className="font-tiempos italic">
-						Easy, Productive, Organized.
-					</span> */}
+					Social Media Management
 				</motion.h1>
 				<motion.p
 					initial={{ y: 100, opacity: 0 }}
