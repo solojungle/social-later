@@ -9,7 +9,7 @@ import { AvatarCircles } from "../avatarCircles";
 
 export default function Hero() {
 	return (
-		<section className="flex h-[calc(100vh-225px)] w-full flex-col justify-center space-y-10 px-4 md:px-10 lg:px-44">
+		<section className="mb-10 flex h-[calc(100vh-225px)] w-full flex-col justify-center space-y-10 px-4 md:mb-4 md:px-10 lg:px-44">
 			<motion.div
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}

@@ -1,4 +1,4 @@
-import { EyeIcon, FlaskConical, MapIcon } from "lucide-react";
+import { CornerLeftDown, EyeIcon, FlaskConical, MapIcon } from "lucide-react";
 
 import Hero from "./hero";
 import { NavigationMenu } from "./navigationMenu";
@@ -166,12 +166,18 @@ function Lol() {
 // Probably from arcade.software
 function ProductShowCase() {
 	return (
-		<div className="mb-20 flex max-w-6xl items-center justify-center self-center p-1">
-			<img
-				alt="Browser preview of the product"
-				className="object-cover"
-				src="/images/browser-preview-min.png"
-			/>
+		<div className="relative mx-5 mb-20 flex max-w-6xl flex-col items-center justify-center self-center ">
+			<div className="absolute right-0 top-[-30px] flex rotate-3 items-center space-x-2 text-stone-400">
+				<CornerLeftDown className="mt-2 h-4 w-4" />
+				<p className="text-sm">Play with this arcade</p>
+			</div>
+			<div className="p-1">
+				<img
+					alt="Browser preview of the product"
+					className="object-cover"
+					src="/images/browser-preview-min.png"
+				/>
+			</div>
 		</div>
 	);
 }
