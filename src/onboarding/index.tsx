@@ -135,7 +135,7 @@ function SuccessPage() {
 	});
 
 	// after 2 seconds, stop the confetti animation
-	const [showConfetti] = useTimeout(4000);
+	const [showConfetti] = useTimeout(2500);
 
 	return (
 		<div className="flex h-screen flex-col p-5">
@@ -143,7 +143,7 @@ function SuccessPage() {
 				width={width}
 				height={height}
 				numberOfPieces={200}
-				initialVelocityY={50}
+				initialVelocityY={-5}
 				gravity={0.03}
 				tweenDuration={10000}
 				recycle={!showConfetti()}
