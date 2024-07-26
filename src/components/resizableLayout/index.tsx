@@ -6,6 +6,7 @@ import {
 	Calendar,
 	FolderIcon,
 	HelpCircleIcon,
+	HomeIcon,
 	PieChartIcon,
 	SettingsIcon,
 } from "lucide-react";
@@ -76,6 +77,14 @@ export function ResizableLayout({
 							<Nav
 								isCollapsed={isCollapsed}
 								links={[
+									{
+										title: "Nexus",
+										label: "",
+										icon: HomeIcon,
+										// Check if the path matches the current path, if so set the variant to "default" else "ghost"
+										variant: isCurrentTab(path, "nexus"),
+										url: "nexus",
+									},
 									{
 										title: "Publish",
 										label: "",

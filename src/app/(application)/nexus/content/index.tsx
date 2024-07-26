@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { ResizablePanel } from "@/components/ui/resizable";
@@ -37,7 +38,7 @@ function NewsCard() {
 
 	return (
 		<motion.article
-			className="flex w-64 flex-col overflow-hidden rounded-lg border border-border shadow-card transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md"
+			className="flex w-64 flex-col overflow-hidden rounded-lg border border-border transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md"
 			initial="hidden"
 			whileHover="visible"
 		>
@@ -66,14 +67,24 @@ function NewsCard() {
 	);
 }
 
+function SeeMoreNewsCard() {
+	return (
+		<article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
+			<p className="text-sm font-semibold text-primary">See More</p>
+			<ArrowRight className="ml-1 h-4 w-4 text-primary" />
+		</article>
+	);
+}
+
 function NewsAndUpdates() {
 	return (
 		<div className="flex flex-col">
 			<h1 className="mb-4 text-lg font-semibold">News & Updates</h1>
-			<div className="flex w-full gap-4">
+			<div className="flex w-full flex-wrap gap-4">
 				<NewsCard />
 				<NewsCard />
 				<NewsCard />
+				<SeeMoreNewsCard />
 			</div>
 		</div>
 	);
