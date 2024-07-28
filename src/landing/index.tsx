@@ -1,167 +1,175 @@
 import { CornerLeftDown, EyeIcon, FlaskConical, MapIcon } from "lucide-react";
 
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
+
+import Footer from "./footer";
 import Hero from "./hero";
 import { NavigationMenu } from "./navigationMenu";
 
-function Lay({ children }: any) {
-	return (
-		<div className="min-h-screen bg-gray-100">
-			<header className="bg-blue-700 p-4 text-white">
-				<div className="container mx-auto flex items-center justify-between">
-					<div className="text-xl font-bold">Social Media Management</div>
-					<nav>
-						<ul className="flex space-x-4">
-							<li>Products</li>
-							<li>Pricing</li>
-							<li>Contact</li>
-						</ul>
-					</nav>
-					<div>
-						<button className="rounded bg-white px-4 py-2 text-blue-700">
-							Login
-						</button>
-						<button className="ml-2 rounded bg-white px-4 py-2 text-blue-700">
-							Sign Up
-						</button>
-					</div>
-				</div>
-			</header>
-			<main>{children}</main>
-			<footer className="bg-blue-700 p-4 text-center text-white">
-				&copy; {new Date().getFullYear()} Social Media Management
-			</footer>
-		</div>
-	);
-}
+// function Lay({ children }: any) {
+// 	return (
+// 		<div className="min-h-screen bg-gray-100">
+// 			<header className="bg-blue-700 p-4 text-white">
+// 				<div className="container mx-auto flex items-center justify-between">
+// 					<div className="text-xl font-bold">Social Media Management</div>
+// 					<nav>
+// 						<ul className="flex space-x-4">
+// 							<li>Products</li>
+// 							<li>Pricing</li>
+// 							<li>Contact</li>
+// 						</ul>
+// 					</nav>
+// 					<div>
+// 						<button className="rounded bg-white px-4 py-2 text-blue-700">
+// 							Login
+// 						</button>
+// 						<button className="ml-2 rounded bg-white px-4 py-2 text-blue-700">
+// 							Sign Up
+// 						</button>
+// 					</div>
+// 				</div>
+// 			</header>
+// 			<main>{children}</main>
+// 			<footer className="bg-blue-700 p-4 text-center text-white">
+// 				&copy; {new Date().getFullYear()} Social Media Management
+// 			</footer>
+// 		</div>
+// 	);
+// }
 
-function FullPageSection() {
-	return (
-		<section className="h-screen bg-stone-100 p-20">
-			<h1 className="max-w-prose text-4xl font-bold">
-				Social Media Management. Scheduling, Cross-posting, Analytics.
-			</h1>
-			<p className="mt-4">
-				Join the leading platform for social media management.
-			</p>
-			<div className="mt-8">
-				<button className="rounded bg-white px-6 py-3 text-blue-700">
-					Try for Free
-				</button>
-				<button className="ml-4 rounded bg-white px-6 py-3 text-blue-700">
-					Learn More
-				</button>
-			</div>
-		</section>
-	);
-}
+// function FullPageSection() {
+// 	return (
+// 		<section className="h-screen bg-stone-100 p-20">
+// 			<h1 className="max-w-prose text-4xl font-bold">
+// 				Social Media Management. Scheduling, Cross-posting, Analytics.
+// 			</h1>
+// 			<p className="mt-4">
+// 				Join the leading platform for social media management.
+// 			</p>
+// 			<div className="mt-8">
+// 				<button className="rounded bg-white px-6 py-3 text-blue-700">
+// 					Try for Free
+// 				</button>
+// 				<button className="ml-4 rounded bg-white px-6 py-3 text-blue-700">
+// 					Learn More
+// 				</button>
+// 			</div>
+// 		</section>
+// 	);
+// }
 
-function Lol() {
-	return (
-		<>
-			<FullPageSection />
-			<section className="bg-stone-200 py-20 text-center">
-				<h2 className="text-3xl font-bold">Plan, approve, achieve.</h2>
-				<p className="mt-4">Manage all your social media tasks in one place.</p>
-				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-					<div className="rounded bg-white p-6 shadow">
-						{/* <LucideIcon name="calendar" className="mx-auto mb-4" /> */}
-						<h3 className="text-xl font-bold">Plan</h3>
-						<p className="mt-2">Plan your social media content effortlessly.</p>
-					</div>
-					<div className="rounded bg-white p-6 shadow">
-						{/* <LucideIcon name="check-circle" className="mx-auto mb-4" /> */}
-						<h3 className="text-xl font-bold">Approve</h3>
-						<p className="mt-2">Get approvals on your posts quickly.</p>
-					</div>
-					<div className="rounded bg-white p-6 shadow">
-						{/* <LucideIcon name="chart-bar" className="mx-auto mb-4" /> */}
-						<h3 className="text-xl font-bold">Achieve</h3>
-						<p className="mt-2">Achieve your social media goals.</p>
-					</div>
-					<div className="rounded bg-white p-6 shadow">
-						{/* <LucideIcon name="layers" className="mx-auto mb-4" /> */}
-						<h3 className="text-xl font-bold">Organize</h3>
-						<p className="mt-2">
-							Organize your social media tasks efficiently.
-						</p>
-					</div>
-				</div>
-			</section>
-			<section className="bg-cyan-950 py-20 text-center">
-				<h2 className="text-3xl font-bold">
-					For every challenge, there's a solution.
-				</h2>
-				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					<div className="rounded bg-gray-200 p-6 shadow">
-						<h3 className="text-xl font-bold">Solution 1</h3>
-						<p className="mt-2">Description of solution 1.</p>
-					</div>
-					<div className="rounded bg-gray-200 p-6 shadow">
-						<h3 className="text-xl font-bold">Solution 2</h3>
-						<p className="mt-2">Description of solution 2.</p>
-					</div>
-					<div className="rounded bg-gray-200 p-6 shadow">
-						<h3 className="text-xl font-bold">Solution 3</h3>
-						<p className="mt-2">Description of solution 3.</p>
-					</div>
-				</div>
-			</section>
-			<section className="bg-gray-50 py-20 text-center">
-				<h2 className="text-3xl font-bold">
-					Social media platform for everyone. Especially for you.
-				</h2>
-				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					<div className="rounded bg-white p-6 shadow">
-						<div className="mb-4 h-32 bg-gradient-to-r from-blue-400 to-purple-400" />
-						<h3 className="text-xl font-bold">Agencies</h3>
-						<p className="mt-2">Manage multiple clients easily.</p>
-					</div>
-					<div className="rounded bg-white p-6 shadow">
-						<div className="mb-4 h-32 bg-gradient-to-r from-green-400 to-blue-400" />
-						<h3 className="text-xl font-bold">Brands</h3>
-						<p className="mt-2">Build your brand's online presence.</p>
-					</div>
-					<div className="rounded bg-white p-6 shadow">
-						<div className="mb-4 h-32 bg-gradient-to-r from-yellow-400 to-red-400" />
-						<h3 className="text-xl font-bold">Freelancers</h3>
-						<p className="mt-2">Streamline your freelance work.</p>
-					</div>
-				</div>
-			</section>
-			<section className="py-20 text-center">
-				<h2 className="text-3xl font-bold">
-					Reviews so nice, you'll think they're fake.
-				</h2>
-				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					<div className="rounded bg-gray-200 p-6 shadow">
-						<p>
-							"This platform has revolutionized our social media management!"
-						</p>
-						<div className="mt-4 text-sm text-gray-600">- Happy Customer</div>
-					</div>
-					<div className="rounded bg-gray-200 p-6 shadow">
-						<p>"A must-have tool for any social media team."</p>
-						<div className="mt-4 text-sm text-gray-600">- Satisfied Client</div>
-					</div>
-					<div className="rounded bg-gray-200 p-6 shadow">
-						<p>
-							"Our productivity has increased tenfold since using this tool."
-						</p>
-						<div className="mt-4 text-sm text-gray-600">- Thrilled User</div>
-					</div>
-				</div>
-			</section>
-			<section className="bg-gray-50 py-20 text-center">
-				<h2 className="text-3xl font-bold">
-					837,321 scheduled posts in the past year by users just like you.
-				</h2>
-				<button className="mt-8 rounded bg-blue-700 px-6 py-3 text-white">
-					Get Started
-				</button>
-			</section>
-		</>
-	);
-}
+// function Lol() {
+// 	return (
+// 		<>
+// 			<FullPageSection />
+// 			<section className="bg-stone-200 py-20 text-center">
+// 				<h2 className="text-3xl font-bold">Plan, approve, achieve.</h2>
+// 				<p className="mt-4">Manage all your social media tasks in one place.</p>
+// 				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+// 					<div className="rounded bg-white p-6 shadow">
+// 						{/* <LucideIcon name="calendar" className="mx-auto mb-4" /> */}
+// 						<h3 className="text-xl font-bold">Plan</h3>
+// 						<p className="mt-2">Plan your social media content effortlessly.</p>
+// 					</div>
+// 					<div className="rounded bg-white p-6 shadow">
+// 						{/* <LucideIcon name="check-circle" className="mx-auto mb-4" /> */}
+// 						<h3 className="text-xl font-bold">Approve</h3>
+// 						<p className="mt-2">Get approvals on your posts quickly.</p>
+// 					</div>
+// 					<div className="rounded bg-white p-6 shadow">
+// 						{/* <LucideIcon name="chart-bar" className="mx-auto mb-4" /> */}
+// 						<h3 className="text-xl font-bold">Achieve</h3>
+// 						<p className="mt-2">Achieve your social media goals.</p>
+// 					</div>
+// 					<div className="rounded bg-white p-6 shadow">
+// 						{/* <LucideIcon name="layers" className="mx-auto mb-4" /> */}
+// 						<h3 className="text-xl font-bold">Organize</h3>
+// 						<p className="mt-2">
+// 							Organize your social media tasks efficiently.
+// 						</p>
+// 					</div>
+// 				</div>
+// 			</section>
+// 			<section className="bg-cyan-950 py-20 text-center">
+// 				<h2 className="text-3xl font-bold">
+// 					For every challenge, there's a solution.
+// 				</h2>
+// 				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+// 					<div className="rounded bg-gray-200 p-6 shadow">
+// 						<h3 className="text-xl font-bold">Solution 1</h3>
+// 						<p className="mt-2">Description of solution 1.</p>
+// 					</div>
+// 					<div className="rounded bg-gray-200 p-6 shadow">
+// 						<h3 className="text-xl font-bold">Solution 2</h3>
+// 						<p className="mt-2">Description of solution 2.</p>
+// 					</div>
+// 					<div className="rounded bg-gray-200 p-6 shadow">
+// 						<h3 className="text-xl font-bold">Solution 3</h3>
+// 						<p className="mt-2">Description of solution 3.</p>
+// 					</div>
+// 				</div>
+// 			</section>
+// 			<section className="bg-gray-50 py-20 text-center">
+// 				<h2 className="text-3xl font-bold">
+// 					Social media platform for everyone. Especially for you.
+// 				</h2>
+// 				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+// 					<div className="rounded bg-white p-6 shadow">
+// 						<div className="mb-4 h-32 bg-gradient-to-r from-blue-400 to-purple-400" />
+// 						<h3 className="text-xl font-bold">Agencies</h3>
+// 						<p className="mt-2">Manage multiple clients easily.</p>
+// 					</div>
+// 					<div className="rounded bg-white p-6 shadow">
+// 						<div className="mb-4 h-32 bg-gradient-to-r from-green-400 to-blue-400" />
+// 						<h3 className="text-xl font-bold">Brands</h3>
+// 						<p className="mt-2">Build your brand's online presence.</p>
+// 					</div>
+// 					<div className="rounded bg-white p-6 shadow">
+// 						<div className="mb-4 h-32 bg-gradient-to-r from-yellow-400 to-red-400" />
+// 						<h3 className="text-xl font-bold">Freelancers</h3>
+// 						<p className="mt-2">Streamline your freelance work.</p>
+// 					</div>
+// 				</div>
+// 			</section>
+// 			<section className="py-20 text-center">
+// 				<h2 className="text-3xl font-bold">
+// 					Reviews so nice, you'll think they're fake.
+// 				</h2>
+// 				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+// 					<div className="rounded bg-gray-200 p-6 shadow">
+// 						<p>
+// 							"This platform has revolutionized our social media management!"
+// 						</p>
+// 						<div className="mt-4 text-sm text-gray-600">- Happy Customer</div>
+// 					</div>
+// 					<div className="rounded bg-gray-200 p-6 shadow">
+// 						<p>"A must-have tool for any social media team."</p>
+// 						<div className="mt-4 text-sm text-gray-600">- Satisfied Client</div>
+// 					</div>
+// 					<div className="rounded bg-gray-200 p-6 shadow">
+// 						<p>
+// 							"Our productivity has increased tenfold since using this tool."
+// 						</p>
+// 						<div className="mt-4 text-sm text-gray-600">- Thrilled User</div>
+// 					</div>
+// 				</div>
+// 			</section>
+// 			<section className="bg-gray-50 py-20 text-center">
+// 				<h2 className="text-3xl font-bold">
+// 					837,321 scheduled posts in the past year by users just like you.
+// 				</h2>
+// 				<button className="mt-8 rounded bg-blue-700 px-6 py-3 text-white">
+// 					Get Started
+// 				</button>
+// 			</section>
+// 		</>
+// 	);
+// }
 
 // Probably from arcade.software
 function ProductShowCase() {
@@ -174,7 +182,7 @@ function ProductShowCase() {
 			<div className="p-1">
 				<img
 					alt="Browser preview of the product"
-					className="object-cover"
+					className="rounded-xl object-cover shadow-lg"
 					src="/images/browser-preview-min.png"
 				/>
 			</div>
@@ -182,11 +190,53 @@ function ProductShowCase() {
 	);
 }
 
+function Faq() {
+	return (
+		<section className="w-full flex-col justify-center bg-stone-200 px-4 py-20 md:px-10 lg:px-44">
+			<h2 className="mb-14 font-vollkorn text-6xl font-bold">
+				Frequently Asked Questions
+			</h2>
+			<Accordion type="single" collapsible className="mb-8 w-full">
+				<AccordionItem value="item-1" className="!border-foreground">
+					<AccordionTrigger className="text-xl">
+						Is it accessible?
+					</AccordionTrigger>
+					<AccordionContent className="text-lg">
+						Yes. It adheres to the WAI-ARIA design pattern.
+					</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="item-2" className="!border-foreground">
+					<AccordionTrigger className="text-xl">Is it styled?</AccordionTrigger>
+					<AccordionContent className="text-lg">
+						Yes. It comes with default styles that matches the other
+						components&apos; aesthetic.
+					</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="item-3" className="!border-foreground">
+					<AccordionTrigger className="text-xl">
+						Is it animated?
+					</AccordionTrigger>
+					<AccordionContent className="text-lg">
+						Yes. It&apos;s animated by default, but you can disable it if you
+						prefer.
+					</AccordionContent>
+				</AccordionItem>
+			</Accordion>
+			<div className="flex space-x-1">
+				<p>Still have questions?</p>
+				<a className="underline" href="#">
+					Contact Us
+				</a>
+			</div>
+		</section>
+	);
+}
+
 // What features we offer as a company
 // Answers the question: Who Is This For?
 function ProductOfferings() {
 	return (
-		<section className="w-full flex-col justify-center space-y-14 bg-stone-200 px-4 py-20 md:px-10 lg:px-44">
+		<section className="w-full flex-col justify-center space-y-14 bg-stone-100 px-4 py-20 md:px-10 lg:px-44">
 			<div>
 				<h2 className="font-vollkorn text-6xl font-bold">
 					Plan, approve, achieve.
@@ -256,6 +306,8 @@ export default async function LandingPage() {
 				<Hero />
 				<ProductShowCase />
 				<ProductOfferings />
+				<Faq />
+				<Footer />
 			</div>
 		</main>
 	);

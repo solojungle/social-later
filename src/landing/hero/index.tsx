@@ -47,10 +47,10 @@ export default function Hero() {
 				</motion.div>
 				<AvatarCircles
 					avatarUrls={[
-						"https://lh3.googleusercontent.com/a/ACg8ocL9GWpodDRaG-MlpIkmIdLdLZ9wqZEmslGjFK8Nx2P2ekUcwThv=s96-c",
-						"https://lh3.googleusercontent.com/a/ACg8ocL9GWpodDRaG-MlpIkmIdLdLZ9wqZEmslGjFK8Nx2P2ekUcwThv=s96-c",
-						"https://lh3.googleusercontent.com/a/ACg8ocL9GWpodDRaG-MlpIkmIdLdLZ9wqZEmslGjFK8Nx2P2ekUcwThv=s96-c",
-						"https://lh3.googleusercontent.com/a/ACg8ocL9GWpodDRaG-MlpIkmIdLdLZ9wqZEmslGjFK8Nx2P2ekUcwThv=s96-c",
+						"images/avatar1.png",
+						"images/avatar2.jpg",
+						"images/avatar3.jpg",
+						"images/avatar4.jpg",
 					]}
 				/>
 			</motion.div>
