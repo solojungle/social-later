@@ -1,6 +1,6 @@
 export default function Footer() {
 	return (
-		<footer className="mx-auto rounded-lg bg-black text-white">
+		<footer className="w-full flex-col justify-center bg-stone-200">
 			<div className="mx-auto w-full max-w-screen-xl p-4 md:py-8">
 				<div className="sm:flex sm:items-center sm:justify-between">
 					<a
@@ -8,7 +8,7 @@ export default function Footer() {
 						className="mb-4 flex items-center space-x-3 rtl:space-x-reverse sm:mb-0"
 					>
 						<span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-							aliawari.com
+							FeedFrenzy
 						</span>
 					</a>
 					<ul className="mb-6 flex flex-wrap items-center text-sm font-medium text-white sm:mb-0">

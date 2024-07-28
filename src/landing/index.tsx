@@ -7,7 +7,6 @@ import {
 	AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import Footer from "./footer";
 import Hero from "./hero";
 import { NavigationMenu } from "./navigationMenu";
 
@@ -199,32 +198,50 @@ function Faq() {
 			<Accordion type="single" collapsible className="mb-8 w-full">
 				<AccordionItem value="item-1" className="!border-foreground">
 					<AccordionTrigger className="text-xl">
-						Is it accessible?
+						What social media channels (accounts) can I manage?
 					</AccordionTrigger>
 					<AccordionContent className="text-lg">
-						Yes. It adheres to the WAI-ARIA design pattern.
+						Facebook, Twitter, Instagram, LinkedIn, Pinterest, and Google
+						Business Profile.
 					</AccordionContent>
 				</AccordionItem>
 				<AccordionItem value="item-2" className="!border-foreground">
-					<AccordionTrigger className="text-xl">Is it styled?</AccordionTrigger>
+					<AccordionTrigger className="text-xl">
+						Can I schedule Instagram posts directly from FeedFrenzy?
+					</AccordionTrigger>
 					<AccordionContent className="text-lg">
-						Yes. It comes with default styles that matches the other
-						components&apos; aesthetic.
+						Yes, you can. We support direct scheduling of single image posts,
+						Reels, Carousels, and Stories.
 					</AccordionContent>
 				</AccordionItem>
 				<AccordionItem value="item-3" className="!border-foreground">
 					<AccordionTrigger className="text-xl">
-						Is it animated?
+						Can I reschedule, move, copy, or duplicate posts to other social
+						media accounts?
 					</AccordionTrigger>
+					<AccordionContent className="text-lg">Yes</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="item-4" className="!border-foreground">
+					<AccordionTrigger className="text-xl">
+						Can I create content without scheduling it?
+					</AccordionTrigger>
+					<AccordionContent className="text-lg">Yes</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="item-5" className="!border-foreground">
+					<AccordionTrigger className="text-xl">Refund policy</AccordionTrigger>
 					<AccordionContent className="text-lg">
-						Yes. It&apos;s animated by default, but you can disable it if you
-						prefer.
+						Your subscription is billed monthly or annually in advance based on
+						your selected plan. Please note that all payments are
+						non-refundable. We do not offer refunds, either partial or full, for
+						pre-paid subscription fees. This applies if you choose to terminate
+						your subscription early, downgrade, or discontinue use of our
+						services.
 					</AccordionContent>
 				</AccordionItem>
 			</Accordion>
 			<div className="flex space-x-1">
 				<p>Still have questions?</p>
-				<a className="underline" href="#">
+				<a className="underline" href="mailto:contact@feedfrenzy.co">
 					Contact Us
 				</a>
 			</div>
@@ -307,7 +324,7 @@ export default async function LandingPage() {
 				<ProductShowCase />
 				<ProductOfferings />
 				<Faq />
-				<Footer />
+				{/* <Footer /> */}
 			</div>
 		</main>
 	);
