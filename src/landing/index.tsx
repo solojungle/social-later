@@ -277,7 +277,7 @@ function ProductOfferings() {
 					</div>
 					<p className="mb-3">The Visionary</p>
 					<h3 className="font-vollkorn text-2xl font-bold">
-						Manage the chaos.
+						Managing the chaos.
 					</h3>
 					<p className="mt-2">
 						This product is for the professional who sees the big picture across
@@ -333,7 +333,7 @@ function Pricing() {
 			</p>
 			<div>
 				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					<div className="rounded-xl border border-border bg-stone-200 p-8 shadow">
+					<div className="rounded-xl border border-border bg-stone-200 p-8 shadow hover:border-black">
 						<h3 className="mb-6 font-vollkorn text-xl">
 							Questionnaire Package
 						</h3>
@@ -352,7 +352,7 @@ function Pricing() {
 						</div>
 					</div>
 
-					<div className="relative overflow-hidden rounded-xl border border-border bg-stone-200 p-8 shadow">
+					<div className="relative overflow-hidden rounded-xl border border-border bg-stone-200 p-8 shadow hover:border-black">
 						<div className="absolute right-0 top-0 rounded-bl-lg bg-gradient-to-t from-cyan-950 to-cyan-900 px-2 py-1 font-vollkorn text-white">
 							Most Popular
 						</div>
@@ -380,7 +380,7 @@ function Pricing() {
 						</div>
 					</div>
 
-					<div className="rounded-xl border border-border bg-stone-200 p-8 shadow">
+					<div className="rounded-xl border border-border bg-stone-200 p-8 shadow hover:border-black">
 						<h3 className="mb-6 font-vollkorn text-xl">Clarity Bundle</h3>
 						<p className="mt-2 font-vollkorn text-6xl">$49.99</p>
 						<div className="mt-6 space-y-6">
@@ -421,6 +421,10 @@ export default async function LandingPage() {
 				<Hero />
 				<ProductShowCase />
 				<ProductOfferings />
+				<div className="h-96 bg-stone-200" />
+				<div className="relative h-96 bg-teal-950">
+					<div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black to-transparent opacity-50" />
+				</div>
 				<Pricing />
 				<Faq />
 				{/* <Footer /> */}
