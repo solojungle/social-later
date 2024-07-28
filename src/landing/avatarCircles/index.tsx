@@ -4,15 +4,10 @@ import { cn } from "@/lib/utils";
 
 interface AvatarCirclesProps {
 	className?: string;
-	numPeople?: number;
 	avatarUrls: string[];
 }
 
-export function AvatarCircles({
-	numPeople,
-	className,
-	avatarUrls,
-}: AvatarCirclesProps) {
+export function AvatarCircles({ className, avatarUrls }: AvatarCirclesProps) {
 	return (
 		<div className="mt-8 flex items-center space-x-2">
 			<div

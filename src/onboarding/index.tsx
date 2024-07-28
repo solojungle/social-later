@@ -42,7 +42,7 @@ function OptionGroup({ title, description, children }: any) {
 	);
 }
 
-function FirstPage() {
+export function FirstPage() {
 	return (
 		<div className="flex flex-col justify-center p-5">
 			<OptionGroup
@@ -103,7 +103,7 @@ function FirstPage() {
 	);
 }
 
-function SecondPage() {
+export function SecondPage() {
 	return (
 		<div className="flex flex-col justify-center p-5">
 			<OptionGroup title="How many people work at your company?">
