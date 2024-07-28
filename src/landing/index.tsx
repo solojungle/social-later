@@ -178,22 +178,27 @@ import { NavigationMenu } from "./navigationMenu";
 // 	);
 // }
 
-// Probably from arcade.software
 function ProductShowCase() {
 	return (
-		<div className="relative mx-5 mb-20 flex max-w-6xl flex-col items-center justify-center self-center ">
-			<div className="absolute right-0 top-[-30px] flex rotate-3 items-center space-x-2 text-stone-400">
-				<CornerLeftDown className="mt-2 h-4 w-4" />
-				<p className="text-sm">Play with this arcade</p>
+		<section className="mx-5 flex items-center justify-center">
+			<div className="relative flex w-full max-w-6xl flex-col items-center justify-center">
+				<div className="absolute right-0 top-[-30px] flex rotate-3 items-center space-x-2 text-stone-400">
+					<CornerLeftDown className="mt-2 h-4 w-4" />
+					<p className="text-sm">Play with this arcade!</p>
+				</div>
+				<div className="flex h-[80vh] w-full overflow-hidden rounded-xl border border-border shadow-lg">
+					<iframe
+						src="https://demo.arcade.software/AEWm4UM96Qph59yj2Z2I?embed&show_copy_link=true"
+						title="FeedFrenzy"
+						loading="lazy"
+						allowFullScreen
+						allow="clipboard-write"
+						referrerPolicy="strict-origin-when-cross-origin"
+						className="grow"
+					/>
+				</div>
 			</div>
-			<div className="p-1">
-				<img
-					alt="Browser preview of the product"
-					className="rounded-xl object-cover shadow-lg"
-					src="/images/browser-preview-min.png"
-				/>
-			</div>
-		</div>
+		</section>
 	);
 }
 
