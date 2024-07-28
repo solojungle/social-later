@@ -186,7 +186,7 @@ function ProductShowCase() {
 					<CornerLeftDown className="mt-2 h-4 w-4" />
 					<p className="text-sm">Play with this arcade!</p>
 				</div>
-				<div className="flex h-[80vh] w-full overflow-hidden rounded-xl border border-border shadow-lg">
+				<div className="flex h-[30vh] w-full overflow-hidden rounded-xl border-border sm:h-[80vh] sm:border sm:shadow-lg">
 					<iframe
 						src="https://demo.arcade.software/AEWm4UM96Qph59yj2Z2I?embed&show_copy_link=true"
 						title="FeedFrenzy"
