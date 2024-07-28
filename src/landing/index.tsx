@@ -196,7 +196,7 @@ function Faq() {
 				Frequently Asked Questions
 			</h2>
 			<Accordion type="single" collapsible className="mb-8 w-full">
-				<AccordionItem value="item-1" className="!border-foreground">
+				<AccordionItem value="item-1" className="!border-black">
 					<AccordionTrigger className="text-xl">
 						What social media channels (accounts) can I manage?
 					</AccordionTrigger>
@@ -205,7 +205,7 @@ function Faq() {
 						Business Profile.
 					</AccordionContent>
 				</AccordionItem>
-				<AccordionItem value="item-2" className="!border-foreground">
+				<AccordionItem value="item-2" className="!border-black">
 					<AccordionTrigger className="text-xl">
 						Can I schedule Instagram posts directly from FeedFrenzy?
 					</AccordionTrigger>
@@ -214,20 +214,20 @@ function Faq() {
 						Reels, Carousels, and Stories.
 					</AccordionContent>
 				</AccordionItem>
-				<AccordionItem value="item-3" className="!border-foreground">
+				<AccordionItem value="item-3" className="!border-black">
 					<AccordionTrigger className="text-xl">
 						Can I reschedule, move, copy, or duplicate posts to other social
 						media accounts?
 					</AccordionTrigger>
 					<AccordionContent className="text-lg">Yes</AccordionContent>
 				</AccordionItem>
-				<AccordionItem value="item-4" className="!border-foreground">
+				<AccordionItem value="item-4" className="!border-black">
 					<AccordionTrigger className="text-xl">
 						Can I create content without scheduling it?
 					</AccordionTrigger>
 					<AccordionContent className="text-lg">Yes</AccordionContent>
 				</AccordionItem>
-				<AccordionItem value="item-5" className="!border-foreground">
+				<AccordionItem value="item-5" className="!border-black">
 					<AccordionTrigger className="text-xl">Refund policy</AccordionTrigger>
 					<AccordionContent className="text-lg">
 						Your subscription is billed monthly or annually in advance based on
