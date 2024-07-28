@@ -314,7 +314,7 @@ function ProductOfferings() {
 
 export default async function LandingPage() {
 	return (
-		<main className="bg-stone-100">
+		<main className="bg-stone-100 text-black">
 			{/* <Lay>
 				<Lol />
 			</Lay> */}

@@ -27,7 +27,7 @@ export function NavigationMenu() {
 							src="/images/logo.png"
 							className="mr-3 h-8 w-8 rounded-sm"
 						/>
-						<span className="self-center whitespace-nowrap text-base font-semibold dark:text-white">
+						<span className="self-center whitespace-nowrap text-base font-semibold">
 							feedfrenzy.co
 						</span>
 					</a>
