@@ -337,7 +337,7 @@ function Pricing() {
 				shouldn&apos;t be an extreme sport.
 			</p>
 			<div>
-				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
 					<div className="rounded-xl border border-border bg-stone-200 p-8 shadow hover:border-black">
 						<h3 className="mb-6 font-vollkorn text-xl">
 							Questionnaire Package

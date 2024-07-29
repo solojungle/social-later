@@ -19,7 +19,7 @@ export function NavigationMenu() {
 
 	return (
 		<div className="w-full">
-			<div className="flex h-16 w-full items-center justify-between px-4 py-2 md:px-10 lg:px-44">
+			<div className="mb-4 flex h-16 w-full items-center justify-between px-4 py-2 sm:mb-24 md:px-10 lg:px-44">
 				<div className="flex items-center">
 					<a href="https://feedfrenzy.co/" className="flex">
 						<img
@@ -66,7 +66,7 @@ export function NavigationMenu() {
 			{/* Mobile Menu */}
 			<div
 				className={cn(
-					"fixed flex h-[calc(100vh-64px)] w-full justify-center bg-black",
+					"fixed z-50 flex h-[calc(100vh-64px)] w-full justify-center bg-black",
 					!isMenuOpen && "hidden",
 				)}
 			>
