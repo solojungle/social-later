@@ -1,9 +1,15 @@
 import {
+	AudioLinesIcon,
+	Calendar,
 	ChevronRight,
+	CircleCheckIcon,
 	CornerLeftDown,
 	EyeIcon,
 	FlaskConical,
+	HandHelping,
 	MapIcon,
+	MessagesSquareIcon,
+	PieChart,
 } from "lucide-react";
 
 import {
@@ -14,6 +20,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Hero from "./hero";
 import { NavigationMenu } from "./navigationMenu";
@@ -325,6 +332,157 @@ function ProductOfferings() {
 	);
 }
 
+function CheckList() {
+	return (
+		<ul className="max-w-md list-inside space-y-1 pt-4 text-base">
+			<li className="inline-flex items-start">
+				<CircleCheckIcon className="mr-2 h-5 w-5 shrink-0" />
+				<span className="">
+					Resolve customer questions faster with AI-enhanced agent replies
+				</span>
+			</li>
+		</ul>
+	);
+}
+
+interface FeatureTabContentProps {
+	image: string;
+	title: string;
+	description: string;
+	children?: React.ReactNode;
+}
+
+function FeatureTabContent({
+	image,
+	title,
+	description,
+	children,
+}: FeatureTabContentProps) {
+	return (
+		<div className="grid grid-cols-1 gap-14 md:grid-cols-2">
+			<img
+				src={image}
+				className="aspect-video w-full shrink-0"
+				alt={`A preview of the FeedFrenzy platform with a ${title} title and a description that reads: ${description}`}
+			/>
+			<div className="flex flex-col">
+				<h2 className="font-vollkorn text-6xl font-bold">{title}</h2>
+				<p className="max-w-xl leading-normal">{description}</p>
+				{children}
+			</div>
+		</div>
+	);
+}
+
+function StyledTabsTrigger({ children, ...props }: any) {
+	return (
+		<TabsTrigger
+			className="group justify-start duration-0 data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=active]:shadow-none"
+			{...props}
+		>
+			{children}
+		</TabsTrigger>
+	);
+}
+
+function FeaturesTabs() {
+	return (
+		<section className="flex flex-col items-center justify-between space-y-14 bg-teal-950 px-4 pb-24 pt-20 text-xl text-white md:flex-row md:space-y-0 md:px-10 lg:px-44">
+			<Tabs defaultValue="engagement" className="">
+				<TabsList className="mb-10 grid h-full w-full grid-cols-2 grid-rows-2 gap-4 bg-transparent text-white sm:mb-20 sm:grid-cols-5 sm:grid-rows-1">
+					<StyledTabsTrigger value="engagement">
+						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-red-600 group-data-[state=active]:bg-red-600">
+							<MessagesSquareIcon className="h-5 shrink-0" />
+						</div>
+						<span>Engagement</span>
+					</StyledTabsTrigger>
+					<StyledTabsTrigger value="publishing">
+						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-red-600 group-data-[state=active]:bg-red-600">
+							<Calendar className="h-5 shrink-0" />
+						</div>
+						<span>Publishing</span>
+					</StyledTabsTrigger>
+					<StyledTabsTrigger value="analytics">
+						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-red-600 group-data-[state=active]:bg-red-600">
+							<PieChart className="h-5 shrink-0" />
+						</div>
+						<span>Analytics</span>
+					</StyledTabsTrigger>
+					<StyledTabsTrigger value="listening">
+						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-red-600 group-data-[state=active]:bg-red-600">
+							<AudioLinesIcon className="h-5 shrink-0" />
+						</div>
+						<span>Listening</span>
+					</StyledTabsTrigger>
+					<StyledTabsTrigger value="advocacy">
+						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-red-600 group-data-[state=active]:bg-red-600">
+							<HandHelping className="h-5 shrink-0" />
+						</div>
+						<span>Advocacy</span>
+					</StyledTabsTrigger>
+				</TabsList>
+				<TabsContent value="engagement">
+					<FeatureTabContent
+						image="/images/browser-preview-min.png"
+						title="Extend your social reach"
+						description="Give your employees a simple way to share curated content across their social networks."
+					>
+						<CheckList />
+					</FeatureTabContent>
+				</TabsContent>
+				<TabsContent value="publishing">
+					<FeatureTabContent
+						image="/images/browser-preview-min.png"
+						title="Plan and strengthen your publishing"
+						description="Schedule, organize and deliver content faster with AI-powered workflows."
+					/>
+				</TabsContent>
+				<TabsContent value="analytics">
+					<FeatureTabContent
+						image="/images/browser-preview-min.png"
+						title="Prove the ROI of your social efforts"
+						description="Drive business impact across teams with rich social data and dashboards."
+					/>
+				</TabsContent>
+				<TabsContent value="listening">
+					<FeatureTabContent
+						image="/images/browser-preview-min.png"
+						title="Discover essential insights"
+						description="Uncover key learnings from millions of unfiltered thoughts, feelings and opinions to enhance your current strategy and guide future action."
+					/>
+				</TabsContent>
+				<TabsContent value="advocacy">
+					<FeatureTabContent
+						image="/images/browser-preview-min.png"
+						title="Extend your social reach"
+						description="Give your employees a simple way to share curated content across their social networks."
+					/>
+				</TabsContent>
+			</Tabs>
+		</section>
+	);
+}
+
+function Integrations() {
+	return (
+		<section className="relative flex flex-col items-center justify-between space-y-14 bg-teal-950 px-4 pb-24 text-white md:flex-row md:space-y-0 md:px-10 lg:px-44">
+			<div>
+				<h2 className="mb-8 max-w-3xl font-vollkorn text-6xl font-bold">
+					Oh, we&apos;re very social
+				</h2>
+				<p className="mb-8 max-w-xl leading-normal">
+					FeedFrenzy builds and maintains strong network partnerships and
+					integrations to help you unify your customer touch points and keep
+					pace with changes in the social landscape.
+				</p>
+				<a className="text-lg underline">See all integrations</a>
+			</div>
+			<img src="/images/integrations.png" className="h-96" />
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black to-transparent opacity-50" />
+		</section>
+	);
+}
+
 function Pricing() {
 	return (
 		<section className="w-full flex-col justify-center bg-stone-100 px-4 py-20 md:px-10 lg:px-44">
@@ -350,10 +508,12 @@ function Pricing() {
 								<li>10 scheduled posts</li>
 								<li>Basic analytics</li>
 							</ul>
-							<Button className="flex items-center">
-								<span className="mr-1">Purchase Package </span>
-								<ChevronRight className="h-4 w-4" />
-							</Button>
+							<a href="/login" className="flex items-center">
+								<Button className="flex items-center">
+									<span className="mr-1">Sign up</span>
+									<ChevronRight className="h-4 w-4" />
+								</Button>
+							</a>
 						</div>
 					</div>
 
@@ -370,10 +530,12 @@ function Pricing() {
 								<li>30 scheduled posts</li>
 								<li>Advanced analytics</li>
 							</ul>
-							<Button className="flex items-center">
-								<span className="mr-1">Purchase Package </span>
-								<ChevronRight className="h-4 w-4" />
-							</Button>
+							<a href="/login" className="flex items-center">
+								<Button className="flex items-center">
+									<span className="mr-1">Sign up</span>
+									<ChevronRight className="h-4 w-4" />
+								</Button>
+							</a>
 
 							<Separator className="bg-muted-foreground" />
 
@@ -395,10 +557,12 @@ function Pricing() {
 								<li>50 scheduled posts</li>
 								<li>Advanced analytics</li>
 							</ul>
-							<Button className="flex items-center">
-								<span className="mr-1">Purchase Package </span>
-								<ChevronRight className="h-4 w-4" />
-							</Button>
+							<a href="/login" className="flex items-center">
+								<Button className="flex items-center">
+									<span className="mr-1">Sign up</span>
+									<ChevronRight className="h-4 w-4" />
+								</Button>
+							</a>
 
 							<Separator className="bg-muted-foreground" />
 
@@ -426,10 +590,9 @@ export default async function LandingPage() {
 				<Hero />
 				<ProductShowCase />
 				<ProductOfferings />
-				<div className="h-96 bg-stone-200" />
-				<div className="relative h-96 bg-teal-950">
-					<div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black to-transparent opacity-50" />
-				</div>
+				<FeaturesTabs />
+				<Integrations />
+				<div className="h-96 w-full bg-stone-200" />
 				<Pricing />
 				<Faq />
 				{/* <Footer /> */}

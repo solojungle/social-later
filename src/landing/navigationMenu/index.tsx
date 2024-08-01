@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, MenuIcon, XIcon } from "lucide-react";
+import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -42,9 +42,9 @@ export function NavigationMenu() {
 					>
 						<span>Login</span>
 					</Link>
-					<Button variant="default">
+					{/* <Button variant="default">
 						Start a free trial <ArrowUpRight className="ml-1 h-5 w-5" />
-					</Button>
+					</Button> */}
 				</div>
 				{/* Hamburger Menu */}
 				<div className="flex flex-col md:hidden">
@@ -71,13 +71,13 @@ export function NavigationMenu() {
 				)}
 			>
 				<div className="w-full space-y-2 p-5">
-					<Button
+					{/* <Button
 						size="lg"
 						variant="secondary"
 						className="flex w-full items-center justify-center p-6"
 					>
 						Start a 14-day free trial <ArrowUpRight className="ml-2 h-5 w-5" />
-					</Button>
+					</Button> */}
 					<Link
 						href="/login"
 						className={cn(

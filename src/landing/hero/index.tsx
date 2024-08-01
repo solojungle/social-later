@@ -42,7 +42,7 @@ export default function Hero() {
 			>
 				<motion.div>
 					<Button size="lg" className="flex items-center justify-center">
-						Start a 14-day free trial <ArrowUpRight className="ml-2 h-5 w-5" />
+						Sign up for free <ArrowUpRight className="ml-2 h-5 w-5" />
 					</Button>
 				</motion.div>
 				<AvatarCircles
