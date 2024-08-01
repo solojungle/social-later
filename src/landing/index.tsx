@@ -385,7 +385,7 @@ function FeatureTabContent({
 function StyledTabsTrigger({ children, ...props }: any) {
 	return (
 		<TabsTrigger
-			className="group justify-start duration-0 data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=active]:shadow-none"
+			className="group justify-start p-0 duration-0 data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=active]:shadow-none"
 			{...props}
 		>
 			{children}
@@ -397,7 +397,7 @@ function FeaturesTabs() {
 	return (
 		<section className="flex flex-col items-center justify-between space-y-14 bg-teal-950 px-4 pb-24 pt-20 text-xl text-white md:flex-row md:space-y-0 md:px-10 lg:px-44">
 			<Tabs defaultValue="publishing" className="">
-				<TabsList className="mb-10 grid h-full w-full grid-cols-2 grid-rows-2 gap-4 bg-transparent text-white sm:mb-20 sm:grid-cols-5 sm:grid-rows-1">
+				<TabsList className="mb-0 grid h-full w-full grid-cols-2 grid-rows-2 gap-4 bg-transparent text-white sm:mb-14 sm:grid-cols-5 sm:grid-rows-1">
 					{/* <StyledTabsTrigger value="engagement">
 						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-teal-600 group-data-[state=active]:bg-teal-600">
 							<MessagesSquareIcon className="h-5 shrink-0" />
@@ -526,7 +526,7 @@ function Integrations() {
 				</div>
 				<img
 					src="/images/integrations.png"
-					className="w-full max-w-sm self-center"
+					className="w-full max-w-sm self-center shadow-lg"
 					alt="Logos of the following companies: Facebook, Twitter, Instagram, LinkedIn, Pinterest, Google Business Profile, TikTok, Snapchat, YouTube, Reddit, Tumblr, and more."
 				/>
 			</div>
