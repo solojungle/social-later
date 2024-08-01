@@ -644,7 +644,7 @@ export default async function LandingPage() {
 				<ProductOfferings />
 				<FeaturesTabs />
 				<Integrations />
-				<div className="h-96 w-full bg-stone-200" />
+				{/* <div className="h-96 w-full bg-stone-200" /> */}
 				<Pricing />
 				<Faq />
 				{/* <Footer /> */}
