@@ -18,7 +18,7 @@ export const sectionVariants = cva("py-10 text-lg sm:py-16", {
 export function Section({ children, className, variant, ...props }: any) {
 	return (
 		<section className={cn(sectionVariants({ variant }), className)} {...props}>
-			<div className="container">{children}</div>
+			<div className="container 2xl:px-0">{children}</div>
 		</section>
 	);
 }
