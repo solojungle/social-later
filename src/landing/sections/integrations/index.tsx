@@ -3,7 +3,7 @@ import { Section } from "@/landing/components/styledSection";
 export function Integrations() {
 	return (
 		<Section variant="color" className="relative">
-			<div className="container grid grid-cols-1 gap-24 xl:grid-cols-2">
+			<div className="grid grid-cols-1 gap-24 xl:grid-cols-2">
 				<div>
 					<h2 className="mb-8 max-w-3xl font-vollkorn text-6xl font-bold">
 						Oh, we&apos;re very social

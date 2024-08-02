@@ -70,7 +70,7 @@ function StyledTabsTrigger({ children, ...props }: any) {
 export function FeaturesTabs() {
 	return (
 		<Section variant="color">
-			<Tabs defaultValue="publishing" className="container">
+			<Tabs defaultValue="publishing">
 				<TabsList className="mb-0 grid h-full w-full grid-cols-2 grid-rows-2 gap-4 bg-transparent text-white sm:mb-14 sm:grid-cols-5 sm:grid-rows-1">
 					{/* <StyledTabsTrigger value="engagement">
 						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-teal-600 group-data-[state=active]:bg-teal-600">
