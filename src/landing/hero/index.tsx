@@ -6,15 +6,16 @@ import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { AvatarCircles } from "../avatarCircles";
+import { Section } from "../styledSection";
 
 export default function Hero() {
 	return (
-		<section className="mb-10 flex w-full flex-col justify-center space-y-10 px-4 md:mb-4 md:px-10 lg:px-44">
+		<Section>
 			<motion.div
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ staggerChildren: 0.3 }}
-				className="space-y-8 leading-tight tracking-tight md:max-w-4xl"
+				className="mb-4 space-y-8 leading-tight tracking-tight md:max-w-4xl"
 			>
 				<motion.h1
 					initial={{ y: 100, opacity: 0 }}
@@ -54,6 +55,6 @@ export default function Hero() {
 					]}
 				/>
 			</motion.div>
-		</section>
+		</Section>
 	);
 }

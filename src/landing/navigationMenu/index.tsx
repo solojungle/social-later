@@ -18,8 +18,8 @@ export function NavigationMenu() {
 	};
 
 	return (
-		<div className="w-full">
-			<div className="mb-4 flex h-16 w-full items-center justify-between px-4 py-2 sm:mb-24 md:px-10 lg:px-44">
+		<div className="container w-full">
+			<div className="mb-4 flex h-16 w-full items-center justify-between sm:mb-24">
 				<div className="flex items-center">
 					<a href="https://feedfrenzy.co/" className="flex">
 						<img
