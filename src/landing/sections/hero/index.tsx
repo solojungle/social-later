@@ -4,11 +4,10 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { AvatarCircles } from "@/landing/components/avatarCircles";
+import { Section } from "@/landing/components/styledSection";
 
-import { AvatarCircles } from "../avatarCircles";
-import { Section } from "../styledSection";
-
-export default function Hero() {
+export function Hero() {
 	return (
 		<Section>
 			<motion.div
