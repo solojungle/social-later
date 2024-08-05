@@ -3,6 +3,7 @@
 import { Step, StepItem, Stepper } from "@/components/ui/stepper";
 
 import { FirstStepForm } from "./components/forms/first";
+import { SecondStepForm } from "./components/forms/second";
 import { SuccessPage } from "./pages/success";
 
 export function Onboarding() {
@@ -21,6 +22,14 @@ export function Onboarding() {
 							return (
 								<Step key={stepProps.label} {...stepProps}>
 									<FirstStepForm />
+								</Step>
+							);
+						}
+
+						if (index === 1) {
+							return (
+								<Step key={stepProps.label} {...stepProps}>
+									<SecondStepForm />
 								</Step>
 							);
 						}

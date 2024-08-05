@@ -4,8 +4,8 @@ import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
 import { useStepper } from "@/components/ui/stepper";
-import { SecondFormField } from "@/onboarding/oldindex";
 
+import { SecondFormField } from "../formFields/second";
 import { StepperFormActions } from "./first";
 
 // A checkbox group that many can be selected
