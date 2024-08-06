@@ -1,7 +1,12 @@
-import { Controller } from "react-hook-form";
-
-import { BorderCheckbox } from "../borderCheckbox";
-import { OptionGroup } from "../options";
+import {
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function SecondFormField({ form }: { form: any }) {
 	const items = [
@@ -14,33 +19,53 @@ export function SecondFormField({ form }: { form: any }) {
 	];
 
 	return (
-		<OptionGroup
-			title="How many employees does your company have?"
-			description="Select one option."
-		>
-			{items.map((item) => (
-				<Controller
-					key={item.id}
-					control={form.control}
-					name="companySize"
-					render={({ field }) => (
-						<BorderCheckbox
-							checked={field.value === item.id}
-							onCheckedChange={(checked) => {
-								if (checked) {
-									field.onChange(item.id);
-								}
-							}}
+		<FormField
+			control={form.control}
+			name="companySize"
+			render={({ field }) => (
+				<FormItem className="w-full">
+					<div className="mb-4">
+						<FormLabel
+							htmlFor="companySize"
+							className="mb-2 text-2xl font-bold md:text-4xl"
 						>
-							<div className="flex flex-col items-start text-foreground">
-								<span className="flex text-base font-semibold">
-									{item.label}
-								</span>
-							</div>
-						</BorderCheckbox>
-					)}
-				/>
-			))}
-		</OptionGroup>
+							How many employees does your company have?
+						</FormLabel>
+						<FormDescription className="text-sm text-gray-600 md:text-lg">
+							Select one.
+						</FormDescription>
+					</div>
+					<FormControl>
+						<RadioGroup
+							onValueChange={field.onChange}
+							defaultValue={field.value}
+						>
+							{items.map((item) => (
+								<label
+									htmlFor={item.id}
+									key={item.id}
+									className="flex w-full cursor-pointer select-none items-center rounded-lg border border-border bg-background p-4 shadow-sm transition ease-out [&:has([data-state=checked])]:border-primary"
+								>
+									<RadioGroupItem
+										value={item.id}
+										id={item.id}
+										className="mr-4"
+									/>
+									<div className="flex flex-col items-start text-foreground">
+										<label
+											htmlFor={item.id}
+											className="flex cursor-pointer text-base font-semibold"
+										>
+											{item.label}
+										</label>
+									</div>
+								</label>
+							))}
+						</RadioGroup>
+					</FormControl>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
 	);
 }

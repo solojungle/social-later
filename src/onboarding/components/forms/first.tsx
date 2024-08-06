@@ -46,7 +46,7 @@ export function StepperFormActions() {
 
 // A checkbox group that many can be selected
 const FirstFormSchema = z.object({
-	options: z.array(z.string()),
+	usecase: z.string(),
 });
 
 export function FirstStepForm() {
@@ -55,17 +55,21 @@ export function FirstStepForm() {
 	const form = useForm<z.infer<typeof FirstFormSchema>>({
 		resolver: zodResolver(FirstFormSchema),
 		defaultValues: {
-			options: [],
+			usecase: "",
 		},
 	});
 
-	function onSubmit() {
+	function onSubmit(data: any) {
+		console.log(data);
 		nextStep();
 	}
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				className="container max-w-4xl space-y-6 pt-8"
+			>
 				<FirstFormField form={form} />
 				<StepperFormActions />
 			</form>

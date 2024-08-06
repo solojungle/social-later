@@ -15,7 +15,7 @@ export function SuccessPage() {
 	const [showConfetti] = useTimeout(2500);
 
 	return (
-		<div className="flex h-screen flex-col p-5">
+		<div className="flex flex-col p-5">
 			<Confetti
 				width={width}
 				height={height}

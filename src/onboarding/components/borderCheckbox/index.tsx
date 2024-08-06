@@ -14,29 +14,34 @@ type BorderCheckboxProps = Omit<CheckboxPrimitive.CheckboxProps, "checked"> & {
 
 const BorderCheckbox = forwardRef<HTMLButtonElement, BorderCheckboxProps>(
 	({ className, children, checked, onCheckedChange, ...props }, ref) => {
-		const [isChecked, setIsChecked] = useState(checked ?? false);
+		const [isChecked, setIsChecked] = useState<boolean>(checked ?? false);
 
+		// Update local state only when `checked` prop changes
 		useEffect(() => {
 			setIsChecked(checked ?? false);
 		}, [checked]);
 
-		const handleToggle = () => {
-			const newState = !isChecked;
-			setIsChecked(newState);
-			onCheckedChange?.(newState);
+		const handleCheckedChange = (
+			checkedState: CheckboxPrimitive.CheckedState,
+		) => {
+			const booleanState = checkedState === true;
+			if (booleanState !== isChecked) {
+				setIsChecked(booleanState);
+				onCheckedChange?.(booleanState);
+			}
 		};
 
 		const handleKeyDown = (event: React.KeyboardEvent) => {
 			if (event.key === "Enter" || event.key === " ") {
 				event.preventDefault();
-				handleToggle();
+				handleCheckedChange(!isChecked);
 			}
 		};
 
 		return (
 			<div
 				className="flex w-full cursor-pointer select-none items-center rounded-lg border border-border bg-background p-4 shadow-sm transition ease-out"
-				onClick={handleToggle}
+				onClick={() => handleCheckedChange(!isChecked)}
 				onKeyDown={handleKeyDown}
 				role="button"
 				tabIndex={0}
@@ -48,7 +53,7 @@ const BorderCheckbox = forwardRef<HTMLButtonElement, BorderCheckboxProps>(
 						className,
 					)}
 					checked={isChecked}
-					onCheckedChange={handleToggle}
+					onCheckedChange={handleCheckedChange}
 					{...props}
 				>
 					<CheckboxPrimitive.Indicator
