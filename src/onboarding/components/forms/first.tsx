@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useStepper } from "@/components/ui/stepper";
+import { api } from "@/trpc/react";
 
 import { FirstFormField } from "../formFields/first";
 
@@ -50,6 +51,14 @@ const FirstFormSchema = z.object({
 });
 
 export function FirstStepForm() {
+	// const {
+	// 	mutateAsync: createTeamViaEmbed,
+	// 	isLoading,
+	// 	isError,
+	// } = api.team.createViaEmbed.useMutation({
+
+	const { mutateAsync: answerQuestion } = api.survey.answer.useMutation();
+
 	const { nextStep } = useStepper();
 
 	const form = useForm<z.infer<typeof FirstFormSchema>>({
@@ -59,8 +68,12 @@ export function FirstStepForm() {
 		},
 	});
 
-	function onSubmit(data: any) {
-		console.log(data);
+	async function onSubmit(data: any) {
+		await answerQuestion({
+			questionId: "1",
+			answer: data.usecase,
+		});
+
 		nextStep();
 	}
 

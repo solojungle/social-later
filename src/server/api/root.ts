@@ -13,6 +13,7 @@ import { oauth2Router } from "./routers/oauth2";
 import { productsRouter } from "./routers/products";
 import { socialProfilesRouter } from "./routers/social-profiles";
 import { stripeRouter } from "./routers/stripe";
+import { surveyRouter } from "./routers/survey";
 
 /**
  * This is the primary router for your server.
@@ -33,6 +34,7 @@ export const appRouter = createTRPCRouter({
 	socials: socialProfilesRouter,
 	metrics: metricsRouter,
 	analytics: analyticsRouter,
+	survey: surveyRouter,
 });
 
 // export type definition of API

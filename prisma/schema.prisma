@@ -52,6 +52,7 @@ model User {
   sessions      Session[]
   teams         UserOnTeam[]
   invitation    Invitation[]
+  UserAnswer    UserAnswer[]
 }
 
 // Why is this model needed:
@@ -325,4 +326,23 @@ model YouTubeVideoReport {
   profileId String
 
   @@unique([id, logged_at])
+}
+
+model Question {
+  id         String       @id @default(cuid())
+  content    String       @unique
+  UserAnswer UserAnswer[]
+}
+
+model UserAnswer {
+  id         String   @id @default(cuid())
+  userId     String
+  questionId String
+  answer     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
 }
