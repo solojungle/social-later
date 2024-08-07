@@ -1,4 +1,3 @@
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -11,6 +10,7 @@ import {
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { api } from "@/trpc/react";
 
 export function DeleteAssetContent({
@@ -57,7 +57,9 @@ export function DeleteAssetContent({
 						}
 					}}
 				>
-					{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+					{loading && (
+						<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+					)}
 					Delete
 				</Button>
 			</AlertDialogFooter>

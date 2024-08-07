@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,6 +14,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { api } from "@/trpc/react";
@@ -44,7 +44,7 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 	if (!products || products.length <= 0) {
 		return (
 			<div className="flex items-center justify-center p-5">
-				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</div>
 		);
 	}
@@ -151,7 +151,9 @@ export function PlanSelection({ setDialog, onNext }: TeamSwitcherModalProps) {
 						Cancel
 					</Button>
 					<Button disabled={loading} type="submit">
-						{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+						{loading && (
+							<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+						)}
 						Continue
 					</Button>
 				</DialogFooter>

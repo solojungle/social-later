@@ -1,9 +1,9 @@
 "use client";
 
 // eslint-disable-next-line simple-import-sort/imports
-import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { SheetClose } from "@/components/ui/sheet";
 
 interface Props {
@@ -32,7 +32,9 @@ export function CancelSubmitBar({
 				</Button>
 			</SheetClose>
 			<Button type="submit" disabled={loading || disabled}>
-				{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+				{loading && (
+					<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+				)}
 				{action}
 			</Button>
 		</div>

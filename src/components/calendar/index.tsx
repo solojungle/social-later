@@ -1,13 +1,7 @@
 "use client";
 
 import { FileType } from "@prisma/client";
-import {
-	ChevronLeft,
-	ChevronRight,
-	ImageIcon,
-	Loader2,
-	VideoIcon,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -27,6 +21,7 @@ import {
 	AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
+import { InterfaceIcons } from "../ui/icons";
 import { Label } from "../ui/label";
 import {
 	Sheet,
@@ -178,7 +173,9 @@ function EditPostSheetContent({
 									setLoading(false);
 								}}
 							>
-								{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+								{loading && (
+									<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+								)}
 								Delete
 							</AlertDialogAction>
 						</AlertDialogFooter>

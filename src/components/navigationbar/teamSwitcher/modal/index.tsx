@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -47,7 +47,7 @@ function ProductsSelector({ products, field }: ProductsSelectorProps) {
 	if (!products || products.length <= 0) {
 		return (
 			<div className="flex items-center justify-center p-5">
-				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</div>
 		);
 	}

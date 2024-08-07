@@ -1,9 +1,10 @@
 "use client";
 
-import { CheckCircle2, Loader2, XCircleIcon } from "lucide-react";
+import { CheckCircle2, XCircleIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+import { InterfaceIcons } from "@/components/ui/icons";
 import { useTeamStore } from "@/stores/teams";
 import { api } from "@/trpc/react";
 
@@ -93,7 +94,7 @@ export function CheckoutPageContent() {
 	if (isFetching) {
 		return (
 			<div className="flex h-screen flex-col items-center justify-center">
-				<Loader2 className="mb-6 h-16 w-16 animate-spin text-muted-foreground" />
+				<InterfaceIcons.Loading className="mb-6 h-16 w-16 animate-spin text-muted-foreground" />
 				<h1 className="text-center text-lg font-extralight text-muted-foreground">
 					Getting payment status...
 				</h1>

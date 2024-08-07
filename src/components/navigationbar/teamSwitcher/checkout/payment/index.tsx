@@ -5,12 +5,12 @@ import {
 	useElements,
 	useStripe,
 } from "@stripe/react-stripe-js";
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
 import { TeamCreationFormData } from "@/schemas/team-create-form-data";
 import { useTeamStore } from "@/stores/teams";
@@ -154,7 +154,9 @@ export function PaymentModal({
 						Back
 					</Button>
 					<Button type="submit" disabled={!stripe || loading}>
-						{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+						{loading && (
+							<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+						)}
 						Subscribe
 					</Button>
 				</div>

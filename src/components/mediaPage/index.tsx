@@ -1,12 +1,12 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
 import { AlertDialog } from "../ui/alert-dialog";
+import { InterfaceIcons } from "../ui/icons";
 import { Separator } from "../ui/separator";
 import { AllAssets } from "./allAssets";
 import { DeleteAssetContent } from "./deleteAsset";
@@ -45,7 +45,7 @@ export function MediaPageContent() {
 	if (isLoading) {
 		return (
 			<div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center">
-				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</div>
 		);
 	}

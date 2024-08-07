@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
-import { CheckIcon, Loader2, X } from "lucide-react";
+import { CheckIcon, X } from "lucide-react";
 import * as React from "react";
+import { InterfaceIcons } from "../icons";
 import type { IconType } from "./types";
 import { useStepper } from "./use-stepper";
 
@@ -93,7 +94,7 @@ const StepIcon = React.forwardRef<HTMLDivElement, StepIconProps>(
 				}
 				if (isLoading) {
 					return (
-						<Loader2 className={cn(iconVariants({ size }), "animate-spin")} />
+						<InterfaceIcons.Loading className={cn(iconVariants({ size }), "animate-spin")} />
 					);
 				}
 			}

@@ -1,5 +1,3 @@
-import { Loader2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -10,6 +8,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+
+import { InterfaceIcons } from "../ui/icons";
 
 interface SettingsCardBaseProps {
 	content: any;
@@ -47,7 +47,9 @@ export function SettingsCardBase({
 					</span>
 					{button || (
 						<Button disabled={isLoading} type="submit">
-							{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+							{isLoading && (
+								<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+							)}
 							{buttonContent}
 						</Button>
 					)}

@@ -1,8 +1,9 @@
 "use client";
 
-import { CheckCircle2, Loader2, MoreHorizontal } from "lucide-react";
+import { CheckCircle2, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import {
 	Table,
 	TableBody,
@@ -33,7 +34,7 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 				title="Payment Method"
 				content={
 					<div className="flex w-full flex-col items-center justify-center">
-						<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+						<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 						<span className="mt-4 text-xs text-muted-foreground">
 							Loading payment methods...
 						</span>

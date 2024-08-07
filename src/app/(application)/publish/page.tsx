@@ -1,10 +1,9 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-
 import AddSocialProfile from "@/components/addSocialProfileButton";
 import CreateTeamButton from "@/components/createTeamButton";
 import { PublishPageContent } from "@/components/publishPageContent";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
@@ -19,7 +18,7 @@ export default function PublishPage() {
 		return (
 			<ResizablePanel id="no-user-loading" order={2} defaultSize={80}>
 				<div className="flex h-full flex-col items-center justify-center">
-					<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+					<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 				</div>
 			</ResizablePanel>
 		);

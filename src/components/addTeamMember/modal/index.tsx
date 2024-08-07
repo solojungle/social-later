@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRole } from "@prisma/client";
-import { Loader2, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,6 +23,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import {
 	InvitationSchema,
@@ -135,7 +136,9 @@ function Content() {
 						</Button>
 					</DialogClose>
 					<Button disabled={loading} type="submit">
-						{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+						{loading && (
+							<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+						)}
 						Invite
 					</Button>
 				</DialogFooter>

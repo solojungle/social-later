@@ -1,7 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-
+import { InterfaceIcons } from "@/components/ui/icons";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
@@ -27,7 +26,7 @@ export const YouTubeAnalyticsTab = () => {
 	if (isFetching || isError || !data) {
 		return (
 			<div className="flex h-full items-center justify-center">
-				<Loader2 className="h-16 w-16 animate-spin text-muted-foreground" />
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</div>
 		);
 	}
