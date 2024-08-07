@@ -2,9 +2,9 @@
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
+	ArchiveIcon,
 	BellIcon,
 	Calendar,
-	FolderIcon,
 	HelpCircleIcon,
 	HomeIcon,
 	PieChartIcon,
@@ -101,11 +101,11 @@ export function ResizableLayout({
 										url: "analytics",
 									},
 									{
-										title: "Media Files",
+										title: "Vault",
 										label: "",
-										icon: FolderIcon,
-										variant: isCurrentTab(path, "media"),
-										url: "media",
+										icon: ArchiveIcon,
+										variant: isCurrentTab(path, "vault"),
+										url: "vault",
 									},
 								]}
 							/>
