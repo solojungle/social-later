@@ -20,11 +20,13 @@ const NotificationButton = React.forwardRef<
 			ref={ref}
 			{...props}
 		>
-			<InterfaceIcons.Notifications className="h-5 text-foreground" />
-			<span className="sr-only">Notifications</span>
-			{showDot && (
-				<div className="absolute -end-1 -top-1 inline-flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-red-500 dark:border-gray-900" />
-			)}
+			<div className="relative">
+				{showDot && (
+					<div className="absolute -top-1 right-0 inline-flex h-3 w-3 items-center justify-center rounded-full border-2 border-white bg-red-500 dark:border-gray-900" />
+				)}
+				<InterfaceIcons.Notifications className="h-5 shrink-0 text-foreground" />
+				<span className="sr-only">Notifications</span>
+			</div>
 		</Button>
 	);
 });
