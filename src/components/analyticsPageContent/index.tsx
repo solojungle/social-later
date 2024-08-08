@@ -2,7 +2,6 @@
 
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
-import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { ResizablePanel } from "../ui/resizable";
 import { Separator } from "../ui/separator";
 import { TwitterAnalyticsTab } from "./tabs/twitter";
@@ -57,7 +56,6 @@ export const AnalyticsPageContent = () => {
 					Customize your analytics view. Select your preferred data range and
 					visualizations.
 				</p>
-				<SocialProfileSwitcher />
 				<Separator className="my-6" />
 			</div>
 			{profileType === "twitter" && <TwitterAnalyticsTab />}

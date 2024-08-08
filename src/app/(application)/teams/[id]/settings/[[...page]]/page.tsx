@@ -33,7 +33,7 @@ export default function SettingsLayout() {
 			defaultSize={80}
 			className="!overflow-scroll p-3 pb-48"
 		>
-			<Tabs defaultValue={defaultValue} className="w-full">
+			<Tabs defaultValue={defaultValue} className="w-full max-w-4xl">
 				<TabsList className="grid w-full grid-cols-3">
 					<TabsTrigger value="general">General</TabsTrigger>
 					<TabsTrigger value="members">Members</TabsTrigger>

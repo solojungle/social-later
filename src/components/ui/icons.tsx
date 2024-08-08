@@ -1,11 +1,15 @@
-import { Inbox, Loader2, Settings } from "lucide-react"
+import { ArchiveIcon, BellIcon, InboxIcon, Loader2Icon, MailIcon, PaperclipIcon, SettingsIcon } from "lucide-react"
 
 type IconProps = React.HTMLAttributes<SVGElement>
 
 export const InterfaceIcons = {
-	Settings: Settings,
-	Archive: Inbox,
-	Loading: Loader2,
+	Settings: SettingsIcon,
+	Archive: ArchiveIcon,
+	Inbox: InboxIcon,
+	Loading: Loader2Icon,
+	Notifications: BellIcon,
+	Email: MailIcon,
+	Attachments: PaperclipIcon,
 }
 
 export const Icons = {

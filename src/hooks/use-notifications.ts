@@ -144,7 +144,7 @@ export function useNotifications() {
 			payload: {
 				description: "Notification Description",
 				recordId: "1",
-				type: "type",
+				type: "transactions",
 				from: "from",
 				to: "to",
 			},
@@ -158,7 +158,7 @@ export function useNotifications() {
 			payload: {
 				description: "Notification Description",
 				recordId: "1",
-				type: "type",
+				type: "transaction",
 				from: "from",
 				to: "to",
 			},
@@ -172,7 +172,7 @@ export function useNotifications() {
 			payload: {
 				description: "Notification Description",
 				recordId: "1",
-				type: "type",
+				type: "inbox",
 				from: "from",
 				to: "to",
 			},
@@ -186,7 +186,7 @@ export function useNotifications() {
 			payload: {
 				description: "Notification Description",
 				recordId: "1",
-				type: "type",
+				type: "match",
 				from: "from",
 				to: "to",
 			},

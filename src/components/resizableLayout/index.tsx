@@ -21,6 +21,9 @@ import {
 import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 
+import { AddTeamMember } from "../addTeamMember";
+import { FeedbackForm } from "../feedbackButton";
+import { NotificationCenter } from "../notificationCenter";
 import { Separator } from "../ui/separator";
 import { Nav } from "./nav";
 import { CollapsibleUserMenu } from "./userButton";
@@ -66,13 +69,12 @@ export function ResizableLayout({
 					)}
 				>
 					<div className="flex h-full flex-col">
-						<div className="flex items-center space-x-2 px-4 pt-3">
+						<div className="my-3 flex items-center space-x-2 px-4 pt-3">
 							<img src="/images/logo.png" alt="logo" className="w-8" />
 							{!isCollapsed && (
 								<span className="text-lg font-bold">FeedFrenzy</span>
 							)}
 						</div>
-						<Separator className="my-3" />
 						<div className="flex h-full flex-col justify-between pb-5">
 							<Nav
 								isCollapsed={isCollapsed}
@@ -147,7 +149,21 @@ export function ResizableLayout({
 					</div>
 				</ResizablePanel>
 				<ResizableHandle withHandle />
-				{children}
+				<ResizablePanel defaultSize={50}>
+					<ResizablePanelGroup direction="vertical">
+						<div className="flex items-center justify-between border-b border-border px-3 py-2">
+							<div className="flex items-center space-x-6">
+								{/* <SocialProfileSwitcher /> */}
+								<AddTeamMember />
+							</div>
+							<div className="flex items-center space-x-2">
+								<FeedbackForm />
+								<NotificationCenter />
+							</div>
+						</div>
+						{children}
+					</ResizablePanelGroup>
+				</ResizablePanel>
 			</ResizablePanelGroup>
 		</TooltipProvider>
 	);

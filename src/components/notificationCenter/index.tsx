@@ -3,12 +3,12 @@
 // import { useNotifications } from "@/hooks/use-notifications";
 
 import { formatDistanceToNow } from "date-fns";
-import { ArchiveIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { useNotifications } from "@/hooks/use-notifications";
 
+import { NotificationButton } from "../navigationbar/notificationButton";
 import { Button } from "../ui/button";
 import { InterfaceIcons } from "../ui/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -36,94 +36,19 @@ function NotificationItem({
 	to,
 	markMessageAsRead,
 	type,
-}) {
+}: any) {
 	switch (type) {
-		case "transactions":
-			return (
-				<div className="items-between flex justify-between space-x-4 p-3 hover:bg-secondary">
-					<Link
-						className="items-between flex justify-between space-x-4 "
-						onClick={() => setOpen(false)}
-						href={`/transactions?filter=${JSON.stringify({
-							date: {
-								from,
-								to,
-							},
-						})}`}
-					>
-						<div>
-							<div className="flex h-9 w-9 items-center justify-center space-y-0 rounded-full border">
-								{/* <Icons.Transactions /> */} Icons Transactions
-							</div>
-						</div>
-						<div>
-							<p className="text-sm">{description}</p>
-							<span className="text-xs text-[#606060]">
-								{formatDistanceToNow(new Date(createdAt))} ago
-							</span>
-						</div>
-					</Link>
-					{markMessageAsRead && (
-						<div>
-							<Button
-								size="icon"
-								variant="secondary"
-								className="rounded-full bg-transparent hover:bg-[#1A1A1A]"
-								onClick={() => markMessageAsRead(id)}
-							>
-								<ArchiveIcon />
-							</Button>
-						</div>
-					)}
-				</div>
-			);
-
-		case "transaction":
-			return (
-				<div className="items-between flex justify-between space-x-4 p-3 hover:bg-secondary">
-					<Link
-						className="items-between flex justify-between space-x-4 "
-						onClick={() => setOpen(false)}
-						href={`/transactions?id=${recordId}`}
-					>
-						<div>
-							<div className="flex h-9 w-9 items-center justify-center space-y-0 rounded-full border">
-								TransactionsIcon
-							</div>
-						</div>
-						<div>
-							<p className="text-sm">{description}</p>
-							<span className="text-xs text-[#606060]">
-								{formatDistanceToNow(new Date(createdAt))} ago
-							</span>
-						</div>
-					</Link>
-					{markMessageAsRead && (
-						<div>
-							<Button
-								size="icon"
-								variant="secondary"
-								className="rounded-full bg-transparent hover:bg-[#1A1A1A]"
-								onClick={() => markMessageAsRead(id)}
-							>
-								<ArchiveIcon />
-							</Button>
-						</div>
-					)}
-				</div>
-			);
-
 		case "inbox":
 			return (
-				<div className="items-between flex justify-between space-x-4 p-3 hover:bg-secondary">
+				<div className="flex items-center justify-between space-x-4 p-3 hover:bg-secondary">
 					<Link
-						className="items-between flex justify-between space-x-4 "
+						className="flex items-center justify-between space-x-4 "
 						onClick={() => setOpen(false)}
 						href={`/inbox?id=${recordId}`}
 					>
 						<div>
 							<div className="flex h-9 w-9 items-center justify-center space-y-0 rounded-full border">
-								Email Icon
+								<InterfaceIcons.Email className="h-4 w-4 shrink-0" />
 							</div>
 						</div>
 						<div>
@@ -141,42 +66,7 @@ function NotificationItem({
 								className="rounded-full bg-transparent hover:bg-[#1A1A1A]"
 								onClick={() => markMessageAsRead(id)}
 							>
-								<ArchiveIcon />
-							</Button>
-						</div>
-					)}
-				</div>
-			);
-
-		case "match":
-			return (
-				<div className="items-between flex justify-between space-x-4 p-3 hover:bg-secondary">
-					<Link
-						className="items-between flex justify-between space-x-4 "
-						onClick={() => setOpen(false)}
-						href={`/transactions?id=${recordId}`}
-					>
-						<div>
-							<div className="flex h-9 w-9 items-center justify-center space-y-0 rounded-full border">
-								Match Icon
-							</div>
-						</div>
-						<div>
-							<p className="text-sm">{description}</p>
-							<span className="text-xs text-[#606060]">
-								{formatDistanceToNow(new Date(createdAt))} ago
-							</span>
-						</div>
-					</Link>
-					{markMessageAsRead && (
-						<div>
-							<Button
-								size="icon"
-								variant="secondary"
-								className="rounded-full bg-transparent hover:bg-[#1A1A1A]"
-								onClick={() => markMessageAsRead(id)}
-							>
-								<ArchiveIcon />
+								<InterfaceIcons.Archive />
 							</Button>
 						</div>
 					)}
@@ -210,21 +100,12 @@ export function NotificationCenter() {
 		if (isOpen && hasUnseenNotifications) {
 			markAllMessagesAsSeen();
 		}
-	}, [hasUnseenNotifications, isOpen]);
+	}, [hasUnseenNotifications, isOpen, markAllMessagesAsSeen]);
 
 	return (
 		<Popover onOpenChange={setOpen} open={isOpen}>
 			<PopoverTrigger asChild>
-				<Button
-					variant="outline"
-					size="icon"
-					className="relative flex h-8 w-8 items-center rounded-full"
-				>
-					{hasUnseenNotifications && (
-						<div className="absolute right-0 top-0 h-1.5 w-1.5 rounded-full bg-[#FFD02B]" />
-					)}
-					{/* <Icons.Notifications size={16} /> */} Notifications Icon
-				</Button>
+				<NotificationButton showDot={hasUnseenNotifications} />
 			</PopoverTrigger>
 			<PopoverContent
 				className="relative mr-7 h-[535px] w-screen overflow-hidden p-0 md:w-[400px]"
@@ -232,10 +113,16 @@ export function NotificationCenter() {
 			>
 				<Tabs defaultValue="inbox">
 					<TabsList className="w-full justify-start rounded-none border-b-[1px] bg-transparent py-6">
-						<TabsTrigger value="inbox" className="font-normal">
-							Inbox
+						<TabsTrigger
+							value="inbox"
+							className="font-normal !shadow-none [&>div]:data-[state=active]:bg-foreground [&>div]:data-[state=active]:text-background"
+						>
+							<span className="mr-2">Inbox</span>
+							<div className="rounded-sm bg-muted px-1 py-px text-xs text-muted-foreground transition-colors duration-200">
+								99+
+							</div>
 						</TabsTrigger>
-						<TabsTrigger value="archive" className="font-normal">
+						<TabsTrigger value="archive" className="font-normal !shadow-none">
 							Archive
 						</TabsTrigger>
 					</TabsList>
@@ -247,10 +134,9 @@ export function NotificationCenter() {
 						<Button
 							variant="secondary"
 							size="icon"
-							className="bg-ransparent rounded-full hover:bg-accent"
+							className="rounded-full bg-transparent hover:bg-accent"
 							onClick={() => setOpen(false)}
 						>
-							{/* <Icons.Settings className="text-[#606060]" size={16} /> */}{" "}
 							<InterfaceIcons.Settings className="h-4 w-4 shrink-0" />
 						</Button>
 					</Link>
