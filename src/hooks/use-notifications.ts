@@ -74,7 +74,7 @@ export function useNotifications() {
 	// 		setNotifications((prevNotifications) =>
 	// 			prevNotifications.map((notification) => ({
 	// 				...notification,
-	// 				seen: true,
+	// 				read: true,
 	// 			})),
 	// 		);
 	// 		headlessService.markAllMessagesAsSeen({
@@ -156,7 +156,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "2",
@@ -165,7 +165,14 @@ export function useNotifications() {
 			payload: {
 				description: "Notification Description",
 				recordId: "1",
-				type: "transaction",
+				files: [
+					{
+						thumbnailUrl: "images/avatar1.png",
+						name: "File 1.png",
+						downloadUrl: "images/avatar1.png",
+					},
+				],
+				type: "upload",
 				from: {
 					id: "1",
 					name: "Ali Awari",
@@ -174,7 +181,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "3",
@@ -192,7 +199,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "4",
@@ -210,7 +217,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "5",
@@ -228,7 +235,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "6",
@@ -246,7 +253,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: true,
+			read: true,
 		},
 		{
 			id: "7",
@@ -264,7 +271,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "8",
@@ -282,7 +289,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "9",
@@ -300,7 +307,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 		{
 			id: "10",
@@ -318,7 +325,7 @@ export function useNotifications() {
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
-			seen: false,
+			read: false,
 		},
 	];
 
@@ -328,7 +335,7 @@ export function useNotifications() {
 		markMessageAsRead,
 		markAllMessagesAsSeen,
 		hasUnseenNotifications: notifications.some(
-			(notification) => !notification.seen,
+			(notification) => !notification.read,
 		),
 		notifications,
 	};

@@ -119,6 +119,7 @@ export function NotificationCenter() {
 												type={notification.payload.type}
 												from={notification.payload?.from}
 												to={notification.payload?.to}
+												files={notification.payload?.files}
 											/>
 										);
 									})}
