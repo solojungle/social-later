@@ -3,7 +3,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
 	ArchiveIcon,
-	BellIcon,
 	Calendar,
 	HelpCircleIcon,
 	HomeIcon,
@@ -115,14 +114,6 @@ export function ResizableLayout({
 								<Nav
 									isCollapsed={isCollapsed}
 									links={[
-										{
-											title: "Notifications",
-											label: "",
-											icon: BellIcon,
-											// variant: isCurrentTab(path, "notifications"),
-											variant: "disabled",
-											url: "notifications",
-										},
 										{
 											title: "Help Center",
 											label: "",

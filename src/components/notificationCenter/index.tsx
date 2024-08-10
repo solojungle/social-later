@@ -2,7 +2,6 @@
 
 // import { useNotifications } from "@/hooks/use-notifications";
 
-import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -14,8 +13,9 @@ import { InterfaceIcons } from "../ui/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ScrollArea } from "../ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { NotificationItem } from "./notificationItem";
 
-function EmptyState({ description }) {
+function EmptyState({ description }: { description: string }) {
 	return (
 		<div className="flex h-[460px] flex-col items-center justify-center space-y-4">
 			<div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent">
@@ -24,58 +24,6 @@ function EmptyState({ description }) {
 			<p className="text-sm text-[#606060]">{description}</p>
 		</div>
 	);
-}
-
-function NotificationItem({
-	id,
-	setOpen,
-	description,
-	createdAt,
-	recordId,
-	from,
-	to,
-	markMessageAsRead,
-	type,
-}: any) {
-	switch (type) {
-		case "inbox":
-			return (
-				<div className="flex items-center justify-between space-x-4 p-3 hover:bg-secondary">
-					<Link
-						className="flex items-center justify-between space-x-4 "
-						onClick={() => setOpen(false)}
-						href={`/inbox?id=${recordId}`}
-					>
-						<div>
-							<div className="flex h-9 w-9 items-center justify-center space-y-0 rounded-full border">
-								<InterfaceIcons.Email className="h-4 w-4 shrink-0" />
-							</div>
-						</div>
-						<div>
-							<p className="text-sm">{description}</p>
-							<span className="text-xs text-[#606060]">
-								{formatDistanceToNow(new Date(createdAt))} ago
-							</span>
-						</div>
-					</Link>
-					{markMessageAsRead && (
-						<div>
-							<Button
-								size="icon"
-								variant="secondary"
-								className="rounded-full bg-transparent hover:bg-[#1A1A1A]"
-								onClick={() => markMessageAsRead(id)}
-							>
-								<InterfaceIcons.Archive />
-							</Button>
-						</div>
-					)}
-				</div>
-			);
-
-		default:
-			return null;
-	}
 }
 
 export function NotificationCenter() {
@@ -111,13 +59,22 @@ export function NotificationCenter() {
 				className="relative mr-7 h-[535px] w-screen overflow-hidden p-0 md:w-[400px]"
 				sideOffset={10}
 			>
-				<Tabs defaultValue="inbox">
+				<Tabs defaultValue="all">
 					<TabsList className="w-full justify-start rounded-none border-b-[1px] bg-transparent py-6">
 						<TabsTrigger
-							value="inbox"
+							value="all"
 							className="font-normal !shadow-none [&>div]:data-[state=active]:bg-foreground [&>div]:data-[state=active]:text-background"
 						>
-							<span className="mr-2">Inbox</span>
+							<span className="mr-2">All</span>
+							<div className="rounded-sm bg-muted px-1 py-px text-xs text-muted-foreground transition-colors duration-200">
+								99+
+							</div>
+						</TabsTrigger>
+						<TabsTrigger
+							value="team"
+							className="font-normal !shadow-none [&>div]:data-[state=active]:bg-foreground [&>div]:data-[state=active]:text-background"
+						>
+							<span className="mr-2">Team</span>
 							<div className="rounded-sm bg-muted px-1 py-px text-xs text-muted-foreground transition-colors duration-200">
 								99+
 							</div>
@@ -141,7 +98,7 @@ export function NotificationCenter() {
 						</Button>
 					</Link>
 
-					<TabsContent value="inbox" className="relative mt-0">
+					<TabsContent value="all" className="relative mt-0">
 						{!unreadNotifications.length && (
 							<EmptyState description="No new notifications" />
 						)}

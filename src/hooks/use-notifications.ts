@@ -1,3 +1,6 @@
+// The different types of events that can be listened to
+export type NotificationEventTypes = "join" | "leave" | "message" | "upload";
+
 export function useNotifications() {
 	// const supabase = createClient();
 	// const [isLoading, setLoading] = useState(true);
@@ -145,7 +148,11 @@ export function useNotifications() {
 				description: "Notification Description",
 				recordId: "1",
 				type: "transactions",
-				from: "from",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar1.png",
+				},
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
@@ -159,7 +166,11 @@ export function useNotifications() {
 				description: "Notification Description",
 				recordId: "1",
 				type: "transaction",
-				from: "from",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar2.jpg",
+				},
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
@@ -173,7 +184,11 @@ export function useNotifications() {
 				description: "Notification Description",
 				recordId: "1",
 				type: "inbox",
-				from: "from",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar3.jpg",
+				},
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
@@ -187,7 +202,11 @@ export function useNotifications() {
 				description: "Notification Description",
 				recordId: "1",
 				type: "match",
-				from: "from",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar4.jpg",
+				},
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
@@ -201,7 +220,11 @@ export function useNotifications() {
 				description: "Notification Description",
 				recordId: "1",
 				type: "type",
-				from: "from",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar1.png",
+				},
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
@@ -215,11 +238,87 @@ export function useNotifications() {
 				description: "Notification Description",
 				recordId: "1",
 				type: "type",
-				from: "from",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar2.jpg",
+				},
 				to: "to",
 			},
 			createdAt: "2021-09-01T12:00:00Z",
 			seen: true,
+		},
+		{
+			id: "7",
+			title: "Notification Title",
+			description: "Notification Description",
+			payload: {
+				description: "Notification Description",
+				recordId: "1",
+				type: "type",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar1.png",
+				},
+				to: "to",
+			},
+			createdAt: "2021-09-01T12:00:00Z",
+			seen: false,
+		},
+		{
+			id: "8",
+			title: "Notification Title",
+			description: "Notification Description",
+			payload: {
+				description: "Notification Description",
+				recordId: "1",
+				type: "type",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar1.png",
+				},
+				to: "to",
+			},
+			createdAt: "2021-09-01T12:00:00Z",
+			seen: false,
+		},
+		{
+			id: "9",
+			title: "Notification Title",
+			description: "Notification Description",
+			payload: {
+				description: "Notification Description",
+				recordId: "1",
+				type: "type",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar1.png",
+				},
+				to: "to",
+			},
+			createdAt: "2021-09-01T12:00:00Z",
+			seen: false,
+		},
+		{
+			id: "10",
+			title: "Notification Title",
+			description: "Notification Description",
+			payload: {
+				description: "Notification Description",
+				recordId: "1",
+				type: "type",
+				from: {
+					id: "1",
+					name: "Ali Awari",
+					imageUrl: "images/avatar1.png",
+				},
+				to: "to",
+			},
+			createdAt: "2021-09-01T12:00:00Z",
+			seen: false,
 		},
 	];
 
