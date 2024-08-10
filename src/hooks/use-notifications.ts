@@ -147,7 +147,7 @@ export function useNotifications() {
 			payload: {
 				description: "Notification Description",
 				recordId: "1",
-				type: "transactions",
+				type: "join",
 				from: {
 					id: "1",
 					name: "Ali Awari",

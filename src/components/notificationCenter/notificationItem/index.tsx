@@ -2,6 +2,27 @@ import { Button } from "@/components/ui/button";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { formatDistanceToNow } from "date-fns";
 
+// This function given a type will return a message
+function NotificationMessage({ type, from }: any) {
+
+	// If the type is join, return the message
+	// "from.name joined the team."
+	// Otherwise, return null
+	switch (type) {
+		case "join":
+			return <p className="text-xs"><span className="font-semibold">{from.name}</span> joined the team.</p>;
+		default:
+			return null;
+	}
+
+
+
+
+
+
+	return "";
+}
+
 export function NotificationItem({
 	id,
 	setOpen,
@@ -27,8 +48,9 @@ export function NotificationItem({
 			</div>
 			<div className="flex flex-1 flex-col space-y-1">
 				<div className="flex justify-between">
-					<div className="text-sm font-medium">{from.name}</div>
-					<div className="text-sm text-gray-700">{description}</div>
+
+						<span>{NotificationMessage({type, from})}</span>
+
 				</div>
 				<span className="text-xs font-light text-muted-foreground">
 					{formatDistanceToNow(new Date(createdAt))} ago
