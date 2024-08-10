@@ -14,7 +14,6 @@ function NotificationMessage({ type, from, files }: any) {
 				</p>
 			);
 		case "upload":
-			// uploaded 2 files. or uploaded 1 file. we check the length of the files
 			return (
 				<p className="text-xs">
 					<span className="font-semibold">{from.name}</span> uploaded{" "}
@@ -66,7 +65,7 @@ function UploadAttachment({ from, type, createdAt, files }: any) {
 			</div>
 
 			<div className="pl-3 pt-2">
-				<Timeline />
+				<Timeline files={files} />
 			</div>
 		</div>
 	);

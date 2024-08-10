@@ -171,6 +171,16 @@ export function useNotifications() {
 						name: "File 1.png",
 						downloadUrl: "images/avatar1.png",
 					},
+					{
+						thumbnailUrl: "images/avatar1.png",
+						name: "File 1.png",
+						downloadUrl: "images/avatar1.png",
+					},
+					{
+						thumbnailUrl: "images/avatar1.png",
+						name: "File 1.png",
+						downloadUrl: "images/avatar1.png",
+					},
 				],
 				type: "upload",
 				from: {
