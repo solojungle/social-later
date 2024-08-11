@@ -53,6 +53,7 @@ model User {
   teams         UserOnTeam[]
   invitation    Invitation[]
   UserAnswer    UserAnswer[]
+  Feedback      Feedback[]
 }
 
 // Why is this model needed:
@@ -345,4 +346,14 @@ model UserAnswer {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@unique([userId, questionId])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  content   String
+  pageUrl   String? // Optional, the URL or identifier of the page where feedback was given
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

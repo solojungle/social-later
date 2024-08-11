@@ -56,8 +56,9 @@ export function NotificationCenter() {
 				<NotificationButton showDot={hasUnseenNotifications} />
 			</PopoverTrigger>
 			<PopoverContent
-				className="relative mr-7 h-[535px] w-screen overflow-hidden p-0 md:w-[400px]"
-				sideOffset={10}
+				align="end"
+				className="relative h-[535px] w-screen overflow-hidden p-0 md:w-[400px]"
+				sideOffset={5}
 			>
 				<Tabs defaultValue="all">
 					<TabsList className="w-full justify-start rounded-none border-b-[1px] bg-transparent py-6">

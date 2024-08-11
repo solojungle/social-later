@@ -6,6 +6,7 @@ import { createTRPCRouter } from "@/server/api/trpc";
 import { analyticsRouter } from "./routers/analytics";
 import { attachmentsRouter } from "./routers/attachments";
 import { awsRouter } from "./routers/aws";
+import { feedbackRouter } from "./routers/feedback";
 import { filesRouter } from "./routers/files";
 import { invitationRouter } from "./routers/invitation";
 import { metricsRouter } from "./routers/metrics";
@@ -35,6 +36,7 @@ export const appRouter = createTRPCRouter({
 	metrics: metricsRouter,
 	analytics: analyticsRouter,
 	survey: surveyRouter,
+	feedback: feedbackRouter,
 });
 
 // export type definition of API
