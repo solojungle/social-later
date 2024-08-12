@@ -1,11 +1,11 @@
 "use client";
 
-// import { useNotifications } from "@/hooks/use-notifications";
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { useNotifications } from "@/hooks/use-notifications";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useUserStore } from "@/stores/user";
 
 import { NotificationButton } from "../navigationbar/notificationButton";
 import { Button } from "../ui/button";
@@ -27,6 +27,9 @@ function EmptyState({ description }: { description: string }) {
 }
 
 export function NotificationCenter() {
+	const { id: userId } = useUserStore();
+	const { id: teamId } = useSelectedTeamStore();
+
 	const [isOpen, setOpen] = useState(false);
 	const {
 		hasUnseenNotifications,
@@ -34,7 +37,7 @@ export function NotificationCenter() {
 		markMessageAsRead,
 		markAllMessagesAsSeen,
 		markAllMessagesAsRead,
-	} = useNotifications();
+	} = useNotifications({ userId, teamId });
 
 	const unreadNotifications = notifications.filter(
 		(notification) => !notification.read,

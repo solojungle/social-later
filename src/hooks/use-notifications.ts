@@ -1,343 +1,126 @@
-// The different types of events that can be listened to
+import { HeadlessService, IMessage } from "@novu/headless";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { env } from "@/env.mjs";
+
 export type NotificationEventTypes = "join" | "leave" | "message" | "upload";
 
-export function useNotifications() {
-	// const supabase = createClient();
-	// const [isLoading, setLoading] = useState(true);
-	// const [notifications, setNotifications] = useState([]);
-	// const [subscriberId, setSubscriberId] = useState();
-	// const headlessServiceRef = useRef<HeadlessService>();
+type UseNotificationsProps = {
+	userId: string;
+	teamId: string;
+};
 
-	// const markAllMessagesAsRead = () => {
-	// 	const headlessService = headlessServiceRef.current;
+export function useNotifications({ userId, teamId }: UseNotificationsProps) {
+	const [isLoading, setLoading] = useState(true);
+	const [notifications, setNotifications] = useState<IMessage[]>([]);
+	const [subscriberId] = useState<string | undefined>(`${teamId}_${userId}`);
+	const headlessServiceRef = useRef<HeadlessService>();
 
-	// 	if (headlessService) {
-	// 		setNotifications((prevNotifications) =>
-	// 			prevNotifications.map((notification) => {
-	// 				return {
-	// 					...notification,
-	// 					read: true,
-	// 				};
-	// 			}),
-	// 		);
+	const markAllMessagesAsRead = () => {
+		const headlessService = headlessServiceRef.current;
 
-	// 		headlessService.markAllMessagesAsRead({
-	// 			listener: () => {},
-	// 			onError: () => {},
-	// 		});
-	// 	}
-	// };
+		if (headlessService) {
+			setNotifications((prevNotifications) =>
+				prevNotifications.map((notification) => {
+					return {
+						...notification,
+						read: true,
+					};
+				}),
+			);
 
-	// const markMessageAsRead = (messageId: string) => {
-	// 	const headlessService = headlessServiceRef.current;
+			headlessService.markAllMessagesAsRead({
+				listener: () => {},
+				onError: () => {},
+			});
+		}
+	};
 
-	// 	if (headlessService) {
-	// 		setNotifications((prevNotifications) =>
-	// 			prevNotifications.map((notification) => {
-	// 				if (notification.id === messageId) {
-	// 					return {
-	// 						...notification,
-	// 						read: true,
-	// 					};
-	// 				}
+	const markMessageAsRead = (messageId: string) => {
+		const headlessService = headlessServiceRef.current;
 
-	// 				return notification;
-	// 			}),
-	// 		);
+		if (headlessService) {
+			setNotifications((prevNotifications) =>
+				prevNotifications.map((notification) => {
+					if (notification.id === messageId) {
+						return {
+							...notification,
+							read: true,
+						};
+					}
 
-	// 		headlessService.markNotificationsAsRead({
-	// 			messageId: [messageId],
-	// 			listener: (result) => {},
-	// 			onError: (error) => {},
-	// 		});
-	// 	}
-	// };
+					return notification;
+				}),
+			);
 
-	// const fetchNotifications = useCallback(() => {
-	// 	const headlessService = headlessServiceRef.current;
+			headlessService.markNotificationsAsRead({
+				messageId: [messageId],
+				listener: (result) => {},
+				onError: (error) => {},
+			});
+		}
+	};
 
-	// 	if (headlessService) {
-	// 		headlessService.fetchNotifications({
-	// 			listener: ({}) => {},
-	// 			onSuccess: (response) => {
-	// 				setLoading(false);
-	// 				setNotifications(response.data);
-	// 			},
-	// 		});
-	// 	}
-	// }, []);
+	const fetchNotifications = useCallback(() => {
+		const headlessService = headlessServiceRef.current;
 
-	// const markAllMessagesAsSeen = () => {
-	// 	const headlessService = headlessServiceRef.current;
-
-	// 	if (headlessService) {
-	// 		setNotifications((prevNotifications) =>
-	// 			prevNotifications.map((notification) => ({
-	// 				...notification,
-	// 				read: true,
-	// 			})),
-	// 		);
-	// 		headlessService.markAllMessagesAsSeen({
-	// 			listener: () => {},
-	// 			onError: () => {},
-	// 		});
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	async function fetchUser() {
-	// 		const {
-	// 			data: { session },
-	// 		} = await supabase.auth.getSession();
-
-	// 		const { data: userData } = await getUserQuery(
-	// 			supabase,
-	// 			session?.user?.id,
-	// 		);
-
-	// 		if (userData) {
-	// 			setSubscriberId(`${userData.team_id}_${userData.id}`);
-	// 		}
-	// 	}
-
-	// 	fetchUser();
-	// }, [supabase]);
-
-	// useEffect(() => {
-	// 	const headlessService = headlessServiceRef.current;
-
-	// 	if (headlessService) {
-	// 		headlessService.listenNotificationReceive({
-	// 			listener: () => {
-	// 				fetchNotifications();
-	// 			},
-	// 		});
-	// 	}
-	// }, [headlessServiceRef.current]);
-
-	// useEffect(() => {
-	// 	if (subscriberId && !headlessServiceRef.current) {
-	// 		const headlessService = new HeadlessService({
-	// 			applicationIdentifier:
-	// 				process.env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER!,
-	// 			subscriberId,
-	// 		});
-
-	// 		headlessService.initializeSession({
-	// 			listener: () => {},
-	// 			onSuccess: () => {
-	// 				headlessServiceRef.current = headlessService;
-	// 				fetchNotifications();
-	// 			},
-	// 			onError: () => {},
-	// 		});
-	// 	}
-	// }, [fetchNotifications, subscriberId]);
-
-	// Filler variables
-	const isLoading = false;
-	const markAllMessagesAsRead = () => {};
-	const markMessageAsRead = () => {};
-	const markAllMessagesAsSeen = () => {};
-	const notifications = [
-		{
-			id: "1",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "join",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar1.png",
+		if (headlessService) {
+			headlessService.fetchNotifications({
+				listener: ({}) => {},
+				onSuccess: (response) => {
+					setLoading(false);
+					setNotifications(response.data);
 				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "2",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				files: [
-					{
-						thumbnailUrl: "images/avatar1.png",
-						name: "File 1.png",
-						downloadUrl: "images/avatar1.png",
-					},
-					{
-						thumbnailUrl: "images/avatar1.png",
-						name: "File 1.png",
-						downloadUrl: "images/avatar1.png",
-					},
-					{
-						thumbnailUrl: "images/avatar1.png",
-						name: "File 1.png",
-						downloadUrl: "images/avatar1.png",
-					},
-				],
-				type: "upload",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar2.jpg",
+			});
+		}
+	}, []);
+
+	const markAllMessagesAsSeen = () => {
+		const headlessService = headlessServiceRef.current;
+
+		if (headlessService) {
+			setNotifications((prevNotifications) =>
+				prevNotifications.map((notification) => ({
+					...notification,
+					seen: true,
+				})),
+			);
+			headlessService.markAllMessagesAsSeen({
+				listener: () => {},
+				onError: () => {},
+			});
+		}
+	};
+
+	useEffect(() => {
+		const headlessService = headlessServiceRef.current;
+
+		if (headlessService) {
+			headlessService.listenNotificationReceive({
+				listener: () => {
+					fetchNotifications();
 				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "3",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "inbox",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar3.jpg",
+			});
+		}
+	}, [fetchNotifications]);
+
+	useEffect(() => {
+		if (subscriberId && !headlessServiceRef.current) {
+			const headlessService = new HeadlessService({
+				applicationIdentifier: env.NOVU_APP_ID!,
+				subscriberId,
+			});
+
+			headlessService.initializeSession({
+				listener: () => {},
+				onSuccess: () => {
+					headlessServiceRef.current = headlessService;
+					fetchNotifications();
 				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "4",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "match",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar4.jpg",
-				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "5",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "type",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar1.png",
-				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "6",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "type",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar2.jpg",
-				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: true,
-		},
-		{
-			id: "7",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "type",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar1.png",
-				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "8",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "type",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar1.png",
-				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "9",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "type",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar1.png",
-				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-		{
-			id: "10",
-			title: "Notification Title",
-			description: "Notification Description",
-			payload: {
-				description: "Notification Description",
-				recordId: "1",
-				type: "type",
-				from: {
-					id: "1",
-					name: "Ali Awari",
-					imageUrl: "images/avatar1.png",
-				},
-				to: "to",
-			},
-			createdAt: "2021-09-01T12:00:00Z",
-			read: false,
-		},
-	];
+				onError: () => {},
+			});
+		}
+	}, [fetchNotifications, subscriberId]);
 
 	return {
 		isLoading,
@@ -345,7 +128,7 @@ export function useNotifications() {
 		markMessageAsRead,
 		markAllMessagesAsSeen,
 		hasUnseenNotifications: notifications.some(
-			(notification) => !notification.read,
+			(notification) => !notification.seen,
 		),
 		notifications,
 	};

@@ -52,6 +52,9 @@ export const env = createEnv({
 		LINKEDIN_CLIENT_SECRET: z.string(),
 		LINKEDIN_CALLBACK_URL: z.string(),
 		SENDGRID_API_KEY: z.string(),
+		NOVU_SECRET: z.string(),
+		NOVU_APP_ID: z.string(),
+		NOVU_ENV_ID: z.string(),
 	},
 
 	/**
@@ -98,6 +101,9 @@ export const env = createEnv({
 		LINKEDIN_CLIENT_SECRET: process.env.LINKEDIN_CLIENT_SECRET,
 		LINKEDIN_CALLBACK_URL: process.env.LINKEDIN_CALLBACK_URL,
 		SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+		NOVU_SECRET: process.env.NOVU_SECRET,
+		NOVU_APP_ID: process.env.NOVU_APP_ID,
+		NOVU_ENV_ID: process.env.NOVU_ENV_ID,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
