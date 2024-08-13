@@ -8,6 +8,7 @@ import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
+import { api } from "@/trpc/server";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -71,10 +72,16 @@ export const authOptions: NextAuthOptions = {
 	// This can be used to configure the behaviour of the JWT signing and verification.
 	// Like adding a stripe customer id to the user db model.
 	events: {
-		createUser: async () => {
+		createUser: async ({ user }) => {
 			// This is where you would send a welcome email
 			// await sendWelcomeEmail();
 			await notifyOnUserCreation();
+
+			// It seems that knock also supports inline creation of users
+			// But lets just keep this for now.
+			await api.notification.createUser.mutate({
+				userId: user.id,
+			});
 		},
 	},
 };
