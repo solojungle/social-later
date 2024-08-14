@@ -1,10 +1,17 @@
 "use client";
 
+import {
+	KnockProvider,
+	useKnockClient,
+	useNotifications,
+	useNotificationStore,
+} from "@knocklabs/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { useNotifications } from "@/hooks/use-notifications";
+import { env } from "@/env.mjs";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 
 import { NotificationButton } from "../navigationbar/notificationButton";
@@ -26,18 +33,52 @@ function EmptyState({ description }: { description: string }) {
 	);
 }
 
-export function NotificationCenter() {
+function NotificationFeed() {
+	const { members } = useTeamMembersStore();
 	const { id: userId } = useUserStore();
 	const { id: teamId } = useSelectedTeamStore();
-
 	const [isOpen, setOpen] = useState(false);
-	const {
-		hasUnseenNotifications,
-		notifications,
-		markMessageAsRead,
-		markAllMessagesAsSeen,
-		markAllMessagesAsRead,
-	} = useNotifications({ userId, teamId });
+
+	const knockClient = useKnockClient();
+	const feedClient = useNotifications(
+		knockClient,
+		"6fbe48d1-f272-4303-b0d7-85268ad07706",
+		// process.env.KNOCK_FEED_CHANNEL_ID,
+	);
+
+	const { items, metadata } = useNotificationStore(feedClient);
+
+	useEffect(() => {
+		feedClient.fetch();
+	}, [feedClient]);
+
+	const hasUnreadNotifications = metadata.unread_count > 0;
+
+	const notifications = items.map((item) => {
+		return {
+			id: item.id,
+			createdAt: item.inserted_at,
+			read: item.read_at !== null,
+			payload: {
+				message: item.data?.message,
+				recordId: item.id,
+				type: item.data?.type,
+				from: members.find(
+					(member) => member.id === item.activities[0]?.actor?.id,
+				),
+				to: item.activities[0]?.recipient?.id,
+				files: item.data?.files,
+			},
+		};
+	});
+
+	const markMessageAsRead = async (id: string) => {
+		await feedClient.markAsRead(id);
+	};
+
+	const markAllMessagesAsRead = async () => {
+		await feedClient.markAllAsRead();
+	};
 
 	const unreadNotifications = notifications.filter(
 		(notification) => !notification.read,
@@ -47,16 +88,10 @@ export function NotificationCenter() {
 		(notification) => notification.read,
 	);
 
-	useEffect(() => {
-		if (isOpen && hasUnseenNotifications) {
-			markAllMessagesAsSeen();
-		}
-	}, [hasUnseenNotifications, isOpen, markAllMessagesAsSeen]);
-
 	return (
 		<Popover onOpenChange={setOpen} open={isOpen}>
 			<PopoverTrigger asChild>
-				<NotificationButton showDot={hasUnseenNotifications} />
+				<NotificationButton showDot={hasUnreadNotifications} />
 			</PopoverTrigger>
 			<PopoverContent
 				align="end"
@@ -71,20 +106,17 @@ export function NotificationCenter() {
 						>
 							<span className="mr-2">All</span>
 							<div className="rounded-sm bg-muted px-1 py-px text-xs text-muted-foreground transition-colors duration-200">
-								99+
+								{metadata.unseen_count}
 							</div>
 						</TabsTrigger>
 						<TabsTrigger
-							value="team"
+							value="read"
 							className="font-normal !shadow-none [&>div]:data-[state=active]:bg-foreground [&>div]:data-[state=active]:text-background"
 						>
-							<span className="mr-2">Team</span>
+							<span className="mr-2">Read</span>
 							<div className="rounded-sm bg-muted px-1 py-px text-xs text-muted-foreground transition-colors duration-200">
-								99+
+								{metadata.total_count - metadata.unseen_count}
 							</div>
-						</TabsTrigger>
-						<TabsTrigger value="archive" className="font-normal !shadow-none">
-							Archive
 						</TabsTrigger>
 					</TabsList>
 
@@ -93,9 +125,9 @@ export function NotificationCenter() {
 						className="absolute right-[11px] top-1.5"
 					>
 						<Button
-							variant="secondary"
+							variant="ghost"
 							size="icon"
-							className="rounded-full bg-transparent hover:bg-accent"
+							className="hover:bg-accent"
 							onClick={() => setOpen(false)}
 						>
 							<InterfaceIcons.Settings className="h-4 w-4 shrink-0" />
@@ -117,7 +149,7 @@ export function NotificationCenter() {
 												id={notification.id}
 												markMessageAsRead={markMessageAsRead}
 												setOpen={setOpen}
-												description={notification.payload.description}
+												message={notification.payload.message}
 												createdAt={notification.createdAt}
 												recordId={notification.payload.recordId}
 												type={notification.payload.type}
@@ -138,13 +170,13 @@ export function NotificationCenter() {
 									className="bg-transparent"
 									onClick={markAllMessagesAsRead}
 								>
-									Archive all
+									Mark all as read
 								</Button>
 							</div>
 						)}
 					</TabsContent>
 
-					<TabsContent value="archive" className="mt-0">
+					<TabsContent value="read" className="mt-0">
 						{!archivedNotifications.length && (
 							<EmptyState description="Nothing in the archive" />
 						)}
@@ -157,14 +189,14 @@ export function NotificationCenter() {
 											<NotificationItem
 												key={notification.id}
 												setOpen={setOpen}
-												description={notification.payload.description}
+												message={notification.payload.message}
 												createdAt={notification.createdAt}
 												recordId={notification.payload.recordId}
 												type={notification.payload.type}
-												id={undefined}
-												from={undefined}
-												to={undefined}
 												markMessageAsRead={undefined}
+												from={notification.payload?.from}
+												to={notification.payload?.to}
+												files={notification.payload?.files}
 											/>
 										);
 									})}
@@ -175,5 +207,15 @@ export function NotificationCenter() {
 				</Tabs>
 			</PopoverContent>
 		</Popover>
+	);
+}
+
+export function NotificationCenter() {
+	const { id: userId } = useUserStore();
+
+	return (
+		<KnockProvider apiKey={env.NEXT_PUBLIC_KNOCK_KEY} userId={userId}>
+			<NotificationFeed />
+		</KnockProvider>
 	);
 }

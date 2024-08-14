@@ -8,25 +8,27 @@ import {
 } from "@/server/api/trpc";
 import { knock } from "@/server/services/knock/client";
 
+const NotificationFileSchema = z.object({
+	name: z.string(),
+	extension: z.string(),
+	mime: z.string(),
+	size: z.number(),
+	url: z.string(),
+});
+
 export const knockRouter = createTRPCRouter({
 	trigger: protectedProcedure
 		.input(
 			z.object({
 				teamId: z.string(),
+				messageType: z.enum(["join", "upload"]),
+				message: z.string().optional(),
+				files: z.array(NotificationFileSchema).optional(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { teamId } = input;
 			const { session, db } = ctx;
-
-			console.log("teamId", teamId);
-			console.log("teamId", teamId);
-			console.log("teamId", teamId);
-			console.log("teamId", teamId);
-			console.log("teamId", teamId);
-			console.log("teamId", teamId);
-			console.log("teamId", teamId);
-			console.log("teamId", teamId);
 
 			try {
 				// Get all the users in the team
@@ -37,8 +39,6 @@ export const knockRouter = createTRPCRouter({
 				});
 
 				const userIds = users.map((user) => user.userId);
-
-				console.log(users);
 
 				// // Remove the current user from the list
 				// const currentUserIndex = userIds.indexOf(session.user.id);
@@ -51,9 +51,13 @@ export const knockRouter = createTRPCRouter({
 				// 	return;
 				// }
 
-				await knock.workflows.trigger("upload-image-in-app", {
+				await knock.workflows.trigger("in-app-message", {
 					recipients: userIds,
-					data: { project_name: "THIS IS A TEST NOTIFICATION" },
+					data: {
+						type: input.messageType,
+						message: input.message,
+						files: input.files,
+					},
 					actor: session.user.id,
 					cancellationKey: nanoid(),
 					tenant: teamId,
