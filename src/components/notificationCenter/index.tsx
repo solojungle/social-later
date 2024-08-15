@@ -80,6 +80,10 @@ function NotificationFeed() {
 		await feedClient.markAllAsRead();
 	};
 
+	const markAllMessagesAsSeen = async () => {
+		await feedClient.markAllAsSeen();
+	};
+
 	const unreadNotifications = notifications.filter(
 		(notification) => !notification.read,
 	);
@@ -91,7 +95,12 @@ function NotificationFeed() {
 	return (
 		<Popover onOpenChange={setOpen} open={isOpen}>
 			<PopoverTrigger asChild>
-				<NotificationButton showDot={hasUnreadNotifications} />
+				<NotificationButton
+					showDot={hasUnreadNotifications}
+					onClick={() => {
+						markAllMessagesAsSeen();
+					}}
+				/>
 			</PopoverTrigger>
 			<PopoverContent
 				align="end"
@@ -106,7 +115,7 @@ function NotificationFeed() {
 						>
 							<span className="mr-2">All</span>
 							<div className="rounded-sm bg-muted px-1 py-px text-xs text-muted-foreground transition-colors duration-200">
-								{metadata.unseen_count}
+								{metadata.unread_count}
 							</div>
 						</TabsTrigger>
 						<TabsTrigger
@@ -115,7 +124,7 @@ function NotificationFeed() {
 						>
 							<span className="mr-2">Read</span>
 							<div className="rounded-sm bg-muted px-1 py-px text-xs text-muted-foreground transition-colors duration-200">
-								{metadata.total_count - metadata.unseen_count}
+								{metadata.total_count - metadata.unread_count}
 							</div>
 						</TabsTrigger>
 					</TabsList>
