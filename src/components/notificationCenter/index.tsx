@@ -42,8 +42,7 @@ function NotificationFeed() {
 	const knockClient = useKnockClient();
 	const feedClient = useNotifications(
 		knockClient,
-		"6fbe48d1-f272-4303-b0d7-85268ad07706",
-		// process.env.KNOCK_FEED_CHANNEL_ID,
+		env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID,
 	);
 
 	const { items, metadata } = useNotificationStore(feedClient);

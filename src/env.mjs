@@ -64,6 +64,7 @@ export const env = createEnv({
 		// NEXT_PUBLIC_CLIENTVAR: z.string(),
 		NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
 		NEXT_PUBLIC_KNOCK_KEY: z.string(),
+		NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: z.string(),
 	},
 
 	/**
@@ -102,6 +103,8 @@ export const env = createEnv({
 		SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 		SECRET_KNOCK_KEY: process.env.SECRET_KNOCK_KEY,
 		NEXT_PUBLIC_KNOCK_KEY: process.env.NEXT_PUBLIC_KNOCK_KEY,
+		NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID:
+			process.env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
