@@ -13,13 +13,14 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-const icons: { [key: string]: () => JSX.Element } = {
-	"/nexus": () => <InterfaceIcons.Pages.Nexus size={22} />,
-	"/vault": () => <InterfaceIcons.Pages.Vault size={22} />,
-	"/settings": () => <InterfaceIcons.Settings size={22} />,
-	"/publish": () => <InterfaceIcons.Pages.Publish size={22} />,
-	"/analytics": () => <InterfaceIcons.Pages.Analytics size={22} />,
-};
+const icons: { [key: string]: (props: { className?: string }) => JSX.Element } =
+	{
+		"/nexus": (props) => <InterfaceIcons.Pages.Nexus {...props} />,
+		"/vault": (props) => <InterfaceIcons.Pages.Vault {...props} />,
+		"/settings": (props) => <InterfaceIcons.Settings {...props} />,
+		"/publish": (props) => <InterfaceIcons.Pages.Publish {...props} />,
+		"/analytics": (props) => <InterfaceIcons.Pages.Analytics {...props} />,
+	};
 
 const defaultItems = [
 	{
@@ -68,7 +69,7 @@ const Item = ({ item, isActive }: ItemProps) => {
 						>
 							<div className="relative">
 								<div className="flex items-center space-x-3 p-0 pl-2 md:pl-0">
-									{Icon && <Icon />}
+									{Icon && <Icon className="h-5 w-5 shrink-0" />}
 									<span className="flex md:hidden">{item.name}</span>
 								</div>
 							</div>
