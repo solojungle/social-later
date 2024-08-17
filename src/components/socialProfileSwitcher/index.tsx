@@ -62,7 +62,6 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 					onSelect={() => {
 						// Set the current profile
 						setCurrentProfileId(profile.id);
-
 						setOpen(false);
 					}}
 					className="text-sm"
@@ -171,6 +170,15 @@ export function SocialProfileSwitcher({
 }: SocialProfileSwitcherProps) {
 	const [open, setOpen] = useState(false);
 	const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
+	const [isMounted, setIsMounted] = useState(false);
+
+	React.useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	if (!isMounted) {
+		return null;
+	}
 
 	return (
 		<Dialog open={showNewProfileDialog} onOpenChange={setShowNewProfileDialog}>

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-const icons = {
+const icons: { [key: string]: () => JSX.Element } = {
 	"/nexus": () => <InterfaceIcons.Pages.Nexus size={22} />,
 	"/vault": () => <InterfaceIcons.Pages.Vault size={22} />,
 	"/settings": () => <InterfaceIcons.Settings size={22} />,
@@ -27,20 +27,20 @@ const defaultItems = [
 		name: "Nexus",
 	},
 	{
-		path: "/vault",
-		name: "Vault",
-	},
-	{
-		path: "/settings",
-		name: "Settings",
-	},
-	{
 		path: "/publish",
 		name: "Publish",
 	},
 	{
 		path: "/analytics",
 		name: "Analytics",
+	},
+	{
+		path: "/vault",
+		name: "Vault",
+	},
+	{
+		path: "/settings",
+		name: "Settings",
 	},
 ];
 
@@ -51,7 +51,6 @@ interface ItemProps {
 
 const Item = ({ item, isActive }: ItemProps) => {
 	const Icon = icons[item.path];
-
 	return (
 		<TooltipProvider delayDuration={70}>
 			<Link prefetch href={item.path}>
@@ -61,7 +60,7 @@ const Item = ({ item, isActive }: ItemProps) => {
 							key={item.path}
 							id={item.path}
 							className={cn(
-								"relative flex h-[45px] items-center border border-transparent md:w-[45px] md:justify-center",
+								"relative flex h-[45px] items-center rounded-lg border border-transparent md:w-[45px] md:justify-center",
 								"hover:border-[#DCDAD2] hover:bg-accent hover:dark:border-[#2C2C2C]",
 								isActive &&
 									"border-[#DCDAD2] bg-[#F2F1EF] dark:border-[#2C2C2C] dark:bg-secondary",
@@ -69,7 +68,7 @@ const Item = ({ item, isActive }: ItemProps) => {
 						>
 							<div className="relative">
 								<div className="flex items-center space-x-3 p-0 pl-2 md:pl-0">
-									<Icon />
+									{Icon && <Icon />}
 									<span className="flex md:hidden">{item.name}</span>
 								</div>
 							</div>
