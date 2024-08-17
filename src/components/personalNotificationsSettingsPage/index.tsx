@@ -1,5 +1,6 @@
-import { NotificationsForm } from "@/components/forms/notifications-form";
 import { Separator } from "@/components/ui/separator";
+
+import { PreferenceCenter } from "./knock/preference-center";
 
 export default function PersonalNotificationsSettingsPage() {
 	return (
@@ -11,7 +12,7 @@ export default function PersonalNotificationsSettingsPage() {
 				</p>
 			</div>
 			<Separator />
-			<NotificationsForm />
+			<PreferenceCenter />
 		</div>
 	);
 }
