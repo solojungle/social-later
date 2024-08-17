@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { ResizablePanel } from "@/components/ui/resizable";
 
 function ArticleCards() {
 	return (
@@ -94,16 +93,11 @@ function NewsAndUpdates() {
 
 export const NexusPageContent = () => {
 	return (
-		<ResizablePanel
-			id="calendar"
-			order={2}
-			defaultSize={80}
-			className="h-full !overflow-scroll p-3"
-		>
+		<div className="h-full !overflow-scroll p-3">
 			<div className="flex flex-col space-y-6">
 				<Articles />
 				<NewsAndUpdates />
 			</div>
-		</ResizablePanel>
+		</div>
 	);
 };

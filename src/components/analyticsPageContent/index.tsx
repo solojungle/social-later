@@ -2,7 +2,6 @@
 
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
-import { ResizablePanel } from "../ui/resizable";
 import { Separator } from "../ui/separator";
 import { TwitterAnalyticsTab } from "./tabs/twitter";
 import { YouTubeAnalyticsTab } from "./tabs/youtube";
@@ -44,12 +43,7 @@ export const AnalyticsPageContent = () => {
 	const profileType = currentProfile?.type;
 
 	return (
-		<ResizablePanel
-			id="analytics"
-			order={2}
-			defaultSize={80}
-			className="space-y-2 !overflow-scroll p-3 pb-48"
-		>
+		<div className="space-y-2 !overflow-scroll p-3 pb-48">
 			<div className="mb-6">
 				<h3 className="text-lg font-medium">Analytics</h3>
 				<p className="mb-6 text-sm text-muted-foreground">
@@ -60,6 +54,6 @@ export const AnalyticsPageContent = () => {
 			</div>
 			{profileType === "twitter" && <TwitterAnalyticsTab />}
 			{profileType === "youtube" && <YouTubeAnalyticsTab />}
-		</ResizablePanel>
+		</div>
 	);
 };

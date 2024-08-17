@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import PersonalGeneralSettingsPage from "@/components/personalGeneralSettingsPage";
 import PersonalNotificationsSettingsPage from "@/components/personalNotificationsSettingsPage";
 import PersonalSecuritySettingsPage from "@/components/personalSecuritySettingsPage";
-import { ResizablePanel } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SettingsAccountPage() {
@@ -23,13 +22,7 @@ export default function SettingsAccountPage() {
 			: "general";
 
 	return (
-		<ResizablePanel
-			id="personal-settings"
-			collapsible={false}
-			order={2}
-			defaultSize={80}
-			className="!overflow-scroll p-3 pb-48"
-		>
+		<div className="!overflow-scroll p-3 pb-48">
 			<Tabs defaultValue={defaultValue} className="w-full max-w-4xl">
 				<TabsList className="grid w-full grid-cols-3">
 					<TabsTrigger value="general">General</TabsTrigger>
@@ -46,6 +39,6 @@ export default function SettingsAccountPage() {
 					<PersonalSecuritySettingsPage />
 				</TabsContent>
 			</Tabs>
-		</ResizablePanel>
+		</div>
 	);
 }

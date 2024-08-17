@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import BillingPage from "@/components/billingPage";
 import GeneralTeamSettingsPage from "@/components/generalPage";
 import TeamMembersPage from "@/components/membersPage";
-import { ResizablePanel } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SettingsLayout() {
@@ -27,12 +26,7 @@ export default function SettingsLayout() {
 			: "general";
 
 	return (
-		<ResizablePanel
-			id="team-settings"
-			order={2}
-			defaultSize={80}
-			className="!overflow-scroll p-3 pb-48"
-		>
+		<div className="!overflow-scroll p-3 pb-48">
 			<Tabs defaultValue={defaultValue} className="w-full max-w-4xl">
 				<TabsList className="grid w-full grid-cols-3">
 					<TabsTrigger value="general">General</TabsTrigger>
@@ -49,6 +43,6 @@ export default function SettingsLayout() {
 					<BillingPage />
 				</TabsContent>
 			</Tabs>
-		</ResizablePanel>
+		</div>
 	);
 }

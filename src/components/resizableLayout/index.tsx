@@ -1,31 +1,17 @@
 "use client";
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import {
-	ArchiveIcon,
-	Calendar,
-	HelpCircleIcon,
-	HomeIcon,
-	PieChartIcon,
-	SettingsIcon,
-} from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
-import {
-	ResizableHandle,
-	ResizablePanel,
-	ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { AddTeamMember } from "../addTeamMember";
 import { FeedbackForm } from "../feedbackButton";
 import { NotificationCenter } from "../notificationCenter";
-import { Separator } from "../ui/separator";
-import { Nav } from "./nav";
-import { CollapsibleUserMenu } from "./userButton";
+import { InterfaceIcons } from "../ui/icons";
+import { MainMenu } from "./middayNavbar";
 
 interface ResizableLayoutProps {
 	children: React.ReactNode;
@@ -51,111 +37,31 @@ export function ResizableLayout({
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<ResizablePanelGroup autoSaveId="conditional" direction="horizontal">
-				<ResizablePanel
-					id="nav"
-					order={1}
-					collapsedSize={navCollapsedSize}
-					collapsible
-					minSize={15}
-					defaultSize={20}
-					maxSize={20}
-					onCollapse={() => setIsCollapsed(true)}
-					onExpand={() => setIsCollapsed(false)}
-					className={cn(
-						isCollapsed &&
-							"min-w-[50px] transition-all duration-300 ease-in-out",
-					)}
-				>
-					<div className="flex h-full flex-col">
-						<div className="my-3 flex items-center space-x-2 px-4 pt-3">
-							<img src="/images/logo.png" alt="logo" className="w-8" />
-							{!isCollapsed && (
-								<span className="text-lg font-bold">FeedFrenzy</span>
-							)}
-						</div>
-						<div className="flex h-full flex-col justify-between pb-5">
-							<Nav
-								isCollapsed={isCollapsed}
-								links={[
-									{
-										title: "Nexus",
-										label: "",
-										icon: HomeIcon,
-										// Check if the path matches the current path, if so set the variant to "default" else "ghost"
-										variant: isCurrentTab(path, "nexus"),
-										url: "nexus",
-									},
-									{
-										title: "Publish",
-										label: "",
-										icon: Calendar,
-										// Check if the path matches the current path, if so set the variant to "default" else "ghost"
-										variant: isCurrentTab(path, "publish"),
-										url: "publish",
-									},
-									{
-										title: "Analytics",
-										label: "",
-										icon: PieChartIcon,
-										variant: isCurrentTab(path, "analytics"),
-										url: "analytics",
-									},
-									{
-										title: "Vault",
-										label: "",
-										icon: ArchiveIcon,
-										variant: isCurrentTab(path, "vault"),
-										url: "vault",
-									},
-								]}
-							/>
-							<div className="flex flex-col justify-between">
-								<Nav
-									isCollapsed={isCollapsed}
-									links={[
-										{
-											title: "Help Center",
-											label: "",
-											icon: HelpCircleIcon,
-											// variant: isCurrentTab(path, "help"),
-											variant: "disabled",
-											url: "help/en",
-										},
-										{
-											title: "Settings",
-											label: "",
-											icon: SettingsIcon,
-											variant: teamId
-												? isCurrentTab(path, "teams")
-												: "disabled",
-											url: `teams/${teamId}/settings`,
-										},
-									]}
-								/>
-								<Separator className="my-3" />
-								<CollapsibleUserMenu isCollapsed={isCollapsed} />
-							</div>
-						</div>
+			<aside className="fixed top-0 ml-4 hidden h-screen shrink-0 flex-col items-center justify-between pb-4 md:flex">
+				<div className="flex flex-col items-center justify-center">
+					<div className="todesktop:mt-[35px] mt-6">
+						<Link href="/">
+							<InterfaceIcons.LogoSmall />
+						</Link>
 					</div>
-				</ResizablePanel>
-				<ResizableHandle withHandle />
-				<ResizablePanel defaultSize={50}>
-					<ResizablePanelGroup direction="vertical">
-						<div className="flex items-center justify-between border-b border-border px-3 py-2">
-							<div className="flex items-center space-x-6">
-								{/* <SocialProfileSwitcher /> */}
-								<AddTeamMember />
-							</div>
-							<div className="flex items-center space-x-2">
-								<FeedbackForm />
-								<NotificationCenter />
-							</div>
-						</div>
-						{children}
-					</ResizablePanelGroup>
-				</ResizablePanel>
-			</ResizablePanelGroup>
+					<MainMenu />
+				</div>
+				<Suspense />
+			</aside>
+
+			<div className="mx-4 pb-8 md:ml-[95px] md:mr-10">
+				<div className="flex items-center justify-between border-b border-border px-3 py-2">
+					<div className="flex items-center space-x-6">
+						{/* <SocialProfileSwitcher /> */}
+						<AddTeamMember />
+					</div>
+					<div className="flex items-center space-x-2">
+						<FeedbackForm />
+						<NotificationCenter />
+					</div>
+				</div>
+				<div>{children}</div>
+			</div>
 		</TooltipProvider>
 	);
 }

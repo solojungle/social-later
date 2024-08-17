@@ -1,15 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { ResizablePanel } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 
 export default function HelpCenterPage() {
 	return (
-		<ResizablePanel
-			id="help"
-			order={2}
-			defaultSize={80}
-			className="h-full space-y-2 !overflow-scroll p-3 pb-48"
-		>
+		<div className="h-full space-y-2 !overflow-scroll p-3 pb-48">
 			<div className="space-y-6">
 				<div>
 					<h1 className="text-lg font-medium">Help Center</h1>
@@ -26,6 +20,6 @@ export default function HelpCenterPage() {
 					</p>
 				</div>
 			</div>
-		</ResizablePanel>
+		</div>
 	);
 }

@@ -5,7 +5,6 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 import { PostsCalendar } from "../calendar";
-import { ResizablePanel } from "../ui/resizable";
 
 export const PublishPageContent = () => {
 	const { id: teamId } = useSelectedTeamStore();
@@ -21,13 +20,8 @@ export const PublishPageContent = () => {
 	);
 
 	return (
-		<ResizablePanel
-			id="calendar"
-			order={2}
-			defaultSize={80}
-			className="h-full space-y-3 !overflow-scroll p-3"
-		>
+		<div className="h-full space-y-3 !overflow-scroll p-3">
 			<PostsCalendar posts={posts} profileId={profileId} />
-		</ResizablePanel>
+		</div>
 	);
 };
