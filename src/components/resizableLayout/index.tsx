@@ -45,7 +45,7 @@ export function ResizableLayout({ children }: any) {
 				<Suspense>{/* <CollapsibleUserMenu /> */}</Suspense>
 			</aside>
 
-			<div className="mx-4 pb-8 md:ml-[95px] md:mr-10">
+			<div className="pb-8 md:ml-[80px]">
 				<div className="flex items-center justify-between border-b border-border px-3 py-4">
 					<div className="flex items-center space-x-6">
 						<SocialProfileSwitcher />
