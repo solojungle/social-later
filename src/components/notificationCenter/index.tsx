@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { env } from "@/env.mjs";
-import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 
@@ -35,8 +34,8 @@ function EmptyState({ description }: { description: string }) {
 
 function NotificationFeed() {
 	const { members } = useTeamMembersStore();
-	const { id: userId } = useUserStore();
-	const { id: teamId } = useSelectedTeamStore();
+	// const { id: userId } = useUserStore();
+	// const { id: teamId } = useSelectedTeamStore();
 	const [isOpen, setOpen] = useState(false);
 
 	const knockClient = useKnockClient();

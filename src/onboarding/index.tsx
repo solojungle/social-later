@@ -7,7 +7,7 @@ import { SecondStepForm } from "./components/forms/second";
 import { SuccessPage } from "./pages/success";
 
 function StepperFooter() {
-	const { activeStep, resetSteps, steps } = useStepper();
+	const { activeStep, steps } = useStepper();
 
 	if (activeStep !== steps.length) {
 		return null;
