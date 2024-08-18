@@ -1,5 +1,6 @@
-import { useRouter } from "next/navigation";
+/* eslint-disable simple-import-sort/imports */
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

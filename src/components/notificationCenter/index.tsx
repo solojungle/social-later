@@ -70,10 +70,6 @@ function NotificationFeed() {
 		};
 	});
 
-	const markMessageAsRead = async (id: string) => {
-		await feedClient.markAsRead(id);
-	};
-
 	const markAllMessagesAsRead = async () => {
 		await feedClient.markAllAsRead();
 	};
@@ -154,7 +150,6 @@ function NotificationFeed() {
 											<NotificationItem
 												key={notification.id}
 												id={notification.id}
-												markMessageAsRead={markMessageAsRead}
 												setOpen={setOpen}
 												message={notification.payload.message}
 												createdAt={notification.createdAt}
@@ -200,7 +195,6 @@ function NotificationFeed() {
 												createdAt={notification.createdAt}
 												recordId={notification.payload.recordId}
 												type={notification.payload.type}
-												markMessageAsRead={undefined}
 												from={notification.payload?.from}
 												to={notification.payload?.to}
 												files={notification.payload?.files}
