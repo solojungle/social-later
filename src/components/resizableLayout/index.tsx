@@ -2,10 +2,7 @@
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Suspense } from "react";
-
-import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { AddTeamMember } from "../addTeamMember";
 import { FeedbackForm } from "../feedbackButton";
@@ -13,12 +10,7 @@ import { NotificationCenter } from "../notificationCenter";
 import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { InterfaceIcons } from "../ui/icons";
 import { MainMenu } from "./middayNavbar";
-
-interface ResizableLayoutProps {
-	children: React.ReactNode;
-	defaultCollapsed?: boolean;
-	navCollapsedSize: number;
-}
+import { CollapsibleUserMenu } from "./userMenu";
 
 export function isCurrentTab(path: string, url: string) {
 	// Only get stuff before first slash
@@ -28,8 +20,8 @@ export function isCurrentTab(path: string, url: string) {
 }
 
 export function ResizableLayout({ children }: any) {
-	const { id: teamId } = useSelectedTeamStore();
-	const path = usePathname();
+	// const { id: teamId } = useSelectedTeamStore();
+	// const path = usePathname();
 
 	return (
 		<TooltipProvider delayDuration={0}>
@@ -42,7 +34,9 @@ export function ResizableLayout({ children }: any) {
 					</div>
 					<MainMenu />
 				</div>
-				<Suspense>{/* <CollapsibleUserMenu /> */}</Suspense>
+				<Suspense>
+					<CollapsibleUserMenu />
+				</Suspense>
 			</aside>
 
 			<div className="pb-8 md:ml-[80px]">
