@@ -38,7 +38,9 @@ export function MembersTable() {
 										/>
 										<Avatar className="mr-4 h-8 w-8">
 											<AvatarImage src={t.image} alt="label" />
-											<AvatarFallback>{`${t.name[0]?.toUpperCase()}`}</AvatarFallback>
+											<AvatarFallback>
+												{t.name.split(" ").map((name: string) => name[0])}
+											</AvatarFallback>
 										</Avatar>
 										<div className="flex flex-col">
 											<span className="font-medium">{t.name}</span>

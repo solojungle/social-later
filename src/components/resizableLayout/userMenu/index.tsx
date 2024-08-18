@@ -1,5 +1,5 @@
-import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,7 +29,9 @@ export function CollapsibleUserMenu() {
 				<CollapsibleTrigger>
 					<Avatar className="h-9 w-9 border border-border">
 						<AvatarImage alt="" src={image} />
-						<AvatarFallback>{name[0]}</AvatarFallback>
+						<AvatarFallback className="text-xs">
+							{name.split(" ").map((n: string) => n[0])}
+						</AvatarFallback>
 					</Avatar>
 				</CollapsibleTrigger>
 				<CollapsibleContent className="mt-4 flex flex-col">

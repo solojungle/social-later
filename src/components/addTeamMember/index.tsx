@@ -13,7 +13,7 @@ export function AddTeamMember() {
 		<Avatar key={member.id} className="pointer-events-none h-8 w-8 select-none">
 			<AvatarImage src={member.image} />
 			<AvatarFallback className="border border-border">
-				{member.name[0]}
+				{member.name.split(" ").map((name: string) => name[0])}
 			</AvatarFallback>
 		</Avatar>
 	));

@@ -44,7 +44,7 @@ export function InvitesTable() {
 											<Checkbox className="ml-2 mr-4" />
 											<Avatar className="mr-4 h-8 w-8">
 												<AvatarFallback>
-													{`${t.email[0]?.toUpperCase()}`}
+													{t.email.split(" ").map((name: string) => name[0])}
 												</AvatarFallback>
 											</Avatar>
 											<div className="flex flex-col">

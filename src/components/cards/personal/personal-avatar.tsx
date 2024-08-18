@@ -194,12 +194,16 @@ export function PersonalAvatarCard() {
 							{filePreview ? (
 								<Avatar className="mr-2 h-20 w-20">
 									<AvatarImage src={filePreview} alt="File Preview" />
-									<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
+									<AvatarFallback>
+										{name.split(" ").map((n: string) => n[0])}
+									</AvatarFallback>
 								</Avatar>
 							) : (
 								<Avatar className="mr-2 h-20 w-20">
 									<AvatarImage src={image} alt={name} />
-									<AvatarFallback>{name?.[0] ?? ""}</AvatarFallback>
+									<AvatarFallback>
+										{name.split(" ").map((n: string) => n[0])}
+									</AvatarFallback>
 								</Avatar>
 							)}
 						</>
