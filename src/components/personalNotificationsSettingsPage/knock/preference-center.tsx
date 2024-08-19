@@ -108,7 +108,7 @@ export function PreferenceCenter() {
 			email: false,
 			in_app_feed: false,
 		},
-	});
+	} as PreferenceSet);
 
 	// We load the current user's preferences from Knock, and set them to local preferences
 	useEffect(() => {
@@ -118,6 +118,50 @@ export function PreferenceCenter() {
 		}
 		fetchPreferences();
 	}, []);
+
+	function createPreferenceSet(
+		preferenceType: string,
+		preferenceKey: string,
+		channelTypeSettings: Record<string, boolean>,
+	): PreferenceSet {
+		// create a new preference set with local preferences as starting point
+		const preferenceUpdate: PreferenceSet = {
+			...localPreferences,
+		};
+
+		if (
+			preferenceType === "category" &&
+			typeof preferenceUpdate.categories[preferenceKey] === "object"
+		) {
+			preferenceUpdate.categories[preferenceKey] = {
+				...(preferenceUpdate.categories[preferenceKey] as object),
+				channel_types: channelTypeSettings,
+			};
+		}
+
+		if (
+			preferenceType === "workflow" &&
+			typeof preferenceUpdate.workflows[preferenceKey] === "object"
+		) {
+			preferenceUpdate.workflows[preferenceKey] = {
+				...(preferenceUpdate.workflows[preferenceKey] as object),
+				channel_types: channelTypeSettings,
+			};
+		}
+
+		if (preferenceType === "channel_types") {
+			preferenceUpdate.channel_types = channelTypeSettings;
+		}
+
+		return preferenceUpdate;
+	}
+
+	async function updatePreferences(update: PreferenceSet) {
+		// Next, we upload the new PreferenceSet to Knock for that user
+		const preferences = await knockClient.user.setPreferences(update);
+		// Set the updated preferences in local state
+		setLocalPreferences(preferences);
+	}
 
 	// When a preference setting is changed, we create a new PreferenceSet that
 	// includes the change, update the preferences in Knock, and then update local state
@@ -130,37 +174,13 @@ export function PreferenceCenter() {
 		preferenceType: string;
 		channelTypeSettings: Record<string, boolean>;
 	}) => {
-		// create a new preference set with local preferences as starting point
-		const preferenceUpdate: PreferenceSet = {
-			...localPreferences,
-		};
+		const preferenceUpdate = createPreferenceSet(
+			preferenceType,
+			preferenceKey,
+			channelTypeSettings,
+		);
 
-		// Here we'll make updates to the preference set based on the preferenceType
-		// and override existing channelTypeSettings
-		// since Workflow and Category preferences can also be a Boolean,
-		// we'll check if the preferenceKey contains an channel_types object
-		if (
-			preferenceType === "category" &&
-			typeof preferenceUpdate.categories[preferenceKey] === "object"
-		) {
-			preferenceUpdate.categories[preferenceKey].channel_types =
-				channelTypeSettings;
-		}
-		if (
-			preferenceType === "workflow" &&
-			typeof preferenceUpdate.workflows[preferenceKey] === "object"
-		) {
-			preferenceUpdate.workflows[preferenceKey].channel_types =
-				channelTypeSettings;
-		}
-		if (preferenceType === "channel_types") {
-			preferenceUpdate.channel_types = channelTypeSettings;
-		}
-
-		// Next, we upload the new PreferenceSet to Knock for that user
-		const preferences = await knockClient.user.setPreferences(preferenceUpdate);
-		// Set the updated preferences in local state
-		setLocalPreferences(preferences);
+		await updatePreferences(preferenceUpdate);
 	};
 
 	// If we haven't loaded preferences yet, maybe show a spinner
@@ -180,19 +200,33 @@ export function PreferenceCenter() {
 			</div>
 			{Object.keys(localPreferences?.categories).map((category) => {
 				const preferenceKey = category as PreferenceViewLabels;
-				return (
-					<PreferenceSettingsRow
-						key={category}
-						preferenceType="category"
-						preferenceKey={preferenceKey}
-						channelTypeSettings={
-							typeof localPreferences.categories[category] === "object"
-								? localPreferences?.categories[category]?.channel_types
-								: {}
-						}
-						onChange={onPreferenceChange}
-					/>
-				);
+
+				type CategoryPreference =
+					| {
+							channel_types: Record<string, boolean>;
+					  }
+					| true;
+
+				// Then in your component:
+				if (typeof localPreferences?.categories[category] === "object") {
+					const categoryPreference = localPreferences.categories[
+						category
+					] as CategoryPreference;
+					if (categoryPreference && typeof categoryPreference === "object") {
+						const channelTypeSettings = categoryPreference.channel_types;
+						return (
+							<PreferenceSettingsRow
+								key={category}
+								preferenceType="category"
+								preferenceKey={preferenceKey}
+								channelTypeSettings={channelTypeSettings}
+								onChange={onPreferenceChange}
+							/>
+						);
+					}
+				}
+
+				return null;
 			})}
 		</div>
 	);
