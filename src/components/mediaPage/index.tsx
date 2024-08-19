@@ -44,7 +44,7 @@ export function MediaPageContent() {
 
 	if (isLoading) {
 		return (
-			<div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center">
+			<div className="flex h-96 flex-col items-center justify-center">
 				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</div>
 		);

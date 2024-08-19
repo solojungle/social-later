@@ -25,7 +25,7 @@ export const YouTubeAnalyticsTab = () => {
 
 	if (isFetching || isError || !data) {
 		return (
-			<div className="flex h-full items-center justify-center">
+			<div className="flex h-96 flex-col items-center justify-center">
 				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</div>
 		);
