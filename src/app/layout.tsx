@@ -2,6 +2,8 @@ import "@/styles/globals.css";
 
 import { cookies } from "next/headers";
 
+import PostHogPageView from "@/components/postHog/page-view";
+import { PosthogProvider } from "@/components/postHog/providers";
 import { ThemeProvider } from "@/components/themeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/env.mjs";
@@ -59,16 +61,19 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body className="font-beausite subpixel-antialiased">
 				<TRPCReactProvider cookies={cookies().toString()}>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-						disableTransitionOnChange
-					>
-						{children}
-					</ThemeProvider>
+					<PosthogProvider>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							enableSystem
+							disableTransitionOnChange
+						>
+							{children}
+							<PostHogPageView />
+							<Toaster />
+						</ThemeProvider>
+					</PosthogProvider>
 				</TRPCReactProvider>
-				<Toaster />
 			</body>
 		</html>
 	);

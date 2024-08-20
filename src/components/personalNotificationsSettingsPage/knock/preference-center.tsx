@@ -2,11 +2,9 @@ import Knock, { PreferenceSet } from "@knocklabs/client";
 import { useEffect, useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { useUserStore } from "@/stores/user";
 
 import { env } from "../../../env.mjs";
-
-const knockClient = new Knock(env.NEXT_PUBLIC_KNOCK_KEY);
-knockClient.authenticate("clxgoels70000so8ikntksjv0");
 
 const PreferenceViewConfig = {
 	RowSettings: {
@@ -86,6 +84,10 @@ function PreferenceSettingsRow({
 }
 
 export function PreferenceCenter() {
+	const { id: userId } = useUserStore();
+	const knockClient = new Knock(env.NEXT_PUBLIC_KNOCK_KEY);
+	knockClient.authenticate(userId);
+
 	// Create some local state to store the user's preferences
 	const [localPreferences, setLocalPreferences] = useState<PreferenceSet>({
 		id: "default",
