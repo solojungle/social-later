@@ -49,7 +49,7 @@ function TimelineItem({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="relative">
 			<div className="absolute left-[-2.20rem] top-5 h-1.5 w-1.5 rounded-full bg-primary" />
-			<div className="rounded-sm border border-border bg-muted p-1.5 text-xs">
+			<div className="rounded-sm border border-border bg-primary-foreground p-1.5 text-xs">
 				{children}
 			</div>
 		</div>

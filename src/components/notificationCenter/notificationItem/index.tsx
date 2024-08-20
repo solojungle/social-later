@@ -53,8 +53,8 @@ function NotificationAvatar({
 }) {
 	return (
 		<div className="relative shrink-0">
-			<Avatar className="flex h-10 w-10 items-center justify-center bg-background">
-				<AvatarFallback className="flex items-center justify-center border border-border text-xs">
+			<Avatar className="flex h-10 w-10 items-center justify-center border border-border">
+				<AvatarFallback className="flex items-center justify-center text-xs">
 					{from.name.split(" ").map((name: string) => name[0])}
 				</AvatarFallback>
 			</Avatar>
@@ -67,7 +67,7 @@ function NotificationAvatar({
 
 function UploadAttachment({ from, type, createdAt, files }: any) {
 	return (
-		<div className="grid grid-cols-[40px_1fr] grid-rows-[40px_1fr] p-3">
+		<div className="grid grid-cols-[40px_1fr] grid-rows-[40px_1fr] p-3 hover:bg-primary-foreground">
 			<NotificationAvatar from={from} type={type} />
 			<div className="h-10 pl-3">
 				<div className="flex flex-1 flex-col space-y-px">
@@ -112,7 +112,7 @@ export function NotificationItem({
 	}
 
 	return (
-		<div className="flex items-center space-x-3 p-3 hover:bg-gray-100">
+		<div className="flex items-center space-x-3 p-3 hover:bg-primary-foreground">
 			<NotificationAvatar from={from} type={type} />
 			<div className="flex flex-1 flex-col space-y-px">
 				<div className="flex justify-between">
