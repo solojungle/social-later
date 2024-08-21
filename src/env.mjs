@@ -65,6 +65,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
 		NEXT_PUBLIC_KNOCK_KEY: z.string(),
 		NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: z.string(),
+		NEXT_PUBLIC_POSTHOG_KEY: z.string(),
+		NEXT_PUBLIC_POSTHOG_HOST: z.string(),
 	},
 
 	/**
@@ -105,6 +107,8 @@ export const env = createEnv({
 		NEXT_PUBLIC_KNOCK_KEY: process.env.NEXT_PUBLIC_KNOCK_KEY,
 		NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID:
 			process.env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID,
+		NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+		NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

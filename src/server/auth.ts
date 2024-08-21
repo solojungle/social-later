@@ -10,6 +10,8 @@ import { env } from "@/env.mjs";
 import { db } from "@/server/db";
 import { api } from "@/trpc/server";
 
+import { client } from "./services/posthog/client";
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -52,6 +54,7 @@ async function notifyOnUserCreation() {
 export const authOptions: NextAuthOptions = {
 	pages: {
 		signIn: "/login",
+		newUser: "/welcome",
 	},
 	callbacks: {
 		session: ({ session, user }) => ({
@@ -77,6 +80,13 @@ export const authOptions: NextAuthOptions = {
 			// await sendWelcomeEmail();
 			await notifyOnUserCreation();
 
+			// Capture the event in PostHog
+			client.capture({
+				distinctId: user.id,
+				event: "user_created",
+			});
+
+			// Create the user in Knock for notifications
 			// It seems that knock also supports inline creation of users
 			// But lets just keep this for now.
 			await api.notification.createUser.mutate({

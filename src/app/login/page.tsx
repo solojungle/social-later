@@ -15,7 +15,7 @@ export default async function AuthenticationPage() {
 	const session = await getServerAuthSession();
 
 	if (session) {
-		redirect("/publish");
+		redirect("/nexus");
 	}
 
 	return (
