@@ -25,7 +25,7 @@ export function ResizableLayout({ children }: any) {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<aside className="fixed top-0 z-50 ml-4 hidden h-screen shrink-0 flex-col items-center justify-between pb-4 md:flex">
+			<aside className="fixed top-0 z-40 ml-4 hidden h-screen shrink-0 flex-col items-center justify-between pb-4 md:flex">
 				<div className="flex flex-col items-center justify-center">
 					<div className="todesktop:mt-[35px] mt-4">
 						<Link href="/nexus">
