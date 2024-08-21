@@ -2,6 +2,7 @@
 
 import AddSocialProfile from "@/components/addSocialProfileButton";
 import CreateTeamButton from "@/components/createTeamButton";
+import { FeaturePreview } from "@/components/featurePreview";
 import { PublishPageContent } from "@/components/publishPageContent";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { useSelectedTeamStore } from "@/stores/selected-team";
@@ -23,11 +24,29 @@ export default function PublishPage() {
 
 	if (!id || id.length === 0) {
 		return (
-			<div className="flex h-full flex-col items-center justify-center">
-				<h2 className="mb-4">
-					Please join or create a team to view the calendar.
-				</h2>
-				<CreateTeamButton />
+			<div className="flex flex-col items-center justify-center">
+				<FeaturePreview
+					title="Create, manage, and plan your social media posts"
+					description="
+						With publish, you can create, manage, and plan your social media
+						posts. You can also view your calendar to see when your posts are
+						scheduled to go.
+					"
+				>
+					<div className="mb-8">
+						<img
+							alt="Publish preview"
+							src="/images/publish-preview-min.png"
+							className="aspect-video w-full rounded-lg border border-border"
+						/>
+					</div>
+					<div className="flex w-full items-center justify-between gap-2">
+						<CreateTeamButton />
+						<p className="text-xs text-muted-foreground">
+							If you already have a team, accept the invite sent to your email.
+						</p>
+					</div>
+				</FeaturePreview>
 			</div>
 		);
 	}
@@ -35,11 +54,22 @@ export default function PublishPage() {
 	// If the user hasn't added any social profiles, show the add social profile button
 	if (!profiles || profiles.length === 0) {
 		return (
-			<div className="flex h-full flex-col items-center justify-center">
-				<h2 className="mb-4">
-					Please add a social profile to view the calendar.
-				</h2>
-				<AddSocialProfile />
+			<div className="flex flex-col items-center justify-center">
+				<FeaturePreview
+					title="Create, manage, and plan your social media posts"
+					description="With publish, you can create, manage, and plan your social media posts. You can also view your calendar to see when your posts are scheduled to go."
+				>
+					<div className="mb-8">
+						<img
+							alt="Publish preview"
+							src="/images/publish-preview-min.png"
+							className="aspect-video w-full rounded-lg border border-border"
+						/>
+					</div>
+					<div className="flex w-full items-center">
+						<AddSocialProfile />
+					</div>
+				</FeaturePreview>
 			</div>
 		);
 	}
