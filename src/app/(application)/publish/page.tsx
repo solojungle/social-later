@@ -56,8 +56,8 @@ export default function PublishPage() {
 		return (
 			<div className="flex flex-col items-center justify-center">
 				<FeaturePreview
-					title="Create, manage, and plan your social media posts"
-					description="With publish, you can create, manage, and plan your social media posts. You can also view your calendar to see when your posts are scheduled to go."
+					title="Add a social profile to get started"
+					description="To get started with publishing, you need to add a social profile."
 				>
 					<div className="mb-8">
 						<img
