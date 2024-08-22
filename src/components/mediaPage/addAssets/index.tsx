@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Folder, PlusIcon } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { fileSchema } from "@/schemas/new-file-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 // These are the restrictions for the media files that can be uploaded
@@ -47,12 +49,8 @@ function Content({
 	teamId: string;
 	setOpen: (show: boolean) => void;
 }) {
-	// const {
-	// 	id: userId,
-	// 	name: username,
-	// 	email: userEmail,
-	// 	image: userAvatar,
-	// } = useUserStore();
+	const { id: userId } = useUserStore();
+	const posthog = usePostHog();
 	const utils = api.useUtils();
 	const [loading, setLoading] = useState(false);
 	const { mutateAsync: createFile } = api.file.create.useMutation();
@@ -94,6 +92,11 @@ function Content({
 					teamId,
 				})),
 			);
+
+			// Capture the event in PostHog
+			posthog.capture("file_upload", {
+				distinctId: userId,
+			});
 		} finally {
 			setLoading(false);
 			setOpen(false);

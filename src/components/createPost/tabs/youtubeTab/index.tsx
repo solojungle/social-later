@@ -1,19 +1,20 @@
 "use client";
 
-// eslint-disable-next-line simple-import-sort/imports
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageIcon } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
+import { OnProgress, uploadFile } from "@/components/fileUpload";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { YouTubeFormSchema } from "@/schemas/new-file-schema";
-
-import { OnProgress, uploadFile } from "@/components/fileUpload";
+import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
-import { toast } from "sonner";
+
 import { DescriptionFormField } from "../../descriptionFormField";
 import { FileUpload, MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
@@ -34,6 +35,8 @@ export function YouTubeTab({
 	scheduleDate: Date;
 	selected?: any[];
 }) {
+	const { id: userId } = useUserStore();
+	const posthog = usePostHog();
 	const [loading, setLoading] = useState(false);
 	const { mutateAsync: createFile } = api.file.create.useMutation();
 	const { mutateAsync: fetchMultipartPresignedUrls } =
@@ -118,6 +121,11 @@ export function YouTubeTab({
 				published: true,
 				profileId,
 				authorId: teamId,
+			});
+
+			// Capture the event in PostHog
+			posthog.capture("youtube_upload", {
+				distinctId: userId,
 			});
 		} finally {
 			setLoading(false);
