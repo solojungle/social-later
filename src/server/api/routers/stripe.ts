@@ -116,6 +116,26 @@ export const stripeRouter = createTRPCRouter({
 			};
 		}),
 
+	cancelSubscription: protectedProcedure
+		.input(TeamSchema.pick({ id: true }))
+		.mutation(async ({ ctx, input }) => {
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.id },
+			});
+
+			if (!team) {
+				throw new Error("Team not found");
+			}
+
+			if (!team.stripeSubscriptionId) {
+				throw new Error("No Stripe subscription ID");
+			}
+
+			await stripe.subscriptions.cancel(team.stripeSubscriptionId);
+
+			return true;
+		}),
+
 	// getProducts: protectedProcedure.query(async () => {
 	// 	const resp = await stripe.products.list({
 	// 		limit: 3,

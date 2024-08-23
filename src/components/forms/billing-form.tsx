@@ -33,7 +33,7 @@ function Wrapper({ teamId }: { teamId: string }) {
 
 	return (
 		<Elements stripe={stripePromise} options={options}>
-			{Boolean(teamId) && <TeamPaymentMethodCard id={teamId} />}
+			{!!teamId && <TeamPaymentMethodCard id={teamId} />}
 			<TeamPaymentPlanCard />
 		</Elements>
 	);
@@ -42,5 +42,5 @@ function Wrapper({ teamId }: { teamId: string }) {
 export function BillingForm() {
 	const { id: teamId } = useSelectedTeamStore();
 
-	return Boolean(teamId) && <Wrapper teamId={teamId} />;
+	return !!teamId && <Wrapper teamId={teamId} />;
 }

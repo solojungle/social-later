@@ -37,6 +37,7 @@ export const userRouter = createTRPCRouter({
 						name: true,
 						url: true,
 						image: true,
+						stripeSubscriptionStatus: true,
 					},
 				},
 			},

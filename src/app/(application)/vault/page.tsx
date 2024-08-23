@@ -3,13 +3,14 @@
 import CreateTeamButton from "@/components/createTeamButton";
 import { FeaturePreview } from "@/components/featurePreview";
 import { MediaPageContent } from "@/components/mediaPage";
+import { ResumeSubscription } from "@/components/resumePlan";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
 
 export default function MediaPage() {
 	const { id: userId } = useUserStore();
-	const { id: teamId } = useSelectedTeamStore();
+	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
 
 	if (!userId) {
 		return (
@@ -42,6 +43,16 @@ export default function MediaPage() {
 				</FeaturePreview>
 			</div>
 		);
+	}
+
+	// Check if the teams subscription is active
+	// If the team subscription is not active, show the upgrade button
+	if (
+		!stripeSubscriptionStatus ||
+		stripeSubscriptionStatus !== "active" ||
+		!teamId
+	) {
+		return <ResumeSubscription teamId={teamId} />;
 	}
 
 	return (

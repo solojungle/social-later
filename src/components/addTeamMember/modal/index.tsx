@@ -31,6 +31,8 @@ import {
 } from "@/schemas/invitation-schema";
 import { useInvitationsStore } from "@/stores/invitations";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamMembersStore } from "@/stores/team-members";
+import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 import {
@@ -44,6 +46,11 @@ import {
 function Content() {
 	const { addInvitation } = useInvitationsStore();
 	const [loading, setLoading] = useState(false);
+	const { members } = useTeamMembersStore();
+	const { id: userId } = useUserStore();
+	const { id: teamId } = useSelectedTeamStore();
+
+	const userRole = members.find((member) => member.id === userId)?.role;
 
 	const createInvitation = api.invitation.create.useMutation({
 		onSuccess: (input) => {
@@ -57,8 +64,6 @@ function Content() {
 			setLoading(false);
 		},
 	});
-
-	const { id: selectedTeamId } = useSelectedTeamStore();
 
 	const defaultValues = {
 		email: "",
@@ -77,7 +82,7 @@ function Content() {
 		// Add teamId to the input
 		const input = {
 			...data,
-			teamId: selectedTeamId,
+			teamId,
 		};
 
 		createInvitation.mutate(input);
@@ -117,7 +122,9 @@ function Content() {
 									</FormControl>
 									<SelectContent>
 										<SelectItem value={UserRole.MEMBER}>Member</SelectItem>
-										<SelectItem value={UserRole.OWNER}>Owner</SelectItem>
+										{userRole === "OWNER" && (
+											<SelectItem value={UserRole.OWNER}>Owner</SelectItem>
+										)}
 									</SelectContent>
 								</Select>
 								<FormMessage />

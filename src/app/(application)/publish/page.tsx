@@ -4,13 +4,14 @@ import AddSocialProfile from "@/components/addSocialProfileButton";
 import CreateTeamButton from "@/components/createTeamButton";
 import { FeaturePreview } from "@/components/featurePreview";
 import { PublishPageContent } from "@/components/publishPageContent";
+import { ResumeSubscription } from "@/components/resumePlan";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { useUserStore } from "@/stores/user";
 
 export default function PublishPage() {
-	const { id } = useSelectedTeamStore();
+	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
 	const { id: userId } = useUserStore();
 
@@ -22,7 +23,7 @@ export default function PublishPage() {
 		);
 	}
 
-	if (!id || id.length === 0) {
+	if (!teamId || teamId.length === 0) {
 		return (
 			<div className="flex flex-col items-center justify-center">
 				<FeaturePreview
@@ -49,6 +50,16 @@ export default function PublishPage() {
 				</FeaturePreview>
 			</div>
 		);
+	}
+
+	// Check if the teams subscription is active
+	// If the team subscription is not active, show the upgrade button
+	if (
+		!stripeSubscriptionStatus ||
+		stripeSubscriptionStatus !== "active" ||
+		!teamId
+	) {
+		return <ResumeSubscription teamId={teamId} />;
 	}
 
 	// If the user hasn't added any social profiles, show the add social profile button

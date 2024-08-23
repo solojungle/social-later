@@ -12,6 +12,7 @@ const defaultValues = {
 	name: "",
 	url: "",
 	image: "",
+	subscriptionStatus: "",
 };
 
 export const useSelectedTeamStore = create<SelectedTeamStore>()((set) => ({

@@ -24,7 +24,7 @@ export default async function ApplicationLayout({
 	return (
 		<div className={`h-screen font-sans ${inter.variable}`}>
 			<SiteHeader />
-			<ResizableLayout navCollapsedSize={0}>{children}</ResizableLayout>
+			<ResizableLayout>{children}</ResizableLayout>
 		</div>
 	);
 }

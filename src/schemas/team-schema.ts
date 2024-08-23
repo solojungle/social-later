@@ -20,6 +20,7 @@ export const TeamSchema = z.object({
 			message: "URL must not be longer than 48 characters.",
 		}),
 	image: z.string(),
+	stripeSubscriptionStatus: z.string().optional(),
 });
 
 export type TeamSchemaValues = z.infer<typeof TeamSchema>;
@@ -29,6 +30,7 @@ export const teamStoreDefaultValues: TeamSchemaValues = {
 	name: "",
 	url: "",
 	image: "",
+	stripeSubscriptionStatus: "",
 };
 
 export const TeamCreationSchema = z.object({
