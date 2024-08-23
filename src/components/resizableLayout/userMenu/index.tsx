@@ -1,10 +1,9 @@
-/* eslint-disable simple-import-sort/imports */
+// eslint-disable-next-line simple-import-sort/imports
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { InterfaceIcons } from "@/components/ui/icons";
 import {
 	Tooltip,
@@ -18,7 +17,15 @@ import { useUserStore } from "@/stores/user";
 export function CollapsibleUserMenu() {
 	const { image, name } = useUserStore();
 	const [loading, setLoading] = useState(false);
+	const [mounted, setMounted] = useState(false);
 	const router = useRouter();
+
+	// Ensuring that dynamic elements only render on the client
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) return null; // Avoid rendering during SSR
 
 	return (
 		<TooltipProvider delayDuration={0}>
@@ -26,7 +33,7 @@ export function CollapsibleUserMenu() {
 				<Avatar className="h-9 w-9 border border-border">
 					<AvatarImage alt="" src={image} />
 					<AvatarFallback className="text-xs">
-						{name.split(" ").map((n: string) => n[0])}
+						{name?.split(" ").map((n: string) => n[0])}
 					</AvatarFallback>
 				</Avatar>
 
@@ -48,10 +55,9 @@ export function CollapsibleUserMenu() {
 								)}
 							>
 								<div className="flex h-10 w-10 items-center justify-center rounded-lg">
-									{loading && (
+									{loading ? (
 										<InterfaceIcons.Loading className="h-5 w-5 animate-spin text-muted-foreground" />
-									)}
-									{!loading && (
+									) : (
 										<InterfaceIcons.LogOut className="h-5 w-5 shrink-0" />
 									)}
 								</div>

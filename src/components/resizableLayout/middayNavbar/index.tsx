@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 import { InterfaceIcons } from "@/components/ui/icons";
 import {
@@ -12,38 +11,18 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useTeamMembersStore } from "@/stores/team-members";
+import { useUserStore } from "@/stores/user";
 
 const icons: { [key: string]: (props: { className?: string }) => JSX.Element } =
 	{
-		"/nexus": (props) => <InterfaceIcons.Pages.Nexus {...props} />,
-		"/vault": (props) => <InterfaceIcons.Pages.Vault {...props} />,
-		"/settings": (props) => <InterfaceIcons.Settings {...props} />,
-		"/publish": (props) => <InterfaceIcons.Pages.Publish {...props} />,
-		"/analytics": (props) => <InterfaceIcons.Pages.Analytics {...props} />,
+		Nexus: (props) => <InterfaceIcons.Pages.Nexus {...props} />,
+		Vault: (props) => <InterfaceIcons.Pages.Vault {...props} />,
+		Settings: (props) => <InterfaceIcons.Settings {...props} />,
+		Publish: (props) => <InterfaceIcons.Pages.Publish {...props} />,
+		Analytics: (props) => <InterfaceIcons.Pages.Analytics {...props} />,
 	};
-
-const defaultItems = [
-	{
-		path: "/nexus",
-		name: "Nexus",
-	},
-	{
-		path: "/publish",
-		name: "Publish",
-	},
-	{
-		path: "/analytics",
-		name: "Analytics",
-	},
-	{
-		path: "/vault",
-		name: "Vault",
-	},
-	{
-		path: "/settings",
-		name: "Settings",
-	},
-];
 
 interface ItemProps {
 	item: { path: string; name: string };
@@ -51,7 +30,7 @@ interface ItemProps {
 }
 
 const Item = ({ item, isActive }: ItemProps) => {
-	const Icon = icons[item.path];
+	const Icon = icons[item.name];
 	return (
 		<TooltipProvider delayDuration={70}>
 			<Link prefetch href={item.path}>
@@ -89,7 +68,27 @@ const Item = ({ item, isActive }: ItemProps) => {
 };
 
 export function MainMenu() {
-	const [items] = useState(defaultItems);
+	const { id: teamId } = useSelectedTeamStore();
+	const { members } = useTeamMembersStore();
+	const { id: userId } = useUserStore();
+
+	const userRole = members.find((member) => member.id === userId)?.role;
+
+	const defaultItems = [
+		{ path: "/nexus", name: "Nexus" },
+		{ path: "/publish", name: "Publish" },
+		{ path: "/analytics", name: "Analytics" },
+		{ path: "/vault", name: "Vault" },
+		{ path: `/teams/${teamId}/settings`, name: "Settings" },
+	];
+
+	const filteredItems = defaultItems.filter((item) => {
+		if (item.name === "Settings") {
+			return userRole === "OWNER" && teamId;
+		}
+		return true;
+	});
+
 	const pathname = usePathname();
 	const part = pathname?.split("/")[1];
 
@@ -97,7 +96,7 @@ export function MainMenu() {
 		<div className="mt-6">
 			<nav>
 				<div className="flex flex-col gap-1.5">
-					{items.map((item) => {
+					{filteredItems.map((item) => {
 						const isActive =
 							(pathname === "/" && item.path === "/") ||
 							(pathname !== "/" && item.path.startsWith(`/${part}`));
