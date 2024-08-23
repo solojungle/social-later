@@ -303,60 +303,56 @@ export const socialProfilesRouter = createTRPCRouter({
 				thumbnailUrl: z.string().optional(),
 				title: z.string(),
 				description: z.string().optional(),
+				scheduledTime: z.string().optional(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
 			const { profileId: ytAccountId } = input;
 
-			// Make sure the user is apart of the team, and that the twitter account belongs to the team
-			const ytAccount = await ctx.db.socialProfile.findUnique({
-				where: {
-					id: ytAccountId,
+			const ytAccount = await fetchYouTubeChannel(ctx.db, ytAccountId);
+
+			await verifyUserTeamMembership(
+				ctx.db,
+				ctx.session.user.id,
+				ytAccount.teamId,
+			);
+
+			const yt = initializeYouTubeDataClient(ytAccount);
+
+			const requestBody: any = {
+				snippet: {
+					title: input.title,
+					description: input.description,
 				},
-			});
+			};
 
-			if (!ytAccount) {
-				throw new Error("YouTube account does not exist");
+			// If scheduledTime is provided, set the publishAt field
+			if (input.scheduledTime) {
+				requestBody.status.publishAt = new Date(
+					input.scheduledTime,
+				).toISOString();
 			}
-
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: ytAccount.teamId,
-					userId: ctx.session.user.id,
-				},
-			});
-
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
-
-			const clientAuth = getYTClientAuth({
-				accessToken: ytAccount.accessToken,
-				refreshToken: ytAccount.refreshToken,
-				expiresAt:
-					ytAccount.expiresAt.getTime() - new Date(Date.now()).getTime(),
-			});
-
-			const yt = youtube({
-				version: "v3",
-				auth: clientAuth,
-			});
 
 			const response = await yt.videos.insert({
 				part: ["snippet", "status"],
-				requestBody: {
-					snippet: {
-						title: input.title,
-						description: input.description,
-					},
-					status: {
-						privacyStatus: "public",
-					},
-				},
+				requestBody,
 				media: {
 					body: await getVideoFileBuffer({ url: input.videoUrl }),
 				},
 			});
+
+			// If no scheduledTime is provided, make the video public immediately
+			if (!input.scheduledTime) {
+				await yt.videos.update({
+					part: ["status"],
+					requestBody: {
+						id: response.data.id,
+						status: {
+							privacyStatus: "public",
+						},
+					},
+				});
+			}
 
 			return response;
 		}),

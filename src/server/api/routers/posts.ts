@@ -9,36 +9,45 @@ import { createAttachments } from "./utils/attachments";
 export const postRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(
-			PostsSchema.omit({ id: true, attachment: true }).extend({
+			PostsSchema.omit({
+				id: true,
+				attachment: true,
+				status: true,
+				published: true,
+			}).extend({
 				fileIds: z.array(z.string()).optional(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			// Because we have a file we must link the file to the post
-			// as an attachment
-			if (input.fileIds && input.fileIds.length > 0) {
+			const { fileIds, scheduledFor, ...postData } = input;
+
+			// Determine the status and published flag based on scheduledFor
+			const status = scheduledFor ? "scheduled" : "published";
+			const published = !scheduledFor;
+
+			// Create the post
+			const post = await ctx.db.post.create({
+				data: {
+					...postData,
+					status,
+					scheduledFor,
+					published,
+				},
+			});
+
+			// If there are files, create attachments
+			if (fileIds && fileIds.length > 0) {
 				const files = await ctx.db.file.findMany({
 					where: {
 						id: {
-							in: input.fileIds,
+							in: fileIds,
 						},
 					},
 				});
 
-				if (!files) {
-					throw new Error("Files do not exist");
+				if (!files || files.length !== fileIds.length) {
+					throw new Error("One or more files do not exist");
 				}
-
-				// While we create the post we must remove the fileId
-				// from the input object
-				// eslint-disable-next-line no-param-reassign
-				delete input.fileIds;
-
-				const post = await ctx.db.post.create({
-					data: {
-						...input,
-					},
-				});
 
 				await createAttachments(
 					files.map((file) => ({
@@ -47,16 +56,9 @@ export const postRouter = createTRPCRouter({
 						fileId: file.id,
 					})),
 				);
-
-				return post;
 			}
 
-			// There are no files so we can just create the post
-			return ctx.db.post.create({
-				data: {
-					...input,
-				},
-			});
+			return post;
 		}),
 
 	delete: protectedProcedure

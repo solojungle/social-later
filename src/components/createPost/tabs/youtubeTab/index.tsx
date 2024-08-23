@@ -49,18 +49,7 @@ export function YouTubeTab({
 	const { mutateAsync: uploadVideo } =
 		api.socials.uploadYouTubeVideo.useMutation({});
 	const utils = api.useUtils();
-	const createPost = api.post.create.useMutation({
-		onSuccess() {
-			toast.success("Successfully created your post!", {});
-		},
-		onSettled() {
-			setLoading(false);
-			setOpen(false);
-
-			// Invalidate the query so we can refetch the data
-			utils.post.getAll.invalidate();
-		},
-	});
+	const createPost = api.post.create.useMutation({});
 
 	type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
 	const form = useForm<FormSchemaValues>({
@@ -76,8 +65,6 @@ export function YouTubeTab({
 
 	async function onSubmit(data: any) {
 		setLoading(true);
-
-		const scheduledDate = data.date;
 
 		try {
 			// Instead of uploading only one file, we need to upload all the files
@@ -105,6 +92,7 @@ export function YouTubeTab({
 				description: data.description,
 				thumbnailUrl: thumbnail?.url ?? "",
 				videoUrl: video?.url ?? "",
+				scheduledTime: data.date ? data.date.toISOString() : undefined,
 			});
 
 			if (!result || !result.id) {
@@ -113,12 +101,10 @@ export function YouTubeTab({
 
 			createPost.mutate({
 				title: data.title || "",
-				content: data.content || "",
+				content: data.description || "",
 				fileIds: mediaFiles.map((file) => file.id),
-				status: "published",
 				externalPostId: result.id,
-				scheduledFor: scheduledDate,
-				published: true,
+				scheduledFor: data.date || undefined,
 				profileId,
 				authorId: teamId,
 			});
@@ -126,9 +112,18 @@ export function YouTubeTab({
 			// Capture the event in PostHog
 			posthog.capture("youtube_upload", {
 				distinctId: userId,
+				scheduled: !!data.date,
 			});
+
+			toast.success("Successfully created your post!");
+		} catch (error) {
+			toast.error("Failed to upload video. Please try again.");
 		} finally {
 			setLoading(false);
+			setOpen(false);
+
+			// Invalidate the query so we can refetch the data
+			utils.post.getAll.invalidate();
 		}
 	}
 
