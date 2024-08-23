@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/stores/user";
+import Link from "next/link";
 
 export function CollapsibleUserMenu() {
 	const { image, name } = useUserStore();
@@ -30,12 +31,19 @@ export function CollapsibleUserMenu() {
 	return (
 		<TooltipProvider delayDuration={0}>
 			<div className="flex flex-col items-center justify-center space-y-2">
-				<Avatar className="h-9 w-9 border border-border">
-					<AvatarImage alt="" src={image} />
-					<AvatarFallback className="text-xs">
-						{name?.split(" ").map((n: string) => n[0])}
-					</AvatarFallback>
-				</Avatar>
+				<Tooltip>
+					<Link prefetch href="/settings">
+						<TooltipTrigger>
+							<Avatar className="h-9 w-9 border border-border">
+								<AvatarImage alt="" src={image} />
+								<AvatarFallback className="text-xs">
+									{name?.split(" ").map((n: string) => n[0])}
+								</AvatarFallback>
+							</Avatar>
+							<TooltipContent side="right">User Settings</TooltipContent>
+						</TooltipTrigger>
+					</Link>
+				</Tooltip>
 
 				<button
 					type="button"
