@@ -1,8 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-import { formatNumber } from "../viewsComparisons";
+import { formatNumber } from "@/components/graphs/view-comparisons";
+import { Button } from "@/components/ui/button";
 
 type Props = {
 	thumbnail: string;
@@ -37,9 +38,11 @@ export function MostRecentVideo({ thumbnail, title, views, url }: Props) {
 					</div>
 				</div>
 			</div>
-			<Button className="w-full" size="sm" disabled>
-				More video analytics
-			</Button>
+			<Link href="/analytics">
+				<Button className="w-full" size="sm" disabled>
+					More video analytics
+				</Button>
+			</Link>
 		</div>
 	);
 }

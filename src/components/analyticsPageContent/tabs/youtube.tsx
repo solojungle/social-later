@@ -1,12 +1,11 @@
 "use client";
 
+import { AudienceGrowth } from "@/components/graphs/audience-growth";
+import { ViewsComparisons } from "@/components/graphs/view-comparisons";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
-
-import { AudienceGrowth } from "../audienceGrowth";
 import { MostRecentVideo } from "../mostRecentVideo";
-import { ViewsComparisons } from "../viewsComparisons";
 import { YouTubePerformanceSummary } from "../youTubePerformanceSummary";
 
 export const YouTubeAnalyticsTab = () => {
