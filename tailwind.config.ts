@@ -93,5 +93,10 @@ export default {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		require("@vidstack/react/tailwind.cjs")({
+			prefix: "media",
+		}),
+	],
 } satisfies Config;
