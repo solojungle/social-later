@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { formatNumber } from "@/components/graphs/view-comparisons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Select,
@@ -84,25 +85,28 @@ export function VideoRank() {
 						<SelectContent>
 							<SelectItem value="all">All Videos</SelectItem>
 							<SelectItem value="short">Shorts</SelectItem>
-							<SelectItem value="long">Long Form</SelectItem>
+							<SelectItem value="long">Long</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
 			</CardHeader>
 			<CardContent className="flex flex-col space-y-2">
-				{rankedVideos.map((video) => (
-					<div key={video.rank} className="flex items-center justify-between">
-						<div className="flex items-center space-x-2">
-							<span>{video.rank}</span>
+				<ol className="grid w-full grid-cols-[auto,40px,1fr,auto] items-center gap-2">
+					{rankedVideos.map((video) => (
+						<li className="contents" key={video.rank}>
+							<span className="text-xs">{video.rank}</span>
 							<img
 								src={video.thumbnail}
-								className="aspect-video rounded-lg text-xs"
+								alt={video.title}
+								className="aspect-video h-10 overflow-hidden rounded-sm bg-red-500"
 							/>
-							<h3 className="text-sm font-semibold">{video.title}</h3>
-							<p className="text-xs text-gray-500">{video.views} views</p>
-						</div>
-					</div>
-				))}
+							<h3 className="text-sm">{video.title}</h3>
+							<p className="justify-self-end text-xs font-semibold">
+								{formatNumber(video.views)}
+							</p>
+						</li>
+					))}
+				</ol>
 			</CardContent>
 		</Card>
 	);

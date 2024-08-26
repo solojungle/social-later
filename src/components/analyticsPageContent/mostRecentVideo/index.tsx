@@ -1,18 +1,37 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 
 import { formatNumber } from "@/components/graphs/view-comparisons";
 import { Button } from "@/components/ui/button";
 
 type Props = {
+	id: string;
 	thumbnail: string;
 	title: string;
 	url: string;
 	views: string;
 };
 
-export function MostRecentVideo({ thumbnail, title, views, url }: Props) {
+export function MostRecentVideo({ thumbnail, title, views, url, id }: Props) {
+	const router = useRouter();
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+
+	// Get a new searchParams string by merging the current
+	// searchParams with a provided key/value pair
+	const createQueryString = useCallback(
+		(name: string, value: string) => {
+			const params = new URLSearchParams(searchParams.toString());
+			params.set(name, value);
+
+			return params.toString();
+		},
+		[searchParams],
+	);
+
 	if (!url) {
 		return null;
 	}
@@ -39,7 +58,16 @@ export function MostRecentVideo({ thumbnail, title, views, url }: Props) {
 				</div>
 			</div>
 			<Link href="/analytics">
-				<Button className="w-full" size="sm" disabled>
+				<Button
+					className="w-full"
+					size="sm"
+					// onClick={() => router.push(`${pathname}?${searchParams.toString()}`)}
+					onClick={(e) => {
+						e.preventDefault();
+
+						router.push(`${pathname}?${createQueryString("v", id)}`);
+					}}
+				>
 					More video analytics
 				</Button>
 			</Link>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
+
 import AddSocialProfile from "@/components/addSocialProfileButton";
 import { AnalyticsPageContent } from "@/components/analyticsPageContent";
 import CreateTeamButton from "@/components/createTeamButton";
@@ -10,10 +12,15 @@ import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { useUserStore } from "@/stores/user";
 
+import { SingleVideoAnalyticsContent } from "../../../components/singleVideoContent";
+
 export default function AnalyticsPage() {
 	const { id: userId } = useUserStore();
 	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
+
+	const searchParams = useSearchParams();
+	const video = searchParams.get("v");
 
 	if (!userId) {
 		return (
@@ -79,6 +86,10 @@ export default function AnalyticsPage() {
 				</FeaturePreview>
 			</div>
 		);
+	}
+
+	if (video) {
+		return <SingleVideoAnalyticsContent video={video} />;
 	}
 
 	return <AnalyticsPageContent />;

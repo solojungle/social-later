@@ -18,21 +18,6 @@ export interface Totals {
 	increase: Increase;
 }
 
-// type AudienceGrowthProps = {
-// 	values:
-// 		| {
-// 				followers: Totals;
-// 				profileClicks: Totals;
-// 				retweets: Totals;
-// 				replies: Totals;
-// 				likes: Totals;
-// 				quotes: Totals;
-// 				impressions: Totals;
-// 				urlClicks: Totals;
-// 		  }
-// 		| undefined;
-// };
-
 export const AnalyticsPageContent = () => {
 	const { profiles, currentProfileId } = useSocialProfilesStore();
 

@@ -5,6 +5,7 @@ import { ViewsComparisons } from "@/components/graphs/view-comparisons";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
+
 import { MostRecentVideo } from "../mostRecentVideo";
 import { YouTubePerformanceSummary } from "../youTubePerformanceSummary";
 
@@ -62,6 +63,7 @@ export const YouTubeAnalyticsTab = () => {
 			</div>
 			<div className="col-span-1 space-y-2">
 				<MostRecentVideo
+					id={data.last10Videos[0]?.id ?? ""}
 					thumbnail={data.last10Videos[0]?.thumbnail ?? ""}
 					title={data.last10Videos?.[0]?.title ?? ""}
 					url={data.last10Videos?.[0]?.url ?? ""}
