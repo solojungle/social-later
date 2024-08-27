@@ -96,6 +96,29 @@ function PausePlanButton({ teamId }: { teamId: string }) {
 	);
 }
 
+function ResumePlanButton({ teamId }: { teamId: string }) {
+	const [loading, setLoading] = useState(false);
+	const { mutate: resumeSubscription } =
+		api.stripe.resumeSubscription.useMutation();
+	return (
+		<Button
+			disabled={loading}
+			onClick={() => {
+				setLoading(true);
+				resumeSubscription({
+					teamId,
+				});
+				setLoading(false);
+			}}
+		>
+			{loading && (
+				<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+			)}
+			Resume Plan
+		</Button>
+	);
+}
+
 export function TeamPaymentPlanCard() {
 	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
 
@@ -129,6 +152,9 @@ export function TeamPaymentPlanCard() {
 							<Button variant="outline">Update Plan</Button>
 							{stripeSubscriptionStatus === "active" && (
 								<PausePlanButton teamId={teamId} />
+							)}
+							{stripeSubscriptionStatus === "paused" && (
+								<ResumePlanButton teamId={teamId} />
 							)}
 						</div>
 					</div>
