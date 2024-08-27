@@ -4,16 +4,6 @@ import { Separator } from "@radix-ui/react-separator";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import {
-	AlertDialog,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -23,24 +13,19 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
-
-// const data = [
-// 	{
-// 		item: "Team Seats",
-// 		quantity: 34,
-// 		unitPrice: 20,
-// 		price: "$680",
-// 	},
-// 	{
-// 		item: "Channels",
-// 		quantity: 3,
-// 		unitPrice: 20,
-// 		price: "$60",
-// 	},
-// ];
 
 export function getCurrentDate(time: number) {
 	const newDate = new Date(time);
@@ -54,36 +39,46 @@ export function getCurrentDate(time: number) {
 	return formattedDate;
 }
 
-function PausePlanButton() {
+function PausePlanButton({ teamId }: { teamId: string }) {
 	const [show, setShow] = useState(false);
 	const [loading, setLoading] = useState(false);
 
-	const { mutateAsync: cancelSubscription } =
+	if (!teamId) {
+		return null;
+	}
+
+	const { mutate: cancelSubscription } =
 		api.stripe.cancelSubscription.useMutation();
 
 	return (
-		<AlertDialog open={show} onOpenChange={setShow}>
-			<AlertDialogTrigger asChild>
+		<Dialog open={show} onOpenChange={setShow}>
+			<DialogTrigger asChild>
 				<Button variant="destructive">Pause Plan</Button>
-			</AlertDialogTrigger>
-			<AlertDialogContent>
-				<AlertDialogHeader>
-					<AlertDialogTitle>
-						Are you sure you want to pause your plan?
-					</AlertDialogTitle>
-					<AlertDialogDescription>
+			</DialogTrigger>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Are you sure you want to pause your plan?</DialogTitle>
+					<DialogDescription>
 						You will not be able to use the features of the plan until you
 						resume it.
-					</AlertDialogDescription>
-				</AlertDialogHeader>
-				<AlertDialogFooter>
-					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					</DialogDescription>
+				</DialogHeader>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button type="button" variant="secondary">
+							Close
+						</Button>
+					</DialogClose>
 					<Button
 						disabled={loading}
 						variant="destructive"
 						onClick={() => {
 							setLoading(true);
-							// cancelSubscription({});
+
+							cancelSubscription({
+								teamId,
+							});
+
 							setLoading(false);
 
 							setShow(false);
@@ -95,9 +90,9 @@ function PausePlanButton() {
 						)}
 						Pause
 					</Button>
-				</AlertDialogFooter>
-			</AlertDialogContent>
-		</AlertDialog>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
@@ -132,7 +127,9 @@ export function TeamPaymentPlanCard() {
 						</span>
 						<div className="space-x-1">
 							<Button variant="outline">Update Plan</Button>
-							{stripeSubscriptionStatus === "active" && <PausePlanButton />}
+							{stripeSubscriptionStatus === "active" && (
+								<PausePlanButton teamId={teamId} />
+							)}
 						</div>
 					</div>
 				</div>

@@ -57,17 +57,8 @@ export function MostRecentVideo({ thumbnail, title, views, url, id }: Props) {
 					</div>
 				</div>
 			</div>
-			<Link href="/analytics">
-				<Button
-					className="w-full"
-					size="sm"
-					// onClick={() => router.push(`${pathname}?${searchParams.toString()}`)}
-					onClick={(e) => {
-						e.preventDefault();
-
-						router.push(`${pathname}?${createQueryString("v", id)}`);
-					}}
-				>
+			<Link href={`${pathname}?${createQueryString("v", id)}`}>
+				<Button className="w-full" size="sm">
 					More video analytics
 				</Button>
 			</Link>

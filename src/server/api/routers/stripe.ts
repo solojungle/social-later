@@ -117,10 +117,10 @@ export const stripeRouter = createTRPCRouter({
 		}),
 
 	cancelSubscription: protectedProcedure
-		.input(TeamSchema.pick({ id: true }))
+		.input(z.object({ teamId: z.string() }))
 		.mutation(async ({ ctx, input }) => {
 			const team = await ctx.db.team.findUnique({
-				where: { id: input.id },
+				where: { id: input.teamId },
 			});
 
 			if (!team) {
