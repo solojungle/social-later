@@ -1,7 +1,19 @@
 "use client";
 
 import { Separator } from "@radix-ui/react-separator";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import {
+	AlertDialog,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -11,6 +23,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -41,8 +54,55 @@ export function getCurrentDate(time: number) {
 	return formattedDate;
 }
 
+function PausePlanButton() {
+	const [show, setShow] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	const { mutateAsync: cancelSubscription } =
+		api.stripe.cancelSubscription.useMutation();
+
+	return (
+		<AlertDialog open={show} onOpenChange={setShow}>
+			<AlertDialogTrigger asChild>
+				<Button variant="destructive">Pause Plan</Button>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>
+						Are you sure you want to pause your plan?
+					</AlertDialogTitle>
+					<AlertDialogDescription>
+						You will not be able to use the features of the plan until you
+						resume it.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<Button
+						disabled={loading}
+						variant="destructive"
+						onClick={() => {
+							setLoading(true);
+							// cancelSubscription({});
+							setLoading(false);
+
+							setShow(false);
+							toast.success("Your plan has been paused.");
+						}}
+					>
+						{loading && (
+							<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+						)}
+						Pause
+					</Button>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}
+
 export function TeamPaymentPlanCard() {
-	const { id: teamId } = useSelectedTeamStore();
+	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
 
 	const { data: resp } = api.stripe.getSubscription.useQuery({
 		id: teamId,
@@ -70,36 +130,11 @@ export function TeamPaymentPlanCard() {
 						<span className="text-sm font-medium">
 							Current billing cycle ({currentPeriodStart} - {currentPeriodEnd}).
 						</span>
-						<div>
+						<div className="space-x-1">
 							<Button variant="outline">Update Plan</Button>
+							{stripeSubscriptionStatus === "active" && <PausePlanButton />}
 						</div>
 					</div>
-					{/* <Table>
-						<TableHeader>
-							<TableRow className="text-xs uppercase">
-								<TableHead>Item</TableHead>
-								<TableHead>Quantity</TableHead>
-								<TableHead>Unit Price</TableHead>
-								<TableHead className="text-right">Price</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{data.map((card) => (
-								<TableRow key={card.item}>
-									<TableCell>{card.item}</TableCell>
-									<TableCell>{card.quantity}</TableCell>
-									<TableCell>{card.unitPrice}</TableCell>
-									<TableCell className="text-right">{card.price}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-						<TableFooter>
-							<TableRow>
-								<TableCell colSpan={3}>Total</TableCell>
-								<TableCell className="text-right">$2,500.00</TableCell>
-							</TableRow>
-						</TableFooter>
-					</Table> */}
 				</div>
 			</CardContent>
 			<div className="rounded-b-xl bg-muted">
