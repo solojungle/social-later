@@ -36,7 +36,9 @@ function formatPrice(amount: number | null, currency: string): string {
 export function RevenueTable({ passedData }: any) {
 	const data = passedData || defaultData;
 
-	const dailyAverage = data.reduce(
+	const last14Days = data.slice(-14);
+
+	const dailyAverage = last14Days.reduce(
 		(acc: any, row: any) => {
 			acc.estimatedRevenue += row.views * 2;
 			return acc;
@@ -44,7 +46,7 @@ export function RevenueTable({ passedData }: any) {
 		{ estimatedRevenue: 0 },
 	);
 
-	const weeklyAverage = data.reduce(
+	const weeklyAverage = last14Days.reduce(
 		(acc: any, row: any) => {
 			acc.estimatedRevenue += row.views * 2;
 			return acc;
@@ -63,7 +65,7 @@ export function RevenueTable({ passedData }: any) {
 						<TableRow>
 							<TableHead>Date</TableHead>
 							<TableHead>Views</TableHead>
-							<TableHead className="text-right">
+							<TableHead>
 								<TooltipProvider>
 									<Tooltip delayDuration={0}>
 										<TooltipTrigger>
@@ -89,7 +91,7 @@ export function RevenueTable({ passedData }: any) {
 						</TableRow>
 					</TableHeader>
 					<TableBody className="text-xs">
-						{data.map((row: any) => {
+						{last14Days.map((row: any) => {
 							const low = row.views * 0.25;
 							const high = row.views * 4;
 
@@ -108,7 +110,7 @@ export function RevenueTable({ passedData }: any) {
 										}).format(new Date(row.date))}
 									</TableCell>
 									<TableCell>{row.views.toLocaleString()}</TableCell>
-									<TableCell className="text-right">{range}</TableCell>
+									<TableCell className="text-left">{range}</TableCell>
 								</TableRow>
 							);
 						})}
@@ -116,13 +118,13 @@ export function RevenueTable({ passedData }: any) {
 					<TableFooter>
 						<TableRow>
 							<TableCell colSpan={2}>Daily Averages</TableCell>
-							<TableCell className="text-right">
+							<TableCell className="text-left">
 								{formatPrice(dailyAverage.estimatedRevenue, "USD")}
 							</TableCell>
 						</TableRow>
 						<TableRow>
 							<TableCell colSpan={2}>Weekly Averages</TableCell>
-							<TableCell className="text-right">
+							<TableCell className="text-left">
 								{formatPrice(weeklyAverage.estimatedRevenue, "USD")}
 							</TableCell>
 						</TableRow>

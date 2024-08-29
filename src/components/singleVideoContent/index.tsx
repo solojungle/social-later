@@ -40,7 +40,7 @@ export function SingleVideoAnalyticsContent({ post }: any) {
 				<VideoRank />
 			</div>
 			<div className="col-span-2 space-y-2">
-				<VideoPerformanceGraph />
+				<VideoPerformanceGraph passedData={data} />
 				<RevenueTable passedData={data} />
 			</div>
 		</div>
