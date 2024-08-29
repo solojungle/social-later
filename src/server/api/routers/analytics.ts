@@ -6,6 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 import {
 	fetchHistoricalData,
+	fetchHistoricViewsAndSubscribers,
 	fetchYouTubeChannel,
 	initializeYouTubeAnalyticsClient,
 	initializeYouTubeDataClient,
@@ -431,5 +432,67 @@ export const analyticsRouter = createTRPCRouter({
 				videoViews,
 				last10Videos,
 			};
+		}),
+
+	// Get analyrics for a specific video, including daily estimatedRevenue for the last two weeks, performance over time
+	getSingleVideoAnalytics: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+				postId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { profileId, postId } = input;
+			const { db, session } = ctx;
+
+			// Get the youtube channel, and verify the user is apart of the team
+			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+			await verifyUserTeamMembership(
+				db,
+				session.user.id,
+				youtubeChannel.teamId,
+			);
+
+			// Get the post, so we can find the published date, and use it to fetch historical data
+			const post = await db.post.findUnique({
+				where: {
+					id: postId,
+				},
+			});
+
+			if (!post) {
+				return [];
+			}
+
+			const youtubeAnalytics = initializeYouTubeAnalyticsClient(youtubeChannel);
+
+			// Fetch historical data, from when video was first uploaded
+			const startDate = new Date(post.scheduledFor).toISOString().split("T")[0];
+			const endDate = new Date().toISOString().split("T")[0];
+
+			if (!startDate || !endDate) {
+				return [];
+			}
+
+			const response = await fetchHistoricViewsAndSubscribers({
+				youtubeAnalytics,
+				startDate,
+				endDate,
+				videoId: post.externalPostId,
+			});
+
+			if (!response.data?.rows) {
+				return [];
+			}
+
+			// Transform historical data
+			const data = response.data.rows.map((row) => ({
+				date: row[0],
+				views: Number(row[1]),
+				subscribers_gained: Number(row[5]),
+			}));
+
+			return data;
 		}),
 });

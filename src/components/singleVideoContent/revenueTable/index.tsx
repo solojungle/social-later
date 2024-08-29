@@ -20,64 +20,10 @@ import {
 const defaultData = [
 	{
 		id: "0uOMuXbsZPU",
-		date: "01/01/2021",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		date: "01/01/2021",
-		views: 1000,
-		estimatedRevenue: 25000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		date: "01/01/2021",
-		views: 1000,
-		estimatedRevenue: 25000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		date: "01/01/2021",
-		views: 1000,
-		estimatedRevenue: 25000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		date: "01/01/2021",
-		views: 1000,
-		estimatedRevenue: 25000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		date: "01/01/2021",
-		views: 1000,
-		estimatedRevenue: 25000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		date: "01/01/2021",
-		views: 1000,
-		estimatedRevenue: 25000,
+		date: new Date(),
+		views: 0,
 	},
 ];
-
-const dailyAverage = defaultData.reduce(
-	(acc, row) => {
-		acc.views += row.views;
-		acc.estimatedRevenue += row.estimatedRevenue;
-		return acc;
-	},
-	{ views: 0, estimatedRevenue: 0 },
-);
-
-const weeklyAverage = defaultData.reduce(
-	(acc, row) => {
-		acc.views += row.views;
-		acc.estimatedRevenue += row.estimatedRevenue;
-		return acc;
-	},
-	{ views: 0, estimatedRevenue: 0 },
-);
 
 function formatPrice(amount: number | null, currency: string): string {
 	if (amount === null) return "";
@@ -87,7 +33,25 @@ function formatPrice(amount: number | null, currency: string): string {
 	}).format(amount / 100);
 }
 
-export function RevenueTable() {
+export function RevenueTable({ passedData }: any) {
+	const data = passedData || defaultData;
+
+	const dailyAverage = data.reduce(
+		(acc: any, row: any) => {
+			acc.estimatedRevenue += row.views * 2;
+			return acc;
+		},
+		{ estimatedRevenue: 0 },
+	);
+
+	const weeklyAverage = data.reduce(
+		(acc: any, row: any) => {
+			acc.estimatedRevenue += row.views * 2;
+			return acc;
+		},
+		{ estimatedRevenue: 0 },
+	);
+
 	return (
 		<Card className="rounded-sm shadow-none">
 			<CardHeader>
@@ -108,7 +72,15 @@ export function RevenueTable() {
 												<InfoIcon className="h-3 w-3" />
 											</div>
 										</TooltipTrigger>
-										<TooltipContent side="top">
+										<TooltipContent
+											side="top"
+											collisionPadding={{
+												top: 5,
+												right: 5,
+												bottom: 5,
+												left: 5,
+											}}
+										>
 											Estimated Earnings CPM is between $0.25 and $4.00
 										</TooltipContent>
 									</Tooltip>
@@ -116,19 +88,30 @@ export function RevenueTable() {
 							</TableHead>
 						</TableRow>
 					</TableHeader>
-					<TableBody>
-						{defaultData.map((row) => (
-							<TableRow key={row.id}>
-								<TableCell>{row.date}</TableCell>
-								<TableCell>{row.views.toLocaleString()}</TableCell>
-								<TableCell className="text-right">
-									{`${
-										(formatPrice(row.views * 0.25, "USD"),
-										+" - " + formatPrice(row.views * 4, "USD"))
-									}`}
-								</TableCell>
-							</TableRow>
-						))}
+					<TableBody className="text-xs">
+						{data.map((row: any) => {
+							const low = row.views * 0.25;
+							const high = row.views * 4;
+
+							const range = `${formatPrice(low, "USD")} - ${formatPrice(
+								high,
+								"USD",
+							)}`;
+
+							return (
+								<TableRow key={row.id}>
+									<TableCell>
+										{new Intl.DateTimeFormat("en-US", {
+											year: "2-digit",
+											month: "2-digit",
+											day: "2-digit",
+										}).format(new Date(row.date))}
+									</TableCell>
+									<TableCell>{row.views.toLocaleString()}</TableCell>
+									<TableCell className="text-right">{range}</TableCell>
+								</TableRow>
+							);
+						})}
 					</TableBody>
 					<TableFooter>
 						<TableRow>

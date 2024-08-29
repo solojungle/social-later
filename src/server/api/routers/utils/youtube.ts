@@ -251,3 +251,27 @@ export const fetchHistoricalData = async (
 
 	return historicalData;
 };
+
+export function fetchHistoricViewsAndSubscribers({
+	youtubeAnalytics,
+	startDate,
+	endDate,
+	videoId,
+}: {
+	youtubeAnalytics: youtubeAnalytics_v2.Youtubeanalytics;
+	startDate: string;
+	endDate: string;
+	videoId: string;
+}) {
+	const historicalRequest = {
+		dimensions: "day",
+		startDate,
+		endDate,
+		ids: "channel==MINE",
+		metrics: "views,subscribersGained",
+		sort: "day",
+		filter: `video==${videoId}`,
+	};
+
+	return youtubeAnalytics.reports.query(historicalRequest);
+}
