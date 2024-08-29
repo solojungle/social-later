@@ -1,3 +1,5 @@
+import { InfoIcon } from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Table,
@@ -8,13 +10,18 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const defaultData = [
 	{
 		id: "0uOMuXbsZPU",
 		date: "01/01/2021",
 		views: 1000,
-		estimatedRevenue: 25000,
 	},
 	{
 		id: "0uOMuXbsZPU",
@@ -92,7 +99,21 @@ export function RevenueTable() {
 						<TableRow>
 							<TableHead>Date</TableHead>
 							<TableHead>Views</TableHead>
-							<TableHead className="text-right">Estimated Revenue</TableHead>
+							<TableHead className="text-right">
+								<TooltipProvider>
+									<Tooltip delayDuration={0}>
+										<TooltipTrigger>
+											<div className="flex items-center gap-1">
+												<span>Estimated Revenue</span>
+												<InfoIcon className="h-3 w-3" />
+											</div>
+										</TooltipTrigger>
+										<TooltipContent side="top">
+											Estimated Earnings CPM is between $0.25 and $4.00
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -101,7 +122,10 @@ export function RevenueTable() {
 								<TableCell>{row.date}</TableCell>
 								<TableCell>{row.views.toLocaleString()}</TableCell>
 								<TableCell className="text-right">
-									{formatPrice(row.estimatedRevenue, "USD")}
+									{`${
+										(formatPrice(row.views * 0.25, "USD"),
+										+" - " + formatPrice(row.views * 4, "USD"))
+									}`}
 								</TableCell>
 							</TableRow>
 						))}

@@ -28,7 +28,7 @@ export function VideoOverview({
 					/>
 					<span>{title}</span>
 					<span className="text-xs text-muted-foreground">
-						Uploaded {formatDistanceToNow(new Date())}{" "}
+						Uploaded {formatDistanceToNow(new Date())} ago
 					</span>
 				</div>
 				<div className="flex flex-col space-y-2 text-sm">

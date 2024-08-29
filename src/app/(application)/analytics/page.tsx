@@ -89,7 +89,7 @@ export default function AnalyticsPage() {
 	}
 
 	if (video) {
-		return <SingleVideoAnalyticsContent video={video} />;
+		return <SingleVideoAnalyticsContent post={video} />;
 	}
 
 	return <AnalyticsPageContent />;
