@@ -80,9 +80,9 @@ export function VideoPerformanceGraph({ passedData }: any) {
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="since-published">Since published</SelectItem>
 							<SelectItem value="last-7-days">Last 7 days</SelectItem>
 							<SelectItem value="last-28-days">Last 28 days</SelectItem>
+							<SelectItem value="since-published">Since published</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
