@@ -7,6 +7,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import {
 	fetchHistoricalData,
 	fetchHistoricViewsAndSubscribers,
+	fetchRealTimeVideoData,
 	fetchYouTubeChannel,
 	initializeYouTubeAnalyticsClient,
 	initializeYouTubeDataClient,
@@ -466,6 +467,12 @@ export const analyticsRouter = createTRPCRouter({
 			}
 
 			const youtubeAnalytics = initializeYouTubeAnalyticsClient(youtubeChannel);
+			const youtubeDataClient = initializeYouTubeDataClient(youtubeChannel);
+
+			const { data: realtimeData } = await fetchRealTimeVideoData({
+				youtubeDataClient,
+				videoId: post.externalPostId,
+			});
 
 			// Fetch historical data, from when video was first uploaded
 			const startDate = new Date(post.scheduledFor).toISOString().split("T")[0];
@@ -493,6 +500,9 @@ export const analyticsRouter = createTRPCRouter({
 				subscribers_gained: Number(row[5]),
 			}));
 
-			return data;
+			return {
+				historicalData: data,
+				realtimeData: realtimeData.items?.[0]?.statistics ?? {},
+			};
 		}),
 });

@@ -20,7 +20,7 @@ export default function AnalyticsPage() {
 	const { profiles } = useSocialProfilesStore();
 
 	const searchParams = useSearchParams();
-	const video = searchParams.get("v");
+	const postId = searchParams.get("v");
 
 	if (!userId) {
 		return (
@@ -88,8 +88,8 @@ export default function AnalyticsPage() {
 		);
 	}
 
-	if (video) {
-		return <SingleVideoAnalyticsContent post={video} />;
+	if (postId) {
+		return <SingleVideoAnalyticsContent postId={postId} />;
 	}
 
 	return <AnalyticsPageContent />;

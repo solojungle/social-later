@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import { youtube_v3 } from "@googleapis/youtube";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { google, youtubeAnalytics_v2, youtubereporting_v1 } from "googleapis";
@@ -212,6 +213,21 @@ export const saveReports = async (
 
 	return result;
 };
+
+export async function fetchRealTimeVideoData({
+	youtubeDataClient,
+	videoId,
+}: {
+	youtubeDataClient: youtube_v3.Youtube;
+	videoId: string;
+}) {
+	const response = await youtubeDataClient.videos.list({
+		part: ["statistics"],
+		id: [videoId],
+	});
+
+	return response;
+}
 
 export const fetchHistoricalData = async (
 	youtubeAnalytics: youtubeAnalytics_v2.Youtubeanalytics,

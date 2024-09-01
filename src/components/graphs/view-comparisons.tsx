@@ -16,8 +16,13 @@ import {
 import { twColors } from "@/lib/tailwind";
 import { cn } from "@/lib/utils";
 
-export function formatNumber(num: any) {
-	// return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+export function formatNumber(n: string | number) {
+	if (!n) {
+		return "0";
+	}
+
+	const num = typeof n === "string" ? parseFloat(n) : n;
+
 	const numString = num.toString();
 	const numLength = numString.length;
 

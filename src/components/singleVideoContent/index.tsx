@@ -12,16 +12,27 @@ import { VideoOverview } from "./overview";
 import { RevenueTable } from "./revenueTable";
 import { VideoRank } from "./videoRank";
 
-export function SingleVideoAnalyticsContent({ post }: any) {
+export function SingleVideoAnalyticsContent({ postId }: any) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
-	const { data } = api.analytics.getSingleVideoAnalytics.useQuery(
+	const { data: analyticsData } =
+		api.analytics.getSingleVideoAnalytics.useQuery(
+			{
+				postId,
+				profileId,
+			},
+			{
+				enabled: !!profileId,
+			},
+		);
+
+	// Get the single post data from the API
+	const { data: postData } = api.post.get.useQuery(
 		{
-			postId: post,
-			profileId,
+			internalPostId: postId,
 		},
 		{
-			enabled: !!profileId,
+			enabled: !!postId,
 		},
 	);
 
@@ -35,13 +46,16 @@ export function SingleVideoAnalyticsContent({ post }: any) {
 							<span>All Videos</span>
 						</Button>
 					</Link>
-					<VideoOverview />
+					<VideoOverview
+						passedData={analyticsData?.realtimeData}
+						post={postData}
+					/>
 				</div>
 				<VideoRank />
 			</div>
 			<div className="col-span-2 space-y-2">
-				<VideoPerformanceGraph passedData={data} />
-				<RevenueTable passedData={data} />
+				<VideoPerformanceGraph passedData={analyticsData?.historicalData} />
+				<RevenueTable passedData={analyticsData?.historicalData} />
 			</div>
 		</div>
 	);

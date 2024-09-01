@@ -105,6 +105,63 @@ export const postRouter = createTRPCRouter({
 			});
 		}),
 
+	get: protectedProcedure
+		.input(
+			z.object({
+				internalPostId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			// Get the post
+			const post = await ctx.db.post.findFirst({
+				where: {
+					id: input.internalPostId,
+				},
+				include: {
+					attachment: {
+						include: {
+							file: true,
+						},
+					},
+				},
+			});
+
+			if (!post) {
+				throw new Error("Post does not exist");
+			}
+
+			// Get the file for each attachment
+			const attachmentsWithFiles = await Promise.all(
+				post.attachment.map(async (attachment) => {
+					const file = await ctx.db.file.findFirst({
+						where: { id: attachment.fileId },
+					});
+
+					if (!file) {
+						throw new Error("File does not exist");
+					}
+
+					const { key, extension, type } = file;
+					const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
+					const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
+
+					return {
+						...attachment,
+						url: `${baseUrl}.${extension}`,
+						thumbnail:
+							type === "video"
+								? `${thumbnailBaseUrl}.jpg`
+								: `${thumbnailBaseUrl}.${extension}`,
+					};
+				}),
+			);
+
+			return {
+				...post,
+				attachment: attachmentsWithFiles,
+			};
+		}),
+
 	getAll: protectedProcedure
 		.input(
 			z.object({
