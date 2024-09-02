@@ -51,7 +51,7 @@ export function SingleVideoAnalyticsContent({ postId }: any) {
 						post={postData}
 					/>
 				</div>
-				<VideoRank />
+				<VideoRank post={postData} />
 			</div>
 			<div className="col-span-2 space-y-2">
 				<VideoPerformanceGraph passedData={analyticsData?.historicalData} />

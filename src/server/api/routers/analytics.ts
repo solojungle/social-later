@@ -8,6 +8,7 @@ import {
 	fetchHistoricalData,
 	fetchHistoricViewsAndSubscribers,
 	fetchRealTimeVideoData,
+	fetchVideoMetrics,
 	fetchYouTubeChannel,
 	initializeYouTubeAnalyticsClient,
 	initializeYouTubeDataClient,
@@ -108,6 +109,53 @@ export const analyticsRouter = createTRPCRouter({
 			}
 
 			return analytics;
+		}),
+
+	rankVideoAmongLastTen: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+				videoId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { profileId, videoId } = input;
+			const { db } = ctx;
+
+			// 1. Fetch the YouTube channel
+			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+
+			// 2. Initialize YouTube clients
+			const youtubeDataClient = initializeYouTubeDataClient(youtubeChannel);
+			const youtubeAnalytics = initializeYouTubeAnalyticsClient(youtubeChannel);
+
+			// 3. Fetch the last 10 videos
+			const videosResponse = await youtubeDataClient.search.list({
+				part: ["id"],
+				channelId: youtubeChannel.username,
+				type: ["video"],
+				order: "date",
+				maxResults: 10,
+			});
+
+			const videoIds = videosResponse.data.items
+				?.map((item) => item.id?.videoId)
+				.filter(Boolean) as string[];
+
+			// 4. Fetch metrics for all videos
+			const allVideoMetrics = await fetchVideoMetrics(
+				youtubeDataClient,
+				youtubeAnalytics,
+				videoIds,
+			);
+
+			// 5. Sort videos by views (you can change this metric or use a combination)
+			const sortedVideos = allVideoMetrics.sort((a, b) => b.views - a.views);
+
+			// 6. Find the rank of the given video
+			const rank = sortedVideos.findIndex((video) => video.id === videoId) + 1;
+
+			return { rank, comparedVideos: sortedVideos };
 		}),
 
 	// getYouTubeAnalyticsUsingReports: protectedProcedure

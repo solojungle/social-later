@@ -3,6 +3,7 @@ import { youtube_v3 } from "@googleapis/youtube";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { google, youtubeAnalytics_v2, youtubereporting_v1 } from "googleapis";
+import { z } from "zod";
 
 import { getYTClientAuth } from "@/server/services/youtube/client";
 
@@ -290,4 +291,76 @@ export function fetchHistoricViewsAndSubscribers({
 	};
 
 	return youtubeAnalytics.reports.query(historicalRequest);
+}
+
+const VideoMetrics = z.object({
+	id: z.string(),
+	title: z.string(),
+	thumbnail: z.string(),
+	publishedAt: z.string(),
+	views: z.number(),
+	likes: z.number(),
+	comments: z.number(),
+	subscribersGained: z.number(),
+	isShort: z.boolean(),
+});
+
+export async function fetchVideoMetrics(
+	youtubeDataClient: youtube_v3.Youtube,
+	youtubeAnalytics: youtubeAnalytics_v2.Youtubeanalytics,
+	videoIds: string[],
+) {
+	// Fetch video details
+	const videoDetailsResponse = await youtubeDataClient.videos.list({
+		part: ["snippet", "statistics", "contentDetails"],
+		id: videoIds,
+	});
+
+	// Prepare date range for analytics
+	const oldestVideo = videoDetailsResponse.data.items?.reduce(
+		(oldest, current) => {
+			const currentDate = new Date(current.snippet?.publishedAt || "");
+			return currentDate < oldest ? currentDate : oldest;
+		},
+		new Date(),
+	);
+
+	if (!oldestVideo) {
+		return [];
+	}
+
+	const startDate = oldestVideo.toISOString().split("T")[0];
+	const endDate = new Date().toISOString().split("T")[0];
+
+	// Fetch analytics data for all videos in one call
+	const analyticsResponse = await youtubeAnalytics.reports.query({
+		ids: "channel==MINE",
+		startDate,
+		endDate,
+		metrics: "subscribersGained",
+		dimensions: "video",
+		filters: `video==${videoIds.join(",")}`,
+	});
+
+	// Process and combine the data
+	return (
+		videoDetailsResponse.data.items?.map((video) => {
+			const analyticsData = analyticsResponse.data.rows?.find(
+				(row) => row[0] === video.id,
+			);
+			const isShort = video.contentDetails?.duration === "PT60S"; // Assuming shorts are 60 seconds or less
+
+			return VideoMetrics.parse({
+				id: video.id || "",
+				title: video.snippet?.title || "",
+				thumbnail: video.snippet?.thumbnails?.default?.url || "",
+				publishedAt: video.snippet?.publishedAt || "",
+				views: Number(video.statistics?.viewCount) || 0,
+				likes: Number(video.statistics?.likeCount) || 0,
+				comments: Number(video.statistics?.commentCount) || 0,
+				subscribersGained: Number(analyticsData?.[1]) || 0,
+				isShort,
+			});
+		}) || []
+	);
 }

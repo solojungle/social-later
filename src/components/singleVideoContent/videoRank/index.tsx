@@ -11,60 +11,26 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
+import { api } from "@/trpc/react";
 
-const defaultData = [
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-	{
-		id: "0uOMuXbsZPU",
-		title: "The Weeknd - Save Your Tears (Official Music Video)",
-		thumbnail: "",
-		views: 1000,
-	},
-];
-
-export function VideoRank() {
+function VideoRankContent({ post }: any) {
+	const { currentProfileId: profileId } = useSocialProfilesStore();
 	const [type, setType] = useState("all");
+
+	const { data } = api.analytics.rankVideoAmongLastTen.useQuery(
+		{
+			profileId,
+			videoId: post.externalPostId,
+		},
+		{
+			enabled: !!profileId,
+		},
+	);
+
+	console.log(data);
+
+	const defaultData = data?.comparedVideos ?? [];
 
 	const rankedVideos = defaultData.map((video, index) => {
 		return {
@@ -90,18 +56,29 @@ export function VideoRank() {
 					</Select>
 				</div>
 			</CardHeader>
-			<CardContent className="flex flex-col space-y-2">
-				<ol className="grid w-full grid-cols-[auto,40px,1fr,auto] items-center gap-2">
+			<CardContent>
+				<ol className="space-y-2">
 					{rankedVideos.map((video) => (
-						<li className="contents" key={video.rank}>
-							<span className="text-xs">{video.rank}</span>
-							<img
-								src={video.thumbnail}
-								alt={video.title}
-								className="aspect-video h-10 overflow-hidden rounded-sm bg-red-500"
-							/>
-							<h3 className="text-sm">{video.title}</h3>
-							<p className="justify-self-end text-xs font-semibold">
+						<li
+							key={video.rank}
+							className="grid grid-cols-[auto,6rem,1fr,auto] items-center gap-3"
+						>
+							<span className="w-2 text-xs">{video.rank}</span>
+							<div className="w-24">
+								<div className="aspect-video">
+									<img
+										src={video.thumbnail}
+										alt={video.title}
+										className="h-full w-full rounded-sm object-cover"
+									/>
+								</div>
+							</div>
+							<div className="min-w-0">
+								<h3 className="line-clamp-2 overflow-hidden text-ellipsis text-sm font-medium">
+									{video.title}
+								</h3>
+							</div>
+							<p className="whitespace-nowrap text-xs font-semibold">
 								{formatNumber(video.views)}
 							</p>
 						</li>
@@ -110,4 +87,13 @@ export function VideoRank() {
 			</CardContent>
 		</Card>
 	);
+}
+
+// Wrapper for the VideoRank component
+export function VideoRank({ post }: any) {
+	if (!post) {
+		return null;
+	}
+
+	return <VideoRankContent post={post} />;
 }

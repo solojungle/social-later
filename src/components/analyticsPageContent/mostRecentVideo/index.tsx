@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ComponentProps, ComponentPropsWithoutRef, useCallback } from "react";
 
 import { formatNumber } from "@/components/graphs/view-comparisons";
@@ -38,7 +38,6 @@ function PaginationButton(props: PaginationButtonProps) {
 }
 
 export function MostRecentVideo({ thumbnail, title, views, url, id }: Props) {
-	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
