@@ -162,6 +162,29 @@ export const postRouter = createTRPCRouter({
 			};
 		}),
 
+	getFromExternalId: protectedProcedure
+		.input(
+			z.object({
+				externalPostId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			// Get the post
+			const post = await ctx.db.post.findFirst({
+				where: {
+					externalPostId: input.externalPostId,
+				},
+			});
+
+			if (!post) {
+				throw new Error("Post does not exist");
+			}
+
+			return {
+				...post,
+			};
+		}),
+
 	getAll: protectedProcedure
 		.input(
 			z.object({
