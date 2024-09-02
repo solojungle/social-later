@@ -2,7 +2,8 @@
 
 import { FileType } from "@prisma/client";
 import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
 
@@ -172,81 +173,120 @@ function Posts({
 	);
 }
 
+const CalendarDay = ({
+	day,
+	posts,
+	isDisabled,
+	isPrevious,
+	isToday,
+	isOtherMonth,
+	profileId,
+}: {
+	day: number;
+	posts: PostWithAttachmentsSchemaValues[];
+	isDisabled: boolean;
+	isPrevious: boolean;
+	isToday: boolean;
+	isOtherMonth: boolean;
+	profileId: string;
+}) => {
+	return (
+		<div
+			className={`group grid bg-background ${
+				isOtherMonth && "opacity-60"
+			} flex flex-col`}
+		>
+			<time
+				className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${
+					isToday
+						? "bg-primary font-semibold text-primary-foreground"
+						: "font-light"
+				}`}
+			>
+				{day}
+			</time>
+			{posts && posts.length > 0 && <Posts posts={posts} />}
+			{posts.length === 0 && <div className="relative aspect-video" />}
+			{!isDisabled && (!isPrevious || isToday) ? (
+				<CreatePost
+					className="invisible mt-px w-full group-hover:visible"
+					profileId={profileId}
+					scheduleDate={new Date()}
+				/>
+			) : (
+				<CreatePost
+					className="invisible mt-px w-full"
+					profileId={profileId}
+					scheduleDate={new Date()}
+				/>
+			)}
+		</div>
+	);
+};
+
 export function PostsCalendar({ posts = [], profileId }: PostsProps) {
-	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-	const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1);
-	const lastDayOfMonth = new Date(selectedYear, selectedMonth + 1, 0);
-	const daysInMonth = lastDayOfMonth.getDate();
-	const firstDayOfWeek = firstDayOfMonth.getDay();
-	const lastDayOfWeek = lastDayOfMonth.getDay();
+	const router = useRouter();
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
 
-	const days = [] as {
-		id: string;
-		day: number;
-		postingDisabled: boolean;
-		isNextOrPreviousMonth: boolean;
-		isPreviousDay: boolean;
-		isToday?: boolean;
-		posts: typeof posts;
-	}[];
+	const [selectedMonth, setSelectedMonth] = useState(
+		Number(searchParams.get("month")) || new Date().getMonth(),
+	);
+	const [selectedYear, setSelectedYear] = useState(
+		Number(searchParams.get("year")) || new Date().getFullYear(),
+	);
 
-	// Add the previous month days
-	const previousMonthDays = new Date(selectedYear, selectedMonth, 0).getDate();
+	useEffect(() => {
+		const params = new URLSearchParams(searchParams.toString());
+		params.set("month", selectedMonth.toString());
+		params.set("year", selectedYear.toString());
+		router.push(`${pathname}?${params.toString()}`);
+	}, [pathname, router, searchParams, selectedMonth, selectedYear]);
 
-	for (let i = firstDayOfWeek - 1; i >= 0; i -= 1) {
-		const day = previousMonthDays - i;
-		days.push({
-			id: `previous-${day}`,
-			day,
-			postingDisabled: true,
-			isNextOrPreviousMonth: true,
-			isPreviousDay: true,
-			posts: [],
-		});
-	}
+	const changeMonth = (increment: number) => {
+		const newDate = new Date(selectedYear, selectedMonth + increment);
+		setSelectedMonth(newDate.getMonth());
+		setSelectedYear(newDate.getFullYear());
+	};
 
-	// Add the current month days
-	for (let i = 1; i <= daysInMonth; i += 1) {
-		const date = new Date(selectedYear, selectedMonth, i);
-		const isToday = date.toDateString() === new Date().toDateString();
-		days.push({
-			id: `current-${i}`,
-			day: i,
-			postingDisabled: false,
-			isNextOrPreviousMonth: false,
-			isPreviousDay: date <= new Date(),
-			isToday,
-			posts: posts.filter((p: any) => {
-				const postDate = new Date(p.scheduledFor);
-				return postDate.toDateString() === date.toDateString();
-			}),
-		});
-	}
+	const generateCalendarDays = () => {
+		const firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
+		const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+		const today = new Date();
 
-	// Add the next month days
-	for (let i = 1; i <= 6 - lastDayOfWeek; i += 1) {
-		days.push({
-			id: `next-${i}`,
-			day: i,
-			postingDisabled: true,
-			isPreviousDay: false,
-			isNextOrPreviousMonth: true,
-			posts: [],
-		});
-	}
+		const days = [];
+		for (let i = 1; i <= 35; i += 1) {
+			const day = i - firstDay;
+			const isCurrentMonth = day > 0 && day <= daysInMonth;
+			const currentDate = new Date(selectedYear, selectedMonth, day);
+
+			days.push({
+				// eslint-disable-next-line no-nested-ternary
+				day: isCurrentMonth
+					? day
+					: day <= 0
+					? new Date(selectedYear, selectedMonth, 0).getDate() + day
+					: day - daysInMonth,
+				posts: isCurrentMonth
+					? posts.filter(
+							(p: { scheduledFor: string | number | Date }) =>
+								new Date(p.scheduledFor).toDateString() ===
+								currentDate.toDateString(),
+					  )
+					: [],
+				isDisabled: !isCurrentMonth,
+				isPrevious: currentDate <= new Date(),
+				isToday: currentDate.toDateString() === today.toDateString(),
+				isOtherMonth: !isCurrentMonth,
+			});
+		}
+		return days;
+	};
 
 	return (
 		<div className="flex h-full flex-col">
 			<div className="flex items-center space-x-4 rounded-t border border-b-0 p-2">
-				<Button
-					variant="ghost"
-					onClick={() => {
-						const newDate = new Date(selectedYear, selectedMonth - 1);
-						setSelectedMonth(newDate.getMonth());
-						setSelectedYear(newDate.getFullYear());
-					}}
-				>
+				<Button variant="ghost" onClick={() => changeMonth(-1)}>
 					<ChevronLeft className="h-5 w-5" />
 				</Button>
 				<span className="flex w-36 justify-center font-semibold">
@@ -255,84 +295,25 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 					})}
 					, {selectedYear}
 				</span>
-				<Button
-					variant="ghost"
-					onClick={() => {
-						const newDate = new Date(selectedYear, selectedMonth + 1);
-						setSelectedMonth(newDate.getMonth());
-						setSelectedYear(newDate.getFullYear());
-					}}
-				>
+				<Button variant="ghost" onClick={() => changeMonth(1)}>
 					<ChevronRight className="h-5 w-5" />
 				</Button>
 			</div>
 			<div className="flex flex-auto flex-col pb-24">
 				<div className="grid grid-cols-7 gap-px bg-border p-px pb-0 text-center text-xs font-semibold leading-6">
-					<div className="bg-background py-2 text-foreground">
-						S<span>un</span>
-					</div>
-					<div className="bg-background py-2 text-foreground">
-						M<span>on</span>
-					</div>
-					<div className="bg-background py-2 text-foreground">
-						T<span>ue</span>
-					</div>
-					<div className="bg-background py-2 text-foreground">
-						W<span>ed</span>
-					</div>
-					<div className="bg-background py-2 text-foreground">
-						T<span>hu</span>
-					</div>
-					<div className="bg-background py-2 text-foreground">
-						F<span>ri</span>
-					</div>
-					<div className="bg-background py-2 text-foreground">
-						S<span>at</span>
-					</div>
+					{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+						<div key={day} className="bg-background py-2 text-foreground">
+							{day.charAt(0)}
+							<span>{day.slice(1)}</span>
+						</div>
+					))}
 				</div>
 				<div className="flex flex-auto bg-border text-xs leading-6 text-foreground">
 					<div className="grid w-full grid-cols-7 grid-rows-5 gap-px border">
-						{days.map((d) => {
-							return (
-								<div
-									className={`group grid bg-background ${
-										d.isNextOrPreviousMonth && "opacity-60"
-									}`}
-									key={d.id}
-								>
-									<time
-										className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${
-											d.isToday
-												? "bg-primary font-semibold text-primary-foreground"
-												: "font-light"
-										}`}
-									>
-										{d.day}
-									</time>
-									{d.posts && d.posts.length > 0 && <Posts posts={d.posts} />}
-									{d.posts.length === 0 && (
-										<div className="relative aspect-video" />
-									)}
-									{!d.postingDisabled && (!d.isPreviousDay || d.isToday) ? (
-										<CreatePost
-											className="invisible mt-px w-full group-hover:visible"
-											profileId={profileId}
-											scheduleDate={
-												new Date(selectedYear, selectedMonth, d.day)
-											}
-										/>
-									) : (
-										<CreatePost
-											className="invisible mt-px w-full"
-											profileId={profileId}
-											scheduleDate={
-												new Date(selectedYear, selectedMonth, d.day)
-											}
-										/>
-									)}
-								</div>
-							);
-						})}
+						{generateCalendarDays().map((dayInfo, index) => (
+							// eslint-disable-next-line react/no-array-index-key
+							<CalendarDay key={index} {...dayInfo} profileId={profileId} />
+						))}
 					</div>
 				</div>
 			</div>
