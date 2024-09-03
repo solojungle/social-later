@@ -8,6 +8,7 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 import { Button } from "../ui/button";
+import { InterfaceIcons } from "../ui/icons";
 import { VideoOverview } from "./overview";
 import { RevenueTable } from "./revenueTable";
 import { VideoRank } from "./videoRank";
@@ -27,7 +28,11 @@ export function SingleVideoAnalyticsContent({ postId }: any) {
 		);
 
 	// Get the single post data from the API
-	const { data: postData } = api.post.get.useQuery(
+	const {
+		data: postData,
+		isLoading,
+		isFetching,
+	} = api.post.get.useQuery(
 		{
 			internalPostId: postId,
 		},
@@ -35,6 +40,14 @@ export function SingleVideoAnalyticsContent({ postId }: any) {
 			enabled: !!postId,
 		},
 	);
+
+	if (isLoading || isFetching) {
+		return (
+			<div className="flex h-96 flex-col items-center justify-center">
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
 
 	return (
 		<div className="grid grid-cols-1 gap-y-2 p-3 lg:grid-cols-3 lg:gap-2">

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { formatNumber } from "@/components/graphs/view-comparisons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { InterfaceIcons } from "@/components/ui/icons";
 import {
 	Select,
 	SelectContent,
@@ -19,15 +20,16 @@ function VideoRankContent({ post }: any) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 	const [type, setType] = useState("all");
 
-	const { data } = api.analytics.rankVideoAmongLastTen.useQuery(
-		{
-			profileId,
-			videoId: post.externalPostId,
-		},
-		{
-			enabled: !!profileId,
-		},
-	);
+	const { data, isLoading, isFetching } =
+		api.analytics.rankVideoAmongLastTen.useQuery(
+			{
+				profileId,
+				videoId: post.externalPostId,
+			},
+			{
+				enabled: !!profileId,
+			},
+		);
 
 	const defaultData = data?.comparedVideos ?? [];
 
@@ -62,6 +64,14 @@ function VideoRankContent({ post }: any) {
 
 		return filter;
 	}, [currentRank, rankedVideos, type]);
+
+	if (isLoading || isFetching) {
+		return (
+			<Card className="flex h-96 items-center justify-center rounded-sm shadow-none">
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+			</Card>
+		);
+	}
 
 	return (
 		<Card className="rounded-sm shadow-none">
