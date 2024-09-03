@@ -534,7 +534,7 @@ export const analyticsRouter = createTRPCRouter({
 				youtubeAnalytics,
 				startDate,
 				endDate,
-				videoId: post.externalPostId,
+				videoId: [post.externalPostId],
 			});
 
 			if (!response.data?.rows) {

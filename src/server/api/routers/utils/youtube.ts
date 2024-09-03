@@ -278,7 +278,7 @@ export function fetchHistoricViewsAndSubscribers({
 	youtubeAnalytics: youtubeAnalytics_v2.Youtubeanalytics;
 	startDate: string;
 	endDate: string;
-	videoId: string;
+	videoId: string[];
 }) {
 	const historicalRequest = {
 		dimensions: "day",
@@ -287,7 +287,7 @@ export function fetchHistoricViewsAndSubscribers({
 		ids: "channel==MINE",
 		metrics: "views,subscribersGained",
 		sort: "day",
-		filter: `video==${videoId}`,
+		filters: `video==${videoId.join(",")}`,
 	};
 
 	return youtubeAnalytics.reports.query(historicalRequest);

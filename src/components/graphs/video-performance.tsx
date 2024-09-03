@@ -109,6 +109,7 @@ export function VideoPerformanceGraph({ passedData }: any) {
 							tickFormatter={formatYAxis}
 							axisLine={false}
 							tickLine={false}
+							allowDecimals={false}
 						/>
 						<ChartTooltip
 							cursor={{ strokeDasharray: "3 3" }}

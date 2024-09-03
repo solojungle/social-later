@@ -61,7 +61,7 @@ export function SingleVideoAnalyticsContent({ postId }: any) {
 					<Link href="/analytics">
 						<Button variant="outline" className="w-full">
 							<ArrowLeft className="mr-2 h-4" />
-							<span>All Videos</span>
+							<span>Overview Analytics</span>
 						</Button>
 					</Link>
 					<VideoOverview
