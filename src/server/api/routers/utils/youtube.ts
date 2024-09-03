@@ -329,16 +329,13 @@ export async function fetchVideoMetrics(
 		return [];
 	}
 
-	const startDate = oldestVideo.toISOString().split("T")[0];
-	const endDate = new Date().toISOString().split("T")[0];
-
 	// Fetch analytics data for all videos in one call
 	const analyticsResponse = await youtubeAnalytics.reports.query({
 		ids: "channel==MINE",
-		startDate,
-		endDate,
-		metrics: "subscribersGained",
-		dimensions: "video",
+		startDate: "2019-01-01",
+		endDate: new Date().toISOString().split("T")[0],
+		metrics: "views,subscribersGained",
+		dimensions: "video,creatorContentType",
 		filters: `video==${videoIds.join(",")}`,
 	});
 
@@ -348,7 +345,7 @@ export async function fetchVideoMetrics(
 			const analyticsData = analyticsResponse.data.rows?.find(
 				(row) => row[0] === video.id,
 			);
-			const isShort = video.contentDetails?.duration === "PT60S"; // Assuming shorts are 60 seconds or less
+			const isShort = analyticsData?.[1] === "shorts";
 
 			return VideoMetrics.parse({
 				id: video.id || "",

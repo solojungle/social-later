@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { formatNumber } from "@/components/graphs/view-comparisons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
@@ -28,8 +29,6 @@ function VideoRankContent({ post }: any) {
 		},
 	);
 
-	console.log(data);
-
 	const defaultData = data?.comparedVideos ?? [];
 
 	const rankedVideos = defaultData.map((video, index) => {
@@ -38,6 +37,31 @@ function VideoRankContent({ post }: any) {
 			rank: index + 1,
 		};
 	});
+
+	const currentRank = data?.rank ?? 0;
+
+	// We will always compare the current video with the last 10 videos
+	// The last 10 videos will be filtered by type
+	const filteredData = useMemo(() => {
+		if (type === "all") {
+			return rankedVideos;
+		}
+
+		const filter = rankedVideos.filter((video) => {
+			return video.isShort === (type === "short");
+		});
+
+		// Check if the current video is in the filtered list, if not add it
+		const currentVideo = rankedVideos.find(
+			(video) => video.rank === currentRank,
+		);
+
+		if (currentVideo && !filter.find((video) => video.rank === currentRank)) {
+			filter.push(currentVideo);
+		}
+
+		return filter;
+	}, [currentRank, rankedVideos, type]);
 
 	return (
 		<Card className="rounded-sm shadow-none">
@@ -56,12 +80,16 @@ function VideoRankContent({ post }: any) {
 					</Select>
 				</div>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="p-0 py-3">
 				<ol className="space-y-2">
-					{rankedVideos.map((video) => (
+					{filteredData.map((video) => (
 						<li
 							key={video.rank}
-							className="grid grid-cols-[auto,6rem,1fr,auto] items-center gap-3"
+							className={cn(
+								"grid grid-cols-[auto,6rem,1fr,auto] items-center gap-3 px-4 py-px",
+								currentRank === video.rank &&
+									"bg-secondary py-1 text-secondary-foreground",
+							)}
 						>
 							<span className="w-2 text-xs">{video.rank}</span>
 							<div className="w-24">
