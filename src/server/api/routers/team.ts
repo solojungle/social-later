@@ -1,3 +1,4 @@
+import { StripeSubscriptionStatus } from "@prisma/client";
 import { z } from "zod";
 
 import { TeamSchema } from "@/schemas/team-schema";
@@ -193,7 +194,11 @@ export const teamRouter = createTRPCRouter({
 
 			return ctx.db.team.update({
 				where: { id: input.id },
-				data: input,
+				data: {
+					...input,
+					stripeSubscriptionStatus:
+						input.stripeSubscriptionStatus as StripeSubscriptionStatus,
+				},
 			});
 		}),
 

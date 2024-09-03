@@ -10,15 +10,15 @@ export const surveyRouter = createTRPCRouter({
 				answer: z.string().min(1),
 			}),
 		)
-		.mutation(async ({ ctx, input }) => {
-			const answer = await ctx.db.userAnswer.create({
-				data: {
-					userId: ctx.session.user.id,
-					questionId: input.questionId,
-					answer: input.answer,
-				},
-			});
+		.mutation(async () => {
+			// const answer = await ctx.db.userAnswer.create({
+			// 	data: {
+			// 		userId: ctx.session.user.id,
+			// 		questionId: input.questionId,
+			// 		answer: input.answer,
+			// 	},
+			// });
 
-			return answer;
+			return "";
 		}),
 });
