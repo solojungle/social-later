@@ -2,13 +2,10 @@ import "@vidstack/react/player/styles/base.css";
 
 import {
 	isHLSProvider,
-	type MediaCanPlayDetail,
-	type MediaCanPlayEvent,
 	MediaPlayer,
 	type MediaPlayerInstance,
 	MediaProvider,
 	type MediaProviderAdapter,
-	type MediaProviderChangeEvent,
 	Poster,
 } from "@vidstack/react";
 import { useEffect, useRef } from "react";
@@ -34,7 +31,7 @@ export function Player({
 
 	useEffect(() => {
 		// Subscribe to state updates.
-		return player.current!.subscribe(({ paused, viewType }) => {
+		return player.current!.subscribe(() => {
 			// console.log('is paused?', '->', state.paused);
 			// console.log('is audio view?', '->', state.viewType === 'audio');
 		});
@@ -42,25 +39,25 @@ export function Player({
 
 	function onProviderChange(
 		provider: MediaProviderAdapter | null,
-		nativeEvent: MediaProviderChangeEvent,
+		// nativeEvent: MediaProviderChangeEvent,
 	) {
 		// We can configure provider's here.
 		if (isHLSProvider(provider)) {
+			// eslint-disable-next-line no-param-reassign
 			provider.config = {};
 		}
 	}
 
 	// We can listen for the `can-play` event to be notified when the player is ready.
-	function onCanPlay(
-		detail: MediaCanPlayDetail,
-		nativeEvent: MediaCanPlayEvent,
-	) {
+	function onCanPlay() {
+		// detail: MediaCanPlayDetail,
+		// nativeEvent: MediaCanPlayEvent,
 		// ...
 	}
 
 	return (
 		<MediaPlayer
-			className="ring-media-focus aspect-video w-full overflow-hidden rounded-md bg-slate-900 font-sans text-white data-[focus]:ring-4"
+			className="aspect-video w-full overflow-hidden rounded-md bg-slate-900 font-sans text-white data-[focus]:ring-4"
 			title={title}
 			src={video}
 			crossOrigin

@@ -4,14 +4,19 @@ import { FileType } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
+import { AnalyticsData } from "@/components/singleVideoContent";
+import { formatPrice } from "@/components/singleVideoContent/revenueTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Label } from "@/components/ui/label";
 import { SheetClose, SheetContent } from "@/components/ui/sheet";
 import { Player } from "@/components/videoPlayer";
 import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
+import { api } from "@/trpc/react";
 
 // Helper function to render attachments
 const renderAttachment = (attachment: any) => {
@@ -40,18 +45,26 @@ const renderAttachment = (attachment: any) => {
 };
 
 // Helper function to render video statistics
-const renderVideoStats = (post: any) => {
+const renderVideoStats = (passedData: any) => {
 	const stats = {
 		views: 0,
-		estimatedRevenue: 0,
 		likes: 0,
 		comments: 0,
-		viewsPerHour: 0,
 	};
+
+	if (passedData) {
+		stats.views = passedData.viewCount ?? 0;
+		stats.likes = passedData.likeCount ?? 0;
+		stats.comments = passedData.commentCount ?? 0;
+	}
+
+	const low = stats.views * 0.25;
+	const high = stats.views * 4;
+	const range = `${formatPrice(low, "USD")} - ${formatPrice(high, "USD")}`;
 
 	return (
 		<Card className="rounded-sm shadow-none">
-			<CardContent className="grid grid-cols-5 gap-px p-4">
+			<CardContent className="grid grid-cols-4 gap-px p-4">
 				<div>
 					<Label className="text-xs">Views</Label>
 					<p className="text-xl">{stats.views.toLocaleString()}</p>
@@ -66,11 +79,7 @@ const renderVideoStats = (post: any) => {
 				</div>
 				<div>
 					<Label className="text-xs">Est. Revenue</Label>
-					<p className="text-xl">${stats.estimatedRevenue.toFixed(2)}</p>
-				</div>
-				<div>
-					<Label className="text-xs">Views Per Hour</Label>
-					<p className="text-xl">{stats.viewsPerHour.toFixed(1)}</p>
+					<p className="text-xl">{range}</p>
 				</div>
 			</CardContent>
 		</Card>
@@ -101,23 +110,21 @@ const renderVideoMetadata = (post: any) => {
 
 export function EditPostSheetContent({
 	post,
-	setOpen,
 }: {
 	post: PostWithAttachmentsSchemaValues;
-	setOpen: (open: boolean) => void;
 }) {
-	const [videoStats, setVideoStats] = useState({
-		views: 0,
-		estimatedRevenue: 0,
-		likes: 0,
-		comments: 0,
-		viewsPerHour: 0,
-	});
-	const [videoMetadata, setVideoMetadata] = useState({
-		title: "",
-		description: "",
-		datePublished: "",
-	});
+	const { currentProfileId: profileId } = useSocialProfilesStore();
+
+	const { data: analyticsData, isLoading: isAnalyticsLoading } =
+		api.analytics.getSingleVideoAnalytics.useQuery<AnalyticsData>(
+			{
+				postId: post.id,
+				profileId,
+			},
+			{
+				enabled: !!profileId,
+			},
+		);
 
 	const searchParams = useSearchParams();
 
@@ -132,6 +139,17 @@ export function EditPostSheetContent({
 		},
 		[searchParams],
 	);
+
+	if (isAnalyticsLoading) {
+		return (
+			<SheetContent
+				className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0 pt-8"
+				side="right"
+			>
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+			</SheetContent>
+		);
+	}
 
 	return (
 		<SheetContent
@@ -151,7 +169,7 @@ export function EditPostSheetContent({
 					post.attachment[0]?.file.type === FileType.video && (
 						<>
 							{/* Render Video Statistics */}
-							{renderVideoStats(post)}
+							{renderVideoStats(analyticsData?.realtimeData)}
 
 							{/* Render Video Metadata */}
 							{renderVideoMetadata(post)}

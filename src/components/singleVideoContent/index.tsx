@@ -13,11 +13,16 @@ import { VideoOverview } from "./overview";
 import { RevenueTable } from "./revenueTable";
 import { VideoRank } from "./videoRank";
 
+export interface AnalyticsData {
+	historicalData: { date: any; views: number; subscribers_gained: number }[];
+	realtimeData: any;
+}
+
 export function SingleVideoAnalyticsContent({ postId }: any) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
-	const { data: analyticsData } =
-		api.analytics.getSingleVideoAnalytics.useQuery(
+	const { data: analyticsData, isLoading: isAnalyticsLoading } =
+		api.analytics.getSingleVideoAnalytics.useQuery<AnalyticsData>(
 			{
 				postId,
 				profileId,
@@ -41,7 +46,7 @@ export function SingleVideoAnalyticsContent({ postId }: any) {
 		},
 	);
 
-	if (isLoading || isFetching) {
+	if (isLoading || isFetching || isAnalyticsLoading) {
 		return (
 			<div className="flex h-96 flex-col items-center justify-center">
 				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />

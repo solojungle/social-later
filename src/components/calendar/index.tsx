@@ -123,7 +123,7 @@ function StyledMediaPost({
 					</div>
 				</div>
 			</SheetTrigger>
-			<EditPostSheetContent post={post} setOpen={setOpen} />
+			<EditPostSheetContent post={post} />
 		</Sheet>
 	);
 }
@@ -168,7 +168,7 @@ function Posts({
 					<span>{post.content && post.content.slice(0, 50)}</span>
 				</div>
 			</SheetTrigger>
-			<EditPostSheetContent post={post} setOpen={setOpen} />
+			<EditPostSheetContent post={post} />
 		</Sheet>
 	);
 }

@@ -25,7 +25,7 @@ const defaultData = [
 	},
 ];
 
-function formatPrice(amount: number | null, currency: string): string {
+export function formatPrice(amount: number | null, currency: string): string {
 	if (amount === null) return "";
 	return new Intl.NumberFormat("en-US", {
 		style: "currency",

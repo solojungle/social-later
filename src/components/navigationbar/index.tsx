@@ -2,7 +2,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 // import { NotificationButton } from "./notificationButton";
 import { NotificationContent } from "./notificationContent";
 import { TextLinks } from "./textLinks";
-import { UserMenu } from "./userMenu";
 
 export function NavigationBar() {
 	return (
@@ -23,7 +22,7 @@ export function NavigationBar() {
 						<NotificationContent />
 					</PopoverContent>
 				</Popover>
-				<UserMenu />
+				{/* <UserMenu /> */}
 			</div>
 		</div>
 	);
