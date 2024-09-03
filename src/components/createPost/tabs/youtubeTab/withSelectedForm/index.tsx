@@ -94,10 +94,8 @@ export function WithSelectedForm({
 				title: data.title || "",
 				content: data.content || "",
 				fileIds: selected.map((file) => file.id),
-				status: "published",
 				externalPostId: result.id,
 				scheduledFor: scheduledDate,
-				published: true,
 				profileId,
 				authorId: teamId,
 			});
