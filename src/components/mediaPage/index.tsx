@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
@@ -20,6 +21,15 @@ export function MediaPageContent() {
 	const [open, setOpen] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [pageSize, setPageSize] = useState<2 | 4 | 8>(2);
+
+	const searchParams = useSearchParams();
+
+	useEffect(() => {
+		const searchParam = searchParams.get("search");
+		if (searchParam) {
+			setSearchTerm(searchParam);
+		}
+	}, [searchParams]);
 
 	// const [sortedBy, setSortedBy] = useState("name");
 	// const [filterBy, setFilterBy] = useState("all");
