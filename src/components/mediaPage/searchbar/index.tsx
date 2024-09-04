@@ -17,6 +17,8 @@ type Props = {
 	setSearchTerm: (searchTerm: string) => void;
 	selected: any[];
 	setOpen: (open: boolean) => void;
+	sortBy: "name" | "size";
+	filterBy: "all" | "image" | "video";
 };
 
 export function SearchBar({
@@ -24,6 +26,8 @@ export function SearchBar({
 	setSearchTerm,
 	selected,
 	setOpen,
+	sortBy,
+	filterBy,
 }: Props) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
@@ -46,6 +50,16 @@ export function SearchBar({
 		router.push(`${pathname}?${newQueryString}`);
 	};
 
+	const updateFilterInUrl = (newFilter: "all" | "image" | "video") => {
+		const newQueryString = createQueryString("filter", newFilter);
+		router.push(`${pathname}?${newQueryString}`);
+	};
+
+	const updateSortInUrl = (newSort: "name" | "size") => {
+		const newQueryString = createQueryString("sort", newSort);
+		router.push(`${pathname}?${newQueryString}`);
+	};
+
 	function handleSearchTermChange(newSearchTerm: string) {
 		setSearchTerm(newSearchTerm);
 		updateSearchInUrl(newSearchTerm);
@@ -63,8 +77,8 @@ export function SearchBar({
 						onChange={(e) => handleSearchTermChange(e.target.value)}
 					/>
 				</div>
-				<SortBy />
-				<FilterBy />
+				<SortBy updateSortInUrl={updateSortInUrl} sortBy={sortBy} />
+				<FilterBy updateFilterInUrl={updateFilterInUrl} filterBy={filterBy} />
 				<ToggleView defaultView="grid" />
 				<Button
 					size="icon"

@@ -22,17 +22,28 @@ export function MediaPageContent() {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [pageSize, setPageSize] = useState<2 | 4 | 8>(2);
 
+	const [filterBy, setFilterBy] = useState<"all" | "image" | "video">("all");
+	const [sortBy, setSortBy] = useState<"name" | "size">("name");
+
 	const searchParams = useSearchParams();
 
 	useEffect(() => {
 		const searchParam = searchParams.get("search");
+		const filterParam = searchParams.get("filter");
+		const sortParam = searchParams.get("sort");
+
 		if (searchParam) {
 			setSearchTerm(searchParam);
 		}
-	}, [searchParams]);
 
-	// const [sortedBy, setSortedBy] = useState("name");
-	// const [filterBy, setFilterBy] = useState("all");
+		if (filterParam) {
+			setFilterBy(filterParam as "all" | "image" | "video");
+		}
+
+		if (sortParam) {
+			setSortBy(sortParam as "name" | "size");
+		}
+	}, [searchParams]);
 
 	const {
 		data,
@@ -101,6 +112,8 @@ export function MediaPageContent() {
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 				selected={selected}
+				filterBy={filterBy}
+				sortBy={sortBy}
 				setOpen={setOpen}
 			/>
 			<AllAssets
