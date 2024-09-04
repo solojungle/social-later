@@ -42,12 +42,13 @@ export function getCurrentDate(time: number) {
 function PausePlanButton({ teamId }: { teamId: string }) {
 	const [show, setShow] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const utils = api.useUtils();
 
 	if (!teamId) {
 		return null;
 	}
 
-	const { mutate: cancelSubscription } =
+	const { mutateAsync: cancelSubscription } =
 		api.stripe.cancelSubscription.useMutation();
 
 	return (
@@ -72,16 +73,18 @@ function PausePlanButton({ teamId }: { teamId: string }) {
 					<Button
 						disabled={loading}
 						variant="destructive"
-						onClick={() => {
+						onClick={async () => {
 							setLoading(true);
 
-							cancelSubscription({
+							await cancelSubscription({
 								teamId,
 							});
 
-							setLoading(false);
+							await utils.team.getMembers.invalidate();
 
+							setLoading(false);
 							setShow(false);
+
 							toast.success("Your plan has been paused.");
 						}}
 					>
@@ -98,16 +101,21 @@ function PausePlanButton({ teamId }: { teamId: string }) {
 
 function ResumePlanButton({ teamId }: { teamId: string }) {
 	const [loading, setLoading] = useState(false);
-	const { mutate: resumeSubscription } =
+	const { mutateAsync: resumeSubscription } =
 		api.stripe.resumeSubscription.useMutation();
+	const utils = api.useUtils();
 	return (
 		<Button
 			disabled={loading}
-			onClick={() => {
+			onClick={async () => {
 				setLoading(true);
-				resumeSubscription({
+
+				await resumeSubscription({
 					teamId,
 				});
+
+				await utils.team.invalidate();
+
 				setLoading(false);
 			}}
 		>
