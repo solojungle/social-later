@@ -1,7 +1,7 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useQueryState } from "nuqs";
+import { useState } from "react";
 
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
@@ -15,35 +15,15 @@ import { SearchBar } from "./searchbar";
 
 export function MediaPageContent() {
 	const { id: teamId } = useSelectedTeamStore();
-	const [searchTerm, setSearchTerm] = useState("");
 	const [sortedBy] = useState("name");
 	const [selected, setSelected] = useState<any[]>([]);
 	const [open, setOpen] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [pageSize, setPageSize] = useState<2 | 4 | 8>(2);
-
-	const [filterBy, setFilterBy] = useState<"all" | "image" | "video">("all");
-	const [sortBy, setSortBy] = useState<"name" | "size">("name");
-
-	const searchParams = useSearchParams();
-
-	useEffect(() => {
-		const searchParam = searchParams.get("search");
-		const filterParam = searchParams.get("filter");
-		const sortParam = searchParams.get("sort");
-
-		if (searchParam) {
-			setSearchTerm(searchParam);
-		}
-
-		if (filterParam) {
-			setFilterBy(filterParam as "all" | "image" | "video");
-		}
-
-		if (sortParam) {
-			setSortBy(sortParam as "name" | "size");
-		}
-	}, [searchParams]);
+	const [search, setSearch] = useQueryState("q", {
+		shallow: false,
+		defaultValue: "",
+	});
 
 	const {
 		data,
@@ -88,7 +68,7 @@ export function MediaPageContent() {
 	}
 
 	const filteredAssets = onlyFiles.filter((asset) =>
-		asset.name.toLowerCase().includes(searchTerm.toLowerCase()),
+		asset.name.toLowerCase().includes(search.toLowerCase()),
 	);
 
 	const sortedAssets = filteredAssets.sort((a, b) => {
@@ -109,12 +89,10 @@ export function MediaPageContent() {
 			</AlertDialog>
 			<Separator className="my-4" />
 			<SearchBar
-				searchTerm={searchTerm}
-				setSearchTerm={setSearchTerm}
 				selected={selected}
-				filterBy={filterBy}
-				sortBy={sortBy}
 				setOpen={setOpen}
+				search={search}
+				setSearch={setSearch}
 			/>
 			<AllAssets
 				assets={sortedAssets}

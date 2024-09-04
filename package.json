@@ -98,6 +98,7 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.51.0",
+    "react-hotkeys-hook": "^4.5.1",
     "react-resizable-panels": "^2.1.0",
     "react-use": "^17.5.1",
     "recharts": "^2.12.7",
