@@ -19,7 +19,7 @@ function ListedItem({
 			animate={{ opacity: 1, x: 0 }}
 			transition={{ duration: 0.3 }}
 		>
-			<Icon className="mr-3 h-4 w-4 text-background" />
+			<Icon className="mr-3 h-4 w-4 text-background dark:text-white" />
 			<span className="text-sm">{children}</span>
 		</motion.li>
 	);
@@ -34,9 +34,9 @@ const benefits = [
 
 export function ResumeSubscription({ teamId }: { teamId: string }) {
 	return (
-		<Card className="m-3 mx-auto w-full max-w-4xl overflow-hidden rounded-md shadow-none">
+		<Card className="m-3 mx-auto mt-28 w-full max-w-4xl overflow-hidden rounded-md shadow-none">
 			<div className="flex flex-col md:flex-row">
-				<div className="bg-teal-950 p-8 text-background md:w-1/2">
+				<div className="bg-teal-950 p-8 text-background dark:text-white md:w-1/2">
 					<h2 className="mb-6 font-vollkorn text-5xl font-bold">
 						Resume your subscription
 					</h2>
@@ -53,7 +53,10 @@ export function ResumeSubscription({ teamId }: { teamId: string }) {
 					</ul>
 				</div>
 
-				<div className="flex flex-col bg-stone-100 p-8 md:w-1/2">
+				<div
+					className="flex flex-col bg-stone-100 p-8
+				 dark:bg-stone-900 md:w-1/2"
+				>
 					<div className="mb-8">
 						<h3 className="my-4 font-vollkorn text-4xl text-secondary-foreground">
 							Ready to resume?
