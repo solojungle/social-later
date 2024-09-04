@@ -13,6 +13,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
+type PageSize = 2 | 4 | 8;
+
 export function PagePagination({ pagination }: { pagination: any }) {
 	const {
 		fetchNextPage,
@@ -33,7 +35,7 @@ export function PagePagination({ pagination }: { pagination: any }) {
 					<Select
 						value={`${pageSize}`}
 						onValueChange={(value) => {
-							setPageSize(Number(value));
+							setPageSize(Number(value) as PageSize);
 						}}
 					>
 						<SelectTrigger className="h-8 w-[70px]">
