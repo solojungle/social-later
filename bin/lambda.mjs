@@ -92,7 +92,7 @@ export const handler = async (event, context) => {
 		const outputFile = path.join(workdir, filename);
 
 		await commander(
-			`/opt/ffmpeg/ffmpeg -i "${video}" -vf scale=200:-2 -vframes 1 ${outputFile}`,
+			`/opt/ffmpeg/ffmpeg -i "${video}" -vf scale=400:-2 -vframes 1 ${outputFile}`,
 		);
 
 		// Upload the thumbnail image to the destination bucket
@@ -117,7 +117,7 @@ export const handler = async (event, context) => {
 		const originalImage = await getObject(srcBucket, srcKey);
 
 		// Use the sharp module to resize the image and save in a buffer.
-		const buffer = await sharp(originalImage).resize({ width: 200 }).toBuffer();
+		const buffer = await sharp(originalImage).resize({ width: 400 }).toBuffer();
 
 		// Upload the thumbnail image to the destination bucket
 		const putObjectParams = new PutObjectCommand({
