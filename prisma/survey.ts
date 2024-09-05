@@ -2,7 +2,7 @@ import { PrismaClient, QuestionType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function seedSurvey() {
+export async function seedSurvey() {
 	const questionsData = [
 		{
 			content: "What is your role at your company?",
@@ -27,7 +27,7 @@ async function seedSurvey() {
 		},
 	];
 
-	const survey = await prisma.survey.upsert({
+	await prisma.survey.upsert({
 		where: { id: "1" },
 		update: {},
 		create: {
@@ -42,6 +42,6 @@ async function seedSurvey() {
 			},
 		},
 	});
-}
 
-await seedSurvey().catch(console.error);
+	console.log("Survey created");
+}
