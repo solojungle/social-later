@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
 import { PagePagination } from "../pagination";
+import { AssetDetails } from "./assetDetails";
 
 export function formatSizeBytes(sizeBytes: any) {
 	if (sizeBytes >= 1073741824) {
@@ -101,7 +102,7 @@ export function AllAssets({
 											}}
 										/>
 									</div>
-									<span className="select-none text-sm text-white">View</span>
+									<AssetDetails asset={asset} />
 								</div>
 							</div>
 							<div className="flex h-14 items-center rounded-b-md border-t border-border bg-muted p-2 group-hover:cursor-pointer">
