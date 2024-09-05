@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { AddAssets } from "../addAssets";
+import { FiltersList } from "./filtersList";
 
 type Props = {
 	selected: any[];
@@ -15,12 +16,25 @@ type Props = {
 	setSearch: (search: string | null) => void;
 };
 
-export function SearchBar({ selected, setOpen, search, setSearch }: Props) {
+export function SearchBar({
+	selected,
+	setOpen,
+	search,
+	setSearch,
+	setFilters,
+}: any) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
-	useHotkeys("esc", () => setSearch(null), {
-		enableOnFormTags: true,
-	});
+	useHotkeys(
+		"esc",
+		() => {
+			setSearch(null);
+			setFilters({ type: null });
+		},
+		{
+			enableOnFormTags: true,
+		},
+	);
 
 	const handleSearch = (evt: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
@@ -48,6 +62,7 @@ export function SearchBar({ selected, setOpen, search, setSearch }: Props) {
 						spellCheck="false"
 					/>
 				</div>
+				<FiltersList />
 				<Button
 					size="icon"
 					variant="outline"

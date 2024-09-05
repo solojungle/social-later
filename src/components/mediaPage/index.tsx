@@ -1,6 +1,11 @@
 "use client";
 
-import { useQueryState } from "nuqs";
+import {
+	parseAsArrayOf,
+	parseAsStringLiteral,
+	useQueryState,
+	useQueryStates,
+} from "nuqs";
 import { useState } from "react";
 
 import { useSelectedTeamStore } from "@/stores/selected-team";
@@ -23,6 +28,12 @@ export function MediaPageContent() {
 	const [search, setSearch] = useQueryState("q", {
 		shallow: false,
 		defaultValue: "",
+	});
+
+	const [filters, setFilters] = useQueryStates({
+		type: parseAsArrayOf(
+			parseAsStringLiteral(["all", "video", "image"] as const),
+		),
 	});
 
 	const {
@@ -93,6 +104,8 @@ export function MediaPageContent() {
 				setOpen={setOpen}
 				search={search}
 				setSearch={setSearch}
+				filters={filters}
+				setFilters={setFilters}
 			/>
 			<AllAssets
 				assets={sortedAssets}
