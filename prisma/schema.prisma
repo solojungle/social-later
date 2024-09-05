@@ -53,7 +53,7 @@ model User {
   sessions      Session[]
   teams         UserOnTeam[]
   invitation    Invitation[]
-  UserAnswer    UserAnswer[]
+  Answer        Answer[]
   Feedback      Feedback[]
 }
 
@@ -330,13 +330,30 @@ model YouTubeVideoReport {
   @@unique([id, logged_at])
 }
 
-model Question {
-  id         String       @id @default(cuid())
-  content    String       @unique
-  UserAnswer UserAnswer[]
+model Survey {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  questions   Question[]
 }
 
-model UserAnswer {
+enum QuestionType {
+  multiple_choice
+  text
+  rating
+}
+
+model Question {
+  id       String       @id @default(cuid())
+  content  String       @unique
+  type     QuestionType
+  choices  String[]
+  Answer   Answer[]
+  Survey   Survey?      @relation(fields: [surveyId], references: [id])
+  surveyId String?
+}
+
+model Answer {
   id         String   @id @default(cuid())
   userId     String
   questionId String
