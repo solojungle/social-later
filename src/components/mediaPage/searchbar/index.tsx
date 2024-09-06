@@ -9,12 +9,12 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { AddAssets } from "../addAssets";
 import { FiltersList } from "./filtersList";
 
-type Props = {
-	selected: any[];
-	setOpen: (open: boolean) => void;
-	search: string | null;
-	setSearch: (search: string | null) => void;
-};
+// type Props = {
+// 	selected: any[];
+// 	setOpen: (open: boolean) => void;
+// 	search: string | null;
+// 	setSearch: (search: string | null) => void;
+// };
 
 export function SearchBar({
 	selected,

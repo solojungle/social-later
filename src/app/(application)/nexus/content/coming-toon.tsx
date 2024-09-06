@@ -1,7 +1,4 @@
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
 
 function ArticleCards() {
 	return (
@@ -28,37 +25,37 @@ function Articles() {
 	);
 }
 
-function NewsCard() {
-	const variants = {
-		hidden: { y: 10, opacity: 0 },
-		visible: { y: 0, opacity: 1 },
-	};
+// function NewsCard() {
+// 	const variants = {
+// 		hidden: { y: 10, opacity: 0 },
+// 		visible: { y: 0, opacity: 1 },
+// 	};
 
-	return (
-		<motion.article
-			className="flex w-64 flex-col justify-end overflow-hidden rounded-lg border border-border transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md"
-			initial="hidden"
-			whileHover="visible"
-		>
-			<div className="relative">
-				<motion.div
-					variants={variants}
-					transition={{ duration: 0.15, ease: "easeOut" }}
-				>
-					<Badge className="absolute bottom-2 left-2">
-						Edited {new Date().toLocaleDateString()}
-					</Badge>
-				</motion.div>
-			</div>
-			<div className="w-full px-2 py-4">
-				<h2 className="text-sm font-semibold">How to Create a Post</h2>
-				<p className="mt-0.5 text-xs text-gray-600">
-					A four-step guide to getting started
-				</p>
-			</div>
-		</motion.article>
-	);
-}
+// 	return (
+// 		<motion.article
+// 			className="flex w-64 flex-col justify-end overflow-hidden rounded-lg border border-border transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md"
+// 			initial="hidden"
+// 			whileHover="visible"
+// 		>
+// 			<div className="relative">
+// 				<motion.div
+// 					variants={variants}
+// 					transition={{ duration: 0.15, ease: "easeOut" }}
+// 				>
+// 					<Badge className="absolute bottom-2 left-2">
+// 						Edited {new Date().toLocaleDateString()}
+// 					</Badge>
+// 				</motion.div>
+// 			</div>
+// 			<div className="w-full px-2 py-4">
+// 				<h2 className="text-sm font-semibold">How to Create a Post</h2>
+// 				<p className="mt-0.5 text-xs text-gray-600">
+// 					A four-step guide to getting started
+// 				</p>
+// 			</div>
+// 		</motion.article>
+// 	);
+// }
 
 function SeeMoreNewsCard() {
 	return (
