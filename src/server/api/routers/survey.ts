@@ -11,11 +11,20 @@ export const surveyRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const answer = await ctx.db.answer.create({
-				data: {
+			const answer = await ctx.db.answer.upsert({
+				where: {
+					userId_questionId: {
+						userId: ctx.session.user.id,
+						questionId: input.questionId,
+					},
+				},
+				create: {
 					questionId: input.questionId,
 					answer: input.answer,
 					userId: ctx.session.user.id,
+				},
+				update: {
+					answer: input.answer,
 				},
 			});
 
