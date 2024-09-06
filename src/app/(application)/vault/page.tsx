@@ -25,7 +25,7 @@ export default function MediaPage() {
 			<div className="flex flex-col items-center justify-center">
 				<FeaturePreview
 					title="Vault storage and media library"
-					description="With vault storage, you can upload, organize, and share your media files."
+					description="With vault storage, you can upload, organize, and share your media files, with your entire team."
 				>
 					<div className="mb-8">
 						<img
