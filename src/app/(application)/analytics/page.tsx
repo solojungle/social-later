@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation";
 
-import AddSocialProfile from "@/components/addSocialProfileButton";
 import { AnalyticsPageContent } from "@/components/analyticsPageContent";
 import CreateTeamButton from "@/components/createTeamButton";
 import { FeaturePreview } from "@/components/featurePreview";
@@ -13,6 +12,7 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { useUserStore } from "@/stores/user";
 
 import { SingleVideoAnalyticsContent } from "../../../components/singleVideoContent";
+import { AnalyticsPageSkeleton } from "./skeleton";
 
 export default function AnalyticsPage() {
 	const { id: userId } = useUserStore();
@@ -67,25 +67,7 @@ export default function AnalyticsPage() {
 
 	// If the user hasn't added any social profiles, show the add social profile button
 	if (!profiles || profiles.length === 0) {
-		return (
-			<div className="flex flex-col items-center justify-center">
-				<FeaturePreview
-					title="Add a social profile to get started"
-					description="To get started with analytics, you need to add a social profile."
-				>
-					<div className="mb-8">
-						<img
-							alt="Analytics preview"
-							src="/images/analytics-preview-min.png"
-							className="aspect-video w-full rounded-lg border border-border"
-						/>
-					</div>
-					<div className="flex w-full items-center">
-						<AddSocialProfile />
-					</div>
-				</FeaturePreview>
-			</div>
-		);
+		return <AnalyticsPageSkeleton />;
 	}
 
 	if (postId) {

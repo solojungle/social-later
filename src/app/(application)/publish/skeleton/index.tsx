@@ -17,14 +17,9 @@ function DaySkeleton() {
 }
 
 // And the background will be a skeleton of a calendar
-function CalendarSkeleton({ isEmpty = true }: { isEmpty?: boolean }) {
+function CalendarSkeleton() {
 	return (
-		<div
-			className={cn(
-				"flex h-screen flex-col p-3",
-				isEmpty && "pointer-events-none opacity-20 blur-[3px]",
-			)}
-		>
+		<div className="pointer-events-none flex h-screen flex-col p-3 opacity-20 blur-[3px]">
 			<div className="flex items-center space-x-4 rounded-t border border-b-0 p-2">
 				<Button variant="ghost">
 					<ChevronLeft className="h-5 w-5" />
@@ -58,6 +53,7 @@ function CalendarSkeleton({ isEmpty = true }: { isEmpty?: boolean }) {
 		</div>
 	);
 }
+
 function Dialogue() {
 	return (
 		<div className="absolute left-0 top-0 z-20 flex h-[calc(100vh-300px)] w-full items-center justify-center">
