@@ -1,4 +1,5 @@
 import { CheckCircledIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 import Confetti from "react-confetti";
 import { useTimeout } from "react-use";
 import { useWindowSize } from "usehooks-ts";
@@ -38,12 +39,14 @@ export function SuccessPage() {
 					You will be redirected to the Nexus, where you can start discovering
 					FeedFrenzy.
 				</div>
-				<Button className="group relative h-[64px] w-full justify-between self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
-					Access FeedFrenzy
-					<div className="flex h-5 w-5 items-center justify-center rounded-lg border border-border bg-primary p-5 text-primary-foreground">
-						<Countdown />
-					</div>
-				</Button>
+				<Link href="/nexus">
+					<Button className="group relative h-[64px] w-full justify-between self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
+						Access FeedFrenzy
+						<div className="flex h-5 w-5 items-center justify-center rounded-lg border border-border bg-primary p-5 text-primary-foreground">
+							<Countdown />
+						</div>
+					</Button>
+				</Link>
 			</div>
 		</div>
 	);

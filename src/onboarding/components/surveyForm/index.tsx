@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import posthog from "posthog-js";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useStepper } from "@/components/ui/stepper";
+import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 function MultipleChoiceField({ form, choices }: any) {
@@ -61,11 +63,11 @@ export function SurveyForm({
 	isLastStep,
 	isFirstStep,
 }: QuestionProps) {
+	const { id: userId } = useUserStore();
 	const { nextStep, prevStep } = useStepper();
 	const { mutate: answerQuestion } = api.survey.answer.useMutation();
 
 	const schema = z.object({
-		// answer: z.enum(["", ...(question.choices ?? [])]),
 		answer: z.string().min(1, { message: "Please select an answer." }),
 	});
 
@@ -74,6 +76,12 @@ export function SurveyForm({
 	});
 
 	function onSubmit(data: any) {
+		if (isLastStep) {
+			posthog.capture("welcome_survey_complete", {
+				distinctId: userId,
+			});
+		}
+
 		answerQuestion({
 			questionId: question.id,
 			answer: data.answer,
