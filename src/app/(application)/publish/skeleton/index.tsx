@@ -58,9 +58,7 @@ function Dialogue() {
 	return (
 		<div className="absolute left-0 top-0 z-20 flex h-[calc(100vh-300px)] w-full items-center justify-center">
 			<div className="mx-auto flex max-w-sm flex-col items-center justify-center text-center">
-				<h2 className="mb-2 text-xl font-medium">
-					Connect social media profile
-				</h2>
+				<h2 className="mb-2 text-xl font-medium">Connect a profile</h2>
 				<p className="mb-6 text-sm text-[#878787]">
 					Unlock powerful social media management features. Easily schedule
 					posts, analyze engagement metrics, and manage multiple platforms.
