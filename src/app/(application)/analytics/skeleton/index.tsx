@@ -15,6 +15,7 @@ function AnalyticsSkeleton() {
 					<Skeleton className="mb-2 h-5 w-[150px] animate-none" />
 					<div className="grid grid-cols-4 gap-2">
 						{Array.from({ length: 4 }).map((_, i) => (
+							// eslint-disable-next-line react/no-array-index-key
 							<Skeleton key={i} className="h-48 w-full animate-none" />
 						))}
 					</div>
