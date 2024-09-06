@@ -1,6 +1,5 @@
 "use client";
 
-import AddSocialProfile from "@/components/addSocialProfileButton";
 import CreateTeamButton from "@/components/createTeamButton";
 import { FeaturePreview } from "@/components/featurePreview";
 import { PublishPageContent } from "@/components/publishPageContent";
@@ -9,6 +8,8 @@ import { InterfaceIcons } from "@/components/ui/icons";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { useUserStore } from "@/stores/user";
+
+import { PublishPageSkeleton } from "./skeleton";
 
 export default function PublishPage() {
 	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
@@ -64,25 +65,7 @@ export default function PublishPage() {
 
 	// If the user hasn't added any social profiles, show the add social profile button
 	if (!profiles || profiles.length === 0) {
-		return (
-			<div className="flex flex-col items-center justify-center">
-				<FeaturePreview
-					title="Add a social profile to get started"
-					description="To get started with publishing, you need to add a social profile."
-				>
-					<div className="mb-8">
-						<img
-							alt="Publish preview"
-							src="/images/publish-preview-min.png"
-							className="aspect-video w-full rounded-lg border border-border"
-						/>
-					</div>
-					<div className="flex w-full items-center">
-						<AddSocialProfile />
-					</div>
-				</FeaturePreview>
-			</div>
-		);
+		return <PublishPageSkeleton />;
 	}
 
 	return <PublishPageContent />;
