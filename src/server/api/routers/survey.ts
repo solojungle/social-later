@@ -10,7 +10,7 @@ export const surveyRouter = createTRPCRouter({
 				answer: z.string().min(1),
 			}),
 		)
-		.mutation(async () => {
+		.mutation(async ({ ctx }) => {
 			// const answer = await ctx.db.userAnswer.create({
 			// 	data: {
 			// 		userId: ctx.session.user.id,
@@ -21,4 +21,18 @@ export const surveyRouter = createTRPCRouter({
 
 			return "";
 		}),
+
+	getSurvey: protectedProcedure.query(async ({ ctx }) => {
+		const survey = await ctx.db.survey.findFirst({
+			include: {
+				questions: true,
+			},
+		});
+
+		if (!survey) {
+			throw new Error("No survey found");
+		}
+
+		return survey;
+	}),
 });
