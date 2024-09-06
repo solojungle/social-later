@@ -1,8 +1,10 @@
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { AuthWrapper } from "@/components/protectedPage";
 import { ResizableLayout } from "@/components/resizableLayout";
 import { SiteHeader } from "@/components/siteHeader";
+import { getServerAuthSession } from "@/server/auth";
 
 export const metadata: Metadata = {
 	title: "FeedFrenzy",
@@ -21,10 +23,15 @@ interface ApplicationLayoutProps {
 export default async function ApplicationLayout({
 	children,
 }: ApplicationLayoutProps) {
+	const session = await getServerAuthSession();
+	const isAuthenticated = !!session;
+
 	return (
 		<div className={`h-screen font-sans ${inter.variable}`}>
 			<SiteHeader />
-			<ResizableLayout>{children}</ResizableLayout>
+			<AuthWrapper isAuthenticated={isAuthenticated}>
+				<ResizableLayout>{children}</ResizableLayout>
+			</AuthWrapper>
 		</div>
 	);
 }
