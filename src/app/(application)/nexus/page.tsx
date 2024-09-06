@@ -3,7 +3,7 @@
 import { InterfaceIcons } from "@/components/ui/icons";
 import { useUserStore } from "@/stores/user";
 
-import { NexusPageContent } from "./content";
+import { NexusPageContent } from "./content/coming-toon";
 
 export default function NexusPage() {
 	const { id: userId } = useUserStore();
