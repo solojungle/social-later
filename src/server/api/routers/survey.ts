@@ -10,16 +10,16 @@ export const surveyRouter = createTRPCRouter({
 				answer: z.string().min(1),
 			}),
 		)
-		.mutation(async ({ ctx }) => {
-			// const answer = await ctx.db.userAnswer.create({
-			// 	data: {
-			// 		userId: ctx.session.user.id,
-			// 		questionId: input.questionId,
-			// 		answer: input.answer,
-			// 	},
-			// });
+		.mutation(async ({ ctx, input }) => {
+			const answer = await ctx.db.answer.create({
+				data: {
+					questionId: input.questionId,
+					answer: input.answer,
+					userId: ctx.session.user.id,
+				},
+			});
 
-			return "";
+			return answer;
 		}),
 
 	getSurvey: protectedProcedure.query(async ({ ctx }) => {
