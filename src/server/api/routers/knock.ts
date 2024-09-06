@@ -40,16 +40,16 @@ export const knockRouter = createTRPCRouter({
 
 				const userIds = users.map((user) => user.userId);
 
-				// // Remove the current user from the list
-				// const currentUserIndex = userIds.indexOf(session.user.id);
-				// if (currentUserIndex !== -1) {
-				// 	userIds.splice(currentUserIndex, 1);
-				// }
+				// Remove the current user from the list
+				const currentUserIndex = userIds.indexOf(session.user.id);
+				if (currentUserIndex !== -1) {
+					userIds.splice(currentUserIndex, 1);
+				}
 
-				// if (!userIds.length) {
-				// 	// No users to notify
-				// 	return;
-				// }
+				if (!userIds.length) {
+					// No users to notify
+					return;
+				}
 
 				await knock.workflows.trigger("in-app-message", {
 					recipients: userIds,
