@@ -161,7 +161,7 @@ export function TeamPaymentPlanCard() {
 							{stripeSubscriptionStatus === "active" && (
 								<PausePlanButton teamId={teamId} />
 							)}
-							{stripeSubscriptionStatus === "paused" && (
+							{stripeSubscriptionStatus !== "active" && (
 								<ResumePlanButton teamId={teamId} />
 							)}
 						</div>
