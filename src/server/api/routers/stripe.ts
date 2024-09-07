@@ -136,6 +136,28 @@ export const stripeRouter = createTRPCRouter({
 			return true;
 		}),
 
+	pauseSubscription: protectedProcedure
+		.input(z.object({ teamId: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.teamId },
+			});
+
+			if (!team) {
+				throw new Error("Team not found");
+			}
+
+			if (!team.stripeSubscriptionId) {
+				throw new Error("No Stripe subscription ID");
+			}
+
+			await stripe.subscriptions.update(team.stripeSubscriptionId, {
+				pause_collection: { behavior: "void" },
+			});
+
+			return true;
+		}),
+
 	resumeSubscription: protectedProcedure
 		.input(z.object({ teamId: z.string() }))
 		.mutation(async ({ ctx, input }) => {

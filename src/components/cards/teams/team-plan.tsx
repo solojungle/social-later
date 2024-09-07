@@ -48,8 +48,8 @@ function PausePlanButton({ teamId }: { teamId: string }) {
 		return null;
 	}
 
-	const { mutateAsync: cancelSubscription } =
-		api.stripe.cancelSubscription.useMutation();
+	const { mutateAsync: pauseSubscription } =
+		api.stripe.pauseSubscription.useMutation();
 
 	return (
 		<Dialog open={show} onOpenChange={setShow}>
@@ -76,7 +76,7 @@ function PausePlanButton({ teamId }: { teamId: string }) {
 						onClick={async () => {
 							setLoading(true);
 
-							await cancelSubscription({
+							await pauseSubscription({
 								teamId,
 							});
 
