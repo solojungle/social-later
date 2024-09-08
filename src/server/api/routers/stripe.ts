@@ -287,8 +287,51 @@ export const stripeRouter = createTRPCRouter({
 		}),
 
 	removePaymentMethod: protectedProcedure
-		.input(z.object({ paymentMethodId: z.string() }))
-		.mutation(async ({ input }) => {
+		.input(z.object({ paymentMethodId: z.string(), teamId: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.teamId },
+			});
+
+			if (!team?.stripeCustomerId) {
+				throw new Error("Team not found or no Stripe customer Id");
+			}
+
+			const resp = await stripe.customers.listPaymentMethods(
+				team.stripeCustomerId,
+				{
+					limit: 3,
+				},
+			);
+
+			if (resp.data.length === 1) {
+				throw new Error("Cannot remove last payment method");
+			}
+
+			// Get the subscription
+			const subscription = await stripe.subscriptions.retrieve(
+				team.stripeSubscriptionId,
+				{
+					expand: ["default_payment_method"],
+				},
+			);
+
+			// Check if the payment method to be deleted is the default one
+			const defaultPaymentMethod =
+				subscription.default_payment_method as Stripe.PaymentMethod;
+
+			if (defaultPaymentMethod?.id === input.paymentMethodId) {
+				// Reassign the default payment method to the next one
+				const nextDefaultPaymentMethod = resp.data.find(
+					(paymentMethod) => paymentMethod.id !== input.paymentMethodId,
+				);
+
+				await stripe.subscriptions.update(team.stripeSubscriptionId, {
+					default_payment_method: nextDefaultPaymentMethod?.id,
+				});
+			}
+
+			// Now we can delete the payment method
 			await stripe.paymentMethods.detach(input.paymentMethodId);
 			return { success: true };
 		}),

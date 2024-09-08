@@ -4,6 +4,16 @@ import { CheckCircle2, InfoIcon, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -32,6 +42,57 @@ import { api } from "@/trpc/react";
 import { SettingsCardBase } from "../../settings-card-base";
 import { AddPaymentDialogTrigger } from "./dialogTrigger";
 
+function DeleteAlert({ open, onOpenChange, teamId, paymentMethodId }: any) {
+	const [loading, setLoading] = useState(false);
+	const utils = api.useUtils();
+	const { mutate: removePaymentMethod } =
+		api.stripe.removePaymentMethod.useMutation({
+			onSuccess: () => {
+				toast.success("Payment method removed");
+			},
+			onError: () => {
+				toast.error("Failed to remove payment method");
+			},
+			onSettled: () => {
+				setLoading(false);
+				utils.stripe.getPaymentMethods.invalidate({ id: teamId });
+			},
+		});
+
+	return (
+		<AlertDialog open={open} onOpenChange={onOpenChange}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>
+						This action cannot be undone. This will permanently delete your
+						payment method. We will re-assign the next card to be the default.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						variant="destructive"
+						disabled={loading}
+						onClick={() => {
+							setLoading(true);
+							removePaymentMethod({
+								teamId,
+								paymentMethodId,
+							});
+						}}
+					>
+						{loading && (
+							<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin text-white" />
+						)}
+						Delete
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}
+
 function OptionsMenu({
 	isDefault,
 	isLastPaymentMethod,
@@ -45,6 +106,7 @@ function OptionsMenu({
 }) {
 	const [loading, setLoading] = useState(false);
 	const utils = api.useUtils();
+	const [showDialog, setShowDialog] = useState(false);
 	const { mutate: setDefault } = api.stripe.setDefaultPaymentMethod.useMutation(
 		{
 			onSuccess: () => {
@@ -86,11 +148,18 @@ function OptionsMenu({
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					disabled={isLastPaymentMethod}
+					onSelect={() => setShowDialog(true)}
 					className="text-destructive"
 				>
 					Delete
 				</DropdownMenuItem>
 			</DropdownMenuContent>
+			<DeleteAlert
+				open={showDialog}
+				onOpenChange={setShowDialog}
+				teamId={teamId}
+				paymentMethodId={paymentMethodId}
+			/>
 		</DropdownMenu>
 	);
 }
