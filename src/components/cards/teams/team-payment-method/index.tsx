@@ -3,6 +3,13 @@
 import { CheckCircle2, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { InterfaceIcons } from "@/components/ui/icons";
 import {
 	Table,
@@ -19,6 +26,37 @@ import { AddPaymentDialogTrigger } from "./dialogTrigger";
 
 interface TeamPaymentMethodCardProps {
 	id: string;
+}
+
+function OptionsMenu({
+	isDefault,
+	isLastPaymentMethod,
+}: {
+	isDefault?: boolean;
+	isLastPaymentMethod?: boolean;
+}) {
+	const isDisabled = isDefault && isLastPaymentMethod;
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild disabled={isDisabled}>
+				<Button size="icon" variant="outline">
+					<span className="sr-only">Open menu</span>
+					<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				<DropdownMenuItem disabled={isDefault}>Set as default</DropdownMenuItem>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					disabled={isLastPaymentMethod}
+					className="text-destructive"
+				>
+					Delete
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
 }
 
 export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
@@ -79,14 +117,15 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 						{data.map((card) => (
 							<TableRow key={card.id}>
 								<TableCell className="capitalize">{card.brand}</TableCell>
-								<TableCell>{data.length === 1 && <CheckCircle2 />}</TableCell>
+								<TableCell>{card.isDefault && <CheckCircle2 />}</TableCell>
 								<TableCell className="capitalize">{card.type}</TableCell>
 								<TableCell>•••• {card.last4}</TableCell>
 								<TableCell>{`${card.expMonth}/${card.expYear}`}</TableCell>
 								<TableCell className="w-[0]">
-									<Button size="icon" variant="outline">
-										<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-									</Button>
+									<OptionsMenu
+										isDefault={card.isDefault}
+										isLastPaymentMethod={data.length === 1}
+									/>
 								</TableCell>
 							</TableRow>
 						))}

@@ -256,6 +256,7 @@ export const stripeRouter = createTRPCRouter({
 						last4: paymentMethod.card?.last4,
 						expMonth: paymentMethod.card?.exp_month,
 						expYear: paymentMethod.card?.exp_year,
+						isDefault: resp.data[0]?.id === paymentMethod.id,
 					};
 				}
 
@@ -271,4 +272,112 @@ export const stripeRouter = createTRPCRouter({
 
 			return data;
 		}),
+
+	removePaymentMethod: protectedProcedure
+		.input(z.object({ paymentMethodId: z.string() }))
+		.mutation(async ({ input }) => {
+			await stripe.paymentMethods.detach(input.paymentMethodId);
+			return { success: true };
+		}),
+
+	setDefaultPaymentMethod: protectedProcedure
+		.input(z.object({ teamId: z.string(), paymentMethodId: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.teamId },
+			});
+
+			if (!team?.stripeCustomerId) {
+				throw new Error("Team not found or no Stripe customer ID");
+			}
+
+			await stripe.customers.update(team.stripeCustomerId, {
+				invoice_settings: { default_payment_method: input.paymentMethodId },
+			});
+
+			return { success: true };
+		}),
+
+	changeSubscription: protectedProcedure
+		.input(z.object({ teamId: z.string(), newPriceId: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			const team = await ctx.db.team.findUnique({
+				where: { id: input.teamId },
+			});
+
+			if (!team?.stripeSubscriptionId) {
+				throw new Error("Team not found or no active subscription");
+			}
+
+			const subscription = await stripe.subscriptions.retrieve(
+				team.stripeSubscriptionId,
+			);
+
+			await stripe.subscriptions.update(team.stripeSubscriptionId, {
+				items: [
+					{
+						id: subscription.items.data[0]?.id,
+						price: input.newPriceId,
+					},
+				],
+			});
+
+			return { success: true };
+		}),
+
+	// createNewSubscription: protectedProcedure
+	// 	.input(z.object({ teamId: z.string(), priceId: z.string() }))
+	// 	.mutation(async ({ ctx, input }) => {
+	// 		const team = await ctx.db.team.findUnique({
+	// 			where: { id: input.teamId },
+	// 			include: { stripeProduct: true },
+	// 		});
+
+	// 		if (!team?.stripeCustomerId) {
+	// 			throw new Error("Team not found or no Stripe customer ID");
+	// 		}
+
+	// 		// Check for existing subscription
+	// 		if (team.stripeSubscriptionId) {
+	// 			const existingSubscription = await stripe.subscriptions.retrieve(
+	// 				team.stripeSubscriptionId,
+	// 			);
+	// 			if (
+	// 				existingSubscription.status === "active" &&
+	// 				!existingSubscription.cancel_at_period_end
+	// 			) {
+	// 				throw new Error("Active subscription already exists");
+	// 			}
+	// 		}
+
+	// 		// Get current default payment method
+	// 		const paymentMethods = await stripe.paymentMethods.list({
+	// 			customer: team.stripeCustomerId,
+	// 			type: "card",
+	// 		});
+
+	// 		if (paymentMethods.data.length === 0) {
+	// 			throw new Error("No payment method found");
+	// 		}
+
+	// 		const defaultPaymentMethod = paymentMethods.data[0].id;
+
+	// 		// Create new subscription
+	// 		const subscription = await stripe.subscriptions.create({
+	// 			customer: team.stripeCustomerId,
+	// 			items: [{ price: input.priceId }],
+	// 			default_payment_method: defaultPaymentMethod,
+	// 		});
+
+	// 		// Update team in database
+	// 		await ctx.db.team.update({
+	// 			where: { id: input.teamId },
+	// 			data: {
+	// 				stripeSubscriptionId: subscription.id,
+	// 				stripeProductId: team.stripeProduct.id,
+	// 			},
+	// 		});
+
+	// 		return { success: true, subscriptionId: subscription.id };
+	// 	}),
 });
