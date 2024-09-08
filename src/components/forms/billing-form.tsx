@@ -33,7 +33,7 @@ function Wrapper({ teamId }: { teamId: string }) {
 
 	return (
 		<Elements stripe={stripePromise} options={options}>
-			{!!teamId && <TeamPaymentMethodCard id={teamId} />}
+			{!!teamId && <TeamPaymentMethodCard teamId={teamId} />}
 			<TeamPaymentPlanCard />
 		</Elements>
 	);

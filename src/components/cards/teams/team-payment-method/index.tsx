@@ -1,6 +1,8 @@
 "use client";
 
 import { CheckCircle2, InfoIcon, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,19 +32,35 @@ import { api } from "@/trpc/react";
 import { SettingsCardBase } from "../../settings-card-base";
 import { AddPaymentDialogTrigger } from "./dialogTrigger";
 
-interface TeamPaymentMethodCardProps {
-	id: string;
-}
-
 function OptionsMenu({
 	isDefault,
 	isLastPaymentMethod,
+	teamId,
+	paymentMethodId,
 }: {
 	isDefault?: boolean;
 	isLastPaymentMethod?: boolean;
+	teamId: string;
+	paymentMethodId: string;
 }) {
-	const isDisabled = isDefault && isLastPaymentMethod;
+	const [loading, setLoading] = useState(false);
+	const utils = api.useUtils();
+	const { mutate: setDefault } = api.stripe.setDefaultPaymentMethod.useMutation(
+		{
+			onSuccess: () => {
+				toast.success("Default payment method updated");
+				utils.stripe.getPaymentMethods.invalidate({ id: teamId });
+			},
+			onError: () => {
+				toast.error("Failed to update default payment method");
+			},
+			onSettled: () => {
+				setLoading(false);
+			},
+		},
+	);
 
+	const isDisabled = isDefault && isLastPaymentMethod;
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild disabled={isDisabled}>
@@ -52,7 +70,19 @@ function OptionsMenu({
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
-				<DropdownMenuItem disabled={isDefault}>Set as default</DropdownMenuItem>
+				<DropdownMenuItem>View</DropdownMenuItem>
+				<DropdownMenuItem
+					disabled={isDefault || loading}
+					onClick={() => {
+						setLoading(true);
+						setDefault({ teamId, paymentMethodId });
+					}}
+				>
+					{loading && (
+						<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin text-muted-foreground" />
+					)}
+					Set default
+				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					disabled={isLastPaymentMethod}
@@ -65,10 +95,10 @@ function OptionsMenu({
 	);
 }
 
-export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
+export function TeamPaymentMethodCard({ teamId }: { teamId: string }) {
 	const { data, isLoading, isFetching } = api.stripe.getPaymentMethods.useQuery(
 		{
-			id,
+			id: teamId,
 		},
 	);
 
@@ -99,7 +129,7 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 					</span>
 				}
 				footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
-				button={<AddPaymentDialogTrigger teamId={id} />}
+				button={<AddPaymentDialogTrigger teamId={teamId} />}
 			/>
 		);
 	}
@@ -150,6 +180,8 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 										<OptionsMenu
 											isDefault={card.isDefault}
 											isLastPaymentMethod={data.length === 1}
+											teamId={teamId}
+											paymentMethodId={card.id}
 										/>
 									</TableCell>
 								</TableRow>
@@ -159,7 +191,7 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 				</TooltipProvider>
 			}
 			footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
-			button={<AddPaymentDialogTrigger teamId={id} />}
+			button={<AddPaymentDialogTrigger teamId={teamId} />}
 		/>
 	);
 }

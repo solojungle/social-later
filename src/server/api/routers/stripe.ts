@@ -300,8 +300,18 @@ export const stripeRouter = createTRPCRouter({
 				where: { id: input.teamId },
 			});
 
+			// try to update the subscription's default payment method first
+			if (team?.stripeSubscriptionId) {
+				await stripe.subscriptions.update(team.stripeSubscriptionId, {
+					default_payment_method: input.paymentMethodId,
+				});
+
+				return { success: true };
+			}
+
+			// update the customer's default payment method
 			if (!team?.stripeCustomerId) {
-				throw new Error("Team not found or no Stripe customer ID");
+				throw new Error("Team not found or no Stripe customer Id");
 			}
 
 			await stripe.customers.update(team.stripeCustomerId, {

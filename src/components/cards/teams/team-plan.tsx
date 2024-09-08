@@ -48,6 +48,7 @@ function PausePlanButton({ teamId }: { teamId: string }) {
 		return null;
 	}
 
+	// Canceling the subscription is better since it will not mess up the billing cycle/invoices etc.
 	const { mutateAsync: cancelSubscription } =
 		api.stripe.cancelSubscription.useMutation();
 
