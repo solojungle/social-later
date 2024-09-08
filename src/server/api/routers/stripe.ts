@@ -239,6 +239,19 @@ export const stripeRouter = createTRPCRouter({
 				throw new Error("No Stripe customer ID");
 			}
 
+			// Try to get the default payment method from the subscription
+			let defaultPaymentMethod = null;
+			if (team.stripeSubscriptionId) {
+				const subscription = await stripe.subscriptions.retrieve(
+					team.stripeSubscriptionId,
+					{
+						expand: ["default_payment_method"],
+					},
+				);
+				defaultPaymentMethod =
+					subscription.default_payment_method as Stripe.PaymentMethod;
+			}
+
 			const resp = await stripe.customers.listPaymentMethods(
 				team.stripeCustomerId,
 				{
@@ -256,7 +269,7 @@ export const stripeRouter = createTRPCRouter({
 						last4: paymentMethod.card?.last4,
 						expMonth: paymentMethod.card?.exp_month,
 						expYear: paymentMethod.card?.exp_year,
-						isDefault: resp.data[0]?.id === paymentMethod.id,
+						isDefault: paymentMethod.id === defaultPaymentMethod?.id,
 					};
 				}
 
