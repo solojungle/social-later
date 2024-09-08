@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, MoreHorizontal } from "lucide-react";
+import { CheckCircle2, InfoIcon, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,12 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { api } from "@/trpc/react";
 
 import { SettingsCardBase } from "../../settings-card-base";
@@ -103,34 +109,54 @@ export function TeamPaymentMethodCard({ id }: TeamPaymentMethodCardProps) {
 			title="Payment Method"
 			description="Your charges will be deducted from the default card shown below. This can be changed by adding a new card and making it the default using the menu on the right."
 			content={
-				<Table>
-					<TableHeader>
-						<TableRow className="text-xs uppercase">
-							<TableHead>Brand</TableHead>
-							<TableHead>Default</TableHead>
-							<TableHead>Type</TableHead>
-							<TableHead>Number (last 4)</TableHead>
-							<TableHead>Exp. Date</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{data.map((card) => (
-							<TableRow key={card.id}>
-								<TableCell className="capitalize">{card.brand}</TableCell>
-								<TableCell>{card.isDefault && <CheckCircle2 />}</TableCell>
-								<TableCell className="capitalize">{card.type}</TableCell>
-								<TableCell>•••• {card.last4}</TableCell>
-								<TableCell>{`${card.expMonth}/${card.expYear}`}</TableCell>
-								<TableCell className="w-[0]">
-									<OptionsMenu
-										isDefault={card.isDefault}
-										isLastPaymentMethod={data.length === 1}
-									/>
-								</TableCell>
+				<TooltipProvider>
+					<Table>
+						<TableHeader>
+							<TableRow className="text-xs uppercase">
+								<TableHead>Brand</TableHead>
+								<Tooltip delayDuration={0}>
+									<TooltipTrigger>
+										<TableHead className="flex items-center gap-1 uppercase">
+											Default
+											<InfoIcon className="h-3 w-3" />
+										</TableHead>
+									</TooltipTrigger>
+									<TooltipContent
+										className="normal-case"
+										collisionPadding={{
+											top: 5,
+											right: 5,
+											bottom: 5,
+											left: 5,
+										}}
+									>
+										The card that is used to pay for a subscription
+									</TooltipContent>
+								</Tooltip>
+								<TableHead>Type</TableHead>
+								<TableHead>Number (last 4)</TableHead>
+								<TableHead>Exp. Date</TableHead>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
+						</TableHeader>
+						<TableBody>
+							{data.map((card) => (
+								<TableRow key={card.id}>
+									<TableCell className="capitalize">{card.brand}</TableCell>
+									<TableCell>{card.isDefault && <CheckCircle2 />}</TableCell>
+									<TableCell className="capitalize">{card.type}</TableCell>
+									<TableCell>•••• {card.last4}</TableCell>
+									<TableCell>{`${card.expMonth}/${card.expYear}`}</TableCell>
+									<TableCell className="w-[0]">
+										<OptionsMenu
+											isDefault={card.isDefault}
+											isLastPaymentMethod={data.length === 1}
+										/>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TooltipProvider>
 			}
 			footerSubtitle="At most, three credit cards, debit cards or prepaid cards can be added."
 			button={<AddPaymentDialogTrigger teamId={id} />}
