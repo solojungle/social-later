@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { getPaymentMethodIcon } from "@/components/ccicon";
 import { ProductsSelector } from "@/components/navigationbar/teamSwitcher/embeddedCheckout/planSelection";
 import { Button } from "@/components/ui/button";
 import {
@@ -142,110 +143,62 @@ function ResumePlanButton({ teamId }: { teamId: string }) {
 	);
 }
 
-function PaymentSelector({ paymentMethods }: any) {
-	const FormSchema = z.object({
-		paymentMethod: z.string(),
-	});
-
-	type FormSchemaValues = z.infer<typeof FormSchema>;
-
-	const defaultValues: FormSchemaValues = {
-		paymentMethod: "",
-	};
-
-	const form = useForm<FormSchemaValues>({
-		resolver: zodResolver(FormSchema),
-		defaultValues,
-	});
-
-	function onSubmit(data: FormSchemaValues) {
-		console.log(data);
-	}
+function PaymentSelector({ paymentMethods, form }: any) {
+	const defaultPaymentMethod = paymentMethods[0].id;
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-				<FormField
-					control={form.control}
-					name="paymentMethod"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Payment</FormLabel>
-							<FormControl>
-								<RadioGroup
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-									className="flex select-none flex-col"
+		<FormField
+			control={form.control}
+			name="paymentMethod"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Payment</FormLabel>
+					<FormControl>
+						<RadioGroup
+							onValueChange={field.onChange}
+							defaultValue={field.value || defaultPaymentMethod}
+							className="flex select-none flex-col"
+						>
+							{paymentMethods.map((method: any) => (
+								<label
+									htmlFor={method.id}
+									key={method.id}
+									className="flex cursor-pointer items-center space-x-3 rounded-lg border border-border bg-background p-3 transition duration-75 ease-in-out [&:has([data-state=checked])]:border-primary"
 								>
-									{paymentMethods.map((method: any) => (
-										<label
-											htmlFor={method.id}
-											key={method.id}
-											className="flex cursor-pointer items-center space-x-3 rounded-lg border border-border p-3"
-										>
-											<RadioGroupItem value={method.id} id={method.id} />
-											<div className="flex w-full items-center justify-between">
-												<div>
-													<FormLabel
-														htmlFor={method.id}
-														className="cursor-pointer"
-													>
-														{method.name}
-													</FormLabel>
-													<FormDescription>
-														Expiry {method.expiry}
-													</FormDescription>
-												</div>
-											</div>
-										</label>
-									))}
-								</RadioGroup>
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-			</form>
-		</Form>
+									<RadioGroupItem value={method.id} id={method.id} />
+									<div className="flex w-full items-center justify-between">
+										<div>
+											<FormLabel htmlFor={method.id} className="cursor-pointer">
+												{method.name}
+											</FormLabel>
+											<FormDescription>Expiry {method.expiry}</FormDescription>
+										</div>
+										{getPaymentMethodIcon(method.brand)}
+									</div>
+								</label>
+							))}
+						</RadioGroup>
+					</FormControl>
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
 	);
 }
 
-function ProductSelection({ products }: { products: any }) {
-	const FormSchema = z.object({
-		subscription: z.string(),
-	});
-
-	type FormSchemaValues = z.infer<typeof FormSchema>;
-
-	const defaultValues: FormSchemaValues = {
-		subscription: "",
-	};
-
-	const form = useForm<FormSchemaValues>({
-		resolver: zodResolver(FormSchema),
-		defaultValues,
-	});
-
-	function onSubmit(data: FormSchemaValues) {
-		console.log(data);
-	}
-
+function ProductSelection({ products, form }: { products: any; form: any }) {
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-				<FormField
-					control={form.control}
-					name="subscription"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Subscriptions</FormLabel>
-							<ProductsSelector products={products} field={field} />
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-			</form>
-		</Form>
+		<FormField
+			control={form.control}
+			name="subscription"
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>Subscriptions</FormLabel>
+					<ProductsSelector products={products} field={field} />
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
 	);
 }
 
@@ -271,6 +224,27 @@ function UpdatePlanButton() {
 		},
 	];
 
+	const defaultValues = {
+		paymentMethod: "",
+		subscription: "",
+	};
+
+	const FormSchema = z.object({
+		paymentMethod: z.string().min(1),
+		subscription: z.string().min(1),
+	});
+
+	type FormSchemaValues = z.infer<typeof FormSchema>;
+
+	const form = useForm<FormSchemaValues>({
+		resolver: zodResolver(FormSchema),
+		defaultValues,
+	});
+
+	function onSubmit(data: any) {
+		toast("Event has been created.");
+	}
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -285,21 +259,30 @@ function UpdatePlanButton() {
 						You can change your plan and payment method at any time.
 					</DialogDescription>
 				</DialogHeader>
-				<div className="my-2 space-y-2">
-					<ProductSelection products={products} />
-					<PaymentSelector paymentMethods={paymentMethods} />
-				</div>
-				<DialogFooter className="mt-4">
-					<Button type="button" variant="outline">
-						Cancel
-					</Button>
-					<Button disabled={loading} type="submit">
-						{loading && (
-							<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
-						)}
-						Continue
-					</Button>
-				</DialogFooter>
+
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="my-2 space-y-4"
+					>
+						<ProductSelection form={form} products={products} />
+						<PaymentSelector form={form} paymentMethods={paymentMethods} />
+						<DialogFooter className="!mt-10">
+							<DialogClose asChild>
+								<Button type="button" variant="outline">
+									Cancel
+								</Button>
+							</DialogClose>
+
+							<Button disabled={loading} type="submit">
+								{loading && (
+									<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+								)}
+								Continue
+							</Button>
+						</DialogFooter>
+					</form>
+				</Form>
 			</DialogContent>
 		</Dialog>
 	);

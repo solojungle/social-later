@@ -4,6 +4,7 @@ import { CheckCircle2, InfoIcon, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { getPaymentMethodIcon } from "@/components/ccicon";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -240,7 +241,9 @@ export function TeamPaymentMethodCard({ teamId }: { teamId: string }) {
 						<TableBody>
 							{data.map((card) => (
 								<TableRow key={card.id}>
-									<TableCell className="capitalize">{card.brand}</TableCell>
+									<TableCell className="capitalize">
+										{getPaymentMethodIcon(card.brand as string)}
+									</TableCell>
 									<TableCell>{card.isDefault && <CheckCircle2 />}</TableCell>
 									<TableCell className="capitalize">{card.type}</TableCell>
 									<TableCell>•••• {card.last4}</TableCell>
