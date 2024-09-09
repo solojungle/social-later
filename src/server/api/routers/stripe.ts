@@ -215,9 +215,11 @@ export const stripeRouter = createTRPCRouter({
 			);
 
 			return {
+				id: subscription.id,
 				currentPeriodEnd: subscription.current_period_end,
 				currentPeriodStart: subscription.current_period_start,
 				defaultPaymentMethod: subscription.default_payment_method,
+				productId: team.stripeProduct.stripeProductId,
 				productName: team.stripeProduct.name ?? "",
 				price: team.stripeProduct.price,
 				priceFormatted: team.stripeProduct.priceFormatted,

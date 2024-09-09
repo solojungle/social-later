@@ -144,7 +144,13 @@ function ResumePlanButton({ teamId }: { teamId: string }) {
 }
 
 function PaymentSelector({ paymentMethods, form }: any) {
-	const defaultPaymentMethod = paymentMethods[0].id;
+	if (!paymentMethods) {
+		return (
+			<div className="flex items-center justify-center p-5">
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
 
 	return (
 		<FormField
@@ -156,7 +162,7 @@ function PaymentSelector({ paymentMethods, form }: any) {
 					<FormControl>
 						<RadioGroup
 							onValueChange={field.onChange}
-							defaultValue={field.value || defaultPaymentMethod}
+							defaultValue={field.value}
 							className="flex select-none flex-col"
 						>
 							{paymentMethods.map((method: any) => (
@@ -169,9 +175,12 @@ function PaymentSelector({ paymentMethods, form }: any) {
 									<div className="flex w-full items-center justify-between">
 										<div>
 											<FormLabel htmlFor={method.id} className="cursor-pointer">
-												{method.name}
+												<span className="capitalize">{method.brand}</span>
+												{` ending in ${method.last4}`}
 											</FormLabel>
-											<FormDescription>Expiry {method.expiry}</FormDescription>
+											<FormDescription>
+												Expiry {`${method.expMonth}/${method.expYear}`}
+											</FormDescription>
 										</div>
 										{getPaymentMethodIcon(method.brand)}
 									</div>
@@ -186,7 +195,15 @@ function PaymentSelector({ paymentMethods, form }: any) {
 	);
 }
 
-function ProductSelection({ products, form }: { products: any; form: any }) {
+function ProductSelection({
+	products,
+	form,
+	planId,
+}: {
+	products: any;
+	form: any;
+	planId?: string[];
+}) {
 	return (
 		<FormField
 			control={form.control}
@@ -194,7 +211,11 @@ function ProductSelection({ products, form }: { products: any; form: any }) {
 			render={({ field }) => (
 				<FormItem>
 					<FormLabel>Subscriptions</FormLabel>
-					<ProductsSelector products={products} field={field} />
+					<ProductsSelector
+						products={products}
+						field={field}
+						disabledProduct={planId || []}
+					/>
 					<FormMessage />
 				</FormItem>
 			)}
@@ -202,32 +223,16 @@ function ProductSelection({ products, form }: { products: any; form: any }) {
 	);
 }
 
-function UpdatePlanButton() {
+function UpdatePlanButtonForm({
+	products,
+	paymentMethods,
+	planId,
+}: {
+	products: any;
+	paymentMethods: any;
+	planId: string;
+}) {
 	const [loading, setLoading] = useState(false);
-	const { data: products } = api.products.getProducts.useQuery();
-	const { mutate: changeSubscription } =
-		api.stripe.changeSubscription.useMutation();
-
-	const paymentMethods = [
-		{ id: "1", name: "Visa ending in 7658", expiry: "10/2024", brand: "visa" },
-		{
-			id: "2",
-			name: "Mastercard ending in 8429",
-			expiry: "04/2026",
-			brand: "mastercard",
-		},
-		{
-			id: "3",
-			name: "Mastercard ending in 8439",
-			expiry: "04/2026",
-			brand: "mastercard",
-		},
-	];
-
-	const defaultValues = {
-		paymentMethod: "",
-		subscription: "",
-	};
 
 	const FormSchema = z.object({
 		paymentMethod: z.string().min(1),
@@ -235,6 +240,19 @@ function UpdatePlanButton() {
 	});
 
 	type FormSchemaValues = z.infer<typeof FormSchema>;
+
+	const defaultPaymentMethod = paymentMethods?.find(
+		(method: any) => method.isDefault,
+	)?.id;
+
+	const defaultProduct = products?.find(
+		(product: any) => product.stripeProductId !== planId,
+	);
+
+	const defaultValues = {
+		paymentMethod: defaultPaymentMethod,
+		subscription: defaultProduct?.stripePriceId,
+	};
 
 	const form = useForm<FormSchemaValues>({
 		resolver: zodResolver(FormSchema),
@@ -244,6 +262,48 @@ function UpdatePlanButton() {
 	function onSubmit(data: any) {
 		toast("Event has been created.");
 	}
+
+	return (
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="my-2 space-y-4">
+				<ProductSelection form={form} products={products} planId={[planId]} />
+				<PaymentSelector form={form} paymentMethods={paymentMethods} />
+				<DialogFooter className="!mt-10">
+					<DialogClose asChild>
+						<Button type="button" variant="outline">
+							Cancel
+						</Button>
+					</DialogClose>
+					<Button disabled={loading} type="submit">
+						{loading && (
+							<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+						)}
+						Continue
+					</Button>
+				</DialogFooter>
+			</form>
+		</Form>
+	);
+}
+
+function UpdatePlanButton() {
+	const { id: teamId } = useSelectedTeamStore();
+	const { data: products } = api.products.getProducts.useQuery();
+	const { data: paymentMethods } = api.stripe.getPaymentMethods.useQuery(
+		{
+			id: teamId,
+		},
+		{
+			enabled: !!teamId,
+		},
+	);
+	const { mutate: changeSubscription } =
+		api.stripe.changeSubscription.useMutation();
+
+	// the teams current subscription
+	const { data: subscriptionData } = api.stripe.getSubscription.useQuery({
+		id: teamId,
+	});
 
 	return (
 		<Dialog>
@@ -259,30 +319,13 @@ function UpdatePlanButton() {
 						You can change your plan and payment method at any time.
 					</DialogDescription>
 				</DialogHeader>
-
-				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="my-2 space-y-4"
-					>
-						<ProductSelection form={form} products={products} />
-						<PaymentSelector form={form} paymentMethods={paymentMethods} />
-						<DialogFooter className="!mt-10">
-							<DialogClose asChild>
-								<Button type="button" variant="outline">
-									Cancel
-								</Button>
-							</DialogClose>
-
-							<Button disabled={loading} type="submit">
-								{loading && (
-									<InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
-								)}
-								Continue
-							</Button>
-						</DialogFooter>
-					</form>
-				</Form>
+				{products && paymentMethods && (
+					<UpdatePlanButtonForm
+						products={products}
+						paymentMethods={paymentMethods}
+						planId={subscriptionData?.productId ?? ""}
+					/>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

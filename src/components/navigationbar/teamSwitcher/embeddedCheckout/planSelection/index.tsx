@@ -38,9 +38,14 @@ interface ProductsSelectorProps {
 		stripePriceId: string;
 	}[];
 	field: any;
+	disabledProduct?: string[];
 }
 
-export function ProductsSelector({ products, field }: ProductsSelectorProps) {
+export function ProductsSelector({
+	products,
+	field,
+	disabledProduct,
+}: ProductsSelectorProps) {
 	if (!products || products.length <= 0) {
 		return (
 			<div className="flex items-center justify-center p-5">
@@ -61,6 +66,7 @@ export function ProductsSelector({ products, field }: ProductsSelectorProps) {
 						<RadioGroupItem
 							value={product.stripePriceId}
 							id={product.id}
+							disabled={disabledProduct?.includes(product.stripeProductId)}
 							className="peer sr-only"
 						/>
 						<Label
