@@ -40,7 +40,7 @@ interface ProductsSelectorProps {
 	field: any;
 }
 
-function ProductsSelector({ products, field }: ProductsSelectorProps) {
+export function ProductsSelector({ products, field }: ProductsSelectorProps) {
 	if (!products || products.length <= 0) {
 		return (
 			<div className="flex items-center justify-center p-5">

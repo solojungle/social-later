@@ -365,7 +365,7 @@ export const stripeRouter = createTRPCRouter({
 		}),
 
 	changeSubscription: protectedProcedure
-		.input(z.object({ teamId: z.string(), newPriceId: z.string() }))
+		.input(z.object({ teamId: z.string(), priceId: z.string() }))
 		.mutation(async ({ ctx, input }) => {
 			const team = await ctx.db.team.findUnique({
 				where: { id: input.teamId },
@@ -383,7 +383,7 @@ export const stripeRouter = createTRPCRouter({
 				items: [
 					{
 						id: subscription.items.data[0]?.id,
-						price: input.newPriceId,
+						price: input.priceId,
 					},
 				],
 			});
