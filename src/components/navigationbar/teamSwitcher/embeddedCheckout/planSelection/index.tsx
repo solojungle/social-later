@@ -71,7 +71,7 @@ export function ProductsSelector({
 						/>
 						<Label
 							htmlFor={product.id}
-							className="flex h-32 cursor-pointer flex-col items-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+							className="flex h-32 cursor-pointer flex-col items-center rounded-md border-2 border-muted bg-popover p-4 ring-primary/40 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:ring-2"
 						>
 							<span className="mb-2 text-lg">{product.name}</span>
 							<span className="text-sm text-muted-foreground">

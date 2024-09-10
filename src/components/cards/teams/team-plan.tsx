@@ -158,7 +158,7 @@ function PaymentSelector({ paymentMethods, form }: any) {
 			name="paymentMethod"
 			render={({ field }) => (
 				<FormItem>
-					<FormLabel>Payment</FormLabel>
+					<FormLabel>Select Payment</FormLabel>
 					<FormControl>
 						<RadioGroup
 							onValueChange={field.onChange}
@@ -169,7 +169,7 @@ function PaymentSelector({ paymentMethods, form }: any) {
 								<label
 									htmlFor={method.id}
 									key={method.id}
-									className="flex cursor-pointer items-center space-x-3 rounded-lg border border-border bg-background p-3 transition duration-75 ease-in-out [&:has([data-state=checked])]:border-primary"
+									className="flex cursor-pointer items-center space-x-3 rounded-lg border border-border bg-background p-3 ring-primary/40 transition duration-75 ease-in-out [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:ring-2"
 								>
 									<RadioGroupItem value={method.id} id={method.id} />
 									<div className="flex w-full items-center justify-between">
@@ -178,8 +178,9 @@ function PaymentSelector({ paymentMethods, form }: any) {
 												<span className="capitalize">{method.brand}</span>
 												{` ending in ${method.last4}`}
 											</FormLabel>
-											<FormDescription>
-												Expiry {`${method.expMonth}/${method.expYear}`}
+											<FormDescription className="flex items-center space-x-2">
+												<span className="text-xs uppercase">Expiry</span>
+												<span className="text-black">{`${method.expMonth}/${method.expYear}`}</span>
 											</FormDescription>
 										</div>
 										{getPaymentMethodIcon(method.brand)}
@@ -233,6 +234,21 @@ function UpdatePlanButtonForm({
 	planId: string;
 }) {
 	const [loading, setLoading] = useState(false);
+	const utils = api.useUtils();
+
+	const { mutateAsync: changeSubscription } =
+		api.stripe.changeSubscription.useMutation({
+			onSuccess() {
+				toast.success("Your subscription has been updated.");
+				utils.stripe.getSubscription.invalidate();
+			},
+			onError() {
+				toast.error("An error occurred while updating your subscription.");
+			},
+			onSettled() {
+				setLoading(false);
+			},
+		});
 
 	const FormSchema = z.object({
 		paymentMethod: z.string().min(1),
@@ -259,8 +275,13 @@ function UpdatePlanButtonForm({
 		defaultValues,
 	});
 
-	function onSubmit(data: any) {
-		toast("Event has been created.");
+	async function onSubmit(data: any) {
+		setLoading(true);
+
+		await changeSubscription({
+			teamId: useSelectedTeamStore.getState().id,
+			priceId: data.subscription,
+		});
 	}
 
 	return (
@@ -297,8 +318,6 @@ function UpdatePlanButton() {
 			enabled: !!teamId,
 		},
 	);
-	const { mutate: changeSubscription } =
-		api.stripe.changeSubscription.useMutation();
 
 	// the teams current subscription
 	const { data: subscriptionData } = api.stripe.getSubscription.useQuery({
