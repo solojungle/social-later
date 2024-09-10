@@ -197,9 +197,6 @@ export const stripeRouter = createTRPCRouter({
 			// Include the subscription
 			const team = await ctx.db.team.findUnique({
 				where: { id: input.id },
-				include: {
-					stripeProduct: true,
-				},
 			});
 
 			if (!team) {
@@ -214,15 +211,32 @@ export const stripeRouter = createTRPCRouter({
 				team.stripeSubscriptionId,
 			);
 
+			if (!subscription) {
+				throw new Error("No subscription found");
+			}
+
+			// Now we will use what stripe says the customer is subscribed to
+			// And get the product from our database
+			const product = await ctx.db.stripeProduct.findUnique({
+				where: {
+					stripeProductId: subscription?.items?.data[0]?.price
+						?.product as string,
+				},
+			});
+
+			if (!product) {
+				throw new Error("Product not found");
+			}
+
 			return {
 				id: subscription.id,
 				currentPeriodEnd: subscription.current_period_end,
 				currentPeriodStart: subscription.current_period_start,
 				defaultPaymentMethod: subscription.default_payment_method,
-				productId: team.stripeProduct.stripeProductId,
-				productName: team.stripeProduct.name ?? "",
-				price: team.stripeProduct.price,
-				priceFormatted: team.stripeProduct.priceFormatted,
+				productId: product.stripeProductId,
+				productName: product.name ?? "",
+				price: product.price,
+				priceFormatted: product.priceFormatted,
 			};
 		}),
 

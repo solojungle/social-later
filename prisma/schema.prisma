@@ -118,13 +118,11 @@ model Team {
   name                     String
   url                      String                   @default(nanoid())
   image                    String
-  internalProductId        String
   stripeCustomerId         String
   stripeSubscriptionId     String                   @unique
   stripeSubscriptionStatus StripeSubscriptionStatus
   members                  UserOnTeam[]
   invitation               Invitation[]
-  stripeProduct            StripeProduct            @relation(fields: [internalProductId], references: [id])
   stripeCard               StripeCard[]
   socialProfile            SocialProfile[]
   post                     Post[]
@@ -170,7 +168,6 @@ model StripeProduct {
   description     String?
   stripeProductId String  @unique
   stripePriceId   String  @unique
-  team            Team[]
 }
 
 model StripeCard {
