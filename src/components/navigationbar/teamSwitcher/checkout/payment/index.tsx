@@ -105,7 +105,7 @@ export function PaymentModal({
 				elements,
 				clientSecret: resp.clientSecret,
 				confirmParams: {
-					return_url: `${window.location.origin}/teams/${resp.team.url}/settings/billing`,
+					return_url: `${window.location.origin}/teams/${resp.team.url}/settings?page=billing`,
 				},
 			});
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { TeamAddMembersCard } from "@/components/cards/teams/team-add-members";
 import { MemberManager } from "@/components/memberManager";
@@ -12,6 +12,9 @@ import { api } from "@/trpc/react";
 
 export default function TeamMembersPage() {
 	const { id: selectedTeamId } = useSelectedTeamStore();
+
+	const [isClient, setIsClient] = useState(false);
+
 	const { data: invitations } = api.invitation.getPendingInvitations.useQuery({
 		id: selectedTeamId,
 	});
@@ -21,10 +24,18 @@ export default function TeamMembersPage() {
 	});
 
 	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
+	useEffect(() => {
 		if (!members || !invitations) return;
 		useTeamMembersStore.setState({ members });
 		useInvitationsStore.setState({ invitations });
 	}, [members, invitations]);
+
+	if (!isClient) {
+		return null; // or a loading spinner
+	}
 
 	return (
 		<div className="w-full space-y-6">

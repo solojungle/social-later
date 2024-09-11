@@ -66,7 +66,7 @@ export function ResumeSubscription({ teamId }: { teamId: string }) {
 							manage their social media.
 						</p>
 					</div>
-					<Link href={`/teams/${teamId}/settings/billing`}>
+					<Link href={`/teams/${teamId}/settings?page=billing`}>
 						<Button className="w-full py-6" size="lg">
 							Upgrade to paid
 						</Button>

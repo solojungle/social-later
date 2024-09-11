@@ -68,7 +68,7 @@ export function AddPaymentDialogTrigger({ teamId }: { teamId: string }) {
 			elements,
 			clientSecret,
 			confirmParams: {
-				return_url: `${window.location.origin}/teams/${teamId}/settings/billing`,
+				return_url: `${window.location.origin}/teams/${teamId}/settings?page=billing`,
 			},
 		});
 
