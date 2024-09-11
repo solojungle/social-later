@@ -15,23 +15,12 @@ export const teamRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const internalProduct = await ctx.db.stripeProduct.findFirst({
-				where: {
-					stripeProductId: input.product,
-				},
-			});
-
-			if (!internalProduct) {
-				throw new Error("No internal product found");
-			}
-
 			const team = await ctx.db.team.create({
 				data: {
 					name: crypto.randomUUID(),
 					image: `https://avatar.vercel.sh/${
 						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
 					}.png`,
-					internalProductId: internalProduct.id,
 					stripeCustomerId: input.customer,
 					stripeSubscriptionId: input.subscription,
 					stripeSubscriptionStatus: "active",
@@ -63,7 +52,6 @@ export const teamRouter = createTRPCRouter({
 			z.object({
 				name: z.string(),
 				stripePriceId: z.string(),
-				internalProductId: z.string(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -87,7 +75,6 @@ export const teamRouter = createTRPCRouter({
 					image: `https://avatar.vercel.sh/${
 						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
 					}.png`,
-					internalProductId: input.internalProductId,
 					stripeCustomerId: customer.id,
 					stripeSubscriptionId: subscription.id,
 					stripeSubscriptionStatus: subscription.status,

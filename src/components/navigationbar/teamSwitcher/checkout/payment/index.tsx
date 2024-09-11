@@ -98,7 +98,6 @@ export function PaymentModal({
 		try {
 			const resp = await createTeam.mutateAsync({
 				name: formData.name,
-				internalProductId: formData.subscription.id,
 				stripePriceId: formData.subscription.priceId,
 			});
 

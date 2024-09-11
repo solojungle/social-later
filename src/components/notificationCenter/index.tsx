@@ -32,13 +32,12 @@ function EmptyState({ description }: { description: string }) {
 	);
 }
 
-function NotificationFeed() {
-	const { members } = useTeamMembersStore();
+function NotificationFeed({ knockClient }: { knockClient: any }) {
 	// const { id: userId } = useUserStore();
 	// const { id: teamId } = useSelectedTeamStore();
+	const { members } = useTeamMembersStore();
 	const [isOpen, setOpen] = useState(false);
 
-	const knockClient = useKnockClient();
 	const feedClient = useNotifications(
 		knockClient,
 		env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID,
@@ -211,12 +210,22 @@ function NotificationFeed() {
 	);
 }
 
+function NotificationFeedWrapper() {
+	const knockClient = useKnockClient();
+
+	if (!knockClient) {
+		return null;
+	}
+
+	return <NotificationFeed knockClient={knockClient} />;
+}
+
 export function NotificationCenter() {
 	const { id: userId } = useUserStore();
 
 	return (
 		<KnockProvider apiKey={env.NEXT_PUBLIC_KNOCK_KEY} userId={userId}>
-			<NotificationFeed />
+			<NotificationFeedWrapper />
 		</KnockProvider>
 	);
 }
