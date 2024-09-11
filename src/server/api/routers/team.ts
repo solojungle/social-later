@@ -169,7 +169,6 @@ export const teamRouter = createTRPCRouter({
 			TeamSchema.partial({
 				name: true,
 				url: true,
-				type: true,
 				image: true,
 			}),
 		)

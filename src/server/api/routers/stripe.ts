@@ -256,7 +256,7 @@ export const stripeRouter = createTRPCRouter({
 			}
 
 			// Try to get the default payment method from the subscription
-			let defaultPaymentMethod = null;
+			let defaultPaymentMethod: Stripe.PaymentMethod | null = null;
 			if (team.stripeSubscriptionId) {
 				const subscription = await stripe.subscriptions.retrieve(
 					team.stripeSubscriptionId,

@@ -1,4 +1,8 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import {
+	DropdownMenuContentProps,
+	DropdownMenuRadioItemProps,
+} from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useCaptionOptions, useMediaPlayer } from "@vidstack/react";
 import { CheckCircle, CircleIcon, SubtitlesIcon } from "lucide-react";
@@ -6,15 +10,15 @@ import { CheckCircle, CircleIcon, SubtitlesIcon } from "lucide-react";
 import { buttonClass, tooltipClass } from "./buttons";
 
 export interface MenuProps {
-	side?: DropdownMenu.MenuContentProps["side"];
-	align?: DropdownMenu.MenuContentProps["align"];
-	offset?: DropdownMenu.MenuContentProps["sideOffset"];
+	side?: DropdownMenuContentProps["side"];
+	align?: DropdownMenuContentProps["align"];
+	offset?: DropdownMenuContentProps["sideOffset"];
 	tooltipSide?: Tooltip.TooltipContentProps["side"];
 	tooltipAlign?: Tooltip.TooltipContentProps["align"];
 	tooltipOffset?: number;
 }
 
-function Radio({ children, ...props }: DropdownMenu.MenuRadioItemProps) {
+function Radio({ children, ...props }: DropdownMenuRadioItemProps) {
 	return (
 		<DropdownMenu.RadioItem
 			className="hocus:bg-white/10 group relative flex w-full cursor-pointer select-none items-center justify-start rounded-sm p-2.5 text-sm outline-none data-[focus]:ring-[3px]"
