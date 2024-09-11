@@ -228,10 +228,12 @@ function UpdatePlanButtonForm({
 	products,
 	paymentMethods,
 	planId,
+	setOpen,
 }: {
 	products: any;
 	paymentMethods: any;
 	planId: string;
+	setOpen: any;
 }) {
 	const [loading, setLoading] = useState(false);
 	const utils = api.useUtils();
@@ -247,6 +249,7 @@ function UpdatePlanButtonForm({
 			},
 			onSettled() {
 				setLoading(false);
+				setOpen(false);
 			},
 		});
 
@@ -309,6 +312,7 @@ function UpdatePlanButtonForm({
 
 function UpdatePlanButton() {
 	const { id: teamId } = useSelectedTeamStore();
+	const [open, setOpen] = useState(false);
 	const { data: products } = api.products.getProducts.useQuery();
 	const { data: paymentMethods } = api.stripe.getPaymentMethods.useQuery(
 		{
@@ -325,7 +329,7 @@ function UpdatePlanButton() {
 	});
 
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button variant="outline" onClick={() => {}}>
 					Update Plan
@@ -343,6 +347,7 @@ function UpdatePlanButton() {
 						products={products}
 						paymentMethods={paymentMethods}
 						planId={subscriptionData?.productId ?? ""}
+						setOpen={setOpen}
 					/>
 				)}
 			</DialogContent>
