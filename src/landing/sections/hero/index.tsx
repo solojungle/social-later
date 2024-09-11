@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { AvatarCircles } from "@/landing/components/avatarCircles";
@@ -41,9 +42,11 @@ export function Hero() {
 				transition={{ duration: 0.4, delay: 0.3 }}
 			>
 				<motion.div>
-					<Button size="lg" className="flex items-center justify-center">
-						Sign up for free <ArrowUpRight className="ml-2 h-5 w-5" />
-					</Button>
+					<Link href="/login">
+						<Button size="lg" className="flex items-center justify-center">
+							Get started today <ArrowUpRight className="ml-2 h-5 w-5" />
+						</Button>
+					</Link>
 				</motion.div>
 				<AvatarCircles
 					avatarUrls={[
