@@ -5,5 +5,5 @@ import { env } from "@/env.mjs";
 export const oauth2Client = new AuthClient({
 	clientId: env.LINKEDIN_CLIENT_ID,
 	clientSecret: env.LINKEDIN_CLIENT_SECRET,
-	redirectUrl: `${env.LINKEDIN_CALLBACK_URL}/api/webhooks/linkedin/callback`,
+	redirectUrl: `${env.CALLBACK_URL}/api/webhooks/linkedin/callback`,
 });

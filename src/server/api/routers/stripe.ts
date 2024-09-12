@@ -36,8 +36,7 @@ export const stripeRouter = createTRPCRouter({
 							quantity: 1,
 						},
 					],
-					// TODO: replace this cardinal sin with a proper ENV var
-					return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?sessionId={CHECKOUT_SESSION_ID}`,
+					return_url: `${env.CALLBACK_URL}/checkout?sessionId={CHECKOUT_SESSION_ID}`,
 				});
 
 				return {
@@ -55,8 +54,7 @@ export const stripeRouter = createTRPCRouter({
 						quantity: 1,
 					},
 				],
-				// TODO: replace this cardinal sin with a proper ENV var
-				return_url: `${env.YOUTUBE_CALLBACK_URL}/checkout?sessionId={CHECKOUT_SESSION_ID}`,
+				return_url: `${env.CALLBACK_URL}/checkout?sessionId={CHECKOUT_SESSION_ID}`,
 			});
 
 			return {
