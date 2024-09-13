@@ -1,5 +1,36 @@
 import axios, { AxiosResponse } from "axios";
 
+/**
+ * Fields when trying to get profile information about a Threads user.
+ */
+type ProfileFields =
+	| "id"
+	| "username"
+	| "name"
+	| "threads_profile_picture_url"
+	| "threads_biography";
+
+type RetrieveRepliesFields =
+	| "id"
+	| "text"
+	| "username"
+	| "permalink"
+	| "timestamp"
+	| "media_product_type"
+	| "media_type"
+	| "media_url"
+	| "shortcode"
+	| "thumbnail_url"
+	| "children"
+	| "is_quote_post"
+	| "has_replies"
+	| "root_post"
+	| "replied_to"
+	| "is_reply"
+	| "is_reply_owned_by_me"
+	| "hide_status"
+	| "reply_audience";
+
 type Scope =
 	| "threads_basic"
 	| "threads_content_publish"
@@ -11,16 +42,14 @@ export interface ThreadsAPIConfig {
 	clientId: string;
 	clientSecret: string;
 	redirectUri: string;
+	/**
+	 * The scopes of access granted by the access_token expressed as a list of comma-delimited, or space-delimited, case-sensitive strings.
+	 */
 	scope: Scope[];
 }
 
 type MediaType = "TEXT" | "IMAGE" | "VIDEO" | "CAROUSEL";
 type ReplyControl = "everyone" | "accounts_you_follow" | "mentioned_only";
-
-interface AuthResult {
-	accessToken: string;
-	userId: string;
-}
 
 interface MediaContainer {
 	id: string;
@@ -32,6 +61,21 @@ interface ThreadInsights {
 
 interface UserInsights {
 	[key: string]: number;
+}
+
+interface TokenResponse {
+	/**
+	 * A token that can be sent to a Threads API.
+	 */
+	access_token: string;
+	/**
+	 * Identifies the type of token returned. At this time, this field always has the value Bearer.
+	 */
+	token_type: string;
+	/**
+	 * The time in seconds at which this token is thought to expire.
+	 */
+	expires_in: number;
 }
 
 export class ThreadsAPI {
@@ -64,11 +108,11 @@ export class ThreadsAPI {
 	}
 
 	/**
-	 * Exchange authorization code for access token
+	 * Exchange authorization code for a short-lived access token
 	 * @param code The authorization code
-	 * @returns Object containing access token and user ID
+	 * @returns Object containing short-lived access token and user ID
 	 */
-	async getAccessToken(code: string): Promise<AuthResult> {
+	async getAccessToken(code: string): Promise<TokenResponse> {
 		const url = `${this.baseUrl}oauth/access_token`;
 		const params = new URLSearchParams({
 			client_id: this.config.clientId,
@@ -79,8 +123,12 @@ export class ThreadsAPI {
 		});
 
 		try {
-			const response = await this.makeRequest<AuthResult>(url, "POST", params);
-			this.accessToken = response.accessToken;
+			const response = await this.makeRequest<TokenResponse>({
+				url,
+				method: "POST",
+				params,
+			});
+			this.accessToken = response.access_token;
 			return response;
 		} catch (error) {
 			throw this.handleError(error);
@@ -90,9 +138,9 @@ export class ThreadsAPI {
 	/**
 	 * Exchange short-lived token for long-lived token
 	 * @param shortLivedToken The short-lived access token
-	 * @returns The long-lived access token
+	 * @returns Object containing long-lived access token
 	 */
-	async getLongLivedToken(shortLivedToken: string): Promise<string> {
+	async getLongLivedToken(shortLivedToken: string): Promise<TokenResponse> {
 		const url = `${this.baseUrl}access_token`;
 		const params = new URLSearchParams({
 			grant_type: "th_exchange_token",
@@ -101,12 +149,12 @@ export class ThreadsAPI {
 		});
 
 		try {
-			const response = await this.makeRequest<{ access_token: string }>(
+			const response = await this.makeRequest<TokenResponse>({
 				url,
-				"GET",
+				method: "GET",
 				params,
-			);
-			return response.access_token;
+			});
+			return { ...response };
 		} catch (error) {
 			throw this.handleError(error);
 		}
@@ -117,7 +165,7 @@ export class ThreadsAPI {
 	 * @param longLivedToken The long-lived access token to refresh
 	 * @returns The new long-lived access token
 	 */
-	async refreshLongLivedToken(longLivedToken: string): Promise<string> {
+	async refreshLongLivedToken(longLivedToken: string): Promise<TokenResponse> {
 		const url = `${this.baseUrl}refresh_access_token`;
 		const params = new URLSearchParams({
 			grant_type: "th_refresh_token",
@@ -125,12 +173,12 @@ export class ThreadsAPI {
 		});
 
 		try {
-			const response = await this.makeRequest<{ access_token: string }>(
+			const response = await this.makeRequest<TokenResponse>({
 				url,
-				"GET",
+				method: "GET",
 				params,
-			);
-			return response.access_token;
+			});
+			return { ...response };
 		} catch (error) {
 			throw this.handleError(error);
 		}
@@ -159,11 +207,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<MediaContainer>(
+			const response = await this.makeRequest<MediaContainer>({
 				url,
-				"POST",
+				method: "POST",
 				params,
-			);
+			});
 			return response.id;
 		} catch (error) {
 			throw this.handleError(error);
@@ -186,11 +234,11 @@ export class ThreadsAPI {
 		});
 
 		try {
-			const response = await this.makeRequest<MediaContainer>(
+			const response = await this.makeRequest<MediaContainer>({
 				url,
-				"POST",
+				method: "POST",
 				params,
-			);
+			});
 			return response.id;
 		} catch (error) {
 			throw this.handleError(error);
@@ -219,11 +267,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<MediaContainer>(
+			const response = await this.makeRequest<MediaContainer>({
 				url,
-				"POST",
+				method: "POST",
 				params,
-			);
+			});
 			return response.id;
 		} catch (error) {
 			throw this.handleError(error);
@@ -250,11 +298,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<MediaContainer>(
+			const response = await this.makeRequest<MediaContainer>({
 				url,
-				"POST",
+				method: "POST",
 				params,
-			);
+			});
 			return response.id;
 		} catch (error) {
 			throw this.handleError(error);
@@ -282,11 +330,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<{ data: any[] }>(
+			const response = await this.makeRequest<{ data: any[] }>({
 				url,
-				"GET",
+				method: "GET",
 				params,
-			);
+			});
 			return response.data;
 		} catch (error) {
 			throw this.handleError(error);
@@ -306,7 +354,7 @@ export class ThreadsAPI {
 		};
 
 		try {
-			return await this.makeRequest(url, "GET", params);
+			return await this.makeRequest({ url, method: "GET", params });
 		} catch (error) {
 			throw this.handleError(error);
 		}
@@ -318,14 +366,14 @@ export class ThreadsAPI {
 	 * @param fields Array of fields to retrieve
 	 * @returns The user's profile
 	 */
-	async getUserProfile(userId: string, fields: string[]): Promise<any> {
+	async getUserProfile(userId: string, fields: ProfileFields[]): Promise<any> {
 		const url = `${this.baseUrl}${userId}`;
 		const params = {
 			fields: fields.join(","),
 		};
 
 		try {
-			return await this.makeRequest(url, "GET", params);
+			return await this.makeRequest({ url, method: "GET", params });
 		} catch (error) {
 			throw this.handleError(error);
 		}
@@ -338,11 +386,15 @@ export class ThreadsAPI {
 	 * @param reverse Whether to reverse the order of replies
 	 * @returns Array of replies
 	 */
-	async getReplies(
-		mediaId: string,
-		fields: string[],
-		reverse: boolean = true,
-	): Promise<any[]> {
+	async getReplies({
+		mediaId,
+		fields,
+		reverse = true,
+	}: {
+		mediaId: string;
+		fields: RetrieveRepliesFields[];
+		reverse?: boolean;
+	}): Promise<any[]> {
 		const url = `${this.baseUrl}${mediaId}/replies`;
 		const params = {
 			fields: fields.join(","),
@@ -350,11 +402,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<{ data: any[] }>(
+			const response = await this.makeRequest<{ data: any[] }>({
 				url,
-				"GET",
+				method: "GET",
 				params,
-			);
+			});
 			return response.data;
 		} catch (error) {
 			throw this.handleError(error);
@@ -368,11 +420,15 @@ export class ThreadsAPI {
 	 * @param reverse Whether to reverse the order of conversation
 	 * @returns Array of conversation items
 	 */
-	async getConversation(
-		mediaId: string,
-		fields: string[],
-		reverse: boolean = true,
-	): Promise<any[]> {
+	async getConversation({
+		mediaId,
+		fields,
+		reverse = true,
+	}: {
+		mediaId: string;
+		fields: string[];
+		reverse?: boolean;
+	}): Promise<any[]> {
 		const url = `${this.baseUrl}${mediaId}/conversation`;
 		const params = {
 			fields: fields.join(","),
@@ -380,11 +436,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<{ data: any[] }>(
+			const response = await this.makeRequest<{ data: any[] }>({
 				url,
-				"GET",
+				method: "GET",
 				params,
-			);
+			});
 			return response.data;
 		} catch (error) {
 			throw this.handleError(error);
@@ -397,18 +453,24 @@ export class ThreadsAPI {
 	 * @param hide Whether to hide (true) or unhide (false) the reply
 	 * @returns Whether the operation was successful
 	 */
-	async hideReply(replyId: string, hide: boolean): Promise<boolean> {
+	async hideReply({
+		replyId,
+		hide,
+	}: {
+		replyId: string;
+		hide: boolean;
+	}): Promise<boolean> {
 		const url = `${this.baseUrl}${replyId}/manage_reply`;
 		const params = new URLSearchParams({
 			hide: hide.toString(),
 		});
 
 		try {
-			const response = await this.makeRequest<{ success: boolean }>(
+			const response = await this.makeRequest<{ success: boolean }>({
 				url,
-				"POST",
+				method: "POST",
 				params,
-			);
+			});
 			return response.success;
 		} catch (error) {
 			throw this.handleError(error);
@@ -423,12 +485,17 @@ export class ThreadsAPI {
 	 * @param replyToId The ID of the thread to reply to
 	 * @returns The ID of the created reply
 	 */
-	async respondToReply(
-		userId: string,
-		mediaType: MediaType,
-		text: string,
-		replyToId: string,
-	): Promise<string> {
+	async respondToReply({
+		userId,
+		mediaType,
+		text,
+		replyToId,
+	}: {
+		userId: string;
+		mediaType: MediaType;
+		text: string;
+		replyToId: string;
+	}): Promise<string> {
 		const url = `${this.baseUrl}${userId}/threads`;
 		const params = {
 			media_type: mediaType,
@@ -437,11 +504,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<MediaContainer>(
+			const response = await this.makeRequest<MediaContainer>({
 				url,
-				"POST",
+				method: "POST",
 				params,
-			);
+			});
 			return response.id;
 		} catch (error) {
 			throw this.handleError(error);
@@ -456,12 +523,17 @@ export class ThreadsAPI {
 	 * @param replyControl The reply control setting
 	 * @returns The ID of the created thread
 	 */
-	async controlWhoCanReply(
-		userId: string,
-		mediaType: MediaType,
-		text: string,
-		replyControl: ReplyControl,
-	): Promise<string> {
+	async controlWhoCanReply({
+		userId,
+		mediaType,
+		text,
+		replyControl,
+	}: {
+		userId: string;
+		mediaType: MediaType;
+		text: string;
+		replyControl: ReplyControl;
+	}): Promise<string> {
 		const url = `${this.baseUrl}${userId}/threads`;
 		const params = {
 			media_type: mediaType,
@@ -470,11 +542,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<MediaContainer>(
+			const response = await this.makeRequest<MediaContainer>({
 				url,
-				"POST",
+				method: "POST",
 				params,
-			);
+			});
 			return response.id;
 		} catch (error) {
 			throw this.handleError(error);
@@ -487,21 +559,24 @@ export class ThreadsAPI {
 	 * @param metrics Array of metrics to retrieve
 	 * @returns The media insights
 	 */
-	async getMediaInsights(
-		mediaId: string,
-		metrics: string[],
-	): Promise<ThreadInsights> {
+	async getMediaInsights({
+		mediaId,
+		metrics,
+	}: {
+		mediaId: string;
+		metrics: string[];
+	}): Promise<ThreadInsights> {
 		const url = `${this.baseUrl}${mediaId}/insights`;
 		const params = {
 			metric: metrics.join(","),
 		};
 
 		try {
-			const response = await this.makeRequest<{ data: ThreadInsights }>(
+			const response = await this.makeRequest<{ data: ThreadInsights }>({
 				url,
-				"GET",
+				method: "GET",
 				params,
-			);
+			});
 			return response.data;
 		} catch (error) {
 			throw this.handleError(error);
@@ -515,11 +590,15 @@ export class ThreadsAPI {
 	 * @param options Optional parameters for date range
 	 * @returns The user insights
 	 */
-	async getUserInsights(
-		userId: string,
-		metrics: string[],
-		options?: { since?: number; until?: number },
-	): Promise<UserInsights> {
+	async getUserInsights({
+		userId,
+		metrics,
+		options,
+	}: {
+		userId: string;
+		metrics: string[];
+		options?: { since?: number; until?: number };
+	}): Promise<UserInsights> {
 		const url = `${this.baseUrl}${userId}/threads_insights`;
 		const params: Record<string, string> = {
 			metric: metrics.join(","),
@@ -528,11 +607,11 @@ export class ThreadsAPI {
 		};
 
 		try {
-			const response = await this.makeRequest<{ data: UserInsights }>(
+			const response = await this.makeRequest<{ data: UserInsights }>({
 				url,
-				"GET",
+				method: "GET",
 				params,
-			);
+			});
 			return response.data;
 		} catch (error) {
 			throw this.handleError(error);
@@ -546,11 +625,15 @@ export class ThreadsAPI {
 	 * @param params The request parameters
 	 * @returns The response data
 	 */
-	private async makeRequest<T>(
-		url: string,
-		method: "GET" | "POST",
-		params: Record<string, string> | URLSearchParams,
-	): Promise<T> {
+	private async makeRequest<T>({
+		url,
+		method,
+		params,
+	}: {
+		url: string;
+		method: "GET" | "POST";
+		params: Record<string, string> | URLSearchParams;
+	}): Promise<T> {
 		const config = {
 			method,
 			url,
