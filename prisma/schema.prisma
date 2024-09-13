@@ -135,6 +135,7 @@ enum SocialProfileType {
   youtube
   instagram
   linkedin
+  threads
 }
 
 model SocialProfile {
