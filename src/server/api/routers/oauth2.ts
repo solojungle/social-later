@@ -1,6 +1,7 @@
 import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { oauth2Client as li } from "@/server/services/linkedin/client";
+import { threads } from "@/server/services/threads/client";
 import { client } from "@/server/services/twitter/client";
 import { oauth2Client as yt } from "@/server/services/youtube/client";
 
@@ -53,6 +54,14 @@ export const oauth2Router = createTRPCRouter({
 			"openid",
 			"profile",
 		]);
+
+		return { url, codeVerifier, state };
+	}),
+
+	generateThreadsOAuth2URL: protectedProcedure.query(() => {
+		const codeVerifier = "";
+		const state = "";
+		const url = threads.getAuthorizationUrl();
 
 		return { url, codeVerifier, state };
 	}),

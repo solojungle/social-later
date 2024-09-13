@@ -192,12 +192,17 @@ export class ThreadsAPI {
 	 * @param text Optional text content
 	 * @returns The creation ID of the media container
 	 */
-	async createMediaContainer(
-		userId: string,
-		mediaType: MediaType,
-		mediaUrl?: string,
-		text?: string,
-	): Promise<string> {
+	async createMediaContainer({
+		userId,
+		mediaType,
+		mediaUrl,
+		text,
+	}: {
+		userId: string;
+		mediaType: MediaType;
+		mediaUrl?: string;
+		text?: string;
+	}): Promise<string> {
 		const url = `${this.baseUrl}${userId}/threads`;
 		const params: Record<string, string> = {
 			media_type: mediaType,
@@ -224,10 +229,13 @@ export class ThreadsAPI {
 	 * @param creationId The creation ID of the media container
 	 * @returns The ID of the published thread
 	 */
-	async publishMediaContainer(
-		userId: string,
-		creationId: string,
-	): Promise<string> {
+	async publishMediaContainer({
+		userId,
+		creationId,
+	}: {
+		userId: string;
+		creationId: string;
+	}): Promise<string> {
 		const url = `${this.baseUrl}${userId}/threads_publish`;
 		const params = new URLSearchParams({
 			creation_id: creationId,
@@ -252,11 +260,15 @@ export class ThreadsAPI {
 	 * @param mediaUrl The URL of the media
 	 * @returns The creation ID of the carousel item container
 	 */
-	async createCarouselItemContainer(
-		userId: string,
-		mediaType: "IMAGE" | "VIDEO",
-		mediaUrl: string,
-	): Promise<string> {
+	async createCarouselItemContainer({
+		userId,
+		mediaType,
+		mediaUrl,
+	}: {
+		userId: string;
+		mediaType: "IMAGE" | "VIDEO";
+		mediaUrl: string;
+	}): Promise<string> {
 		const url = `${this.baseUrl}${userId}/threads`;
 		const params: Record<string, string> = {
 			media_type: mediaType,
@@ -285,11 +297,15 @@ export class ThreadsAPI {
 	 * @param text Optional text content
 	 * @returns The creation ID of the carousel container
 	 */
-	async createCarouselContainer(
-		userId: string,
-		children: string[],
-		text?: string,
-	): Promise<string> {
+	async createCarouselContainer({
+		userId,
+		children,
+		text,
+	}: {
+		userId: string;
+		children: string[];
+		text?: string;
+	}): Promise<string> {
 		const url = `${this.baseUrl}${userId}/threads`;
 		const params: Record<string, string> = {
 			media_type: "CAROUSEL",
@@ -316,11 +332,15 @@ export class ThreadsAPI {
 	 * @param options Optional parameters for pagination and date range
 	 * @returns Array of user's threads
 	 */
-	async getUserThreads(
-		userId: string,
-		fields: string[],
-		options?: { since?: string; until?: string; limit?: number },
-	): Promise<any[]> {
+	async getUserThreads({
+		userId,
+		fields,
+		options,
+	}: {
+		userId: string;
+		fields: string[];
+		options?: { since?: string; until?: string; limit?: number };
+	}): Promise<any[]> {
 		const url = `${this.baseUrl}${userId}/threads`;
 		const params: Record<string, string> = {
 			fields: fields.join(","),
@@ -347,7 +367,13 @@ export class ThreadsAPI {
 	 * @param fields Array of fields to retrieve
 	 * @returns The threads media object
 	 */
-	async getThreadsMediaObject(mediaId: string, fields: string[]): Promise<any> {
+	async getThreadsMediaObject({
+		mediaId,
+		fields,
+	}: {
+		mediaId: string;
+		fields: string[];
+	}): Promise<any> {
 		const url = `${this.baseUrl}${mediaId}`;
 		const params = {
 			fields: fields.join(","),
@@ -366,7 +392,13 @@ export class ThreadsAPI {
 	 * @param fields Array of fields to retrieve
 	 * @returns The user's profile
 	 */
-	async getUserProfile(userId: string, fields: ProfileFields[]): Promise<any> {
+	async getUserProfile({
+		userId,
+		fields,
+	}: {
+		userId: string;
+		fields: ProfileFields[];
+	}): Promise<any> {
 		const url = `${this.baseUrl}${userId}`;
 		const params = {
 			fields: fields.join(","),
