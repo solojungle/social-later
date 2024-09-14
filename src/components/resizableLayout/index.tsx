@@ -2,12 +2,15 @@
 
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
+
+import { cn } from "@/lib/utils";
 
 import { AddTeamMember } from "../addTeamMember";
 import { FeedbackForm } from "../feedbackButton";
 import { NotificationCenter } from "../notificationCenter";
 import { SocialProfileSwitcher } from "../socialProfileSwitcher";
+import { Button } from "../ui/button";
 import { InterfaceIcons } from "../ui/icons";
 import { MainMenu } from "./middayNavbar";
 import { CollapsibleUserMenu } from "./userMenu";
@@ -19,34 +22,58 @@ export function isCurrentTab(path: string, url: string) {
 }
 
 export function ResizableLayout({ children }: { children: React.ReactNode }) {
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+	const toggleMenu = () => {
+		setIsMenuOpen(!isMenuOpen);
+	};
+
 	return (
 		<TooltipProvider delayDuration={0}>
-			<aside className="fixed top-0 z-40 ml-4 hidden h-screen shrink-0 flex-col items-center justify-between pb-4 md:flex">
-				<div className="flex flex-col items-center justify-center">
-					<div className="todesktop:mt-[35px] mt-4">
-						<Link href="/nexus">
-							<InterfaceIcons.LogoSmall />
-						</Link>
+			<div className="flex h-full min-h-screen w-full overflow-y-scroll">
+				<aside
+					className={cn(
+						"sticky top-0 z-40 hidden h-screen shrink-0 flex-col items-center justify-between border border-b-0 border-l-0 border-t-0 border-border bg-background px-4 pb-4 transition-all duration-200 ease-in-out md:flex md:translate-x-0",
+						isMenuOpen && "flex translate-x-0",
+						!isMenuOpen && "-translate-x-full",
+					)}
+				>
+					<div className="flex w-full flex-col items-center justify-center">
+						<div className="mt-4">
+							<Link href="/nexus">
+								<InterfaceIcons.LogoSmall />
+							</Link>
+						</div>
+						<MainMenu />
 					</div>
-					<MainMenu />
-				</div>
-				<Suspense>
-					<CollapsibleUserMenu />
-				</Suspense>
-			</aside>
+					<Suspense>
+						<CollapsibleUserMenu />
+					</Suspense>
+				</aside>
 
-			<div className="pb-8 md:ml-[80px]">
-				<div className="flex items-center justify-between border-b border-border px-3 py-4">
-					<div className="flex items-center space-x-4 md:space-x-6">
-						<SocialProfileSwitcher />
-						<AddTeamMember />
-					</div>
-					<div className="flex items-center space-x-2">
-						<FeedbackForm />
-						<NotificationCenter />
+				<div className={cn("flex-1 transition-all duration-200 ease-in-out")}>
+					<div className="pb-8">
+						<div className="flex items-center justify-between border-b border-border p-3">
+							<div className="flex items-center gap-2 gap-x-6">
+								<Button
+									size="icon"
+									variant="outline"
+									onClick={toggleMenu}
+									className="md:hidden"
+								>
+									<InterfaceIcons.Menu />
+								</Button>
+								<SocialProfileSwitcher />
+								<AddTeamMember />
+							</div>
+							<div className="flex items-center space-x-2">
+								<FeedbackForm />
+								<NotificationCenter />
+							</div>
+						</div>
+						<div className="relative">{children}</div>
 					</div>
 				</div>
-				<div className="relative">{children}</div>
 			</div>
 		</TooltipProvider>
 	);

@@ -1,3 +1,5 @@
+"use client";
+
 import { useTeamMembersStore } from "@/stores/team-members";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";

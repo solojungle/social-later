@@ -1,3 +1,5 @@
+"use client";
+
 // eslint-disable-next-line simple-import-sort/imports
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";

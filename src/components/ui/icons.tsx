@@ -1,4 +1,4 @@
-import { ArchiveIcon, BellIcon, CalendarIcon, DownloadIcon, HandshakeIcon, HomeIcon, InboxIcon, Loader2Icon, LogOutIcon, MailIcon, PaperclipIcon, PieChartIcon, SettingsIcon, UserIcon } from "lucide-react"
+import { ArchiveIcon, BellIcon, CalendarIcon, DownloadIcon, HandshakeIcon, HomeIcon, InboxIcon, Loader2Icon, LogOutIcon, MailIcon, MenuIcon, PaperclipIcon, PieChartIcon, SettingsIcon, UserIcon } from "lucide-react"
 
 type IconProps = React.HTMLAttributes<SVGElement>
 
@@ -9,7 +9,7 @@ export const InterfaceIcons = {
 		Publish: CalendarIcon,
 		Vault: ArchiveIcon,
 	},
-	LogoSmall: () => <img className="w-8 h-8" src="images/logo.png" alt="Logo Small" />,
+	LogoSmall: () => <img className="size-8 min-w-8" src="images/logo.png" alt="Logo Small" />,
 	Settings: SettingsIcon,
 	Archive: ArchiveIcon,
 	Inbox: InboxIcon,
@@ -21,6 +21,7 @@ export const InterfaceIcons = {
 	Download: DownloadIcon,
 	LogOut: LogOutIcon,
 	PersonalSettings: UserIcon,
+	Menu: MenuIcon,
 }
 
 export const Icons = {
