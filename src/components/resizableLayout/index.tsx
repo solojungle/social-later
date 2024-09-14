@@ -37,7 +37,7 @@ export function ResizableLayout({ children }: { children: React.ReactNode }) {
 
 			<div className="pb-8 md:ml-[80px]">
 				<div className="flex items-center justify-between border-b border-border px-3 py-4">
-					<div className="flex items-center space-x-6">
+					<div className="flex items-center space-x-4 md:space-x-6">
 						<SocialProfileSwitcher />
 						<AddTeamMember />
 					</div>

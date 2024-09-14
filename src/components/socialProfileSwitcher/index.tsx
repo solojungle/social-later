@@ -129,7 +129,7 @@ function SocialProfileSwitcherPopoverTrigger({
 				role="combobox"
 				aria-expanded={open}
 				aria-label="Select a profile"
-				className={cn("w-[250px] justify-between", className)}
+				className={cn("w-20 justify-between md:w-[250px]", className)}
 			>
 				<div>
 					<Avatar className="relative mr-2 h-6 w-6 !rounded-sm">
@@ -187,7 +187,7 @@ export function SocialProfileSwitcher({
 					className={className}
 					open={open}
 				/>
-				<PopoverContent className="w-[250px] p-0">
+				<PopoverContent className="w-[250px] p-0" align="start">
 					<Command>
 						<CommandInput placeholder="Search profiles..." />
 						<CommandList>

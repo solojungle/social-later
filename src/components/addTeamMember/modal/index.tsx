@@ -136,7 +136,7 @@ function Content() {
 					Manage your team members and their roles. On the team <b>Settings</b>{" "}
 					page.
 				</span>
-				<DialogFooter className="">
+				<DialogFooter className="gap-1">
 					<DialogClose asChild>
 						<Button type="button" variant="outline">
 							Cancel
