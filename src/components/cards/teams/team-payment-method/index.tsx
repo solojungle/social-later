@@ -105,7 +105,7 @@ export function OptionsMenu({
 	isLastPaymentMethod?: boolean;
 	teamId: string;
 	paymentMethodId: string;
-	className: string;
+	className?: string;
 }) {
 	const [loading, setLoading] = useState(false);
 	const utils = api.useUtils();
