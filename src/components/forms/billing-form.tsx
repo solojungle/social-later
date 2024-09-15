@@ -7,6 +7,7 @@ import { env } from "@/env.mjs";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 
 import { TeamPaymentMethodCard } from "../cards/teams/team-payment-method";
+import { TeamPaymentMethodListView } from "../cards/teams/team-payment-method/listView";
 import { TeamPaymentPlanCard } from "../cards/teams/team-plan";
 
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
@@ -33,7 +34,12 @@ function Wrapper({ teamId }: { teamId: string }) {
 
 	return (
 		<Elements stripe={stripePromise} options={options}>
-			{!!teamId && <TeamPaymentMethodCard teamId={teamId} />}
+			<div className="hidden sm:flex">
+				{!!teamId && <TeamPaymentMethodCard teamId={teamId} />}
+			</div>
+			<div className="sm:hidden">
+				{!!teamId && <TeamPaymentMethodListView teamId={teamId} />}
+			</div>
 			<TeamPaymentPlanCard />
 		</Elements>
 	);

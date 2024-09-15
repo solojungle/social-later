@@ -94,16 +94,18 @@ function DeleteAlert({ open, onOpenChange, teamId, paymentMethodId }: any) {
 	);
 }
 
-function OptionsMenu({
+export function OptionsMenu({
 	isDefault,
 	isLastPaymentMethod,
 	teamId,
 	paymentMethodId,
+	className,
 }: {
 	isDefault?: boolean;
 	isLastPaymentMethod?: boolean;
 	teamId: string;
 	paymentMethodId: string;
+	className: string;
 }) {
 	const [loading, setLoading] = useState(false);
 	const utils = api.useUtils();
@@ -127,7 +129,7 @@ function OptionsMenu({
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild disabled={isDisabled}>
-				<Button size="icon" variant="outline">
+				<Button size="icon" variant="outline" className={className}>
 					<span className="sr-only">Open menu</span>
 					<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
 				</Button>

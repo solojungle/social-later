@@ -384,7 +384,7 @@ export function TeamPaymentPlanCard() {
 						<span className="text-sm font-medium">
 							Current billing cycle ({currentPeriodStart} - {currentPeriodEnd}).
 						</span>
-						<div className="space-x-2">
+						<div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
 							<UpdatePlanButton />
 							{stripeSubscriptionStatus === "active" && (
 								<PausePlanButton teamId={teamId} />
