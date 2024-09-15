@@ -7,13 +7,19 @@ import { useWindowSize } from "usehooks-ts";
 import { Countdown } from "@/components/countdown";
 import { Button } from "@/components/ui/button";
 
-export function SuccessPage() {
+export function SuccessPage({ callbackUrl }: { callbackUrl?: string }) {
 	const { width = 0, height = 0 } = useWindowSize({
 		initializeWithValue: false,
 	});
 
 	// after 2 seconds, stop the confetti animation
 	const [showConfetti] = useTimeout(2500);
+
+	// Handle invite codes
+	let redirectUrl = "/nexus";
+	if (callbackUrl && callbackUrl.length !== 0) {
+		redirectUrl = callbackUrl;
+	}
 
 	return (
 		<div className="flex flex-col p-5">
@@ -39,11 +45,11 @@ export function SuccessPage() {
 					You will be redirected to the Nexus, where you can start discovering
 					FeedFrenzy.
 				</div>
-				<Link href="/nexus">
+				<Link href={redirectUrl}>
 					<Button className="group relative h-[64px] w-full justify-between self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
 						Access FeedFrenzy
 						<div className="flex h-5 w-5 items-center justify-center rounded-lg border border-border bg-primary p-5 text-primary-foreground">
-							<Countdown />
+							<Countdown url={redirectUrl} />
 						</div>
 					</Button>
 				</Link>

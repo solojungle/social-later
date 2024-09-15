@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 
 import { InterfaceIcons } from "@/components/ui/icons";
@@ -10,13 +11,16 @@ import { SurveyForm } from "./components/surveyForm";
 import { SuccessPage } from "./pages/success";
 
 function StepperFooter() {
+	const [callbackUrl] = useQueryState("callbackUrl", {
+		defaultValue: "",
+	});
 	const { activeStep, steps } = useStepper();
 
 	if (activeStep !== steps.length) {
 		return null;
 	}
 
-	return <SuccessPage />;
+	return <SuccessPage callbackUrl={callbackUrl} />;
 }
 
 type Survey = {
@@ -35,7 +39,6 @@ type Question = {
 
 export function Onboarding() {
 	const [survey, setSurvey] = useState<Survey | null>(null);
-	// api.survey.answer.useMutation();
 	const { data: surveyData } = api.survey.getSurvey.useQuery();
 
 	useEffect(() => {
