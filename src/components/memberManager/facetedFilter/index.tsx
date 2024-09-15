@@ -13,7 +13,7 @@ export function FacetedFilter() {
 			<Input type="search" placeholder="Filter..." />
 			<div className="flex items-center space-x-2">
 				<Select>
-					<SelectTrigger className="w-40">
+					<SelectTrigger className="w-20 sm:w-40">
 						<SelectValue placeholder="All Team Roles" />
 					</SelectTrigger>
 					<SelectContent>
@@ -22,7 +22,7 @@ export function FacetedFilter() {
 					</SelectContent>
 				</Select>
 				<Select>
-					<SelectTrigger className="w-40">
+					<SelectTrigger className="w-20 sm:w-40">
 						<SelectValue placeholder="Default" />
 					</SelectTrigger>
 					<SelectContent>

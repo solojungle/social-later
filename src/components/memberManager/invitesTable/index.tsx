@@ -29,9 +29,11 @@ export function InvitesTable() {
 			</div>
 			{invitations.length === 0 ? (
 				<TableBody>
-					<p className="py-4 text-center text-muted-foreground">
-						No pending invitations.
-					</p>
+					<TableRow>
+						<p className="py-4 text-center text-muted-foreground">
+							No pending invitations.
+						</p>
+					</TableRow>
 				</TableBody>
 			) : (
 				<TableBody>
@@ -49,12 +51,10 @@ export function InvitesTable() {
 											</Avatar>
 											<div className="flex flex-col">
 												<div className="flex items-center">
-													<span className="mr-2 font-medium">
-														Pending Invitation
-													</span>
+													<span className="mr-2 font-medium">Pending</span>
 													<Mail className="h-4 w-4 text-muted-foreground" />
 												</div>
-												<span className="font-normal text-muted-foreground">
+												<span className="w-28 truncate font-normal text-muted-foreground sm:w-full">
 													{t.email.toLowerCase()}
 												</span>
 											</div>
