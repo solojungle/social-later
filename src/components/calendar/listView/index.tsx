@@ -12,7 +12,6 @@ import { EditPostSheetContent } from "../editPostSheetContent";
 
 interface PostsProps {
 	posts: any;
-	className: string;
 }
 
 function StyledStatus({ status }: { status: string }) {
@@ -46,7 +45,7 @@ function UpcomingPostItem({
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild className="cursor-pointer">
-				<div className="flex items-center space-x-4 rounded-md border border-border p-2 shadow-sm">
+				<div className="flex items-center space-x-4 rounded-md border border-border p-2">
 					<div className="relative shrink-0">
 						<img
 							className="aspect-video h-16 rounded-sm object-cover"
@@ -93,15 +92,19 @@ function UpcomingPostItem({
 	);
 }
 
-export function PostsList({ posts = [], className }: PostsProps) {
+export function PostsList({ posts = [] }: PostsProps) {
 	const [openPostId, setOpenPostId] = useState<string | null>(null);
 
 	if (posts.length === 0) {
-		return <p>No posts available</p>;
+		return (
+			<div className="flex items-center justify-center space-x-4 rounded-md p-2 text-muted-foreground">
+				<p>No posts available, try creating your first post!</p>
+			</div>
+		);
 	}
 
 	return (
-		<div className={cn("flex w-full flex-col space-y-2", className)}>
+		<div className={cn("flex w-full flex-col space-y-2")}>
 			{posts.map((post: any) => (
 				<UpcomingPostItem
 					key={post.id}
