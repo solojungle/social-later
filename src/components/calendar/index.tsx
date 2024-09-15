@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { cn } from "@/lib/utils";
 import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
 
 import { CreatePost } from "../createPost";
@@ -12,11 +13,6 @@ import { Button } from "../ui/button";
 import { Sheet, SheetTrigger } from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { EditPostSheetContent } from "./editPostSheetContent";
-
-interface PostsProps {
-	profileId: string;
-	posts: any;
-}
 
 function StyledStatus({ status }: { status: string }) {
 	const condition = status.toLowerCase();
@@ -224,7 +220,7 @@ const CalendarDay = ({
 	);
 };
 
-export function PostsCalendar({ posts = [], profileId }: PostsProps) {
+export function PostsCalendar({ posts = [], profileId, className }: any) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -284,7 +280,7 @@ export function PostsCalendar({ posts = [], profileId }: PostsProps) {
 	};
 
 	return (
-		<div className="flex h-full flex-col">
+		<div className={cn("flex h-full w-full flex-col", className)}>
 			<div className="flex items-center space-x-4 rounded-t border border-b-0 p-2">
 				<Button variant="ghost" onClick={() => changeMonth(-1)}>
 					<ChevronLeft className="h-5 w-5" />
