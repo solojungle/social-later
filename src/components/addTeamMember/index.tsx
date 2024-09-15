@@ -12,10 +12,7 @@ export function AddTeamMember() {
 	const displayedMembers = members.slice(0, 3);
 
 	const avatarStack = displayedMembers.map((member) => (
-		<Avatar
-			key={member.id}
-			className="size-6 md:size-8 pointer-events-none select-none"
-		>
+		<Avatar key={member.id} className="pointer-events-none size-8 select-none">
 			<AvatarImage src={member.image} />
 			<AvatarFallback className="border border-border">
 				{member.name.split(" ").map((name: string) => name[0])}
