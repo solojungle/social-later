@@ -5,7 +5,7 @@ export default function Footer() {
 				<div className="sm:flex sm:items-center sm:justify-between">
 					<a
 						href="https://aliawari.com/"
-						className="mb-4 flex items-center space-x-3 rtl:space-x-reverse sm:mb-0"
+						className="mb-4 flex items-center space-x-3 sm:mb-0 rtl:space-x-reverse"
 					>
 						<span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
 							FeedFrenzy
