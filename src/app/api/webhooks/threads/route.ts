@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
 
 		const timeInMs = expiresIn * 1000;
 
-		return await db.socialProfile.upsert({
+		await db.socialProfile.upsert({
 			where: {
 				username_teamId_type: {
 					username: profile.username,

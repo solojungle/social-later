@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function MobileMenu({ isMenuOpen, toggleMenu }) {
+export function MobileMenu({ isMenuOpen, toggleMenu }: any) {
 	return (
 		<>
 			<div className="flex flex-col md:hidden">

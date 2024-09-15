@@ -11,7 +11,7 @@ import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
 import { EditPostSheetContent } from "../editPostSheetContent";
 
 interface PostsProps {
-	posts: PostWithAttachmentsSchemaValues[];
+	posts: any;
 	className: string;
 }
 
@@ -102,7 +102,7 @@ export function PostsList({ posts = [], className }: PostsProps) {
 
 	return (
 		<div className={cn("flex w-full flex-col space-y-2", className)}>
-			{posts.map((post) => (
+			{posts.map((post: any) => (
 				<UpcomingPostItem
 					key={post.id}
 					post={post}

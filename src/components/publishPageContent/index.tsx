@@ -22,11 +22,7 @@ export const PublishPageContent = () => {
 
 	return (
 		<div className="mb-3 flex h-full w-full !overflow-scroll p-3">
-			<PostsList
-				posts={posts ?? []}
-				profileId={profileId}
-				className="md:hidden"
-			/>
+			<PostsList posts={posts} className="md:hidden" />
 			<PostsCalendar
 				posts={posts}
 				profileId={profileId}
