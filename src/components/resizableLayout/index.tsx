@@ -5,8 +5,10 @@ import Link from "next/link";
 import { Suspense, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { AddTeamMember } from "../addTeamMember";
+import { CreatePost } from "../createPost";
 import { FeedbackForm } from "../feedbackButton";
 import { NotificationCenter } from "../notificationCenter";
 import { SocialProfileSwitcher } from "../socialProfileSwitcher";
@@ -23,6 +25,8 @@ export function isCurrentTab(path: string, url: string) {
 
 export function ResizableLayout({ children }: { children: React.ReactNode }) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+	const { currentProfileId: profileId } = useSocialProfilesStore();
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
@@ -67,6 +71,7 @@ export function ResizableLayout({ children }: { children: React.ReactNode }) {
 								<AddTeamMember />
 							</div>
 							<div className="flex items-center space-x-2">
+								<CreatePost profileId={profileId} scheduleDate={new Date()} />
 								<FeedbackForm />
 								<NotificationCenter />
 							</div>
