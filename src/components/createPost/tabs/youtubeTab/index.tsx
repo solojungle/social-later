@@ -92,7 +92,7 @@ export function YouTubeTab({
 				description: data.description,
 				thumbnailUrl: thumbnail?.url ?? "",
 				videoUrl: video?.url ?? "",
-				scheduledTime: data.date ? data.date.toISOString() : undefined,
+				scheduledTime: new Date(data.date).toISOString(),
 			});
 
 			if (!result || !result.id) {

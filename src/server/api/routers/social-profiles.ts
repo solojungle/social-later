@@ -319,7 +319,7 @@ export const socialProfilesRouter = createTRPCRouter({
 
 			const yt = initializeYouTubeDataClient(ytAccount);
 
-			const requestBody: any = {
+			let requestBody: any = {
 				snippet: {
 					title: input.title,
 					description: input.description,
@@ -328,9 +328,17 @@ export const socialProfilesRouter = createTRPCRouter({
 
 			// If scheduledTime is provided, set the publishAt field
 			if (input.scheduledTime) {
-				requestBody.status.publishAt = new Date(
-					input.scheduledTime,
-				).toISOString();
+				const scheduledTime = new Date(input.scheduledTime);
+
+				// Check if the scheduledTime is at least 15 minutes into the future
+				if (scheduledTime.getTime() - Date.now() >= 900000) {
+					requestBody = {
+						...requestBody,
+						status: {
+							publishAt: scheduledTime.toISOString(),
+						},
+					};
+				}
 			}
 
 			const response = await yt.videos.insert({
