@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useQueryState } from "nuqs";
 
 import { AnalyticsPageContent } from "@/components/analyticsPageContent";
 import CreateTeamButton from "@/components/createTeamButton";
@@ -18,9 +18,7 @@ export default function AnalyticsPage() {
 	const { id: userId } = useUserStore();
 	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
 	const { profiles } = useSocialProfilesStore();
-
-	const searchParams = useSearchParams();
-	const postId = searchParams.get("v");
+	const [postId] = useQueryState("v");
 
 	if (!userId) {
 		return (

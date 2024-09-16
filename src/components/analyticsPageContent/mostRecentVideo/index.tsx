@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { ComponentProps, ComponentPropsWithoutRef, useCallback } from "react";
+import { createSerializer, parseAsString } from "nuqs";
+import { ComponentProps, ComponentPropsWithoutRef } from "react";
 
 import { formatNumber } from "@/components/graphs/view-comparisons";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,6 @@ function PaginationButton(props: PaginationButtonProps) {
 }
 
 export function MostRecentVideo({ thumbnail, title, views, url, id }: Props) {
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
-
 	// Get post from externalYouTubeId
 	const { data: post } = api.post.getFromExternalId.useQuery(
 		{
@@ -52,21 +49,13 @@ export function MostRecentVideo({ thumbnail, title, views, url, id }: Props) {
 		},
 	);
 
-	// Get a new searchParams string by merging the current
-	// searchParams with a provided key/value pair
-	const createQueryString = useCallback(
-		(name: string, value: string) => {
-			const params = new URLSearchParams(searchParams.toString());
-			params.set(name, value);
-
-			return params.toString();
-		},
-		[searchParams],
-	);
-
 	if (!url) {
 		return null;
 	}
+
+	const serialize = createSerializer({
+		v: parseAsString,
+	});
 
 	return (
 		<div className="w-full rounded-sm border border-border p-3 text-sm">
@@ -93,7 +82,7 @@ export function MostRecentVideo({ thumbnail, title, views, url, id }: Props) {
 			<PaginationButton
 				className="w-full"
 				disabled={!post}
-				href={`${pathname}?${createQueryString("v", post?.id ?? "")}`}
+				href={serialize({ v: post?.id ?? "" })}
 			>
 				More video analytics
 			</PaginationButton>

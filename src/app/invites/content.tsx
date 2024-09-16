@@ -1,6 +1,7 @@
 "use client";
 
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useEffect } from "react";
 
 import { api } from "@/trpc/react";
@@ -10,8 +11,10 @@ type InvitesPageContentProps = {
 };
 
 export function InvitesPageContent({ isLoggedIn }: InvitesPageContentProps) {
-	const searchParams = useSearchParams();
-	const inviteCode = searchParams.get("inviteCode");
+	const [inviteCode] = useQueryState("inviteCode", {
+		defaultValue: "",
+	});
+
 	const utils = api.useUtils();
 	const { mutate: acceptInvite } = api.invitation.accept.useMutation({
 		onSuccess: () => {

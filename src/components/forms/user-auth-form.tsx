@@ -1,7 +1,7 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { createSerializer, parseAsString, useQueryState } from "nuqs";
 import * as React from "react";
 
 import { ContinueWithGoogle } from "@/components/sso/continueWithGoogle";
@@ -10,13 +10,15 @@ import { cn } from "@/lib/utils";
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-	const searchParams = useSearchParams();
+	const [inviteCode] = useQueryState("inviteCode");
 
-	const inviteCode = searchParams.get("inviteCode");
+	const serialize = createSerializer({
+		inviteCode: parseAsString,
+	});
+
 	// const referralCode = searchParams.get("referralCode");
-
 	const callbackUrl = inviteCode
-		? `/invites?inviteCode=${inviteCode}`
+		? serialize("/invites", { inviteCode })
 		: undefined;
 
 	return (
@@ -26,7 +28,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 				onClick={() => {
 					// Include callbackUrl if it exists
 					const signInOptions = callbackUrl ? { callbackUrl } : undefined;
-
 					signIn("google", signInOptions);
 				}}
 			/>

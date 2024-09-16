@@ -3,8 +3,7 @@
 import { FileType } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { createSerializer, parseAsString } from "nuqs";
 
 import { AnalyticsData } from "@/components/singleVideoContent";
 import { formatPrice } from "@/components/singleVideoContent/revenueTable";
@@ -126,20 +125,6 @@ export function EditPostSheetContent({
 			},
 		);
 
-	const searchParams = useSearchParams();
-
-	// Get a new searchParams string by merging the current
-	// searchParams with a provided key/value pair
-	const createQueryString = useCallback(
-		(name: string, value: string) => {
-			const params = new URLSearchParams(searchParams.toString());
-			params.set(name, value);
-
-			return params.toString();
-		},
-		[searchParams],
-	);
-
 	if (isAnalyticsLoading) {
 		return (
 			<SheetContent
@@ -150,6 +135,10 @@ export function EditPostSheetContent({
 			</SheetContent>
 		);
 	}
+
+	const serialize = createSerializer({
+		v: parseAsString,
+	});
 
 	return (
 		<SheetContent
@@ -183,10 +172,9 @@ export function EditPostSheetContent({
 					</Button>
 				</SheetClose>
 				<Link
-					href={`/analytics?${createQueryString(
-						"v",
-						(post.attachment && post.id) ?? "",
-					)}`}
+					href={serialize("/analytics", {
+						v: (post.attachment && post.id) ?? "",
+					})}
 				>
 					<Button type="button">Detailed Analytics</Button>
 				</Link>

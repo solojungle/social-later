@@ -2,8 +2,8 @@
 
 import { FileType } from "@prisma/client";
 import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { parseAsInteger, useQueryStates } from "nuqs";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
@@ -221,47 +221,36 @@ const CalendarDay = ({
 };
 
 export function PostsCalendar({ posts = [], profileId, className }: any) {
-	const router = useRouter();
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
-
-	const [selectedMonth, setSelectedMonth] = useState(
-		Number(searchParams.get("month")) || new Date().getMonth(),
-	);
-	const [selectedYear, setSelectedYear] = useState(
-		Number(searchParams.get("year")) || new Date().getFullYear(),
-	);
-
-	useEffect(() => {
-		const params = new URLSearchParams(searchParams.toString());
-		params.set("month", selectedMonth.toString());
-		params.set("year", selectedYear.toString());
-		router.push(`${pathname}?${params.toString()}`);
-	}, [pathname, router, searchParams, selectedMonth, selectedYear]);
+	const [params, setParams] = useQueryStates({
+		month: parseAsInteger.withDefault(new Date().getMonth()),
+		year: parseAsInteger.withDefault(new Date().getFullYear()),
+	});
 
 	const changeMonth = (increment: number) => {
-		const newDate = new Date(selectedYear, selectedMonth + increment);
-		setSelectedMonth(newDate.getMonth());
-		setSelectedYear(newDate.getFullYear());
+		const newDate = new Date(params.year, params.month + increment);
+		setParams({
+			month: newDate.getMonth(),
+			year: newDate.getFullYear(),
+		});
 	};
 
 	const generateCalendarDays = () => {
-		const firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
-		const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+		const firstDay = new Date(params.year, params.month, 1).getDay();
+		const daysInMonth = new Date(params.year, params.month + 1, 0).getDate();
 		const today = new Date();
 
 		const days = [];
 		for (let i = 1; i <= 35; i += 1) {
 			const day = i - firstDay;
 			const isCurrentMonth = day > 0 && day <= daysInMonth;
-			const currentDate = new Date(selectedYear, selectedMonth, day);
+			const currentDate = new Date(params.year, params.month, day);
 
 			days.push({
 				// eslint-disable-next-line no-nested-ternary
 				day: isCurrentMonth
 					? day
 					: day <= 0
-					? new Date(selectedYear, selectedMonth, 0).getDate() + day
+					? new Date(params.year, params.month, 0).getDate() + day
 					: day - daysInMonth,
 				posts: isCurrentMonth
 					? posts.filter(
@@ -286,10 +275,10 @@ export function PostsCalendar({ posts = [], profileId, className }: any) {
 					<ChevronLeft className="h-5 w-5" />
 				</Button>
 				<span className="flex w-36 justify-center font-semibold">
-					{new Date(selectedYear, selectedMonth).toLocaleString("default", {
+					{new Date(params.year, params.month).toLocaleString("default", {
 						month: "long",
 					})}
-					, {selectedYear}
+					, {params.year}
 				</span>
 				<Button variant="ghost" onClick={() => changeMonth(1)}>
 					<ChevronRight className="h-5 w-5" />
