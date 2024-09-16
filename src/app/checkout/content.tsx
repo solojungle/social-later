@@ -1,7 +1,8 @@
 "use client";
 
 import { CheckCircle2, XCircleIcon } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useEffect, useRef } from "react";
 
 import { InterfaceIcons } from "@/components/ui/icons";
@@ -71,8 +72,9 @@ function ErrorPageContent() {
 }
 
 export function CheckoutPageContent() {
-	const searchParams = useSearchParams();
-	const sessionId = searchParams.get("sessionId");
+	const [sessionId] = useQueryState("sessionId", {
+		defaultValue: "",
+	});
 
 	if (!sessionId) {
 		return <ErrorPageContent />;
