@@ -122,20 +122,26 @@ export function YouTubeTab({
 				scheduled: !!data.date,
 			});
 
-			// Change the thumbnail if the user uploaded a new one
-			if (thumbnailFile) {
-				await changeThumbnail({
-					profileId,
-					videoId: result.id,
-					// We want to upload the original thumbnail since YouTube will compress on their end
-					thumbnailUrl: thumbnailFile.url,
-				});
+			try {
+				// Change the thumbnail if the user uploaded a new one
+				if (thumbnailFile) {
+					await changeThumbnail({
+						profileId,
+						videoId: result.id,
+						// We want to upload the original thumbnail since YouTube will compress on their end
+						thumbnailUrl: thumbnailFile.url,
+					});
 
-				await updateThumbnail({
-					postId: post.id,
-					// We want the optimized thumbnail for our platform
-					thumbnailUrl: thumbnailFile.thumbnail,
-				});
+					await updateThumbnail({
+						postId: post.id,
+						// We want the optimized thumbnail for our platform
+						thumbnailUrl: thumbnailFile.thumbnail,
+					});
+				}
+			} catch (error) {
+				toast.error(
+					"An error occured while trying to change the thumbnail. Please try again.",
+				);
 			}
 		} catch (error) {
 			toast.error(
