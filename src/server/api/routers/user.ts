@@ -1,4 +1,6 @@
+import { UserRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 import { UserSchema } from "@/schemas/user-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -65,6 +67,31 @@ export const userRouter = createTRPCRouter({
 				throw new TRPCError({
 					code: "NOT_FOUND",
 					message: `No user with id '${ctx.session.user.id}'`,
+				});
+			}
+			return user;
+		}),
+
+	updateUserRole: protectedProcedure
+		.input(
+			z.object({
+				userId: z.string(),
+				teamId: z.string(),
+				role: z.nativeEnum(UserRole),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			// TODO: Check if the user is an owner of the team
+			const user = await ctx.db.userOnTeam.update({
+				where: {
+					userId_teamId: { userId: input.userId, teamId: input.teamId },
+				},
+				data: { role: input.role },
+			});
+			if (!user) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `No user with id '${input.userId}'`,
 				});
 			}
 			return user;

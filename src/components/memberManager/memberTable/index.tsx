@@ -1,17 +1,68 @@
 "use client";
 
 import { MoreHorizontal } from "lucide-react";
+import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 
+import { UpdateRoleDialog } from "./updateRole";
+
+export function OptionsMenu({
+	isDisabled,
+	member,
+}: {
+	isDisabled: boolean;
+	member: any;
+}) {
+	const [showChangeRole, setShowChangeRole] = useState(false);
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild disabled={isDisabled}>
+				<Button size="icon" variant="outline">
+					<span className="sr-only">Open menu</span>
+					<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				<DropdownMenuItem
+					disabled={isDisabled}
+					onClick={() => setShowChangeRole(true)}
+				>
+					Change role
+				</DropdownMenuItem>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					disabled={isDisabled}
+					// onSelect={() => setShow(true)}
+					className="text-destructive"
+				>
+					Remove user
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+			<UpdateRoleDialog
+				open={showChangeRole}
+				onOpenChange={setShowChangeRole}
+				member={member}
+			/>
+		</DropdownMenu>
+	);
+}
+
 export function MembersTable() {
 	const { email: userEmail } = useUserStore();
-
 	const { members } = useTeamMembersStore();
 
 	return (
@@ -44,21 +95,19 @@ export function MembersTable() {
 										</Avatar>
 										<div className="flex flex-col">
 											<span className="font-medium">{t.name}</span>
-											<span className="font-normal lowercase text-muted-foreground">
+											<span className="w-28 truncate font-normal lowercase text-muted-foreground sm:w-full">
 												{t.email}
 											</span>
 										</div>
 									</div>
 									<div className="flex items-center">
-										<span className="mr-6 capitalize text-muted-foreground">
+										<span className="mr-6 text-xs capitalize text-muted-foreground">
 											{t.role}
 										</span>
-										<Button
-											disabled={t.email === userEmail}
-											variant="secondary"
-										>
-											Manage Role
-										</Button>
+										<OptionsMenu
+											isDisabled={t.email === userEmail}
+											member={t}
+										/>
 									</div>
 								</div>
 							</TableCell>
