@@ -138,7 +138,9 @@ export function YouTubeTab({
 				});
 			}
 		} catch (error) {
-			toast.error("Failed to upload video. Please try again.");
+			toast.error(
+				"An error occured while trying to upload the video. Please try again.",
+			);
 		} finally {
 			setLoading(false);
 			setOpen(false);
