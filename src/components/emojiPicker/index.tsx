@@ -43,7 +43,12 @@ export function EmojiPicker({ textareaRef }: EmojiPickerProps) {
 				<TooltipContent>
 					<span>Emoji</span>
 				</TooltipContent>
-				<PopoverContent className="w-fit p-0">
+				<PopoverContent
+					className="w-fit p-0"
+					collisionPadding={{ top: 5, right: 5, bottom: 5, left: 5 }}
+					side="right"
+					align="start"
+				>
 					<Picker
 						data={data}
 						maxFrequentRows={0}
