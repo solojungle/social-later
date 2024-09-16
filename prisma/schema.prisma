@@ -104,6 +104,7 @@ model Post {
   status         String
   scheduledFor   DateTime
   externalPostId String
+  thumbnail      String?
   profile        SocialProfile @relation(fields: [profileId], references: [id])
   profileId      String
   author         Team          @relation(fields: [authorId], references: [id])

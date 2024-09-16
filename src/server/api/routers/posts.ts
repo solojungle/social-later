@@ -61,6 +61,54 @@ export const postRouter = createTRPCRouter({
 			return post;
 		}),
 
+	updateThumbnail: protectedProcedure
+		.input(
+			z.object({
+				postId: z.string(),
+				thumbnailUrl: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			// Get the post
+			const post = await ctx.db.post.findFirst({
+				where: {
+					id: input.postId,
+				},
+			});
+
+			if (!post) {
+				throw new Error("Post does not exist");
+			}
+
+			// Check if the user is part of the team
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: post.authorId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			// Check if the user is the owner of the team
+			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+			if (!isUserOwnerOfTeam) {
+				throw new Error("You are not an owner of this team");
+			}
+
+			// Update the post
+			return ctx.db.post.update({
+				where: {
+					id: input.postId,
+				},
+				data: {
+					thumbnail: input.thumbnailUrl,
+				},
+			});
+		}),
+
 	delete: protectedProcedure
 		.input(
 			z.object({

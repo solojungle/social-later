@@ -44,6 +44,7 @@ export const PostsSchema = z.object({
 	published: z.boolean(),
 	status: z.string(),
 	scheduledFor: z.date(),
+	thumbnail: z.string().optional(),
 	externalPostId: z.string(),
 	profileId: z.string(),
 	authorId: z.string(),

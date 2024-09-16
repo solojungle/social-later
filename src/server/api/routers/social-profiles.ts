@@ -300,7 +300,6 @@ export const socialProfilesRouter = createTRPCRouter({
 			z.object({
 				profileId: z.string(),
 				videoUrl: z.string(),
-				thumbnailUrl: z.string().optional(),
 				title: z.string(),
 				description: z.string().optional(),
 				scheduledTime: z.string().optional(),
@@ -362,6 +361,37 @@ export const socialProfilesRouter = createTRPCRouter({
 					},
 				});
 			}
+
+			return response;
+		}),
+
+	changeVideoThumbnail: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+				videoId: z.string(),
+				thumbnailUrl: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const { profileId: ytAccountId, videoId, thumbnailUrl } = input;
+
+			const ytAccount = await fetchYouTubeChannel(ctx.db, ytAccountId);
+
+			await verifyUserTeamMembership(
+				ctx.db,
+				ctx.session.user.id,
+				ytAccount.teamId,
+			);
+
+			const yt = initializeYouTubeDataClient(ytAccount);
+
+			const response = await yt.thumbnails.set({
+				videoId,
+				media: {
+					body: await getVideoFileBuffer({ url: thumbnailUrl }),
+				},
+			});
 
 			return response;
 		}),

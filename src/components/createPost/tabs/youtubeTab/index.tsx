@@ -48,8 +48,12 @@ export function YouTubeTab({
 	}>({});
 	const { mutateAsync: uploadVideo } =
 		api.socials.uploadYouTubeVideo.useMutation({});
+	const { mutateAsync: changeThumbnail } =
+		api.socials.changeVideoThumbnail.useMutation({});
 	const utils = api.useUtils();
-	const createPost = api.post.create.useMutation({});
+	const { mutateAsync: createPost } = api.post.create.useMutation({});
+	const { mutateAsync: updateThumbnail } =
+		api.post.updateThumbnail.useMutation();
 
 	type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
 	const form = useForm<FormSchemaValues>({
@@ -83,14 +87,15 @@ export function YouTubeTab({
 				),
 			);
 
-			const thumbnail = mediaFiles.find((file) => file.mime.includes("image"));
+			const thumbnailFile = mediaFiles.find((file) =>
+				file.mime.includes("image"),
+			);
 			const video = mediaFiles.find((file) => file.mime.includes("video"));
 
 			const { data: result } = await uploadVideo({
 				profileId,
 				title: data.title,
 				description: data.description,
-				thumbnailUrl: thumbnail?.url ?? "",
 				videoUrl: video?.url ?? "",
 				scheduledTime: new Date(data.date).toISOString(),
 			});
@@ -99,7 +104,7 @@ export function YouTubeTab({
 				throw new Error("Failed to upload video to YouTube");
 			}
 
-			createPost.mutate({
+			const post = await createPost({
 				title: data.title || "",
 				content: data.description || "",
 				fileIds: mediaFiles.map((file) => file.id),
@@ -109,13 +114,29 @@ export function YouTubeTab({
 				authorId: teamId,
 			});
 
+			toast.success("Successfully created your post!");
+
 			// Capture the event in PostHog
 			posthog.capture("youtube_upload", {
 				distinctId: userId,
 				scheduled: !!data.date,
 			});
 
-			toast.success("Successfully created your post!");
+			// Change the thumbnail if the user uploaded a new one
+			if (thumbnailFile) {
+				await changeThumbnail({
+					profileId,
+					videoId: result.id,
+					// We want to upload the original thumbnail since YouTube will compress on their end
+					thumbnailUrl: thumbnailFile.url,
+				});
+
+				await updateThumbnail({
+					postId: post.id,
+					// We want the optimized thumbnail for our platform
+					thumbnailUrl: thumbnailFile.thumbnail,
+				});
+			}
 		} catch (error) {
 			toast.error("Failed to upload video. Please try again.");
 		} finally {
