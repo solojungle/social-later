@@ -330,11 +330,12 @@ export const socialProfilesRouter = createTRPCRouter({
 			if (input.scheduledTime) {
 				const scheduledTime = new Date(input.scheduledTime);
 
-				// Check if the scheduledTime is at least 15 minutes into the future
-				if (scheduledTime.getTime() - Date.now() >= 900000) {
+				// Check if the scheduledTime is at least 60 minutes into the future
+				if (scheduledTime.getTime() - Date.now() >= 60 * 60 * 1000) {
 					requestBody = {
 						...requestBody,
 						status: {
+							privacyStatus: "private",
 							publishAt: scheduledTime.toISOString(),
 						},
 					};

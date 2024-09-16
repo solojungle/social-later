@@ -123,7 +123,7 @@ export function YouTubeTab({
 			setOpen(false);
 
 			// Invalidate the query so we can refetch the data
-			utils.post.getAll.invalidate();
+			utils.post.invalidate();
 		}
 	}
 
