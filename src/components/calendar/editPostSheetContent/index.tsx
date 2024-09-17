@@ -210,9 +210,7 @@ export function EditPostSheetContent({
 			side="right"
 		>
 			<SheetHeader>
-				<SheetTitle>
-					<h1 className="text-lg font-semibold">Post Details</h1>
-				</SheetTitle>
+				<SheetTitle className="text-lg font-semibold">Post Details</SheetTitle>
 			</SheetHeader>
 			<RenderContent post={post} data={analyticsData} />
 			<div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-background py-4">

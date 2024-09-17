@@ -56,9 +56,7 @@ function PostForm({
 				side="right"
 			>
 				<SheetHeader>
-					<SheetTitle>
-						<h1 className="text-lg font-semibold">Create Post</h1>
-					</SheetTitle>
+					<SheetTitle className="text-lg font-semibold">Create Post</SheetTitle>
 				</SheetHeader>
 				<div className="mb-4">
 					<SocialProfileSwitcher />
