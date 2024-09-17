@@ -1,5 +1,5 @@
 import { youtube } from "@googleapis/youtube";
-import { SocialProfileType } from "@prisma/client";
+import { SocialType } from "@prisma/client";
 import { Readable } from "stream";
 import { TwitterApi } from "twitter-api-v2";
 import { z } from "zod";
@@ -121,7 +121,7 @@ export const socialProfilesRouter = createTRPCRouter({
 	getSocialProfiles: protectedProcedure
 		.input(
 			TeamSchema.pick({ id: true }).extend({
-				type: z.nativeEnum(SocialProfileType).optional(),
+				type: z.nativeEnum(SocialType).optional(),
 			}),
 		)
 		.query(async ({ ctx, input }) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { SocialProfileType } from "@prisma/client";
+import { SocialType } from "@prisma/client";
 
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
@@ -12,7 +12,7 @@ interface Props {
 function List({ teamId }: Props) {
 	const { data } = api.socials.getSocialProfiles.useQuery({
 		id: teamId,
-		type: SocialProfileType.twitter,
+		type: SocialType.twitter,
 	});
 
 	if (!data) {
