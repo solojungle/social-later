@@ -11,11 +11,29 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { Label } from "@/components/ui/label";
-import { SheetClose, SheetContent } from "@/components/ui/sheet";
+import {
+	SheetClose,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+} from "@/components/ui/sheet";
 import { Player } from "@/components/videoPlayer";
 import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
+
+// Helper function to render attachments
+const renderVideoPost = ({ video, thumbnail, post }: any) => {
+	return (
+		<Player
+			title={post.title}
+			video={video.url}
+			poster={thumbnail.url}
+			posterAlt=""
+			thumbnails=""
+		/>
+	);
+};
 
 // Helper function to render attachments
 const renderAttachment = (attachment: any) => {
@@ -107,6 +125,49 @@ const renderVideoMetadata = (post: any) => {
 	);
 };
 
+export function RenderContent({ post, data }: any) {
+	if (post.socialType === "youtube") {
+		const video = post.attachment.find(
+			(attachment: any) => attachment.file.type === FileType.video,
+		);
+		const thumbnail = post.attachment.find(
+			(attachment: any) => attachment.file.type === FileType.image,
+		);
+
+		return (
+			<div className="grid gap-4 py-4">
+				<div>{renderVideoPost({ video, thumbnail, post })}</div>
+				{renderVideoStats(data?.realtimeData)}
+				{renderVideoMetadata(post)}
+			</div>
+		);
+	}
+
+	return (
+		<div className="grid gap-4 py-4">
+			{/* Render multiple attachments */}
+			{post.attachment && post.attachment.length > 0 && (
+				<div>
+					{post.attachment.map((attachment: any) =>
+						renderAttachment(attachment),
+					)}
+				</div>
+			)}
+
+			{/* Video Metadata and Statistics */}
+			{post.attachment && post.attachment[0]?.file.type === FileType.video && (
+				<>
+					{/* Render Video Statistics */}
+					{renderVideoStats(data?.realtimeData)}
+
+					{/* Render Video Metadata */}
+					{renderVideoMetadata(post)}
+				</>
+			)}
+		</div>
+	);
+}
+
 export function EditPostSheetContent({
 	post,
 }: {
@@ -131,6 +192,9 @@ export function EditPostSheetContent({
 				className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0 pt-8"
 				side="right"
 			>
+				<SheetHeader>
+					<SheetTitle />
+				</SheetHeader>
 				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</SheetContent>
 		);
@@ -145,26 +209,12 @@ export function EditPostSheetContent({
 			className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0 pt-8"
 			side="right"
 		>
-			<div className="grid gap-4 py-4">
-				{/* Render multiple attachments */}
-				{post.attachment && post.attachment.length > 0 && (
-					<div>
-						{post.attachment.map((attachment) => renderAttachment(attachment))}
-					</div>
-				)}
-
-				{/* Video Metadata and Statistics */}
-				{post.attachment &&
-					post.attachment[0]?.file.type === FileType.video && (
-						<>
-							{/* Render Video Statistics */}
-							{renderVideoStats(analyticsData?.realtimeData)}
-
-							{/* Render Video Metadata */}
-							{renderVideoMetadata(post)}
-						</>
-					)}
-			</div>
+			<SheetHeader>
+				<SheetTitle>
+					<h1 className="text-lg font-semibold">Post Details</h1>
+				</SheetTitle>
+			</SheetHeader>
+			<RenderContent post={post} data={analyticsData} />
 			<div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-background py-4">
 				<SheetClose asChild>
 					<Button type="button" variant="outline">

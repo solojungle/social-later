@@ -1,3 +1,4 @@
+import { SocialType } from "@prisma/client";
 import { z } from "zod";
 
 import { DynamicSizeFileSchema, SingleFileSchema } from "./file-schema";
@@ -44,6 +45,7 @@ export const PostsSchema = z.object({
 	published: z.boolean(),
 	status: z.string(),
 	scheduledFor: z.date(),
+	socialType: z.nativeEnum(SocialType),
 	thumbnail: z.string().optional(),
 	externalPostId: z.string(),
 	profileId: z.string(),

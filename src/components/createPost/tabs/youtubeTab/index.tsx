@@ -108,6 +108,7 @@ export function YouTubeTab({
 				title: data.title || "",
 				content: data.description || "",
 				fileIds: mediaFiles.map((file) => file.id),
+				socialType: "youtube",
 				externalPostId: result.id,
 				scheduledFor: data.date || undefined,
 				profileId,
