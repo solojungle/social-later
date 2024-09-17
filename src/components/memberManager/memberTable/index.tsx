@@ -17,6 +17,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 
+import { RemoveUserAlertDialog } from "./removeUser";
 import { UpdateRoleDialog } from "./updateRole";
 
 export function OptionsMenu({
@@ -27,6 +28,7 @@ export function OptionsMenu({
 	member: any;
 }) {
 	const [showChangeRole, setShowChangeRole] = useState(false);
+	const [showRemoveUser, setShowRemoveUser] = useState(false);
 
 	return (
 		<DropdownMenu>
@@ -46,12 +48,17 @@ export function OptionsMenu({
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
 					disabled={isDisabled}
-					// onSelect={() => setShow(true)}
+					onClick={() => setShowRemoveUser(true)}
 					className="text-destructive"
 				>
 					Remove user
 				</DropdownMenuItem>
 			</DropdownMenuContent>
+			<RemoveUserAlertDialog
+				open={showRemoveUser}
+				onOpenChange={setShowRemoveUser}
+				member={member}
+			/>
 			<UpdateRoleDialog
 				open={showChangeRole}
 				onOpenChange={setShowChangeRole}

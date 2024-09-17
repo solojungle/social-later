@@ -277,4 +277,40 @@ export const teamRouter = createTRPCRouter({
 				},
 			});
 		}),
+
+	removeMember: protectedProcedure
+		.input(
+			z.object({
+				teamId: z.string(),
+				userId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			// Check if the user is part of the team
+			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+				where: {
+					teamId: input.teamId,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			// Check if the user is the owner of the team
+			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+			if (!isUserOwnerOfTeam) {
+				throw new Error("You are not an owner of this team");
+			}
+
+			return ctx.db.userOnTeam.delete({
+				where: {
+					userId_teamId: {
+						userId: input.userId,
+						teamId: input.teamId,
+					},
+				},
+			});
+		}),
 });
