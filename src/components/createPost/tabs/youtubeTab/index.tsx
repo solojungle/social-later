@@ -120,6 +120,7 @@ export function YouTubeTab({
 			// Capture the event in PostHog
 			posthog.capture("youtube_upload", {
 				distinctId: userId,
+				attachmentIncluded: false,
 				scheduled: !!data.date,
 			});
 

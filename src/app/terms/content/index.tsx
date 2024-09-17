@@ -8,114 +8,111 @@ function HeaderText({ id, children }: any) {
 	);
 }
 
-function TableOfContents() {
-	return (
-		<nav className="mb-6">
-			<h3 className="mb-2 text-xl font-bold">Table of Contents</h3>
-			<ul className="ml-6 list-decimal space-y-2 text-sm uppercase">
-				<li>
-					<a href="#introduction" className="text-blue-500 hover:underline">
-						Introduction
-					</a>
-				</li>
-				<li>
-					<a
-						href="#company-information"
-						className="text-blue-500 hover:underline"
-					>
-						Company Information
-					</a>
-				</li>
-				<li>
-					<a
-						href="#services-provided"
-						className="text-blue-500 hover:underline"
-					>
-						Services Provided
-					</a>
-				</li>
-				<li>
-					<a href="#user-accounts" className="text-blue-500 hover:underline">
-						User Accounts
-					</a>
-				</li>
-				<li>
-					<a
-						href="#payment-and-billing"
-						className="text-blue-500 hover:underline"
-					>
-						Payment and Billing
-					</a>
-				</li>
-				<li>
-					<a
-						href="#subscription-and-termination"
-						className="text-blue-500 hover:underline"
-					>
-						Subscription and Termination
-					</a>
-				</li>
-				<li>
-					<a
-						href="#intellectual-property"
-						className="text-blue-500 hover:underline"
-					>
-						Intellectual Property
-					</a>
-				</li>
-				<li>
-					<a
-						href="#limitation-of-liability"
-						className="text-blue-500 hover:underline"
-					>
-						Limitation of Liability and Disclaimers
-					</a>
-				</li>
-				<li>
-					<a href="#user-conduct" className="text-blue-500 hover:underline">
-						User Conduct and Prohibited Use
-					</a>
-				</li>
-				<li>
-					<a href="#privacy-and-data" className="text-blue-500 hover:underline">
-						Privacy and Data
-					</a>
-				</li>
-				<li>
-					<a
-						href="#modifications-to-terms"
-						className="text-blue-500 hover:underline"
-					>
-						Modifications to the Terms
-					</a>
-				</li>
-				<li>
-					<a
-						href="#dispute-resolution"
-						className="text-blue-500 hover:underline"
-					>
-						Dispute Resolution
-					</a>
-				</li>
-				<li>
-					<a href="#governing-law" className="text-blue-500 hover:underline">
-						Governing Law
-					</a>
-				</li>
-			</ul>
-		</nav>
-	);
-}
+// TODO: Not a priority right now
+// function TableOfContents() {
+// 	return (
+// 		<nav className="mb-6">
+// 			<h3 className="mb-2 text-xl font-bold">Table of Contents</h3>
+// 			<ul className="ml-6 list-decimal space-y-2 text-sm uppercase">
+// 				<li>
+// 					<a href="#introduction" className="text-blue-500 hover:underline">
+// 						Introduction
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#company-information"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Company Information
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#services-provided"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Services Provided
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a href="#user-accounts" className="text-blue-500 hover:underline">
+// 						User Accounts
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#payment-and-billing"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Payment and Billing
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#subscription-and-termination"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Subscription and Termination
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#intellectual-property"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Intellectual Property
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#limitation-of-liability"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Limitation of Liability and Disclaimers
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a href="#user-conduct" className="text-blue-500 hover:underline">
+// 						User Conduct and Prohibited Use
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a href="#privacy-and-data" className="text-blue-500 hover:underline">
+// 						Privacy and Data
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#modifications-to-terms"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Modifications to the Terms
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a
+// 						href="#dispute-resolution"
+// 						className="text-blue-500 hover:underline"
+// 					>
+// 						Dispute Resolution
+// 					</a>
+// 				</li>
+// 				<li>
+// 					<a href="#governing-law" className="text-blue-500 hover:underline">
+// 						Governing Law
+// 					</a>
+// 				</li>
+// 			</ul>
+// 		</nav>
+// 	);
+// }
 
 export function TermsAndConditions() {
 	return (
 		<div className="container mx-auto max-w-4xl space-y-6 p-6">
 			<h1 className="mb-4 text-3xl font-bold">Terms and Conditions</h1>
 			<p>Last updated September 17, 2024</p>
-
-			{/* <Separator /> */}
-
-			{/* <TableOfContents /> */}
 
 			<Separator />
 

@@ -12,7 +12,9 @@ import { formatSizeBytes } from "@/components/mediaPage/allAssets";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { BaseYoutubeSchema } from "@/schemas/new-file-schema";
+import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
+import posthog from "posthog-js";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CancelSubmitBar } from "../../cancelSubmitBar";
@@ -31,6 +33,7 @@ export function WithSelectedForm({
 	selected?: any[];
 }) {
 	const [loading, setLoading] = useState(false);
+	const { id: userId } = useUserStore();
 
 	const { mutateAsync: uploadVideo } =
 		api.socials.uploadYouTubeVideo.useMutation({});
@@ -52,7 +55,7 @@ export function WithSelectedForm({
 		resolver: zodResolver(FormSchema),
 	});
 
-	const createPost = api.post.create.useMutation({
+	const { mutate: createPost } = api.post.create.useMutation({
 		onSuccess() {
 			toast.success("Successfully created your post!", {});
 		},
@@ -61,14 +64,12 @@ export function WithSelectedForm({
 			setOpen(false);
 
 			// Invalidate the query so we can refetch the data
-			utils.post.getAll.invalidate();
+			utils.post.invalidate();
 		},
 	});
 
 	async function onSubmit(data: any) {
 		setLoading(true);
-
-		const scheduledDate = data.date;
 
 		if (!selected) {
 			toast.error("No video selected");
@@ -84,20 +85,29 @@ export function WithSelectedForm({
 				title: data.title,
 				description: data.description,
 				videoUrl: selectedVideoUrl,
+				scheduledTime: new Date(data.date).toISOString(),
 			});
 
 			if (!result || !result.id) {
 				throw new Error("Failed to upload video to YouTube");
 			}
 
-			createPost.mutate({
+			createPost({
 				title: data.title || "",
 				content: data.content || "",
 				fileIds: selected.map((file) => file.id),
+				socialType: "youtube",
 				externalPostId: result.id,
-				scheduledFor: scheduledDate,
+				scheduledFor: data.date || undefined,
 				profileId,
 				authorId: teamId,
+			});
+
+			// Capture the event in PostHog
+			posthog.capture("youtube_upload", {
+				distinctId: userId,
+				attachmentIncluded: true,
+				scheduled: !!data.date,
 			});
 		} finally {
 			setLoading(false);
