@@ -137,7 +137,7 @@ export function TeamPaymentMethodListView({ teamId }: any) {
 					))}
 				</div>
 			</CardContent>
-			<CardFooter className="flex flex-col items-start gap-4">
+			<CardFooter className="grid grid-cols-2 gap-2">
 				<p className="text-xs text-muted-foreground">
 					At most, three credit cards, debit cards or prepaid cards can be
 					added.

@@ -31,7 +31,7 @@ export function SettingsCardBase({
 	isLoading = false,
 }: SettingsCardBaseProps) {
 	return (
-		<Card>
+		<Card className="w-full">
 			<CardHeader>
 				{title && <CardTitle className="mb-2">{title}</CardTitle>}
 				{description && <CardDescription>{description}</CardDescription>}
