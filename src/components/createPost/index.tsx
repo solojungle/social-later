@@ -8,7 +8,13 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { SocialProfileSwitcher } from "../socialProfileSwitcher";
 import { Button } from "../ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "../ui/sheet";
 import { TwitterTab } from "./tabs/twitterTab";
 import { YouTubeTab } from "./tabs/youtubeTab";
 
@@ -49,6 +55,11 @@ function PostForm({
 				className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0 pt-4"
 				side="right"
 			>
+				<SheetHeader>
+					<SheetTitle>
+						<h1 className="text-lg font-semibold">Create Post</h1>
+					</SheetTitle>
+				</SheetHeader>
 				<div className="mb-4">
 					<SocialProfileSwitcher />
 				</div>

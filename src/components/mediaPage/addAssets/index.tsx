@@ -17,6 +17,7 @@ import {
 	Sheet,
 	SheetContent,
 	SheetDescription,
+	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
@@ -156,10 +157,12 @@ export function AddAssets() {
 				className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0"
 				side="right"
 			>
-				<SheetTitle>Add Assets</SheetTitle>
-				<SheetDescription className="mb-8">
-					Upload images, videos, and other media files to your library.
-				</SheetDescription>
+				<SheetHeader>
+					<SheetTitle>Add Assets</SheetTitle>
+					<SheetDescription className="mb-8">
+						Upload images, videos, and other media files to your library.
+					</SheetDescription>
+				</SheetHeader>
 				{teamId && <Content teamId={teamId} setOpen={setOpen} />}
 			</SheetContent>
 		</Sheet>
