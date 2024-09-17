@@ -189,7 +189,7 @@ export function EditPostSheetContent({
 	if (isAnalyticsLoading) {
 		return (
 			<SheetContent
-				className="w-[800px] !max-w-[80vw] !overflow-scroll pb-0 pt-8"
+				className="flex w-[800px] !max-w-[80vw] items-center justify-center !overflow-scroll pb-0 pt-8"
 				side="right"
 			>
 				<SheetHeader>
