@@ -181,7 +181,7 @@ export function YouTubeTab({
 				{!selected && (
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-							<TitleFormField form={form} />
+							<TitleFormField maxCharCount={100} form={form} />
 							<DescriptionFormField
 								form={form}
 								valueName="description"

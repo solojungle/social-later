@@ -1,3 +1,5 @@
+import { useRef, useState } from "react";
+
 import {
 	FormControl,
 	FormField,
@@ -7,53 +9,42 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-// type ToolbarProps = {
-// 	textareaRef: React.RefObject<HTMLTextAreaElement>;
-// 	charCount: number;
-// 	maxCharCount: number;
-// };
+type ToolbarProps = {
+	charCount: number;
+	maxCharCount: number;
+};
 
-// function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
-// 	return (
-// 		<div className="flex items-center justify-between">
-// 			<div className="flex justify-start">
-// 				<Tooltip delayDuration={0}>
-// 					<TooltipTrigger asChild>
-// 						<Button type="button" size="icon" variant="ghost">
-// 							<PaperclipIcon className="h-5 w-5 text-muted-foreground" />
-// 						</Button>
-// 					</TooltipTrigger>
-// 					<TooltipContent>
-// 						<span>Shorten link</span>
-// 					</TooltipContent>
-// 				</Tooltip>
-// 				<EmojiPicker textareaRef={textareaRef} />
-// 			</div>
-// 			<span
-// 				className={`text-xs ${
-// 					charCount > maxCharCount ? "text-red-600" : "text-muted-foreground"
-// 				}`}
-// 			>
-// 				{charCount}/{maxCharCount}
-// 			</span>
-// 		</div>
-// 	);
-// }
+function Toolbar({ charCount, maxCharCount }: ToolbarProps) {
+	return (
+		<div className="flex items-center justify-end">
+			<span
+				className={`text-xs ${
+					charCount > maxCharCount ? "text-red-600" : "text-muted-foreground"
+				}`}
+			>
+				{charCount}/{maxCharCount}
+			</span>
+		</div>
+	);
+}
 
 type StatusFormFieldProps = {
 	form: any;
+	maxCharCount?: number;
 };
 
-export function TitleFormField({ form }: StatusFormFieldProps) {
-	// const textareaRef = useRef<HTMLTextAreaElement>(null);
-	// const [charCount, setCharCount] = useState(0);
-	// const [maxCharCount] = useState(200);
+export function TitleFormField({
+	form,
+	maxCharCount = 100,
+}: StatusFormFieldProps) {
+	const textareaRef = useRef<HTMLInputElement>(null);
+	const [charCount, setCharCount] = useState(0);
 
-	// const handleTextareaChange = () => {
-	// 	if (textareaRef.current) {
-	// 		setCharCount(textareaRef.current.value.length);
-	// 	}
-	// };
+	const handleTextChange = () => {
+		if (textareaRef.current) {
+			setCharCount(textareaRef.current.value.length);
+		}
+	};
 
 	return (
 		<FormField
@@ -63,10 +54,23 @@ export function TitleFormField({ form }: StatusFormFieldProps) {
 				<FormItem>
 					<FormLabel>Title</FormLabel>
 					<FormControl>
-						<Input
-							{...field}
-							placeholder="Add a title that describes your video (type @ to mention a channel)"
-						/>
+						<div className="relative shadow-sm">
+							<div className="relative rounded-lg border border-border">
+								<Input
+									{...field}
+									className="h-16 border-b-[18px] border-transparent pb-0"
+									onInput={(e) => {
+										field.onChange(e);
+										handleTextChange();
+									}}
+									placeholder="Add a title that describes your video (type @ to mention a channel)"
+									ref={textareaRef}
+								/>
+								<div className="absolute inset-x-1 bottom-0 ">
+									<Toolbar charCount={charCount} maxCharCount={maxCharCount} />
+								</div>
+							</div>
+						</div>
 					</FormControl>
 					<FormMessage />
 				</FormItem>
