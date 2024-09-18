@@ -1,5 +1,6 @@
 import { Faq } from "./sections/faq";
 import { FeaturesTabs } from "./sections/features";
+import Footer from "./sections/footer";
 import { Hero } from "./sections/hero";
 import { Integrations } from "./sections/integrations";
 import { NavigationMenu } from "./sections/navigationMenu";
@@ -20,7 +21,7 @@ export default async function LandingPage() {
 				{/* <div className="h-96 w-full bg-stone-200" /> */}
 				<Pricing />
 				<Faq />
-				{/* <Footer /> */}
+				<Footer />
 			</div>
 		</main>
 	);

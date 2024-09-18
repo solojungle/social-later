@@ -56,12 +56,6 @@ export function Faq() {
 					</AccordionContent>
 				</AccordionItem>
 			</Accordion>
-			<div className="flex space-x-1">
-				<p>Still have questions?</p>
-				<a className="underline" href="mailto:contact@feedfrenzy.co">
-					Contact Us
-				</a>
-			</div>
 		</Section>
 	);
 }
