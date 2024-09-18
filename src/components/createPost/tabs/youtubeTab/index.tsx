@@ -11,6 +11,8 @@ import { z } from "zod";
 import { OnProgress, uploadFile } from "@/components/fileUpload";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileProgress, useFileUpload } from "@/hooks/use-file-upload";
+import { useYouTubeUpload } from "@/hooks/use-youtube";
 import { YouTubeFormSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
@@ -38,22 +40,13 @@ export function YouTubeTab({
 	const { id: userId } = useUserStore();
 	const posthog = usePostHog();
 	const [loading, setLoading] = useState(false);
-	const { mutateAsync: createFile } = api.file.create.useMutation();
-	const { mutateAsync: fetchMultipartPresignedUrls } =
-		api.aws.getMultipartUploadPresignedUrl.useMutation();
-	const { mutateAsync: completeMultipartUpload } =
-		api.aws.completeMultipartUpload.useMutation();
-	const [fileProgress, setFileProgress] = useState<{
-		[key: string]: { [key: number]: number };
-	}>({});
-	const { mutateAsync: uploadVideo } =
-		api.socials.uploadYouTubeVideo.useMutation({});
-	const { mutateAsync: changeThumbnail } =
-		api.socials.changeVideoThumbnail.useMutation({});
+	const [fileProgress, setFileProgress] = useState<FileProgress>({});
 	const utils = api.useUtils();
-	const { mutateAsync: createPost } = api.post.create.useMutation({});
-	const { mutateAsync: updateThumbnail } =
-		api.post.updateThumbnail.useMutation();
+
+	const { createFile, fetchMultipartPresignedUrls, completeMultipartUpload } =
+		useFileUpload();
+	const { uploadVideo, changeThumbnail, createPost, updateThumbnail } =
+		useYouTubeUpload();
 
 	type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
 	const form = useForm<FormSchemaValues>({
