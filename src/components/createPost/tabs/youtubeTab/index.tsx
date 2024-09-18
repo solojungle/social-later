@@ -182,7 +182,11 @@ export function YouTubeTab({
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 							<TitleFormField form={form} />
-							<DescriptionFormField form={form} valueName="description" />
+							<DescriptionFormField
+								form={form}
+								valueName="description"
+								maxCharCount={5000}
+							/>
 							{/* Video file upload */}
 							<MediaFormField
 								valueName="video"

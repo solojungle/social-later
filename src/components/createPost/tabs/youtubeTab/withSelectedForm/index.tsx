@@ -157,7 +157,11 @@ export function WithSelectedForm({
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 					<TitleFormField form={form} />
-					<DescriptionFormField form={form} valueName="description" />
+					<DescriptionFormField
+						form={form}
+						valueName="description"
+						maxCharCount={5000}
+					/>
 					<DatePickerFormField form={form} defaultDate={currentDate} />
 					<CancelSubmitBar loading={loading} form={form} />
 				</form>

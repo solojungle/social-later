@@ -53,15 +53,16 @@ function Toolbar({ textareaRef, charCount, maxCharCount }: ToolbarProps) {
 type StatusFormFieldProps = {
 	form: any;
 	valueName: string;
+	maxCharCount?: number;
 };
 
 export function DescriptionFormField({
 	form,
+	maxCharCount = 200,
 	valueName = "content",
 }: StatusFormFieldProps) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const [charCount, setCharCount] = useState(0);
-	const [maxCharCount] = useState(200);
 
 	const handleTextareaChange = () => {
 		if (textareaRef.current) {
