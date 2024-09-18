@@ -18,7 +18,7 @@ import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 import { DescriptionFormField } from "../../descriptionFormField";
-import { FileUpload, MediaFormField } from "../../mediaFormField";
+import { MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
 import { TitleFormField } from "../../titleFormField";
 import { CancelSubmitBar } from "../cancelSubmitBar";
@@ -60,96 +60,120 @@ export function YouTubeTab({
 		resolver: zodResolver(YouTubeFormSchema),
 	});
 
-	async function onSubmit(data: any) {
-		setLoading(true);
+	const uploadMediaFiles = async (data: FormSchemaValues) => {
+		const filesToUpload = [...(data.thumbnail || []), ...data.video];
+		return Promise.all(
+			filesToUpload.map((file) =>
+				uploadFile({
+					uploadedFile: file,
+					onProgress: OnProgress,
+					fetchMultipartPresignedUrls,
+					completeMultipartUpload,
+					setFileProgress,
+					createFile,
+				}),
+			),
+		);
+	};
 
-		try {
-			// Instead of uploading only one file, we need to upload all the files
-			// and then send the mediaIds to the backend
-			const filesToUpload = [...(data.thumbnail || []), ...data.video];
-			const mediaFiles = await Promise.all(
-				filesToUpload.map((file: FileUpload) =>
-					uploadFile({
-						uploadedFile: file,
-						onProgress: OnProgress,
-						fetchMultipartPresignedUrls,
-						completeMultipartUpload,
-						setFileProgress,
-						createFile,
-					}),
-				),
-			);
+	const separateMediaFiles = (mediaFiles: any[]) => ({
+		thumbnailFile: mediaFiles.find((file) => file.mime.includes("image")),
+		videoFile: mediaFiles.find((file) => file.mime.includes("video")),
+	});
 
-			const thumbnailFile = mediaFiles.find((file) =>
-				file.mime.includes("image"),
-			);
-			const video = mediaFiles.find((file) => file.mime.includes("video"));
+	const uploadYouTubeVideo = async (
+		data: FormSchemaValues,
+		videoUrl: string,
+	) => {
+		const { data: result } = await uploadVideo({
+			profileId,
+			title: data.title,
+			description: data.description,
+			videoUrl,
+			scheduledTime: new Date(data.date).toISOString(),
+		});
 
-			const { data: result } = await uploadVideo({
-				profileId,
-				title: data.title,
-				description: data.description,
-				videoUrl: video?.url ?? "",
-				scheduledTime: new Date(data.date).toISOString(),
-			});
-
-			if (!result || !result.id) {
-				throw new Error("Failed to upload video to YouTube");
-			}
-
-			const post = await createPost({
-				title: data.title || "",
-				content: data.description || "",
-				fileIds: mediaFiles.map((file) => file.id),
-				socialType: "youtube",
-				externalPostId: result.id,
-				scheduledFor: data.date || undefined,
-				profileId,
-				authorId: teamId,
-			});
-
-			toast.success("Successfully created your post!");
-
-			// Capture the event in PostHog
-			posthog.capture("youtube_upload", {
-				distinctId: userId,
-				attachmentIncluded: false,
-				scheduled: !!data.date,
-			});
-
-			try {
-				// Change the thumbnail if the user uploaded a new one
-				if (thumbnailFile) {
-					await changeThumbnail({
-						profileId,
-						videoId: result.id,
-						// We want to upload the original thumbnail since YouTube will compress on their end
-						thumbnailUrl: thumbnailFile.url,
-					});
-
-					await updateThumbnail({
-						postId: post.id,
-						// We want the optimized thumbnail for our platform
-						thumbnailUrl: thumbnailFile.thumbnail,
-					});
-				}
-			} catch (error) {
-				toast.error(
-					"An error occured while trying to change the thumbnail. Please try again.",
-				);
-			}
-		} catch (error) {
-			toast.error(
-				"An error occured while trying to upload the video. Please try again.",
-			);
-		} finally {
-			setLoading(false);
-			setOpen(false);
-
-			// Invalidate the query so we can refetch the data
-			utils.post.invalidate();
+		if (!result || !result.id) {
+			throw new Error("Failed to upload video to YouTube");
 		}
-	}
+
+		return result.id;
+	};
+
+	const createYouTubePost = async (
+		data: FormSchemaValues,
+		externalPostId: string,
+		mediaFiles: any[],
+	) => {
+		return createPost({
+			title: data.title || "",
+			content: data.description || "",
+			fileIds: mediaFiles.map((file) => file.id),
+			socialType: "youtube",
+			externalPostId,
+			scheduledFor: data.date || undefined,
+			profileId,
+			authorId: teamId,
+		});
+	};
+
+	const handleThumbnailUpdate = async (
+		thumbnailFile: any,
+		videoId: string,
+		postId: string,
+	) => {
+		if (thumbnailFile) {
+			await changeThumbnail({
+				profileId,
+				videoId,
+				thumbnailUrl: thumbnailFile.url,
+			});
+
+			await updateThumbnail({
+				postId,
+				thumbnailUrl: thumbnailFile.thumbnail,
+			});
+		}
+	};
+
+	const onSuccessfulUpload = (data: FormSchemaValues) => {
+		toast.success("Successfully created your post!");
+		posthog.capture("youtube_upload", {
+			distinctId: userId,
+			attachmentIncluded: false,
+			scheduled: !!data.date,
+		});
+	};
+
+	const onUploadError = (error: any) => {
+		console.error("Upload error:", error);
+		toast.error(
+			"An error occurred while trying to upload the video. Please try again.",
+		);
+	};
+
+	const onUploadComplete = () => {
+		setLoading(false);
+		setOpen(false);
+		utils.post.invalidate();
+	};
+
+	const handleSubmit = async (data: FormSchemaValues) => {
+		setLoading(true);
+		try {
+			const mediaFiles = await uploadMediaFiles(data);
+			const { thumbnailFile, videoFile } = separateMediaFiles(mediaFiles);
+			const videoId = await uploadYouTubeVideo(data, videoFile);
+			const post = await createYouTubePost(data, videoId, mediaFiles);
+			await handleThumbnailUpdate(thumbnailFile, videoId, post.id);
+
+			onSuccessfulUpload(data);
+		} catch (error) {
+			onUploadError(error);
+		} finally {
+			onUploadComplete();
+		}
+	};
 
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
@@ -173,7 +197,10 @@ export function YouTubeTab({
 
 				{!selected && (
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+						<form
+							onSubmit={form.handleSubmit(handleSubmit)}
+							className="space-y-8"
+						>
 							<TitleFormField maxCharCount={100} form={form} />
 							<DescriptionFormField
 								form={form}
