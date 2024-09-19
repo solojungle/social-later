@@ -17,12 +17,9 @@ import { YouTubeFormSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
-import { DescriptionFormField } from "../../descriptionFormField";
-import { MediaFormField } from "../../mediaFormField";
-import { DatePickerFormField } from "../../schedulePost/datePicker";
-import { TitleFormField } from "../../titleFormField";
 import { CancelSubmitBar } from "../cancelSubmitBar";
 import { WithSelectedForm } from "./withSelectedForm";
+import { YouTubeFormFields } from "./youtubeFormFields";
 
 export function YouTubeTab({
 	teamId,
@@ -201,43 +198,12 @@ export function YouTubeTab({
 							onSubmit={form.handleSubmit(handleSubmit)}
 							className="space-y-8"
 						>
-							<TitleFormField maxCharCount={100} form={form} />
-							<DescriptionFormField
-								form={form}
-								valueName="description"
-								maxCharCount={5000}
-							/>
-							{/* Video file upload */}
-							<MediaFormField
-								valueName="video"
+							<YouTubeFormFields
 								form={form}
 								fileProgress={fileProgress}
-								restrictions={{
-									maxFiles: 1,
-									maxSize: 262144 * 1024 * 1024,
-									maxSizeInMB: "256GB",
-									accept: {
-										"video/*": [".webp", ".mov", ".mp4"],
-									},
-								}}
-								isLoading={loading}
+								loading={loading}
+								scheduleDate={scheduleDate}
 							/>
-							{/* Thumbnails upload */}
-							<MediaFormField
-								valueName="thumbnail"
-								form={form}
-								fileProgress={fileProgress}
-								restrictions={{
-									maxFiles: 1,
-									maxSize: 2 * 1024 * 1024,
-									maxSizeInMB: "2MB",
-									accept: {
-										"image/*": [".jpeg", ".png", ".jpg"],
-									},
-								}}
-								isLoading={loading}
-							/>
-							<DatePickerFormField form={form} defaultDate={scheduleDate} />
 							<CancelSubmitBar loading={loading} form={form} />
 						</form>
 					</Form>
