@@ -41,7 +41,7 @@ export function Hero() {
 				animate={{ y: 0, opacity: 1 }}
 				transition={{ duration: 0.4, delay: 0.3 }}
 			>
-				<motion.div>
+				<motion.div className="max-w-xs">
 					<Link href="/login">
 						<Button size="lg" className="flex items-center justify-center">
 							Get started today <ArrowUpRight className="ml-2 h-5 w-5" />
