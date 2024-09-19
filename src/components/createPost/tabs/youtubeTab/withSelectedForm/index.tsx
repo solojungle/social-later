@@ -1,8 +1,10 @@
 "use client";
 
-// eslint-disable-next-line simple-import-sort/imports
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePostHog } from "posthog-js/react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { DescriptionFormField } from "@/components/createPost/descriptionFormField";
@@ -10,13 +12,12 @@ import { DatePickerFormField } from "@/components/createPost/schedulePost/datePi
 import { TitleFormField } from "@/components/createPost/titleFormField";
 import { formatSizeBytes } from "@/components/mediaPage/allAssets";
 import { Form } from "@/components/ui/form";
+import { useYouTubeUpload } from "@/hooks/use-youtube";
 import { cn } from "@/lib/utils";
 import { BaseYoutubeSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
-import posthog from "posthog-js";
-import { useState } from "react";
-import { toast } from "sonner";
+
 import { CancelSubmitBar } from "../../cancelSubmitBar";
 
 export function WithSelectedForm({
@@ -34,16 +35,15 @@ export function WithSelectedForm({
 }) {
 	const [loading, setLoading] = useState(false);
 	const { id: userId } = useUserStore();
+	const utils = api.useUtils();
+	const posthog = usePostHog();
 
-	const { mutateAsync: uploadVideo } =
-		api.socials.uploadYouTubeVideo.useMutation({});
+	const { uploadVideo, createPost } = useYouTubeUpload();
 
 	const FormSchema = BaseYoutubeSchema.omit({
 		video: true,
 		thumbnail: true,
 	});
-
-	const utils = api.useUtils();
 
 	type FormSchemaValues = z.infer<typeof FormSchema>;
 	const form = useForm<FormSchemaValues>({
@@ -55,64 +55,83 @@ export function WithSelectedForm({
 		resolver: zodResolver(FormSchema),
 	});
 
-	const { mutate: createPost } = api.post.create.useMutation({
-		onSuccess() {
-			toast.success("Successfully created your post!", {});
-		},
-		onSettled() {
-			setLoading(false);
-			setOpen(false);
+	const uploadVideoToYouTube = async (
+		data: FormSchemaValues,
+		videoUrl: string,
+	) => {
+		const { data: result } = await uploadVideo({
+			profileId,
+			title: data.title,
+			description: data.description,
+			videoUrl,
+			scheduledTime: new Date(data.date).toISOString(),
+		});
 
-			// Invalidate the query so we can refetch the data
-			utils.post.invalidate();
-		},
-	});
+		if (!result || !result.id) {
+			throw new Error("Failed to upload video to YouTube");
+		}
 
-	async function onSubmit(data: any) {
+		return result.id;
+	};
+
+	const createYouTubePost = async (
+		data: FormSchemaValues,
+		externalPostId: string,
+		mediaFiles: any[],
+	) => {
+		await createPost({
+			title: data.title || "",
+			content: data.description || "",
+			fileIds: mediaFiles.map((file) => file.id),
+			socialType: "youtube",
+			externalPostId,
+			scheduledFor: data.date || undefined,
+			profileId,
+			authorId: teamId,
+		});
+	};
+
+	const onSuccessfulUpload = (data: FormSchemaValues) => {
+		toast.success("Successfully created your post!");
+		posthog.capture("youtube_upload", {
+			distinctId: userId,
+			attachmentIncluded: true,
+			scheduled: !!data.date,
+		});
+	};
+
+	const onUploadError = (error: any) => {
+		console.error("Upload error:", error);
+		toast.error(
+			"An error occurred while trying to upload the video. Please try again.",
+		);
+	};
+
+	const onUploadComplete = () => {
+		setLoading(false);
+		setOpen(false);
+		utils.post.invalidate();
+	};
+
+	const handleSubmit = async (data: FormSchemaValues) => {
 		setLoading(true);
 
-		if (!selected) {
+		if (!selected || selected.length === 0) {
 			toast.error("No video selected");
 			setLoading(false);
 			return;
 		}
 
-		const selectedVideoUrl = selected[0].url;
-
 		try {
-			const { data: result } = await uploadVideo({
-				profileId,
-				title: data.title,
-				description: data.description,
-				videoUrl: selectedVideoUrl,
-				scheduledTime: new Date(data.date).toISOString(),
-			});
-
-			if (!result || !result.id) {
-				throw new Error("Failed to upload video to YouTube");
-			}
-
-			createPost({
-				title: data.title || "",
-				content: data.content || "",
-				fileIds: selected.map((file) => file.id),
-				socialType: "youtube",
-				externalPostId: result.id,
-				scheduledFor: data.date || undefined,
-				profileId,
-				authorId: teamId,
-			});
-
-			// Capture the event in PostHog
-			posthog.capture("youtube_upload", {
-				distinctId: userId,
-				attachmentIncluded: true,
-				scheduled: !!data.date,
-			});
+			const videoId = await uploadVideoToYouTube(data, selected[0].url);
+			await createYouTubePost(data, videoId, selected);
+			onSuccessfulUpload(data);
+		} catch (error) {
+			onUploadError(error);
 		} finally {
-			setLoading(false);
+			onUploadComplete();
 		}
-	}
+	};
 
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
@@ -155,8 +174,8 @@ export function WithSelectedForm({
 				</div>
 			)}
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					<TitleFormField form={form} />
+				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+					<TitleFormField form={form} maxCharCount={100} />
 					<DescriptionFormField
 						form={form}
 						valueName="description"
