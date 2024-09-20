@@ -3,9 +3,10 @@
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -14,71 +15,100 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { useSocialProfilesStore } from "@/stores/social-profiles";
-
-import { ProfileCards } from "../addSocialProfileButton";
-import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "../ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@/components/ui/dialog";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
 
-type PersonalCommandGroupProps = {
+import { ProfileCards } from "../addSocialProfileButton";
+
+// Types
+type SocialProfile = {
+	teamId: string;
+	id: string;
+	username: string;
+	type: string;
+	avatar: string;
+	name?: string | null;
+};
+
+type ChannelIconProps = {
+	type: string;
+};
+
+type CommandGroupProps = {
 	setOpen: (open: boolean) => void;
 };
 
-function ChannelServiceIcon({ type }: { type: string }) {
-	// These will be different lucide icons
-	const channelIconVariants: { [key: string]: any } = {
-		twitter: "/logos/twitter_logo.webp",
-		youtube: "/logos/youtube_logo.webp",
-		linkedin: "/logos/linkedin_logo.webp",
-	};
+type PopoverTriggerProps = React.ComponentPropsWithoutRef<
+	typeof PopoverTrigger
+>;
 
-	return (
-		<img
-			src={channelIconVariants[type]}
-			alt={type}
-			className="absolute bottom-0 right-0 m-px w-[14px] rounded-sm"
+// Constants
+const CHANNEL_ICONS: Record<string, string> = {
+	twitter: "/logos/twitter_logo.webp",
+	youtube: "/logos/youtube_logo.webp",
+	linkedin: "/logos/linkedin_logo.webp",
+	threads: "/logos/threads_logo.png",
+};
+
+// Helper functions
+const getAvatarFallback = (profile: SocialProfile): string =>
+	(profile.name && profile.name[0]?.toUpperCase()) ??
+	profile.username[0]?.toUpperCase() ??
+	"";
+
+// Components
+const ChannelServiceIcon: React.FC<ChannelIconProps> = ({ type }) => (
+	<img
+		src={CHANNEL_ICONS[type]}
+		alt={type}
+		className="absolute bottom-0 right-0 m-px w-[14px] rounded-sm"
+	/>
+);
+
+const ProfileAvatar: React.FC<{ profile: SocialProfile }> = ({ profile }) => (
+	<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
+		<ChannelServiceIcon type={profile.type} />
+		<AvatarImage
+			src={profile.avatar}
+			className="!rounded-sm border border-border bg-background"
 		/>
-	);
-}
+		<AvatarFallback className="!rounded-sm border border-border">
+			{getAvatarFallback(profile)}
+		</AvatarFallback>
+	</Avatar>
+);
 
-function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
+const SocialProfilesCommandGroup: React.FC<CommandGroupProps> = ({
+	setOpen,
+}) => {
 	const { profiles, currentProfileId, setCurrentProfileId } =
 		useSocialProfilesStore();
 
 	return (
 		<CommandGroup key="profiles" heading="Profiles">
-			{profiles.map((profile) => (
+			{profiles.map((profile: SocialProfile) => (
 				<CommandItem
 					key={profile.id}
 					value={profile.username}
 					onSelect={() => {
-						// Set the current profile
 						setCurrentProfileId(profile.id);
 						setOpen(false);
 					}}
 					className="text-sm"
 				>
-					<Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
-						{ChannelServiceIcon({ type: profile.type })}
-						<AvatarImage
-							src={profile.avatar}
-							alt={profile.name || profile.username}
-							className="!rounded-sm border border-border bg-background"
-						/>
-						<AvatarFallback className="!rounded-sm border border-border">
-							{(profile.name && profile.name[0]?.toUpperCase()) ??
-								profile.username[0]?.toUpperCase() ??
-								""}
-						</AvatarFallback>
-					</Avatar>
+					<ProfileAvatar profile={profile} />
 					<span
 						title={profile.name || profile.username}
 						className="overflow-hidden truncate"
@@ -95,90 +125,61 @@ function SocialProfilesCommandGroup({ setOpen }: PersonalCommandGroupProps) {
 			))}
 		</CommandGroup>
 	);
-}
-
-type SocialProfileSwitcherPopoverTriggerProps = PopoverTriggerProps & {
-	open: boolean; // Define the 'open' prop
 };
 
-function SocialProfileSwitcherPopoverTrigger({
-	className,
-	open,
-}: SocialProfileSwitcherPopoverTriggerProps) {
+const SocialProfileSwitcherPopoverTrigger: React.FC<
+	PopoverTriggerProps & { open: boolean }
+> = ({ className, open }) => {
 	const { profiles, currentProfileId, setCurrentProfileId } =
 		useSocialProfilesStore();
-
 	const selectedProfile = profiles.find(
 		(profile) => profile.id === currentProfileId,
 	);
 
-	if (!selectedProfile) {
-		// Set the first profile as the selected profile
-		if (profiles.length > 0 && profiles[0]) {
-			setCurrentProfileId(profiles[0].id);
+	useEffect(() => {
+		if (!selectedProfile && profiles.length > 0) {
+			if (profiles[0]) {
+				setCurrentProfileId(profiles[0].id);
+			}
 		}
+	}, [selectedProfile, profiles, setCurrentProfileId]);
 
-		return null;
-	}
+	if (!selectedProfile) return null;
 
 	return (
 		<PopoverTrigger>
 			<Button
-				asChild
 				variant="outline"
 				role="combobox"
 				aria-expanded={open}
 				aria-label="Select a profile"
 				className={cn("w-20 justify-between md:w-[250px]", className)}
 			>
-				<div>
-					<Avatar className="relative mr-2 h-6 w-6 !rounded-sm">
-						{ChannelServiceIcon({ type: selectedProfile.type })}
-						<AvatarImage
-							src={selectedProfile.avatar}
-							alt={selectedProfile.name ?? selectedProfile.username}
-							className="!rounded-sm border border-border bg-background"
-						/>
-						<AvatarFallback className="!rounded-sm border border-border">
-							{(selectedProfile.name &&
-								selectedProfile.name[0]?.toUpperCase()) ??
-								selectedProfile.username[0]?.toUpperCase() ??
-								""}
-						</AvatarFallback>
-					</Avatar>
-					<span
-						title={selectedProfile.name || selectedProfile.username}
-						className="overflow-hidden truncate"
-					>
-						{selectedProfile.name || selectedProfile.username}
-					</span>
-					<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
-				</div>
+				<ProfileAvatar profile={selectedProfile} />
+				<span
+					title={selectedProfile.name || selectedProfile.username}
+					className="overflow-hidden truncate"
+				>
+					{selectedProfile.name || selectedProfile.username}
+				</span>
+				<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 			</Button>
 		</PopoverTrigger>
 	);
-}
+};
 
-type PopoverTriggerProps = React.ComponentPropsWithoutRef<
-	typeof PopoverTrigger
->;
-
-type SocialProfileSwitcherProps = PopoverTriggerProps;
-
-export function SocialProfileSwitcher({
+export const SocialProfileSwitcher: React.FC<PopoverTriggerProps> = ({
 	className,
-}: SocialProfileSwitcherProps) {
+}) => {
 	const [open, setOpen] = useState(false);
 	const [showNewProfileDialog, setShowNewProfileDialog] = useState(false);
 	const [isMounted, setIsMounted] = useState(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setIsMounted(true);
 	}, []);
 
-	if (!isMounted) {
-		return null;
-	}
+	if (!isMounted) return null;
 
 	return (
 		<Dialog open={showNewProfileDialog} onOpenChange={setShowNewProfileDialog}>
@@ -221,4 +222,4 @@ export function SocialProfileSwitcher({
 			</DialogContent>
 		</Dialog>
 	);
-}
+};
