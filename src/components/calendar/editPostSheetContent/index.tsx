@@ -173,7 +173,9 @@ export function EditPostSheetContent({
 }: {
 	post: PostWithAttachmentsSchemaValues;
 }) {
-	const { currentProfileId: profileId } = useSocialProfilesStore();
+	const { currentProfileId: profileId, profiles } = useSocialProfilesStore();
+	const currentProfile = profiles.find((profile) => profile.id === profileId);
+	const profileType = currentProfile?.type;
 
 	const { data: analyticsData, isLoading: isAnalyticsLoading } =
 		api.analytics.getSingleVideoAnalytics.useQuery<AnalyticsData>(
@@ -182,7 +184,7 @@ export function EditPostSheetContent({
 				profileId,
 			},
 			{
-				enabled: !!profileId,
+				enabled: !!profileId && profileType === "youtube",
 			},
 		);
 

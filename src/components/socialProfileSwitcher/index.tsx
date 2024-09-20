@@ -149,20 +149,23 @@ const SocialProfileSwitcherPopoverTrigger: React.FC<
 	return (
 		<PopoverTrigger>
 			<Button
+				asChild
 				variant="outline"
 				role="combobox"
 				aria-expanded={open}
 				aria-label="Select a profile"
 				className={cn("w-20 justify-between md:w-[250px]", className)}
 			>
-				<ProfileAvatar profile={selectedProfile} />
-				<span
-					title={selectedProfile.name || selectedProfile.username}
-					className="overflow-hidden truncate"
-				>
-					{selectedProfile.name || selectedProfile.username}
-				</span>
-				<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+				<div>
+					<ProfileAvatar profile={selectedProfile} />
+					<span
+						title={selectedProfile.name || selectedProfile.username}
+						className="overflow-hidden truncate"
+					>
+						{selectedProfile.name || selectedProfile.username}
+					</span>
+					<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+				</div>
 			</Button>
 		</PopoverTrigger>
 	);

@@ -3,7 +3,12 @@
 import { useTeamMembersStore } from "@/stores/team-members";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "../ui/tooltip";
 import { AddTeamMemberModal } from "./modal";
 
 export function AddTeamMember() {
@@ -35,15 +40,17 @@ export function AddTeamMember() {
 					</Avatar>
 				)}
 			</div>
-			<Tooltip delayDuration={0}>
-				<TooltipTrigger>
-					{/* TODO: Fix Tooltip hover bug */}
-					<AddTeamMemberModal />
-				</TooltipTrigger>
-				<TooltipContent side="bottom">
-					<p>Add team member</p>
-				</TooltipContent>
-			</Tooltip>
+			<TooltipProvider>
+				<Tooltip delayDuration={0}>
+					<TooltipTrigger>
+						{/* TODO: Fix Tooltip hover bug */}
+						<AddTeamMemberModal />
+					</TooltipTrigger>
+					<TooltipContent side="bottom">
+						<p>Add team member</p>
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
 		</div>
 	);
 }
