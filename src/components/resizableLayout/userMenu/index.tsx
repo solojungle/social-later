@@ -47,17 +47,17 @@ export function CollapsibleUserMenu() {
 					</Link>
 				</Tooltip>
 
-				<button
-					type="button"
-					disabled={loading}
-					onClick={async () => {
-						setLoading(true);
-						await signOut({ redirect: false });
-						router.push("/login");
-					}}
-				>
-					<Tooltip>
-						<TooltipTrigger className="w-full">
+				<Tooltip>
+					<button
+						type="button"
+						disabled={loading}
+						onClick={async () => {
+							setLoading(true);
+							await signOut({ redirect: false });
+							router.push("/login");
+						}}
+					>
+						<TooltipTrigger asChild>
 							<div
 								className={cn(
 									"relative flex h-[45px] items-center rounded-lg border border-transparent md:w-[45px] md:justify-center",
@@ -74,8 +74,8 @@ export function CollapsibleUserMenu() {
 							</div>
 						</TooltipTrigger>
 						<TooltipContent side="right">Log out</TooltipContent>
-					</Tooltip>
-				</button>
+					</button>
+				</Tooltip>
 			</div>
 		</TooltipProvider>
 	);
