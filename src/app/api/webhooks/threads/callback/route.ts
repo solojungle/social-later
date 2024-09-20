@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 				type: "threads",
 				username: profile.username,
 				name: profile.name,
-				avatar: profile.threads_profile_picture_url,
+				avatar: profile.threads_profile_picture_url ?? "",
 				teamId,
 			},
 			update: {
