@@ -15,6 +15,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "../ui/sheet";
+import { ThreadsTab } from "./tabs/threadsTab";
 import { TwitterTab } from "./tabs/twitterTab";
 import { YouTubeTab } from "./tabs/youtubeTab";
 
@@ -68,6 +69,15 @@ function PostForm({
 							profileId={profileId}
 							setOpen={setOpen}
 							scheduleDate={scheduleDate}
+						/>
+					)}
+					{profileType === "threads" && (
+						<ThreadsTab
+							teamId={teamId}
+							profileId={profileId}
+							setOpen={setOpen}
+							scheduleDate={scheduleDate}
+							selected={selected}
 						/>
 					)}
 					{profileType === "youtube" && (
