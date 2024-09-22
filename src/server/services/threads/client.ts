@@ -1,5 +1,6 @@
+import { ThreadsAPI, ThreadsAPIConfig } from "threads-ts";
+
 import { env } from "@/env.mjs";
-import { ThreadsAPI, ThreadsAPIConfig } from "@/server/threads-sdk";
 
 const config: ThreadsAPIConfig = {
 	clientId: env.THREADS_APP_ID,
