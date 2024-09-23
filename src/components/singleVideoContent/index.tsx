@@ -4,7 +4,6 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { VideoPerformanceGraph } from "@/components/graphs/video-performance";
-import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 import { Button } from "../ui/button";
@@ -19,18 +18,13 @@ export interface AnalyticsData {
 }
 
 export function SingleVideoAnalyticsContent({ postId }: any) {
-	const { currentProfileId: profileId, profiles } = useSocialProfilesStore();
-	const currentProfile = profiles.find((profile) => profile.id === profileId);
-	const profileType = currentProfile?.type;
-
 	const { data: analyticsData, isLoading: isAnalyticsLoading } =
 		api.analytics.getSingleVideoAnalytics.useQuery<AnalyticsData>(
 			{
 				postId,
-				profileId,
 			},
 			{
-				enabled: !!profileId && profileType === "youtube",
+				enabled: !!postId,
 			},
 		);
 

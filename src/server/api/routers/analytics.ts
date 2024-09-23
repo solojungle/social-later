@@ -487,21 +487,12 @@ export const analyticsRouter = createTRPCRouter({
 	getSingleVideoAnalytics: protectedProcedure
 		.input(
 			z.object({
-				profileId: z.string(),
 				postId: z.string(),
 			}),
 		)
 		.query(async ({ ctx, input }) => {
-			const { profileId, postId } = input;
+			const { postId } = input;
 			const { db, session } = ctx;
-
-			// Get the youtube channel, and verify the user is apart of the team
-			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
-			await verifyUserTeamMembership(
-				db,
-				session.user.id,
-				youtubeChannel.teamId,
-			);
 
 			// Get the post, so we can find the published date, and use it to fetch historical data
 			const post = await db.post.findUnique({
@@ -513,6 +504,16 @@ export const analyticsRouter = createTRPCRouter({
 			if (!post) {
 				return [];
 			}
+
+			const { profileId } = post;
+
+			// Get the youtube channel, and verify the user is apart of the team
+			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+			await verifyUserTeamMembership(
+				db,
+				session.user.id,
+				youtubeChannel.teamId,
+			);
 
 			const youtubeAnalytics = initializeYouTubeAnalyticsClient(youtubeChannel);
 			const youtubeDataClient = initializeYouTubeDataClient(youtubeChannel);
