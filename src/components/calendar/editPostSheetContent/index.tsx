@@ -5,7 +5,6 @@ import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import { createSerializer, parseAsString } from "nuqs";
 
-import { AnalyticsData } from "@/components/singleVideoContent";
 import { formatPrice } from "@/components/singleVideoContent/revenueTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,8 +17,8 @@ import {
 	SheetTitle,
 } from "@/components/ui/sheet";
 import { Player } from "@/components/videoPlayer";
+import { useYouTube } from "@/hooks/use-youtube";
 import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
-import { api } from "@/trpc/react";
 
 // Helper function to render attachments
 const renderVideoPost = ({ video, thumbnail, post }: any) => {
@@ -172,17 +171,12 @@ export function EditPostSheetContent({
 }: {
 	post: PostWithAttachmentsSchemaValues;
 }) {
-	const { data: analyticsData, isLoading: isAnalyticsLoading } =
-		api.analytics.getSingleVideoAnalytics.useQuery<AnalyticsData>(
-			{
-				postId: post.id,
-			},
-			{
-				enabled: !!post.id,
-			},
-		);
+	const { getAnalytics } = useYouTube();
+	const { data, isLoading } = getAnalytics({
+		postId: post.id,
+	});
 
-	if (isAnalyticsLoading) {
+	if (isLoading) {
 		return (
 			<SheetContent
 				className="flex w-[800px] !max-w-[80vw] items-center justify-center !overflow-scroll pb-0 pt-8"
@@ -208,7 +202,7 @@ export function EditPostSheetContent({
 			<SheetHeader>
 				<SheetTitle className="text-lg font-semibold">Post Details</SheetTitle>
 			</SheetHeader>
-			<RenderContent post={post} data={analyticsData} />
+			<RenderContent post={post} data={data} />
 			<div className="sticky bottom-0 flex justify-end gap-2 border-t border-border bg-background py-4">
 				<SheetClose asChild>
 					<Button type="button" variant="outline">

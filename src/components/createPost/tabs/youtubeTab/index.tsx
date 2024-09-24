@@ -12,7 +12,7 @@ import { OnProgress, uploadFile } from "@/components/fileUpload";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileProgress, useFileUpload } from "@/hooks/use-file-upload";
-import { useYouTubeUpload } from "@/hooks/use-youtube";
+import { useYouTube } from "@/hooks/use-youtube";
 import { YouTubeFormSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
@@ -43,7 +43,7 @@ export function YouTubeTab({
 	const { createFile, fetchMultipartPresignedUrls, completeMultipartUpload } =
 		useFileUpload();
 	const { uploadVideo, changeThumbnail, createPost, updateThumbnail } =
-		useYouTubeUpload();
+		useYouTube();
 
 	type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
 	const form = useForm<FormSchemaValues>({

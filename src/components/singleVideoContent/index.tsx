@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { VideoPerformanceGraph } from "@/components/graphs/video-performance";
+import { useYouTube } from "@/hooks/use-youtube";
 import { api } from "@/trpc/react";
 
 import { Button } from "../ui/button";
@@ -12,21 +13,11 @@ import { VideoOverview } from "./overview";
 import { RevenueTable } from "./revenueTable";
 import { VideoRank } from "./videoRank";
 
-export interface AnalyticsData {
-	historicalData: { date: any; views: number; subscribers_gained: number }[];
-	realtimeData: any;
-}
-
 export function SingleVideoAnalyticsContent({ postId }: any) {
-	const { data: analyticsData, isLoading: isAnalyticsLoading } =
-		api.analytics.getSingleVideoAnalytics.useQuery<AnalyticsData>(
-			{
-				postId,
-			},
-			{
-				enabled: !!postId,
-			},
-		);
+	const { getAnalytics } = useYouTube();
+	const { data: analyticsData, isLoading: isAnalyticsLoading } = getAnalytics({
+		postId,
+	});
 
 	// Get the single post data from the API
 	const {

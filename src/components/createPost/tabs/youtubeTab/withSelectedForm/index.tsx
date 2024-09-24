@@ -12,7 +12,7 @@ import { DatePickerFormField } from "@/components/createPost/schedulePost/datePi
 import { TitleFormField } from "@/components/createPost/titleFormField";
 import { formatSizeBytes } from "@/components/mediaPage/allAssets";
 import { Form } from "@/components/ui/form";
-import { useYouTubeUpload } from "@/hooks/use-youtube";
+import { useYouTube } from "@/hooks/use-youtube";
 import { cn } from "@/lib/utils";
 import { BaseYoutubeSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
@@ -38,7 +38,7 @@ export function WithSelectedForm({
 	const utils = api.useUtils();
 	const posthog = usePostHog();
 
-	const { uploadVideo, createPost } = useYouTubeUpload();
+	const { uploadVideo, createPost } = useYouTube();
 
 	const FormSchema = BaseYoutubeSchema.omit({
 		video: true,
