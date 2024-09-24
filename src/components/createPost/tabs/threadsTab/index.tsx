@@ -8,16 +8,21 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { OnProgress, uploadFile } from "@/components/fileUpload";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileProgress, useFileUpload } from "@/hooks/use-file-upload";
-import { YouTubeFormSchema } from "@/schemas/new-file-schema";
+import { useThreads } from "@/hooks/use-threads";
+import { futureDateSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 import { CancelSubmitBar } from "../cancelSubmitBar";
-import { ThreadsFormFields, ThreadsStatusFormFields } from "./formFields";
+import { ThreadsStatusFormFields } from "./formFields";
+
+export const ThreadsSchema = z.object({
+	status: z.string().min(1),
+	date: futureDateSchema(),
+});
 
 export function ThreadsTab({
 	teamId,
@@ -38,66 +43,60 @@ export function ThreadsTab({
 	const [fileProgress, setFileProgress] = useState<FileProgress>({});
 	const utils = api.useUtils();
 
+	const { createThreadsPost, createPost } = useThreads();
+
 	const { createFile, fetchMultipartPresignedUrls, completeMultipartUpload } =
 		useFileUpload();
 
-	type FormSchemaValues = z.infer<typeof YouTubeFormSchema>;
+	type FormSchemaValues = z.infer<typeof ThreadsSchema>;
 	const form = useForm<FormSchemaValues>({
 		defaultValues: {
-			title: "",
-			description: "",
-			video: [],
-			thumbnail: [],
+			status: "",
 			date: scheduleDate,
 		},
-		resolver: zodResolver(YouTubeFormSchema),
+		resolver: zodResolver(ThreadsSchema),
 	});
 
-	const uploadMediaFiles = async (data: FormSchemaValues) => {
-		const filesToUpload = [...(data.thumbnail || []), ...data.video];
-		return Promise.all(
-			filesToUpload.map((file) =>
-				uploadFile({
-					uploadedFile: file,
-					onProgress: OnProgress,
-					fetchMultipartPresignedUrls,
-					completeMultipartUpload,
-					setFileProgress,
-					createFile,
-				}),
-			),
-		);
-	};
+	// const uploadMediaFiles = async (data: FormSchemaValues) => {
+	// 	const filesToUpload = [...(data.thumbnail || []), ...data.video];
+	// 	return Promise.all(
+	// 		filesToUpload.map((file) =>
+	// 			uploadFile({
+	// 				uploadedFile: file,
+	// 				onProgress: OnProgress,
+	// 				fetchMultipartPresignedUrls,
+	// 				completeMultipartUpload,
+	// 				setFileProgress,
+	// 				createFile,
+	// 			}),
+	// 		),
+	// 	);
+	// };
 
-	const separateMediaFiles = (mediaFiles: any[]) => ({
-		thumbnailFile: mediaFiles.find((file) => file.mime.includes("image")),
-		videoFile: mediaFiles.find((file) => file.mime.includes("video")),
-	});
-
-	const createYouTubePost = async (
-		data: FormSchemaValues,
-		externalPostId: string,
-		mediaFiles: any[],
-	) => {
-		return createPost({
-			title: data.title || "",
-			content: data.description || "",
-			fileIds: mediaFiles.map((file) => file.id),
-			socialType: "youtube",
-			externalPostId,
-			scheduledFor: data.date || undefined,
-			profileId,
-			authorId: teamId,
-		});
-	};
+	// const createInternalPost = async (
+	// 	data: FormSchemaValues,
+	// 	externalPostId: string,
+	// 	mediaFiles: any[],
+	// ) => {
+	// 	return createPost({
+	// 		title: data.title || "",
+	// 		content: data.description || "",
+	// 		fileIds: mediaFiles.map((file) => file.id),
+	// 		socialType: "threads",
+	// 		externalPostId,
+	// 		scheduledFor: data.date || undefined,
+	// 		profileId,
+	// 		authorId: teamId,
+	// 	});
+	// };
 
 	const onSuccessfulUpload = (data: FormSchemaValues) => {
 		toast.success("Successfully created your post!");
-		posthog.capture("threads_post", {
-			distinctId: userId,
-			attachmentIncluded: false,
-			scheduled: !!data.date,
-		});
+		// posthog.capture("threads_post", {
+		// 	distinctId: userId,
+		// 	attachmentIncluded: false,
+		// 	scheduled: !!data.date,
+		// });
 	};
 
 	const onUploadError = (error: any) => {
@@ -116,11 +115,16 @@ export function ThreadsTab({
 	const handleSubmit = async (data: FormSchemaValues) => {
 		setLoading(true);
 		try {
-			const mediaFiles = await uploadMediaFiles(data);
-			const { thumbnailFile, videoFile } = separateMediaFiles(mediaFiles);
-			const videoId = await uploadYouTubeVideo(data, videoFile);
-			const post = await createYouTubePost(data, videoId, mediaFiles);
-			await handleThumbnailUpdate(thumbnailFile, videoId, post.id);
+			// // const mediaFiles = await uploadMediaFiles(data);
+			// const videoId = await uploadYouTubeVideo(data, videoFile);
+			// const post = await createInternalPost(data, videoId, mediaFiles);
+
+			const post = await createThreadsPost({
+				profileId,
+				content: data.status,
+			});
+
+			console.log(post);
 
 			onSuccessfulUpload(data);
 		} catch (error) {
@@ -149,18 +153,13 @@ export function ThreadsTab({
 						onSubmit={form.handleSubmit(handleSubmit)}
 						className="flex h-[700px] flex-col justify-between"
 					>
-						<ThreadsStatusFormFields
-							form={form}
-							fileProgress={fileProgress}
-							loading={loading}
-							scheduleDate={scheduleDate}
-						/>
+						<ThreadsStatusFormFields form={form} scheduleDate={scheduleDate} />
 						<CancelSubmitBar loading={loading} form={form} />
 					</form>
 				</Form>
 			</TabsContent>
 			<TabsContent value="video" className="px-1 pt-8">
-				{!selected && (
+				{/* {!selected && (
 					<Form {...form}>
 						<form
 							onSubmit={form.handleSubmit(handleSubmit)}
@@ -175,7 +174,7 @@ export function ThreadsTab({
 							<CancelSubmitBar loading={loading} form={form} />
 						</form>
 					</Form>
-				)}
+				)} */}
 			</TabsContent>
 		</Tabs>
 	);

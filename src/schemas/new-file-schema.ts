@@ -18,7 +18,7 @@ export function fileSchema(size: number, acceptedTypes: string[]) {
 }
 
 // Helper function for future date schema
-function futureDateSchema() {
+export function futureDateSchema() {
 	return z.date().refine(
 		(date) => {
 			const now = new Date();
