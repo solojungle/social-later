@@ -13,21 +13,19 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
 function VideoRankContent({ post }: any) {
-	const { currentProfileId: profileId } = useSocialProfilesStore();
 	const [type, setType] = useState("all");
 
 	const { data, isLoading, isFetching } =
 		api.analytics.rankVideoAmongLastTen.useQuery(
 			{
-				profileId,
+				profileId: post.profileId,
 				videoId: post.externalPostId,
 			},
 			{
-				enabled: !!profileId,
+				enabled: !!post.profileId,
 			},
 		);
 

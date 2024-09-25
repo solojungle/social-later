@@ -707,10 +707,6 @@ export const socialProfilesRouter = createTRPCRouter({
 				creationId: postId,
 			});
 
-			console.log(result);
-			console.log(result);
-			console.log(result);
-
 			return result;
 		}),
 });
