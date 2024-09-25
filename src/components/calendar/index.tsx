@@ -143,6 +143,29 @@ function Posts({
 		return null;
 	}
 
+	if (post.socialType === "threads") {
+		return (
+			<Sheet open={open} onOpenChange={setOpen}>
+				<SheetTrigger asChild className="cursor-pointer">
+					<div className="m-px flex aspect-video flex-col rounded-sm border border-border bg-secondary p-2 text-xs text-secondary-foreground shadow-md">
+						<div className="flex items-center justify-between">
+							<span className="mb-1 font-medium">
+								{post.scheduledFor.toLocaleString("en-US", {
+									hour: "numeric",
+									minute: "numeric",
+									hour12: true,
+								})}
+							</span>
+							{StyledStatus({ status: post.status })}
+						</div>
+						<span>{post.content && post.content.slice(0, 50)}</span>
+					</div>
+				</SheetTrigger>
+				<EditPostSheetContent post={post} />
+			</Sheet>
+		);
+	}
+
 	if (post.attachment.length > 0) {
 		return StyledMediaPost({ post, open, setOpen });
 	}

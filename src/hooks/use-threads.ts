@@ -7,5 +7,9 @@ export const useThreads = () => {
 	return {
 		createThreadsPost,
 		createPost,
+		getMetrics: ({ postId }: { postId: string }) => ({
+			data: [],
+			isLoading: false,
+		}),
 	};
 };

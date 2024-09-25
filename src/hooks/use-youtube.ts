@@ -20,7 +20,7 @@ export const useYouTube = () => {
 					postId,
 				},
 				{
-					enabled: !!postId,
+					enabled: !!postId && postId !== "",
 				},
 			);
 

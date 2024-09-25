@@ -10,7 +10,6 @@ import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileProgress, useFileUpload } from "@/hooks/use-file-upload";
 import { useThreads } from "@/hooks/use-threads";
 import { futureDateSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
@@ -40,13 +39,9 @@ export function ThreadsTab({
 	const { id: userId } = useUserStore();
 	const posthog = usePostHog();
 	const [loading, setLoading] = useState(false);
-	const [fileProgress, setFileProgress] = useState<FileProgress>({});
 	const utils = api.useUtils();
 
 	const { createThreadsPost, createPost } = useThreads();
-
-	const { createFile, fetchMultipartPresignedUrls, completeMultipartUpload } =
-		useFileUpload();
 
 	type FormSchemaValues = z.infer<typeof ThreadsSchema>;
 	const form = useForm<FormSchemaValues>({
@@ -57,40 +52,25 @@ export function ThreadsTab({
 		resolver: zodResolver(ThreadsSchema),
 	});
 
-	// const uploadMediaFiles = async (data: FormSchemaValues) => {
-	// 	const filesToUpload = [...(data.thumbnail || []), ...data.video];
-	// 	return Promise.all(
-	// 		filesToUpload.map((file) =>
-	// 			uploadFile({
-	// 				uploadedFile: file,
-	// 				onProgress: OnProgress,
-	// 				fetchMultipartPresignedUrls,
-	// 				completeMultipartUpload,
-	// 				setFileProgress,
-	// 				createFile,
-	// 			}),
-	// 		),
-	// 	);
-	// };
+	const createInternalPost = async (
+		data: FormSchemaValues,
+		externalPostId: string,
+	) => {
+		console.log("data: ", data);
 
-	// const createInternalPost = async (
-	// 	data: FormSchemaValues,
-	// 	externalPostId: string,
-	// 	mediaFiles: any[],
-	// ) => {
-	// 	return createPost({
-	// 		title: data.title || "",
-	// 		content: data.description || "",
-	// 		fileIds: mediaFiles.map((file) => file.id),
-	// 		socialType: "threads",
-	// 		externalPostId,
-	// 		scheduledFor: data.date || undefined,
-	// 		profileId,
-	// 		authorId: teamId,
-	// 	});
-	// };
+		return createPost({
+			title: "",
+			content: data.status,
+			socialType: "threads",
+			externalPostId,
+			scheduledFor: data.date || undefined,
+			profileId,
+			authorId: teamId,
+		});
+	};
 
-	const onSuccessfulUpload = (data: FormSchemaValues) => {
+	// const onSuccessfulUpload = (data: FormSchemaValues) => {
+	const onSuccessfulUpload = () => {
 		toast.success("Successfully created your post!");
 		// posthog.capture("threads_post", {
 		// 	distinctId: userId,
@@ -115,18 +95,21 @@ export function ThreadsTab({
 	const handleSubmit = async (data: FormSchemaValues) => {
 		setLoading(true);
 		try {
-			// // const mediaFiles = await uploadMediaFiles(data);
-			// const videoId = await uploadYouTubeVideo(data, videoFile);
-			// const post = await createInternalPost(data, videoId, mediaFiles);
-
-			const post = await createThreadsPost({
+			const threadsPostId = await createThreadsPost({
 				profileId,
 				content: data.status,
 			});
 
-			console.log(post);
+			console.log(threadsPostId);
 
-			onSuccessfulUpload(data);
+			const post = await createInternalPost(data, threadsPostId);
+
+			console.log("Post created successfully");
+			console.log(post);
+			console.log("Post created successfully");
+
+			// onSuccessfulUpload(data);
+			onSuccessfulUpload();
 		} catch (error) {
 			onUploadError(error);
 		} finally {
