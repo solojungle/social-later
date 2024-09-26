@@ -14,6 +14,7 @@ import { metricsRouter } from "./routers/metrics";
 import { oauth2Router } from "./routers/oauth2";
 import { productsRouter } from "./routers/products";
 import { socialProfilesRouter } from "./routers/social-profiles";
+import { threadsRouter } from "./routers/socials/threads";
 import { stripeRouter } from "./routers/stripe";
 import { surveyRouter } from "./routers/survey";
 
@@ -39,6 +40,7 @@ export const appRouter = createTRPCRouter({
 	survey: surveyRouter,
 	feedback: feedbackRouter,
 	notification: knockRouter,
+	threads: threadsRouter,
 });
 
 // export type definition of API

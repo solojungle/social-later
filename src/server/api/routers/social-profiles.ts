@@ -8,7 +8,6 @@ import { env } from "@/env.mjs";
 import { TweetSchema } from "@/schemas/posts-schema";
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { threads } from "@/server/services/threads/client";
 import { client, v1client } from "@/server/services/twitter/client";
 import { getYTClientAuth } from "@/server/services/youtube/client";
 
@@ -660,53 +659,5 @@ export const socialProfilesRouter = createTRPCRouter({
 			});
 
 			return videoViews;
-		}),
-
-	createThreadsPost: protectedProcedure
-		.input(
-			z.object({
-				profileId: z.string(),
-				content: z.string(),
-				mediaIds: z.array(z.string()).optional(),
-				scheduledTime: z.string().optional(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { profileId } = input;
-
-			// Make sure the user is apart of the team, and that the account belongs to the team
-			const socialProfile = await ctx.db.socialProfile.findUnique({
-				where: {
-					id: profileId,
-				},
-			});
-			if (!socialProfile) {
-				throw new Error("Social profile does not exist");
-			}
-
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: socialProfile.teamId,
-					userId: ctx.session.user.id,
-				},
-			});
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
-
-			threads.setAccessToken(socialProfile.accessToken);
-
-			const postId = await threads.createMediaContainer({
-				userId: "me",
-				mediaType: "TEXT",
-				text: input.content,
-			});
-
-			const result = await threads.publishMediaContainer({
-				userId: "me",
-				creationId: postId,
-			});
-
-			return result;
 		}),
 });
