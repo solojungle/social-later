@@ -3,6 +3,7 @@
 import { AudienceGrowth } from "@/components/graphs/audience-growth";
 import { ViewsComparisons } from "@/components/graphs/view-comparisons";
 import { InterfaceIcons } from "@/components/ui/icons";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { api } from "@/trpc/react";
 
@@ -57,20 +58,22 @@ export const YouTubeAnalyticsTab = () => {
 
 	return (
 		<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
-			<div className="col-span-2 space-y-2">
-				<YouTubePerformanceSummary values={performanceData} />
-				<AudienceGrowth metrics={data?.historicalData} />
-			</div>
-			<div className="col-span-1 space-y-2">
-				<MostRecentVideo
-					id={data.last10Videos[0]?.id ?? ""}
-					thumbnail={data.last10Videos[0]?.thumbnail ?? ""}
-					title={data.last10Videos?.[0]?.title ?? ""}
-					url={data.last10Videos?.[0]?.url ?? ""}
-					views={String(data.last10Videos?.[0]?.views)}
-				/>
-				<ViewsComparisons data={data?.videoViews} />
-			</div>
+			<TooltipProvider>
+				<div className="col-span-2 space-y-2">
+					<YouTubePerformanceSummary values={performanceData} />
+					<AudienceGrowth metrics={data?.historicalData} />
+				</div>
+				<div className="col-span-1 space-y-2">
+					<MostRecentVideo
+						id={data.last10Videos[0]?.id ?? ""}
+						thumbnail={data.last10Videos[0]?.thumbnail ?? ""}
+						title={data.last10Videos?.[0]?.title ?? ""}
+						url={data.last10Videos?.[0]?.url ?? ""}
+						views={String(data.last10Videos?.[0]?.views)}
+					/>
+					<ViewsComparisons data={data?.videoViews} />
+				</div>
+			</TooltipProvider>
 		</div>
 	);
 };
