@@ -3,6 +3,7 @@
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { Separator } from "../ui/separator";
+import { ThreadsAnalyticsTab } from "./tabs/threads";
 import { TwitterAnalyticsTab } from "./tabs/twitter";
 import { YouTubeAnalyticsTab } from "./tabs/youtube";
 
@@ -39,6 +40,7 @@ export const AnalyticsPageContent = () => {
 			</div>
 			{profileType === "twitter" && <TwitterAnalyticsTab />}
 			{profileType === "youtube" && <YouTubeAnalyticsTab />}
+			{profileType === "threads" && <ThreadsAnalyticsTab />}
 		</div>
 	);
 };

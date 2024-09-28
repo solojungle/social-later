@@ -4,6 +4,21 @@ export const useThreads = () => {
 	const { mutateAsync: createThreadsPost } =
 		api.threads.createThreadsPost.useMutation();
 	const { mutateAsync: createPost } = api.post.create.useMutation();
+	function getUserMetrics({ profileId }: { profileId: string }) {
+		const { data, isLoading } = api.threads.getUserInsights.useQuery(
+			{
+				profileId,
+			},
+			{
+				enabled: !!profileId && profileId !== "",
+			},
+		);
+
+		return {
+			data,
+			isLoading,
+		};
+	}
 	function getMetrics({ postId }: { postId: string }) {
 		const { data, isLoading } = api.threads.getPostInsights.useQuery(
 			{
@@ -24,5 +39,6 @@ export const useThreads = () => {
 		createThreadsPost,
 		createPost,
 		getMetrics,
+		getUserMetrics,
 	};
 };
