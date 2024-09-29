@@ -56,8 +56,6 @@ export function ThreadsTab({
 		data: FormSchemaValues,
 		externalPostId: string,
 	) => {
-		console.log("data: ", data);
-
 		return createPost({
 			title: "",
 			content: data.status,
@@ -70,13 +68,13 @@ export function ThreadsTab({
 	};
 
 	// const onSuccessfulUpload = (data: FormSchemaValues) => {
-	const onSuccessfulUpload = () => {
+	const onSuccessfulUpload = (data: FormSchemaValues) => {
 		toast.success("Successfully created your post!");
-		// posthog.capture("threads_post", {
-		// 	distinctId: userId,
-		// 	attachmentIncluded: false,
-		// 	scheduled: !!data.date,
-		// });
+		posthog.capture("threads_post", {
+			distinctId: userId,
+			attachmentIncluded: false,
+			scheduled: !!data.date,
+		});
 	};
 
 	const onUploadError = (error: any) => {
@@ -99,17 +97,8 @@ export function ThreadsTab({
 				profileId,
 				content: data.status,
 			});
-
-			console.log(threadsPostId);
-
-			const post = await createInternalPost(data, threadsPostId);
-
-			console.log("Post created successfully");
-			console.log(post);
-			console.log("Post created successfully");
-
-			// onSuccessfulUpload(data);
-			onSuccessfulUpload();
+			await createInternalPost(data, threadsPostId);
+			onSuccessfulUpload(data);
 		} catch (error) {
 			onUploadError(error);
 		} finally {
