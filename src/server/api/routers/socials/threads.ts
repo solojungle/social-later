@@ -116,7 +116,9 @@ export const threadsRouter = createTRPCRouter({
 
 			threads.setAccessToken(socialProfile?.accessToken);
 
-			const insights = await threads.getUserInsights({
+			// TODO: Revisit total post views
+
+			const userInsights = await threads.getUserInsights({
 				userId: "me",
 				metrics: [
 					"views",
@@ -129,7 +131,7 @@ export const threadsRouter = createTRPCRouter({
 			});
 
 			// Handle cases where insights might be undefined or not an array
-			if (!Array.isArray(insights)) {
+			if (!Array.isArray(userInsights)) {
 				const defaultInsights = [
 					"views",
 					"likes",
@@ -148,7 +150,7 @@ export const threadsRouter = createTRPCRouter({
 				return defaultStats;
 			}
 
-			const stats = insights.reduce((acc: any, insight: any) => {
+			const stats = userInsights.reduce((acc: any, insight: any) => {
 				const name: string = insight?.name ?? ""; // Safely access name
 				// every value except views has total_value
 				if (insight?.total_value) {
@@ -162,6 +164,57 @@ export const threadsRouter = createTRPCRouter({
 			}, {});
 
 			return stats;
+		}),
+
+	last10Posts: protectedProcedure
+		.input(
+			z.object({
+				profileId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { profileId } = input;
+			const { db, session } = ctx;
+
+			const socialProfile = await db.socialProfile.findUnique({
+				where: {
+					id: profileId,
+				},
+			});
+
+			if (!socialProfile || !socialProfile.accessToken) {
+				throw new Error("Social profile does not exist");
+			}
+
+			const isUserPartOfTeam = await db.userOnTeam.findFirst({
+				where: {
+					teamId: socialProfile.teamId,
+					userId: session.user.id,
+				},
+			});
+			if (!isUserPartOfTeam) {
+				throw new Error("You are not apart of this team");
+			}
+
+			threads.setAccessToken(socialProfile?.accessToken);
+
+			const posts = await threads.getUserThreads({
+				userId: "me",
+				fields: [
+					"id",
+					"text",
+					"media_type",
+					"permalink",
+					"is_quote_post",
+					"timestamp",
+					"thumbnail_url",
+				],
+				options: {
+					limit: 10,
+				},
+			});
+
+			return posts;
 		}),
 
 	createThreadsPost: protectedProcedure

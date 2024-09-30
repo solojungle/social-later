@@ -5,19 +5,24 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useThreads } from "@/hooks/use-threads";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
+import { formatDistanceToNow } from "date-fns";
 import { StatsCard } from "../statsCard";
+import { Last10Posts } from "../threadsComponents/last10";
 
 export const ThreadsAnalyticsTab = () => {
 	const { currentProfileId } = useSocialProfilesStore();
 
-	const { getUserMetrics } = useThreads();
+	const { getUserMetrics, getLast10 } = useThreads();
 
 	const { data, isLoading } = getUserMetrics({ profileId: currentProfileId });
+	const { data: last10Posts, isLoading: last10PostsLoading } = getLast10({
+		profileId: currentProfileId,
+	});
 
 	if (!data || isLoading) {
 		return (
-			<div className="flex h-96 flex-col items-center justify-center">
-				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+			<div className="flex flex-col items-center justify-center h-96">
+				<InterfaceIcons.Loading className="w-16 h-16 animate-spin text-muted-foreground" />
 			</div>
 		);
 	}
@@ -26,7 +31,7 @@ export const ThreadsAnalyticsTab = () => {
 		<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
 			<TooltipProvider>
 				<div className="col-span-2 space-y-2">
-					<div className="w-full rounded-sm border border-border p-3 text-sm">
+					<div className="w-full p-3 text-sm border rounded-sm border-border">
 						<div className="mb-8">
 							<h2 className="font-medium">Performance Summary</h2>
 							<p className="text-muted-foreground">
@@ -70,6 +75,47 @@ export const ThreadsAnalyticsTab = () => {
 								increasedBy="0"
 								tooltip="The total amount of quotes that your posts have."
 							/>
+						</div>
+					</div>
+					<div className="w-full p-3 text-sm border rounded-sm border-border">
+						<div className="mb-6">
+							<h2 className="font-medium">Last 10 Videos</h2>
+							<p className="text-muted-foreground">
+								Ranked by the most views per post
+							</p>
+						</div>
+						<div className="flex flex-col gap-4 divide-y [&>*:nth-child(odd)]:border-none lg:[&>*:nth-child(odd)]:border-solid">
+							{last10Posts && last10Posts?.map((post) => (
+								<div
+									key={post.id}
+									className="flex items-center justify-between py-2 grow"
+								>
+									<div className="flex items-center flex-1 min-w-0 gap-2">
+										{post.thumbnail_url && (
+										<img src={post.thumbnail_url} className="object-cover h-12 rounded-lg aspect-video shrink-0" />
+										)}
+										<div>
+											<span className="text-xs text-muted-foreground">{
+												`${formatDistanceToNow(post.timestamp)} ago`
+												}</span>
+										<p className="min-w-0 text-sm truncate sm:text-base">
+											{post.text || "No caption"}
+										</p>
+										</div>
+									</div>
+									<div className="ml-2">
+										<Last10Posts
+											stats={[
+												{ title: "Views", value: 0 },
+												{ title: "Likes", value: 0 },
+												{ title: "Replies", value: 0 },
+												{ title: "Reposts", value: 0 },
+												{ title: "Quotes", value: 0 },
+											]}
+										/>
+									</div>
+								</div>
+							))}
 						</div>
 					</div>
 				</div>
