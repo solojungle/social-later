@@ -76,8 +76,9 @@ function StyledMediaPost({
 				<div className="relative m-px rounded-sm border border-border shadow-md">
 					<div className="flex flex-col">
 						<div className="absolute right-2 top-2 rounded-sm bg-secondary p-1">
-							{post.attachment &&
-							post.attachment[0]?.file.type === FileType.video ? (
+							{(post.attachment &&
+								post.attachment[0]?.file.type === FileType.video) ||
+							post.socialType === "youtube" ? (
 								<VideoIcon className="h-4 w-4 text-secondary-foreground" />
 							) : (
 								<ImageIcon className="h-4 w-4 text-secondary-foreground" />
