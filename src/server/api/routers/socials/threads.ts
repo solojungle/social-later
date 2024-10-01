@@ -221,8 +221,9 @@ export const threadsRouter = createTRPCRouter({
 		.input(
 			z.object({
 				profileId: z.string(),
-				content: z.string(),
-				mediaIds: z.array(z.string()).optional(),
+				mediaType: z.enum(["TEXT", "IMAGE", "VIDEO", "CAROUSEL"]),
+				media: z.any(),
+				text: z.string().optional(),
 				scheduledTime: z.string().optional(),
 			}),
 		)
@@ -251,11 +252,41 @@ export const threadsRouter = createTRPCRouter({
 
 			threads.setAccessToken(socialProfile.accessToken);
 
-			const postId = await threads.createMediaContainer({
-				userId: "me",
-				mediaType: "TEXT",
-				text: input.content,
-			});
+			let postId = "";
+			switch (input.mediaType) {
+				case "TEXT":
+					postId = await threads.createMediaContainer({
+						userId: "me",
+						mediaType: "TEXT",
+						text: input.text,
+					});
+					break;
+				case "IMAGE":
+					postId = await threads.createMediaContainer({
+						userId: "me",
+						mediaType: "IMAGE",
+						mediaUrl: input.media.url,
+						text: input.text,
+					});
+					break;
+				case "VIDEO":
+					postId = await threads.createMediaContainer({
+						userId: "me",
+						mediaType: "VIDEO",
+						mediaUrl: input.media.url,
+						text: input.text,
+					});
+					break;
+				case "CAROUSEL":
+					// postId = await threads.createCarouselItemContainer({
+					// 	userId: "me",
+					// 	mediaType: "CAROUSEL",
+					// 	mediaIds: input.mediaIds,
+					// });
+					break;
+				default:
+					throw new Error("Invalid media type");
+			}
 
 			const result = await threads.publishMediaContainer({
 				userId: "me",

@@ -2,31 +2,37 @@ import { DescriptionFormField } from "@/components/createPost/descriptionFormFie
 import { MediaFormField } from "@/components/createPost/mediaFormField";
 import { DatePickerFormField } from "@/components/createPost/schedulePost/datePicker";
 
-export const ThreadsFormFields = ({
+export const ThreadsImageFormFields = ({
 	form,
 	fileProgress,
 	loading,
 	scheduleDate,
-}: any) => (
-	<>
-		<DescriptionFormField form={form} valueName="status" maxCharCount={500} />
-		<MediaFormField
-			valueName="video"
-			form={form}
-			fileProgress={fileProgress}
-			restrictions={{
-				maxFiles: 1,
-				maxSize: 262144 * 1024 * 1024,
-				maxSizeInMB: "256GB",
-				accept: {
-					"video/*": [".webp", ".mov", ".mp4"],
-				},
-			}}
-			isLoading={loading}
-		/>
-		<DatePickerFormField form={form} defaultDate={scheduleDate} />
-	</>
-);
+}: any) => {
+	// These are the restrictions for the media files that can be uploaded
+	const mediaFileTypes = ["image/jpeg", "image/png", "image/jpg"];
+	const mediaFileExtensions = {
+		"": mediaFileTypes.map((fileType: string) => `.${fileType.split("/")[1]}`),
+	};
+
+	return (
+		<>
+			<DescriptionFormField form={form} valueName="status" maxCharCount={500} />
+			<MediaFormField
+				valueName="image"
+				form={form}
+				fileProgress={fileProgress}
+				restrictions={{
+					maxFiles: 1,
+					maxSize: 8 * 1024 * 1024,
+					maxSizeInMB: "8MB",
+					accept: mediaFileExtensions,
+				}}
+				isLoading={loading}
+			/>
+			<DatePickerFormField form={form} defaultDate={scheduleDate} />
+		</>
+	);
+};
 
 export const ThreadsStatusFormFields = ({ form, scheduleDate }: any) => (
 	<div className="space-y-8">

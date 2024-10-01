@@ -1,41 +1,38 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon, TypeIcon, VideoIcon } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Form } from "@/components/ui/form";
 import { useThreads } from "@/hooks/use-threads";
 import { futureDateSchema } from "@/schemas/new-file-schema";
-import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
-import { ThreadsImageForm } from "./forms/image-form";
-import { ThreadsStatusForm } from "./forms/status-form";
+import { CancelSubmitBar } from "../../cancelSubmitBar";
+import { ThreadsStatusFormFields } from "../formFields";
 
 export const ThreadsSchema = z.object({
 	status: z.string().min(1),
 	date: futureDateSchema(),
 });
 
-export function ThreadsTab({
-	teamId,
-	profileId,
-	setOpen,
+export function ThreadsStatusForm({
+	userId,
 	scheduleDate,
-	selected,
+	profileId,
+	teamId,
+	setOpen,
 }: {
-	teamId: string;
+	userId: string;
+	scheduleDate: any;
 	profileId: string;
-	setOpen: (open: boolean) => void;
-	scheduleDate: Date;
-	selected?: any[];
+	teamId: string;
+	setOpen: any;
 }) {
-	const { id: userId } = useUserStore();
 	const posthog = usePostHog();
 	const [loading, setLoading] = useState(false);
 	const utils = api.useUtils();
@@ -94,7 +91,8 @@ export function ThreadsTab({
 		try {
 			const threadsPostId = await createThreadsPost({
 				profileId,
-				content: data.status,
+				mediaType: "TEXT",
+				text: data.status,
 			});
 			await createInternalPost(data, threadsPostId);
 			onSuccessfulUpload(data);
@@ -105,59 +103,15 @@ export function ThreadsTab({
 		}
 	};
 
-	// TODO: When mobile, user a drawer instead of a sheet
 	return (
-		<Tabs defaultValue="text" className="w-full">
-			<TabsList className="grid w-full grid-cols-3 gap-1">
-				<TabsTrigger value="text">
-					<TypeIcon className="mr-2 size-4 text-muted-foreground" />
-					Status
-				</TabsTrigger>
-				<TabsTrigger value="image">
-					<ImageIcon className="mr-2 size-4 text-muted-foreground" />
-					Image
-				</TabsTrigger>
-				<TabsTrigger value="video">
-					<VideoIcon className="mr-2 size-4 text-muted-foreground" />
-					Video
-				</TabsTrigger>
-			</TabsList>
-			<TabsContent value="text" className="px-1 pt-8">
-				<ThreadsStatusForm
-					userId={userId}
-					scheduleDate={scheduleDate}
-					profileId={profileId}
-					teamId={teamId}
-					setOpen={setOpen}
-				/>
-			</TabsContent>
-			<TabsContent value="image" className="px-1 pt-8">
-				<ThreadsImageForm
-					userId={userId}
-					scheduleDate={scheduleDate}
-					profileId={profileId}
-					teamId={teamId}
-					setOpen={setOpen}
-				/>
-			</TabsContent>
-			<TabsContent value="video" className="px-1 pt-8">
-				{/* {!selected && (
-					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit(handleSubmit)}
-							className="space-y-8"
-						>
-							<ThreadsFormFields
-								form={form}
-								fileProgress={fileProgress}
-								loading={loading}
-								scheduleDate={scheduleDate}
-							/>
-							<CancelSubmitBar loading={loading} form={form} />
-						</form>
-					</Form>
-				)} */}
-			</TabsContent>
-		</Tabs>
+		<Form {...form}>
+			<form
+				onSubmit={form.handleSubmit(handleSubmit)}
+				className="flex h-[700px] flex-col justify-between"
+			>
+				<ThreadsStatusFormFields form={form} scheduleDate={scheduleDate} />
+				<CancelSubmitBar loading={loading} form={form} />
+			</form>
+		</Form>
 	);
 }
