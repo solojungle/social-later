@@ -148,7 +148,12 @@ export function ThreadsImageForm({
 				onSubmit={form.handleSubmit(handleSubmit)}
 				className="flex h-[700px] flex-col justify-between"
 			>
-				<ThreadsImageFormFields form={form} scheduleDate={scheduleDate} />
+				<ThreadsImageFormFields
+					form={form}
+					fileProgress={fileProgress}
+					loading={loading}
+					scheduleDate={scheduleDate}
+				/>
 				<CancelSubmitBar loading={loading} form={form} />
 			</form>
 		</Form>

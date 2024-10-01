@@ -151,7 +151,7 @@ const renderYouTubePost = (post: Post, data: any) => {
 const renderThreadsPost = (post: Post, data: any) => {
 	return (
 		<>
-			{/* {post.attachment.map(renderAttachment)} */}
+			{post.attachment.map(renderAttachment)}
 			{renderPostStatus(post)}
 			{renderPostStats(data || { views: 0, likes: 0, comments: 0 })}
 		</>
