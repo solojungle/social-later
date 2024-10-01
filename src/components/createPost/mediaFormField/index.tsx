@@ -175,7 +175,8 @@ export function FileGallery({
 					)}
 				</div>
 			))}
-			{files.length < restrictions.maxFiles &&
+			{/* Show empty placeholders for the remaining files */}
+			{/* {files.length < restrictions.maxFiles &&
 				new Array(restrictions.maxFiles - files.length)
 					.fill(null)
 					.map(() => (
@@ -183,7 +184,7 @@ export function FileGallery({
 							key={Math.random()}
 							className="h-32 w-32 rounded-md border bg-muted transition-colors duration-300"
 						/>
-					))}
+					))} */}
 		</div>
 	);
 }
