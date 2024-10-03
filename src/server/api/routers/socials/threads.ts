@@ -252,17 +252,17 @@ export const threadsRouter = createTRPCRouter({
 
 			threads.setAccessToken(socialProfile.accessToken);
 
-			let postId = "";
+			let containerId = "";
 			switch (input.mediaType) {
 				case "TEXT":
-					postId = await threads.createMediaContainer({
+					containerId = await threads.createMediaContainer({
 						userId: "me",
 						mediaType: "TEXT",
 						text: input.text,
 					});
 					break;
 				case "IMAGE":
-					postId = await threads.createMediaContainer({
+					containerId = await threads.createMediaContainer({
 						userId: "me",
 						mediaType: "IMAGE",
 						mediaUrl: input.media.url,
@@ -270,7 +270,7 @@ export const threadsRouter = createTRPCRouter({
 					});
 					break;
 				case "VIDEO":
-					postId = await threads.createMediaContainer({
+					containerId = await threads.createMediaContainer({
 						userId: "me",
 						mediaType: "VIDEO",
 						mediaUrl: input.media.url,
@@ -278,7 +278,7 @@ export const threadsRouter = createTRPCRouter({
 					});
 					break;
 				case "CAROUSEL":
-					// postId = await threads.createCarouselItemContainer({
+					// containerId = await threads.createCarouselItemContainer({
 					// 	userId: "me",
 					// 	mediaType: "CAROUSEL",
 					// 	mediaIds: input.mediaIds,
@@ -288,9 +288,21 @@ export const threadsRouter = createTRPCRouter({
 					throw new Error("Invalid media type");
 			}
 
+			const sleep = (ms: number | undefined) =>
+				new Promise((resolve) => {
+					setTimeout(resolve, ms);
+				});
+
+			// Wait up to 5 minutes, checking every minute
+			for (let i = 0; i < 5; i += 1) {
+				const { status } = await threads.getMediaContainerStatus(containerId);
+				if (status === "FINISHED") break;
+				await sleep(60000);
+			}
+
 			const result = await threads.publishMediaContainer({
 				userId: "me",
-				creationId: postId,
+				creationId: containerId,
 			});
 
 			return result;

@@ -16,6 +16,7 @@ import { api } from "@/trpc/react";
 
 import { ThreadsImageForm } from "./forms/image-form";
 import { ThreadsStatusForm } from "./forms/status-form";
+import { ThreadsVideoForm } from "./forms/video-form";
 
 export const ThreadsSchema = z.object({
 	status: z.string().min(1),
@@ -141,22 +142,14 @@ export function ThreadsTab({
 				/>
 			</TabsContent>
 			<TabsContent value="video" className="px-1 pt-8">
-				{/* {!selected && (
-					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit(handleSubmit)}
-							className="space-y-8"
-						>
-							<ThreadsFormFields
-								form={form}
-								fileProgress={fileProgress}
-								loading={loading}
-								scheduleDate={scheduleDate}
-							/>
-							<CancelSubmitBar loading={loading} form={form} />
-						</form>
-					</Form>
-				)} */}
+				<ThreadsVideoForm
+					userId={userId}
+					scheduleDate={scheduleDate}
+					profileId={profileId}
+					teamId={teamId}
+					setOpen={setOpen}
+					selected={selected}
+				/>
 			</TabsContent>
 		</Tabs>
 	);
