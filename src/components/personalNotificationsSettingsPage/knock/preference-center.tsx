@@ -119,7 +119,7 @@ export function PreferenceCenter() {
 			setLocalPreferences(preferences);
 		}
 		fetchPreferences();
-	}, []);
+	}, [knockClient.user]);
 
 	function createPreferenceSet(
 		preferenceType: string,

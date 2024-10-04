@@ -31,7 +31,6 @@ export function ThreadsVideoForm({
 	profileId,
 	teamId,
 	setOpen,
-	selected,
 }: {
 	userId: string;
 	scheduleDate: any;

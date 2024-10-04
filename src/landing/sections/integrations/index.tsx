@@ -13,7 +13,9 @@ export function Integrations() {
 						integrations to help you unify your customer touch points and keep
 						pace with changes in the social landscape.
 					</p>
-					<a className="text-lg underline">See all integrations</a>
+					<a href="/" className="text-lg underline">
+						See all integrations
+					</a>
 				</div>
 				<img
 					src="/images/integrations.png"

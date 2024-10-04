@@ -5,7 +5,11 @@ function Header({ title }: any) {
 }
 
 function Value({ value }: any) {
-	return <span className="text-base font-light sm:text-xl">{formatNumber(value)}</span>;
+	return (
+		<span className="text-base font-light sm:text-xl">
+			{formatNumber(value)}
+		</span>
+	);
 }
 
 export function Last10Posts({ stats }: any) {

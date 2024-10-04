@@ -120,7 +120,7 @@ export const threadsRouter = createTRPCRouter({
 
 			const userInsights = await threads.getUserInsights({
 				userId: "me",
-				metrics: [
+				metric: [
 					"views",
 					"likes",
 					"replies",
@@ -128,6 +128,7 @@ export const threadsRouter = createTRPCRouter({
 					"quotes",
 					"followers_count",
 				],
+				options: {},
 			});
 
 			// Handle cases where insights might be undefined or not an array
