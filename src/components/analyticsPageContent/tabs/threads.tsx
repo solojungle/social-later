@@ -80,7 +80,7 @@ export const ThreadsAnalyticsTab = () => {
 					</div>
 					<div className="w-full rounded-sm border border-border p-3 text-sm">
 						<div className="mb-6">
-							<h2 className="font-medium">Last 10 Videos</h2>
+							<h2 className="font-medium">Last 10 Posts</h2>
 							<p className="text-muted-foreground">
 								Ranked by the most views per post
 							</p>
