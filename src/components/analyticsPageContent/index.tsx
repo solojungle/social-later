@@ -20,13 +20,11 @@ export interface Totals {
 }
 
 export const AnalyticsPageContent = () => {
-	const { profiles, currentProfileId } = useSocialProfilesStore();
+	const { profileType } = useSocialProfilesStore();
 
-	const currentProfile = profiles.find(
-		(profile) => profile.id === currentProfileId,
-	);
-
-	const profileType = currentProfile?.type;
+	if (!profileType) {
+		return null;
+	}
 
 	return (
 		<div className="space-y-2 !overflow-scroll p-3 pb-48">

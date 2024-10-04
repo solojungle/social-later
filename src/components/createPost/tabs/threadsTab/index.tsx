@@ -3,6 +3,8 @@
 import { ImageIcon, TypeIcon, VideoIcon } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSelectedTeamStore } from "@/stores/selected-team";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { useUserStore } from "@/stores/user";
 
 import { ThreadsImageForm } from "./forms/image-form";
@@ -10,19 +12,17 @@ import { ThreadsStatusForm } from "./forms/status-form";
 import { ThreadsVideoForm } from "./forms/video-form";
 
 export function ThreadsTab({
-	teamId,
-	profileId,
 	setOpen,
 	scheduleDate,
 	selected,
 }: {
-	teamId: string;
-	profileId: string;
 	setOpen: (open: boolean) => void;
 	scheduleDate: Date;
 	selected?: any[];
 }) {
 	const { id: userId } = useUserStore();
+	const { id: teamId } = useSelectedTeamStore();
+	const { currentProfileId: profileId } = useSocialProfilesStore();
 
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (

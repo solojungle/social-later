@@ -103,7 +103,7 @@ const SocialProfilesCommandGroup: React.FC<CommandGroupProps> = ({
 					key={profile.id}
 					value={profile.username}
 					onSelect={() => {
-						setCurrentProfileId(profile.id);
+						setCurrentProfileId(profile);
 						setOpen(false);
 					}}
 					className="text-sm"
@@ -139,7 +139,7 @@ const SocialProfileSwitcherPopoverTrigger: React.FC<
 	useEffect(() => {
 		if (!selectedProfile && profiles.length > 0) {
 			if (profiles[0]) {
-				setCurrentProfileId(profiles[0].id);
+				setCurrentProfileId(profiles[0]);
 			}
 		}
 	}, [selectedProfile, profiles, setCurrentProfileId]);

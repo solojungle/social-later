@@ -21,14 +21,11 @@ import { YouTubeTab } from "./tabs/youtubeTab";
 
 interface PostFormProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	teamId: string;
-	profileId: string;
 	scheduleDate: Date;
 	selected?: any[];
 }
 
 function PostForm({
-	teamId,
-	profileId,
 	className,
 	scheduleDate,
 	selected,
@@ -36,9 +33,7 @@ function PostForm({
 }: PostFormProps) {
 	const [open, setOpen] = useState(false);
 
-	const { profiles } = useSocialProfilesStore();
-
-	const profileType = profiles.find((p) => p.id === profileId)?.type;
+	const { profileType } = useSocialProfilesStore();
 
 	if (!profileType) {
 		return null;
@@ -64,17 +59,10 @@ function PostForm({
 				</div>
 				<TooltipProvider delayDuration={0}>
 					{profileType === "twitter" && (
-						<TwitterTab
-							teamId={teamId}
-							profileId={profileId}
-							setOpen={setOpen}
-							scheduleDate={scheduleDate}
-						/>
+						<TwitterTab setOpen={setOpen} scheduleDate={scheduleDate} />
 					)}
 					{profileType === "threads" && (
 						<ThreadsTab
-							teamId={teamId}
-							profileId={profileId}
 							setOpen={setOpen}
 							scheduleDate={scheduleDate}
 							selected={selected}
@@ -82,8 +70,6 @@ function PostForm({
 					)}
 					{profileType === "youtube" && (
 						<YouTubeTab
-							teamId={teamId}
-							profileId={profileId}
 							setOpen={setOpen}
 							scheduleDate={scheduleDate}
 							selected={selected}
@@ -119,7 +105,6 @@ export function CreatePost({
 		<PostForm
 			className={className}
 			teamId={teamId}
-			profileId={profileId}
 			scheduleDate={scheduleDate}
 			selected={selected}
 			{...props}

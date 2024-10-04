@@ -39,6 +39,7 @@ export function StoreInitializer({
 			useSocialProfilesStore.setState({
 				profiles,
 				currentProfileId: currentProfileId || profiles[0]?.id,
+				profileType: profiles[0]?.type,
 			});
 			isInitialized.current = true;
 		}

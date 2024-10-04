@@ -34,16 +34,15 @@ const RESTRICTIONS = {
 };
 
 export function TwitterTab({
-	// teamId,
-	// profileId,
 	// setOpen,
 	scheduleDate,
 }: {
-	teamId: string;
-	profileId: string;
 	setOpen: (open: boolean) => void;
 	scheduleDate: Date;
 }) {
+	// const { id: teamId } = useSelectedTeamStore();
+	// const { currentProfileId: profileId } = useSocialProfilesStore();
+
 	// const { mutateAsync: createFile } = api.file.create.useMutation();
 	// const { mutateAsync: fetchMultipartPresignedUrls } =
 	// 	api.aws.getMultipartUploadPresignedUrl.useMutation();
