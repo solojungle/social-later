@@ -205,6 +205,7 @@ export const threadsRouter = createTRPCRouter({
 					"id",
 					"text",
 					"media_type",
+					"media_url",
 					"permalink",
 					"is_quote_post",
 					"timestamp",

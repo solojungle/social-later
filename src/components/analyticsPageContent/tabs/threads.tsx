@@ -100,13 +100,25 @@ export const ThreadsAnalyticsTab = () => {
 													className="aspect-video h-12 shrink-0 rounded-lg object-cover"
 												/>
 											)}
+											{post.media_type === "IMAGE" && post.media_url && (
+												<img
+													alt="thumbnail"
+													src={post.media_url}
+													className="aspect-video h-12 shrink-0 rounded-lg object-cover"
+												/>
+											)}
 											<div>
 												<span className="text-xs text-muted-foreground">{`${formatDistanceToNow(
 													post.timestamp,
 												)} ago`}</span>
 												<p className="min-w-0 truncate text-sm sm:text-base">
-													{post.text || "No caption"}
+													{post.text}
 												</p>
+												{!post.text && (
+													<p className="min-w-0 truncate text-xs text-muted-foreground">
+														No caption
+													</p>
+												)}
 											</div>
 										</div>
 										<div className="ml-2">
