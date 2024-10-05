@@ -4,27 +4,22 @@ import { AudienceGrowth } from "@/components/graphs/audience-growth";
 import { ViewsComparisons } from "@/components/graphs/view-comparisons";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useYouTube } from "@/hooks/use-youtube";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { api } from "@/trpc/react";
 
 import { MostRecentVideo } from "../mostRecentVideo";
 import { YouTubePerformanceSummary } from "../youTubePerformanceSummary";
 
 export const YouTubeAnalyticsTab = () => {
-	const { currentProfileId } = useSocialProfilesStore();
+	const { currentProfileId, profileType } = useSocialProfilesStore();
+	const { getCombinedAnalytics } = useYouTube();
 
-	const { data, isFetching, isError } =
-		api.analytics.combinedYouTubeAnalytics.useQuery(
-			{
-				profileId: currentProfileId,
-			},
-			{
-				enabled: !!currentProfileId,
-				staleTime: 1000 * 60 * 60 * 24, // 24 hours
-			},
-		);
+	const { data, isLoading, isError } = getCombinedAnalytics({
+		profileId: currentProfileId,
+		profileType,
+	});
 
-	if (isFetching || isError || !data) {
+	if (isLoading || isError || !data) {
 		return (
 			<div className="flex h-96 flex-col items-center justify-center">
 				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />

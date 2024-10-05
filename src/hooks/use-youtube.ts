@@ -29,6 +29,30 @@ export const useYouTube = () => {
 			isLoading,
 		};
 	}
+	function getCombinedAnalytics({
+		profileId,
+		profileType,
+	}: {
+		profileId: string;
+		profileType: string | undefined;
+	}) {
+		const { data, isLoading, isError } =
+			api.analytics.combinedYouTubeAnalytics.useQuery(
+				{
+					profileId,
+				},
+				{
+					enabled: !!profileId && profileId !== "" && profileType === "youtube",
+					staleTime: 1000 * 60 * 60 * 24, // 24 hours
+				},
+			);
+
+		return {
+			data,
+			isLoading,
+			isError,
+		};
+	}
 
 	return {
 		uploadVideo,
@@ -36,5 +60,6 @@ export const useYouTube = () => {
 		changeThumbnail,
 		updateThumbnail,
 		getAnalytics,
+		getCombinedAnalytics,
 	};
 };

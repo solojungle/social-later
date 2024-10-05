@@ -3,10 +3,12 @@
 import { ImageIcon, TypeIcon, VideoIcon } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { useUserStore } from "@/stores/user";
 
+import { returnNumberOfColumns } from "../../mediaFormField";
 import { ThreadsImageForm } from "./forms/image-form";
 import { ThreadsStatusForm } from "./forms/status-form";
 import { ThreadsVideoForm } from "./forms/video-form";
@@ -24,22 +26,54 @@ export function ThreadsTab({
 	const { id: teamId } = useSelectedTeamStore();
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
+	const availableTabs = ["text", "image", "video"].filter((tab) => {
+		if (selected && selected.length > 1) {
+			return tab !== "text";
+		}
+
+		if (selected && selected.length === 1) {
+			if (selected[0].type === "video") {
+				return tab !== "image";
+			}
+
+			if (selected[0].type === "image") {
+				return tab !== "video";
+			}
+		}
+
+		return true;
+	});
+	const defaultTabsValue = availableTabs[0];
+	const numberOfTabs = availableTabs.length;
+
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
-		<Tabs defaultValue="text" className="w-full">
-			<TabsList className="grid w-full grid-cols-3 gap-1">
-				<TabsTrigger value="text">
-					<TypeIcon className="mr-2 size-4 text-muted-foreground" />
-					Status
-				</TabsTrigger>
-				<TabsTrigger value="image">
-					<ImageIcon className="mr-2 size-4 text-muted-foreground" />
-					Image
-				</TabsTrigger>
-				<TabsTrigger value="video">
-					<VideoIcon className="mr-2 size-4 text-muted-foreground" />
-					Video
-				</TabsTrigger>
+		<Tabs defaultValue={defaultTabsValue} className="w-full">
+			<TabsList
+				className={cn("grid w-full gap-1", returnNumberOfColumns(numberOfTabs))}
+			>
+				{availableTabs.map((tab) => (
+					<TabsTrigger key={tab} value={tab}>
+						{tab === "text" && (
+							<>
+								<TypeIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+								Status
+							</>
+						)}
+						{tab === "image" && (
+							<>
+								<ImageIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+								Image
+							</>
+						)}
+						{tab === "video" && (
+							<>
+								<VideoIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+								Video
+							</>
+						)}
+					</TabsTrigger>
+				))}
 			</TabsList>
 			<TabsContent value="text" className="px-1 pt-8">
 				<ThreadsStatusForm

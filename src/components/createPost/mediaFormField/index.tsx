@@ -67,7 +67,7 @@ function HoverCardSection({ restrictions }: HoverCardSectionProps) {
  * @param numberOfFiles - Number of files to display
  * @returns
  */
-function returnNumberOfColumns(numberOfFiles: number) {
+export function returnNumberOfColumns(numberOfFiles: number) {
 	switch (numberOfFiles) {
 		case 1:
 			return "grid-cols-1";

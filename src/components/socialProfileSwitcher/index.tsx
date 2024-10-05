@@ -93,7 +93,7 @@ const ProfileAvatar: React.FC<{ profile: SocialProfile }> = ({ profile }) => (
 const SocialProfilesCommandGroup: React.FC<CommandGroupProps> = ({
 	setOpen,
 }) => {
-	const { profiles, currentProfileId, setCurrentProfileId } =
+	const { profiles, currentProfileId, setCurrentProfile } =
 		useSocialProfilesStore();
 
 	return (
@@ -103,7 +103,7 @@ const SocialProfilesCommandGroup: React.FC<CommandGroupProps> = ({
 					key={profile.id}
 					value={profile.username}
 					onSelect={() => {
-						setCurrentProfileId(profile);
+						setCurrentProfile(profile);
 						setOpen(false);
 					}}
 					className="text-sm"
@@ -130,7 +130,7 @@ const SocialProfilesCommandGroup: React.FC<CommandGroupProps> = ({
 const SocialProfileSwitcherPopoverTrigger: React.FC<
 	PopoverTriggerProps & { open: boolean }
 > = ({ className, open }) => {
-	const { profiles, currentProfileId, setCurrentProfileId } =
+	const { profiles, currentProfileId, setCurrentProfile } =
 		useSocialProfilesStore();
 	const selectedProfile = profiles.find(
 		(profile) => profile.id === currentProfileId,
@@ -139,10 +139,10 @@ const SocialProfileSwitcherPopoverTrigger: React.FC<
 	useEffect(() => {
 		if (!selectedProfile && profiles.length > 0) {
 			if (profiles[0]) {
-				setCurrentProfileId(profiles[0]);
+				setCurrentProfile(profiles[0]);
 			}
 		}
-	}, [selectedProfile, profiles, setCurrentProfileId]);
+	}, [selectedProfile, profiles, setCurrentProfile]);
 
 	if (!selectedProfile) return null;
 

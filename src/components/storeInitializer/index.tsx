@@ -39,7 +39,8 @@ export function StoreInitializer({
 			useSocialProfilesStore.setState({
 				profiles,
 				currentProfileId: currentProfileId || profiles[0]?.id,
-				profileType: profiles[0]?.type,
+				profileType: profiles.find((profile) => profile.id === currentProfileId)
+					?.type,
 			});
 			isInitialized.current = true;
 		}

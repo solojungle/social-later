@@ -6,7 +6,7 @@ import { PublicSocialProfilesSchemaValues } from "@/schemas/social-profiles-sche
 type SocialProfilesStore = {
 	profiles: PublicSocialProfilesSchemaValues[];
 	currentProfileId: string;
-	setCurrentProfileId: (profile: PublicSocialProfilesSchemaValues) => void;
+	setCurrentProfile: (profile: PublicSocialProfilesSchemaValues) => void;
 	profileType: string | undefined;
 };
 
@@ -21,7 +21,7 @@ export const useSocialProfilesStore = create<SocialProfilesStore>()(
 	persist(
 		(set) => ({
 			...defaultValues,
-			setCurrentProfileId: (profile: PublicSocialProfilesSchemaValues) =>
+			setCurrentProfile: (profile: PublicSocialProfilesSchemaValues) =>
 				set({ currentProfileId: profile.id, profileType: profile.type }),
 		}),
 		{
