@@ -2,12 +2,24 @@ import { DescriptionFormField } from "@/components/createPost/descriptionFormFie
 import { MediaFormField } from "@/components/createPost/mediaFormField";
 import { DatePickerFormField } from "@/components/createPost/schedulePost/datePicker";
 
+const SelectedFormFields = ({ form, scheduleDate }: any) => (
+	<div className="space-y-4">
+		<DescriptionFormField form={form} valueName="status" maxCharCount={500} />
+		<DatePickerFormField form={form} defaultDate={scheduleDate} />
+	</div>
+);
+
 export const ThreadsVideoFormFields = ({
 	form,
 	fileProgress,
 	loading,
 	scheduleDate,
+	selected,
 }: any) => {
+	if (selected) {
+		return <SelectedFormFields form={form} scheduleDate={scheduleDate} />;
+	}
+
 	// These are the restrictions for the media files that can be uploaded
 	const mediaFileTypes = ["video/mp4", "video/mov"];
 	const mediaFileExtensions = {
@@ -39,7 +51,12 @@ export const ThreadsImageFormFields = ({
 	fileProgress,
 	loading,
 	scheduleDate,
+	selected,
 }: any) => {
+	if (selected) {
+		return <SelectedFormFields form={form} scheduleDate={scheduleDate} />;
+	}
+
 	// These are the restrictions for the media files that can be uploaded
 	const mediaFileTypes = ["image/jpeg", "image/png", "image/jpg"];
 	const mediaFileExtensions = {

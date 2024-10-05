@@ -155,6 +155,7 @@ export function ThreadsVideoForm({
 						fileProgress={fileProgress}
 						loading={loading}
 						scheduleDate={scheduleDate}
+						selected={selected}
 					/>
 					<CancelSubmitBar loading={loading} form={form} />
 				</form>
