@@ -7,7 +7,7 @@ function Content({ asset }: { asset: any }) {
 			<img
 				src={asset.url}
 				alt={asset.name}
-				className="aspect-video w-full grow rounded-t-md object-cover"
+				className="max-h-screen w-full grow rounded-t-md object-contain p-5"
 			/>
 		);
 	}
