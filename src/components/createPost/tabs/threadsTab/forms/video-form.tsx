@@ -15,6 +15,7 @@ import { fileSchema, futureDateSchema } from "@/schemas/new-file-schema";
 import { api } from "@/trpc/react";
 
 import { CancelSubmitBar } from "../../cancelSubmitBar";
+import { SelectedPreview } from "../../selectedFiles";
 import { ThreadsVideoFormFields } from "../formFields";
 
 export const ThreadsSchema = z.object({
@@ -31,6 +32,7 @@ export function ThreadsVideoForm({
 	profileId,
 	teamId,
 	setOpen,
+	selected,
 }: {
 	userId: string;
 	scheduleDate: any;
@@ -141,19 +143,22 @@ export function ThreadsVideoForm({
 	};
 
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit(handleSubmit)}
-				className="flex h-[700px] flex-col justify-between"
-			>
-				<ThreadsVideoFormFields
-					form={form}
-					fileProgress={fileProgress}
-					loading={loading}
-					scheduleDate={scheduleDate}
-				/>
-				<CancelSubmitBar loading={loading} form={form} />
-			</form>
-		</Form>
+		<>
+			<SelectedPreview files={selected} />
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(handleSubmit)}
+					className="flex h-[700px] flex-col justify-between"
+				>
+					<ThreadsVideoFormFields
+						form={form}
+						fileProgress={fileProgress}
+						loading={loading}
+						scheduleDate={scheduleDate}
+					/>
+					<CancelSubmitBar loading={loading} form={form} />
+				</form>
+			</Form>
+		</>
 	);
 }

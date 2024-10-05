@@ -10,15 +10,14 @@ import { z } from "zod";
 import { DescriptionFormField } from "@/components/createPost/descriptionFormField";
 import { DatePickerFormField } from "@/components/createPost/schedulePost/datePicker";
 import { TitleFormField } from "@/components/createPost/titleFormField";
-import { formatSizeBytes } from "@/components/mediaPage/allAssets";
 import { Form } from "@/components/ui/form";
 import { useYouTube } from "@/hooks/use-youtube";
-import { cn } from "@/lib/utils";
 import { BaseYoutubeSchema } from "@/schemas/new-file-schema";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
 
 import { CancelSubmitBar } from "../../cancelSubmitBar";
+import { SelectedPreview } from "../../selectedFiles";
 
 export function WithSelectedForm({
 	teamId,
@@ -136,43 +135,7 @@ export function WithSelectedForm({
 	// TODO: When mobile, user a drawer instead of a sheet
 	return (
 		<>
-			{selected && selected.length > 0 && (
-				<div className="mb-4 grid grid-cols-3 gap-1">
-					{selected.map((file) => {
-						return (
-							<div
-								key={file.id}
-								className={cn(
-									"group relative flex flex-col rounded-md border border-border",
-									selected.includes(file.id) &&
-										"ring-offset-px ring-2 ring-primary",
-								)}
-							>
-								<div className="relative group-hover:cursor-pointer">
-									<img
-										src={file.thumbnail}
-										alt={file.name}
-										className="aspect-video w-full grow rounded-t-md object-cover"
-									/>
-								</div>
-								<div className="flex h-14 items-center rounded-b-md border-t border-border bg-muted p-2 group-hover:cursor-pointer">
-									<div className="w-full">
-										<p
-											className="mb-px truncate text-sm font-medium"
-											title={`${file.name}.${file.extension}`}
-										>
-											{file.name}.{file.extension}
-										</p>
-										<div className="text-xs uppercase text-muted-foreground">
-											{file.mime} - {formatSizeBytes(file.size)}
-										</div>
-									</div>
-								</div>
-							</div>
-						);
-					})}
-				</div>
-			)}
+			<SelectedPreview files={selected} />
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
 					<TitleFormField form={form} maxCharCount={100} />

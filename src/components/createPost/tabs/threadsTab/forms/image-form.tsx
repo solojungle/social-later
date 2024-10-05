@@ -15,6 +15,7 @@ import { fileSchema, futureDateSchema } from "@/schemas/new-file-schema";
 import { api } from "@/trpc/react";
 
 import { CancelSubmitBar } from "../../cancelSubmitBar";
+import { SelectedPreview } from "../../selectedFiles";
 import { ThreadsImageFormFields } from "../formFields";
 
 export const ThreadsSchema = z.object({
@@ -33,12 +34,14 @@ export function ThreadsImageForm({
 	profileId,
 	teamId,
 	setOpen,
+	selected,
 }: {
 	userId: string;
 	scheduleDate: any;
 	profileId: string;
 	teamId: string;
 	setOpen: any;
+	selected?: any[];
 }) {
 	const posthog = usePostHog();
 	const [loading, setLoading] = useState(false);
@@ -143,19 +146,22 @@ export function ThreadsImageForm({
 	};
 
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit(handleSubmit)}
-				className="flex h-[700px] flex-col justify-between"
-			>
-				<ThreadsImageFormFields
-					form={form}
-					fileProgress={fileProgress}
-					loading={loading}
-					scheduleDate={scheduleDate}
-				/>
-				<CancelSubmitBar loading={loading} form={form} />
-			</form>
-		</Form>
+		<>
+			<SelectedPreview files={selected} />
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(handleSubmit)}
+					className="flex h-[700px] flex-col justify-between"
+				>
+					<ThreadsImageFormFields
+						form={form}
+						fileProgress={fileProgress}
+						loading={loading}
+						scheduleDate={scheduleDate}
+					/>
+					<CancelSubmitBar loading={loading} form={form} />
+				</form>
+			</Form>
+		</>
 	);
 }

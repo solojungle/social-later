@@ -26,23 +26,9 @@ export function ThreadsTab({
 	const { id: teamId } = useSelectedTeamStore();
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
-	const availableTabs = ["text", "image", "video"].filter((tab) => {
-		if (selected && selected.length > 1) {
-			return tab !== "text";
-		}
-
-		if (selected && selected.length === 1) {
-			if (selected[0].type === "video") {
-				return tab !== "image";
-			}
-
-			if (selected[0].type === "image") {
-				return tab !== "video";
-			}
-		}
-
-		return true;
-	});
+	const availableTabs = selected
+		? [String(selected[0].type)]
+		: ["text", "image", "video"];
 	const defaultTabsValue = availableTabs[0];
 	const numberOfTabs = availableTabs.length;
 
@@ -91,6 +77,7 @@ export function ThreadsTab({
 					profileId={profileId}
 					teamId={teamId}
 					setOpen={setOpen}
+					selected={selected}
 				/>
 			</TabsContent>
 			<TabsContent value="video" className="px-1 pt-8">
