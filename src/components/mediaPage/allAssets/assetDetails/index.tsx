@@ -7,7 +7,7 @@ function Content({ asset }: { asset: any }) {
 			<img
 				src={asset.url}
 				alt={asset.name}
-				className="max-h-screen w-full grow rounded-t-md object-contain p-5"
+				className="max-h-[90vh] w-full grow rounded-md border border-border bg-transparent/70 object-contain p-5"
 			/>
 		);
 	}
@@ -17,7 +17,7 @@ function Content({ asset }: { asset: any }) {
 		<video
 			src={asset.url}
 			controls
-			className="aspect-video w-full grow rounded-t-md object-cover"
+			className="w-full grow rounded-md border border-border bg-transparent/70 object-contain"
 		/>
 	);
 }
