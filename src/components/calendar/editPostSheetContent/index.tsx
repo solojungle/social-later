@@ -153,7 +153,9 @@ const renderThreadsPost = (post: Post, data: any) => {
 		<>
 			{post.attachment.map(renderAttachment)}
 			{renderPostStatus(post)}
-			{renderPostStats(data || { views: 0, likes: 0, comments: 0 })}
+			{renderPostStats(
+				data || { views: 0, likes: 0, replies: 0, reposts: 0, quotes: 0 },
+			)}
 		</>
 	);
 };
