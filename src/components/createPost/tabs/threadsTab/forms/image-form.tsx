@@ -99,12 +99,12 @@ export function ThreadsImageForm({
 		});
 	};
 
-	const onSuccessfulUpload = (data: FormSchemaValues) => {
+	const onSuccessfulUpload = (date: Date) => {
 		toast.success("Successfully created your post!");
 		posthog.capture("threads_post", {
 			distinctId: userId,
 			attachmentIncluded: false,
-			scheduled: !!data.date,
+			scheduled: !!date,
 		});
 	};
 
@@ -137,7 +137,56 @@ export function ThreadsImageForm({
 				externalPostId: threadsPostId,
 				mediaFiles,
 			});
-			onSuccessfulUpload(data);
+			onSuccessfulUpload(data.date);
+		} catch (error) {
+			onUploadError(error);
+		} finally {
+			onUploadComplete();
+		}
+	};
+
+	const SelectedThreadsSchema = z.object({
+		status: z.string().optional(),
+		date: futureDateSchema(),
+	});
+	type SelectedFormSchemaValues = z.infer<typeof SelectedThreadsSchema>;
+	const selectedForm = useForm<SelectedFormSchemaValues>({
+		defaultValues: {
+			status: "",
+			date: scheduleDate,
+		},
+		resolver: zodResolver(SelectedThreadsSchema),
+	});
+
+	const handleSubmitWithSelected = async (data: SelectedFormSchemaValues) => {
+		setLoading(true);
+
+		if (!selected || selected.length === 0) {
+			toast.error("No image selected");
+			setLoading(false);
+			return;
+		}
+
+		try {
+			const threadsPostId = await createThreadsPost({
+				profileId,
+				mediaType: "IMAGE",
+				media: selected[0],
+				text: data.status,
+			});
+
+			await createPost({
+				title: "",
+				content: data.status,
+				fileIds: selected.map((file) => file.id),
+				socialType: "threads",
+				externalPostId: threadsPostId,
+				scheduledFor: data.date || undefined,
+				profileId,
+				authorId: teamId,
+			});
+
+			onSuccessfulUpload(data.date);
 		} catch (error) {
 			onUploadError(error);
 		} finally {
@@ -147,22 +196,43 @@ export function ThreadsImageForm({
 
 	return (
 		<>
-			<SelectedPreview files={selected} />
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(handleSubmit)}
-					className="flex h-[700px] flex-col justify-between"
-				>
-					<ThreadsImageFormFields
-						form={form}
-						fileProgress={fileProgress}
-						loading={loading}
-						scheduleDate={scheduleDate}
-						selected={selected}
-					/>
-					<CancelSubmitBar loading={loading} form={form} />
-				</form>
-			</Form>
+			{selected && (
+				<>
+					<SelectedPreview files={selected} />
+					<Form {...selectedForm}>
+						<form
+							onSubmit={selectedForm.handleSubmit(handleSubmitWithSelected)}
+							className="flex h-[700px] flex-col justify-between"
+						>
+							<ThreadsImageFormFields
+								form={selectedForm}
+								fileProgress={fileProgress}
+								loading={loading}
+								scheduleDate={scheduleDate}
+								selected={selected}
+							/>
+							<CancelSubmitBar loading={loading} form={selectedForm} />
+						</form>
+					</Form>
+				</>
+			)}
+			{!selected && (
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit(handleSubmit)}
+						className="flex h-[700px] flex-col justify-between"
+					>
+						<ThreadsImageFormFields
+							form={form}
+							fileProgress={fileProgress}
+							loading={loading}
+							scheduleDate={scheduleDate}
+							selected={selected}
+						/>
+						<CancelSubmitBar loading={loading} form={form} />
+					</form>
+				</Form>
+			)}
 		</>
 	);
 }
