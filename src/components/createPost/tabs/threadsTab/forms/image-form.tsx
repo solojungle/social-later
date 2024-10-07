@@ -125,11 +125,10 @@ export function ThreadsImageForm({
 		setLoading(true);
 		try {
 			const mediaFiles = await uploadMediaFiles(data);
-			const file = mediaFiles[0];
 			const threadsPostId = await createThreadsPost({
 				profileId,
 				mediaType: "IMAGE",
-				media: file,
+				media: mediaFiles[0],
 				text: data.status,
 			});
 			await createInternalPost({
@@ -162,7 +161,7 @@ export function ThreadsImageForm({
 		setLoading(true);
 
 		if (!selected || selected.length === 0) {
-			toast.error("No image selected");
+			toast.error("No files selected");
 			setLoading(false);
 			return;
 		}
