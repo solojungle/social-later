@@ -43,18 +43,16 @@ export function MediaPageContent() {
 	const { id: teamId } = useSelectedTeamStore();
 	const [selected, setSelected] = useState<any[]>([]);
 	const [open, setOpen] = useState(false);
-	const [pageSize] = useState<8 | 16 | 32>(8);
 
 	const { isLoading, data, isFetching, isPlaceholderData } =
 		api.attachment.getAll.useQuery(
 			{
 				teamId,
 				searchQuery: searchParams.q,
-				// fileTypes: searchParams.type,
+				fileType: searchParams.type,
 				sortBy: searchParams.sort,
 				sortOrder: searchParams.order,
 				page: searchParams.page,
-				pageSize,
 			},
 			{
 				keepPreviousData: true,

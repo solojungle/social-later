@@ -24,7 +24,6 @@ export function SearchBar({
 				q: "",
 				type: "all",
 				sort: "createdAt",
-				pageSize: 8,
 			});
 		},
 		{

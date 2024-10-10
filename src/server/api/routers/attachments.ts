@@ -8,7 +8,7 @@ import { createAttachments } from "./utils/attachments";
 import { deleteS3Object } from "./utils/aws";
 
 // Define supported file types and sort fields
-const FileTypeFilter = z.enum(["image", "video", "gif"]);
+const FileTypeFilter = z.enum(["image", "video", "all"]);
 const SortField = z.enum(["name", "size", "createdAt"]);
 const SortOrder = z.enum(["asc", "desc"]);
 
@@ -18,23 +18,26 @@ export const attachmentsRouter = createTRPCRouter({
 			z.object({
 				teamId: z.string(),
 				searchQuery: z.string().optional(),
-				fileTypes: z.array(FileTypeFilter).optional(),
+				fileType: FileTypeFilter.optional(),
 				sortBy: SortField.optional().default("createdAt"),
 				sortOrder: SortOrder.optional().default("desc"),
 				page: z.number().min(1).default(1),
-				pageSize: z.number().min(8).max(100).default(8),
+				// pageSize: z.number().min(8).max(100).default(8),
 			}),
 		)
 		.query(async ({ ctx, input }) => {
 			const {
 				teamId,
 				searchQuery,
-				fileTypes,
+				fileType,
 				sortBy,
 				sortOrder,
 				page,
-				pageSize,
+				// pageSize,
 			} = input;
+
+			// Lets hardcode the pageSize for now, we can add it back later if needed
+			const pageSize = 8;
 
 			const skip = Math.max(0, (page - 1) * pageSize);
 
@@ -52,11 +55,9 @@ export const attachmentsRouter = createTRPCRouter({
 							  }
 							: {},
 						// File type filter
-						fileTypes && fileTypes.length > 0
+						fileType && fileType !== "all"
 							? {
-									type: {
-										in: fileTypes as FileType[],
-									},
+									type: fileType as FileType,
 							  }
 							: {},
 					],
