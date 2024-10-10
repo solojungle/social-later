@@ -1,9 +1,9 @@
 "use client";
 
 import {
-	parseAsArrayOf,
+	parseAsInteger,
+	parseAsString,
 	parseAsStringLiteral,
-	useQueryState,
 	useQueryStates,
 } from "nuqs";
 import { useState } from "react";
@@ -19,79 +19,56 @@ import { DeleteAssetContent } from "./deleteAsset";
 import { SearchBar } from "./searchbar";
 
 export function MediaPageContent() {
-	const { id: teamId } = useSelectedTeamStore();
-	const [sortedBy] = useState("name");
-	const [selected, setSelected] = useState<any[]>([]);
-	const [open, setOpen] = useState(false);
-	const [currentPage, setCurrentPage] = useState(0);
-	const [pageSize, setPageSize] = useState<2 | 4 | 8>(2);
-	const [search, setSearch] = useQueryState("q", {
-		shallow: false,
-		defaultValue: "",
-	});
-
-	const [filters, setFilters] = useQueryStates({
-		type: parseAsArrayOf(
-			parseAsStringLiteral(["all", "video", "image"] as const),
-		),
-	});
-
-	const {
-		data,
-		isLoading,
-		isFetchingNextPage,
-		fetchNextPage,
-		hasNextPage,
-		fetchPreviousPage,
-		isRefetching,
-	} = api.attachment.getAll.useInfiniteQuery(
-		{ teamId, limit: 4 * pageSize },
+	const [searchParams, setSearchParams] = useQueryStates(
 		{
-			enabled: !!teamId,
-			getNextPageParam: (lastPage) => lastPage.nextCursor,
-			getPreviousPageParam: (firstPage) => firstPage.nextCursor,
-			// trpc: { context: { skipBatch: true } }, // not sure if this is needed
+			q: parseAsString.withDefault(""),
+			page: parseAsInteger.withDefault(1),
+			sort: parseAsStringLiteral([
+				"name",
+				"size",
+				"createdAt",
+			] as const).withDefault("createdAt"),
+			order: parseAsStringLiteral(["asc", "desc"] as const).withDefault("desc"),
+			type: parseAsStringLiteral([
+				"all",
+				"video",
+				"image",
+			] as const).withDefault("all"),
+		},
+		{
+			shallow: false,
 		},
 	);
 
-	if (isLoading) {
+	const { id: teamId } = useSelectedTeamStore();
+	const [selected, setSelected] = useState<any[]>([]);
+	const [open, setOpen] = useState(false);
+	const [pageSize] = useState<8 | 16 | 32>(8);
+
+	const { isLoading, data, isFetching, isPlaceholderData } =
+		api.attachment.getAll.useQuery(
+			{
+				teamId,
+				searchQuery: searchParams.q,
+				// fileTypes: searchParams.type,
+				sortBy: searchParams.sort,
+				sortOrder: searchParams.order,
+				page: searchParams.page,
+				pageSize,
+			},
+			{
+				keepPreviousData: true,
+				enabled: !!teamId,
+			},
+		);
+
+	if (isLoading || !data) {
 		return (
 			<div className="flex h-96 flex-col items-center justify-center">
 				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
 			</div>
 		);
 	}
-
-	// const attachments = data?.pages.flatMap((page) => page.items);
-	const attachments = data?.pages[currentPage]?.items ?? [];
-
-	// We dont need the other information from the attachments
-	const onlyFiles = attachments?.map((attachment) => {
-		return {
-			...attachment.file,
-			thumbnail: attachment.thumbnail,
-			url: attachment.url,
-		};
-	});
-
-	if (!attachments || !onlyFiles) {
-		return null;
-	}
-
-	const filteredAssets = onlyFiles.filter((asset) =>
-		asset.name.toLowerCase().includes(search.toLowerCase()),
-	);
-
-	const sortedAssets = filteredAssets.sort((a, b) => {
-		if (sortedBy === "name") return a.name.localeCompare(b.name);
-		if (sortedBy === "size") {
-			const sizeA = String(a.size);
-			const sizeB = String(b.size);
-
-			return sizeA.localeCompare(sizeB);
-		}
-		return 0;
-	});
 
 	return (
 		<div className="h-full">
@@ -102,29 +79,14 @@ export function MediaPageContent() {
 			<SearchBar
 				selected={selected}
 				setOpen={setOpen}
-				search={search}
-				setSearch={setSearch}
-				filters={filters}
-				setFilters={setFilters}
+				searchParams={searchParams}
+				setSearchParams={setSearchParams}
 			/>
 			<AllAssets
-				assets={sortedAssets}
+				assets={data.items}
 				selected={selected}
 				setSelected={setSelected}
-				pagination={{
-					isFetchingNextPage,
-					fetchNextPage,
-					hasNextPage,
-					loadedPageLength: data?.pages.length ?? 0,
-					isRefetching,
-					fetchPreviousPage,
-					setPageSize,
-					pageSize,
-					setCurrentPage,
-					currentPage,
-					totalPages: data?.pages[0]?.totalPages ?? 0,
-					totalCount: data?.pages[0]?.totalCount ?? 0,
-				}}
+				pagination={{ data, isPlaceholderData, isFetching }}
 			/>
 		</div>
 	);

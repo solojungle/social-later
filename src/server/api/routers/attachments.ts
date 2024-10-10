@@ -1,3 +1,4 @@
+import { FileType, Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { env } from "@/env.mjs";
@@ -6,54 +7,96 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { createAttachments } from "./utils/attachments";
 import { deleteS3Object } from "./utils/aws";
 
+// Define supported file types and sort fields
+const FileTypeFilter = z.enum(["image", "video", "gif"]);
+const SortField = z.enum(["name", "size", "createdAt"]);
+const SortOrder = z.enum(["asc", "desc"]);
+
 export const attachmentsRouter = createTRPCRouter({
 	getAll: protectedProcedure
 		.input(
 			z.object({
 				teamId: z.string(),
-				limit: z.number().min(8).max(32).nullish(),
-				cursor: z.string().nullish(),
+				searchQuery: z.string().optional(),
+				fileTypes: z.array(FileTypeFilter).optional(),
+				sortBy: SortField.optional().default("createdAt"),
+				sortOrder: SortOrder.optional().default("desc"),
+				page: z.number().min(1).default(1),
+				pageSize: z.number().min(8).max(100).default(8),
 			}),
 		)
 		.query(async ({ ctx, input }) => {
-			const { teamId, cursor } = input;
-			const limit = input.limit ?? 8;
+			const {
+				teamId,
+				searchQuery,
+				fileTypes,
+				sortBy,
+				sortOrder,
+				page,
+				pageSize,
+			} = input;
 
-			const countResult = await ctx.db.$queryRaw<
-				{
-					count: number;
-				}[]
-			>`SELECT COUNT(DISTINCT "fileId")
-				FROM "Attachment"
-				WHERE "teamId" = ${teamId}
-			`;
+			const skip = Math.max(0, (page - 1) * pageSize);
 
-			// Remove the 'n' at the end of the result to get number
-			const totalCount = Number(countResult[0]?.count) ?? 0;
-
-			const totalPages = Math.ceil(totalCount / limit);
-
-			// TODO: check auth
-			const attachments = await ctx.db.attachment.findMany({
-				where: {
-					teamId,
+			// Build where conditions
+			const whereConditions: Prisma.AttachmentWhereInput = {
+				teamId,
+				file: {
+					AND: [
+						// Search condition
+						searchQuery
+							? {
+									OR: [
+										{ name: { contains: searchQuery, mode: "insensitive" } },
+									],
+							  }
+							: {},
+						// File type filter
+						fileTypes && fileTypes.length > 0
+							? {
+									type: {
+										in: fileTypes as FileType[],
+									},
+							  }
+							: {},
+					],
 				},
+			};
+
+			// Prisma does not support distinct with count.
+			const totalCount = await ctx.db.attachment
+				.groupBy({
+					by: ["fileId"],
+					where: whereConditions,
+				})
+				.then((groups) => groups.length);
+
+			const totalPages = Math.ceil(totalCount / pageSize);
+
+			// Build sort object
+			const orderBy: Prisma.AttachmentOrderByWithRelationInput = (() => {
+				switch (sortBy) {
+					case "name":
+						return { file: { name: sortOrder } };
+					case "size":
+						return { file: { size: sortOrder } };
+					case "createdAt":
+					default:
+						return { createdAt: sortOrder };
+				}
+			})();
+
+			// Fetch attachments
+			const attachments = await ctx.db.attachment.findMany({
+				where: whereConditions,
 				include: {
 					file: true,
 				},
 				distinct: ["fileId"],
-				take: limit + 1,
-				cursor: cursor ? { id: cursor } : undefined,
-				orderBy: {
-					id: "asc",
-				},
+				take: pageSize,
+				skip,
+				orderBy,
 			});
-
-			let nextCursor: typeof cursor | undefined;
-			if (attachments.length > limit) {
-				const nextItem = attachments.pop();
-				nextCursor = nextItem!.id;
-			}
 
 			const attachmentsWithUrls = attachments.map((attachment) => {
 				if (attachment?.file) {
@@ -77,7 +120,24 @@ export const attachmentsRouter = createTRPCRouter({
 				};
 			});
 
-			return { items: attachmentsWithUrls, nextCursor, totalPages, totalCount };
+			const files = attachmentsWithUrls.map((a) => {
+				return {
+					...a.file,
+					thumbnail: a.thumbnail,
+					url: a.url,
+				};
+			});
+
+			return {
+				items: files,
+				pagination: {
+					page,
+					pages: totalPages,
+					items: totalCount,
+					hasNextPage: page < totalPages,
+					hasPreviousPage: page > 0,
+				},
+			};
 		}),
 
 	delete: protectedProcedure

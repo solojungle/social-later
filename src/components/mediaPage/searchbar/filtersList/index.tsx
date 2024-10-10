@@ -1,3 +1,5 @@
+import { parseAsStringLiteral, useQueryState } from "nuqs";
+
 import {
 	Select,
 	SelectContent,
@@ -6,22 +8,19 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
-type SortByProps = {
-	sortBy: "name" | "size";
-	updateSortInUrl: (newSort: "name" | "size") => void;
-};
+function SortBy() {
+	const [sort, setSort] = useQueryState("sort", {
+		defaultValue: "createdAt",
+	});
 
-function SortBy({ sortBy, updateSortInUrl }: SortByProps) {
 	return (
 		<div className="flex items-center space-x-2">
-			<Select
-				value={sortBy}
-				onValueChange={(value) => updateSortInUrl(value as "name" | "size")}
-			>
+			<Select value={sort} onValueChange={(value) => setSort(value)}>
 				<SelectTrigger>
 					<SelectValue placeholder="Sort by" />
 				</SelectTrigger>
 				<SelectContent>
+					<SelectItem value="createdAt">Created At</SelectItem>
 					<SelectItem value="name">Name</SelectItem>
 					<SelectItem value="size">Size</SelectItem>
 				</SelectContent>
@@ -30,19 +29,17 @@ function SortBy({ sortBy, updateSortInUrl }: SortByProps) {
 	);
 }
 
-type FilterByProps = {
-	filterBy: "all" | "image" | "video";
-	updateFilterInUrl: (newFilter: "all" | "image" | "video") => void;
-};
+function FilterBy() {
+	const [type, setType] = useQueryState(
+		"type",
+		parseAsStringLiteral(["all", "video", "image"] as const).withDefault("all"),
+	);
 
-function FilterBy({ filterBy, updateFilterInUrl }: FilterByProps) {
 	return (
 		<div className="flex items-center space-x-2">
 			<Select
-				value={filterBy}
-				onValueChange={(value) =>
-					updateFilterInUrl(value as "all" | "image" | "video")
-				}
+				value={type}
+				onValueChange={(value: "video" | "image" | "all") => setType(value)}
 			>
 				<SelectTrigger className="h-9 w-9 md:w-auto">
 					<SelectValue placeholder="Filter" />
@@ -60,8 +57,8 @@ function FilterBy({ filterBy, updateFilterInUrl }: FilterByProps) {
 export function FiltersList() {
 	return (
 		<div className="flex items-center space-x-2">
-			<SortBy sortBy="name" updateSortInUrl={() => {}} />
-			<FilterBy filterBy="all" updateFilterInUrl={() => {}} />
+			<SortBy />
+			<FilterBy />
 		</div>
 	);
 }

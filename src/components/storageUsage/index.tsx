@@ -10,7 +10,7 @@ export function PlanUsage() {
 	const remaining = total - used;
 
 	return (
-		<div className="rounded-lg border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md">
+		<div className="rounded-lg border border-border bg-card p-6 transition-all ">
 			<div className="flex items-center gap-3">
 				<div className="rounded-full bg-primary/10 p-2">
 					<HardDrive className="h-5 w-5 text-primary" />

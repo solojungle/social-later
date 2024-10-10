@@ -1,3 +1,4 @@
+import { parseAsInteger, useQueryState } from "nuqs";
 import { useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -57,6 +58,8 @@ export function AllAssets({
 	setSelected,
 	pagination,
 }: Props) {
+	const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+
 	if (!assets || assets.length === 0) {
 		return (
 			<div className="flex h-96 items-center justify-center">
@@ -124,7 +127,12 @@ export function AllAssets({
 			</div>
 
 			<div className="sticky bottom-0">
-				<PagePagination pagination={pagination} />
+				<PagePagination
+					page={page}
+					onChange={setPage}
+					total={pagination.data.pagination.pages}
+					loading={pagination.isFetching}
+				/>
 			</div>
 		</div>
 	);

@@ -9,27 +9,23 @@ import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { AddAssets } from "../addAssets";
 import { FiltersList } from "./filtersList";
 
-// type Props = {
-// 	selected: any[];
-// 	setOpen: (open: boolean) => void;
-// 	search: string | null;
-// 	setSearch: (search: string | null) => void;
-// };
-
 export function SearchBar({
 	selected,
 	setOpen,
-	search,
-	setSearch,
-	setFilters,
+	searchParams,
+	setSearchParams,
 }: any) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
 	useHotkeys(
 		"esc",
 		() => {
-			setSearch(null);
-			setFilters({ type: null });
+			setSearchParams({
+				q: "",
+				type: "all",
+				sort: "createdAt",
+				pageSize: 8,
+			});
 		},
 		{
 			enableOnFormTags: true,
@@ -38,12 +34,9 @@ export function SearchBar({
 
 	const handleSearch = (evt: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
-
-		if (value) {
-			setSearch(value);
-		} else {
-			setSearch(null);
-		}
+		setSearchParams({
+			q: value,
+		});
 	};
 
 	return (
@@ -54,7 +47,7 @@ export function SearchBar({
 					<Input
 						placeholder="Search..."
 						className="w-full pl-8"
-						value={search ?? ""}
+						value={searchParams.q}
 						onChange={handleSearch}
 						autoComplete="off"
 						autoCapitalize="none"
