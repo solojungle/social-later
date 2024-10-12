@@ -21,6 +21,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
+import { FileProgress, useFileUpload } from "@/hooks/use-file-upload";
 import { fileSchema } from "@/schemas/new-file-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
@@ -54,14 +55,9 @@ function Content({
 	const posthog = usePostHog();
 	const utils = api.useUtils();
 	const [loading, setLoading] = useState(false);
-	const { mutateAsync: createFile } = api.file.create.useMutation();
-	const { mutateAsync: fetchMultipartPresignedUrls } =
-		api.aws.getMultipartUploadPresignedUrl.useMutation();
-	const { mutateAsync: completeMultipartUpload } =
-		api.aws.completeMultipartUpload.useMutation();
-	const [fileProgress, setFileProgress] = useState<{
-		[key: string]: { [key: number]: number };
-	}>({});
+	const { createFile, fetchMultipartPresignedUrls, completeMultipartUpload } =
+		useFileUpload();
+	const [fileProgress, setFileProgress] = useState<FileProgress>({});
 	const { mutateAsync: createAttachment } = api.attachment.create.useMutation({
 		onSuccess() {
 			utils.attachment.getAll.invalidate();

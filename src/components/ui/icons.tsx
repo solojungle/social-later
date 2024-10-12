@@ -15,6 +15,14 @@ export const InterfaceIcons = {
 			<img {...props} src="/logos/youtube_logo.webp" alt="YouTube" />),
 		Threads: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
 			<img {...props} src="/logos/threads_logo.png" alt="Threads" />),
+		Twitter: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+			<img {...props} src="/logos/twitter_logo.webp" alt="Twitter" />),
+		TikTok: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+			<img {...props} src="/logos/tiktok_logo.png" alt="TikTok" />),
+		Instagram: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+			<img {...props} src="/logos/instagram_logo.png" alt="Instagram" />),
+		Facebook: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+			<img {...props} src="/logos/facebook_logo.png" alt="Facebook" />),
 	},
 	Settings: SettingsIcon,
 	Archive: ArchiveIcon,
