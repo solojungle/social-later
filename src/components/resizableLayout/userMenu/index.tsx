@@ -5,8 +5,14 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { PlanUsage } from "@/components/storageUsage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InterfaceIcons } from "@/components/ui/icons";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import {
 	Tooltip,
 	TooltipContent,
@@ -15,6 +21,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/stores/user";
+import { GaugeCircleIcon } from "lucide-react";
 import Link from "next/link";
 
 export function CollapsibleUserMenu() {
@@ -46,6 +53,18 @@ export function CollapsibleUserMenu() {
 						</TooltipTrigger>
 					</Link>
 				</Tooltip>
+				<Popover>
+					<PopoverTrigger>
+						<GaugeCircleIcon className="size-6" />
+					</PopoverTrigger>
+					<PopoverContent
+						side="right"
+						sideOffset={25}
+						collisionPadding={{ left: 35, right: 35, top: 35, bottom: 35 }}
+					>
+						<PlanUsage used={0} total={0} unit="" label="" logo="" />
+					</PopoverContent>
+				</Popover>
 
 				<Tooltip>
 					<button

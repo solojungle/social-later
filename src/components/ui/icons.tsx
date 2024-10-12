@@ -13,6 +13,8 @@ export const InterfaceIcons = {
 	Socials: {
 		YouTube: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
 			<img {...props} src="/logos/youtube_logo.webp" alt="YouTube" />),
+		Threads: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+			<img {...props} src="/logos/threads_logo.png" alt="Threads" />),
 	},
 	Settings: SettingsIcon,
 	Archive: ArchiveIcon,
