@@ -180,7 +180,7 @@ function PaymentSelector({ paymentMethods, form }: any) {
 											</FormLabel>
 											<FormDescription className="flex items-center space-x-2">
 												<span className="text-xs uppercase">Expiry</span>
-												<span className="text-black">{`${method.expMonth}/${method.expYear}`}</span>
+												<span className="text-foreground">{`${method.expMonth}/${method.expYear}`}</span>
 											</FormDescription>
 										</div>
 										{getPaymentMethodIcon(method.brand)}
@@ -310,7 +310,24 @@ function UpdatePlanButtonForm({
 	);
 }
 
-function UpdatePlanButton() {
+export function UpdatePlanButton({
+	className,
+	text,
+	size,
+	variant,
+}: {
+	className?: string;
+	text?: string;
+	size?: "default" | "sm" | "lg" | "icon";
+	variant?:
+		| "default"
+		| "destructive"
+		| "outline"
+		| "secondary"
+		| "ghost"
+		| "link"
+		| "disabled";
+}) {
 	const { id: teamId } = useSelectedTeamStore();
 	const [open, setOpen] = useState(false);
 	const { data: products } = api.products.getProducts.useQuery();
@@ -331,8 +348,12 @@ function UpdatePlanButton() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button variant="outline" onClick={() => {}}>
-					Update Plan
+				<Button
+					variant={variant ?? "outline"}
+					size={size ?? "default"}
+					className={className}
+				>
+					{text ?? "Update Plan"}
 				</Button>
 			</DialogTrigger>
 			<DialogContent>

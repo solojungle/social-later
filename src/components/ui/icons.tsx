@@ -23,6 +23,8 @@ export const InterfaceIcons = {
 			<img {...props} src="/logos/instagram_logo.png" alt="Instagram" />),
 		Facebook: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
 			<img {...props} src="/logos/facebook_logo.png" alt="Facebook" />),
+		LinkedIn: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+			<img {...props} src="/logos/linkedin_logo.png" alt="LinkedIn" />),
 	},
 	Settings: SettingsIcon,
 	Archive: ArchiveIcon,

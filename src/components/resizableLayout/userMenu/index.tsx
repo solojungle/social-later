@@ -39,7 +39,7 @@ export function CollapsibleUserMenu() {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<div className="flex flex-col items-center justify-center space-y-2">
+			<div className="flex flex-col items-center justify-center space-y-4">
 				<Tooltip>
 					<Link prefetch href="/settings">
 						<TooltipTrigger>
@@ -58,14 +58,14 @@ export function CollapsibleUserMenu() {
 						<GaugeCircleIcon className="size-6" />
 					</PopoverTrigger>
 					<PopoverContent
+						className="w-96"
 						side="right"
 						sideOffset={25}
-						collisionPadding={{ left: 35, right: 35, top: 35, bottom: 35 }}
+						collisionPadding={{ left: 5, right: 5, top: 5, bottom: 5 }}
 					>
-						<PlanUsage used={0} total={0} unit="" label="" logo="" />
+						<PlanUsage />
 					</PopoverContent>
 				</Popover>
-
 				<Tooltip>
 					<button
 						type="button"

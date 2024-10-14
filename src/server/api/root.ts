@@ -17,6 +17,7 @@ import { socialProfilesRouter } from "./routers/social-profiles";
 import { threadsRouter } from "./routers/socials/threads";
 import { stripeRouter } from "./routers/stripe";
 import { surveyRouter } from "./routers/survey";
+import { usageRouter } from "./routers/usage";
 
 /**
  * This is the primary router for your server.
@@ -41,6 +42,7 @@ export const appRouter = createTRPCRouter({
 	feedback: feedbackRouter,
 	notification: knockRouter,
 	threads: threadsRouter,
+	usage: usageRouter,
 });
 
 // export type definition of API
