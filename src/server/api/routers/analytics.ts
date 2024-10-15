@@ -5,13 +5,19 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 import {
+	accumulateHistoricalData,
+	fetchAndProcessLast10Videos,
+	fetchAndProcessVideoViews,
 	fetchHistoricalData,
 	fetchHistoricViewsAndSubscribers,
+	fetchRealtimeAnalytics,
 	fetchRealTimeVideoData,
 	fetchVideoMetrics,
 	fetchYouTubeChannel,
+	fillMissingDates,
 	initializeYouTubeAnalyticsClient,
 	initializeYouTubeDataClient,
+	updateLast10VideosWithViews,
 	verifyUserTeamMembership,
 } from "./utils/youtube";
 
@@ -285,7 +291,6 @@ export const analyticsRouter = createTRPCRouter({
 			const { profileId } = input;
 			const { db, session } = ctx;
 
-			// Get the youtube channel, and verify the user is apart of the team
 			const youtubeChannel = await fetchYouTubeChannel(db, profileId);
 			await verifyUserTeamMembership(
 				db,
@@ -296,192 +301,249 @@ export const analyticsRouter = createTRPCRouter({
 			const youtubeAnalytics = initializeYouTubeAnalyticsClient(youtubeChannel);
 			const youtubeDataClient = initializeYouTubeDataClient(youtubeChannel);
 
-			const historicalData = await fetchHistoricalData(youtubeAnalytics);
+			const [historicalData, realtimeAnalytics, last10Videos] =
+				await Promise.all([
+					fetchHistoricalData(youtubeAnalytics),
+					fetchRealtimeAnalytics(youtubeDataClient),
+					fetchAndProcessLast10Videos(youtubeDataClient, youtubeChannel),
+				]);
 
-			// Fetch real-time data
-			const realtimeResponse = await youtubeDataClient.channels.list({
-				part: ["statistics"],
-				mine: true,
-			});
+			const videoIds = last10Videos
+				.map((video) => video.id)
+				.filter(Boolean) as string[];
 
-			let realtimeAnalytics = {
-				viewCount: 0,
-				subscriberCount: 0,
-			};
+			const { videoViews, viewTypeResponse } = await fetchAndProcessVideoViews(
+				youtubeAnalytics,
+				videoIds,
+			);
+
+			const updatedLast10Videos = updateLast10VideosWithViews(
+				last10Videos,
+				viewTypeResponse,
+			);
 
 			const today = new Date();
 			today.setHours(0, 0, 0, 0);
-			const endDate = today.toISOString().split("T")[0];
 
-			if (realtimeResponse?.data?.items) {
-				const item = realtimeResponse.data.items[0];
-
-				if (!item || !item.statistics) {
-					return {
-						historicalData,
-						realtimeAnalytics,
-						videoViews: {
-							shorts: 0,
-							long: 0,
-							stories: 0,
-							liveStreams: 0,
-							other: 0,
-						},
-						last10Videos: [],
-					};
-				}
-
-				const { viewCount, subscriberCount } = item.statistics;
-				realtimeAnalytics = {
-					viewCount: Number(viewCount),
-					subscriberCount: Number(subscriberCount),
-				};
-
-				if (historicalData.length > 0) {
-					const lastItem = historicalData[historicalData.length - 1];
-
-					if (!lastItem) {
-						return {
-							historicalData,
-							realtimeAnalytics,
-							videoViews: {
-								shorts: 0,
-								long: 0,
-								stories: 0,
-								liveStreams: 0,
-								other: 0,
-							},
-							last10Videos: [],
-						};
-					}
-
-					const lastHistoricalDate = new Date(lastItem.date);
-					const diffDays = Math.floor(
-						(today.getTime() - lastHistoricalDate.getTime()) /
-							(1000 * 60 * 60 * 24),
-					);
-
-					for (let i = 0; i < diffDays - 1; i += 1) {
-						const nextDate = new Date(lastHistoricalDate);
-						nextDate.setDate(lastHistoricalDate.getDate() + i + 1);
-						const nextDateString = nextDate.toISOString().split("T")[0];
-
-						historicalData.push({
-							date: nextDateString,
-							views: 0,
-							watch_time_minutes: 0,
-							average_view_duration: 0,
-							average_view_percentage: 0,
-							subscribers_gained: 0,
-						});
-					}
-
-					historicalData.push({
-						date: today.toISOString().split("T")[0],
-						views: realtimeAnalytics.viewCount,
-						watch_time_minutes: 0,
-						average_view_duration: 0,
-						average_view_percentage: 0,
-						subscribers_gained: realtimeAnalytics.subscriberCount,
-					});
-
-					for (let i = 1; i < historicalData.length - 1; i += 1) {
-						const prevData = historicalData[i - 1];
-						const currData = historicalData[i];
-
-						if (currData && prevData) {
-							currData.views += prevData.views;
-							currData.watch_time_minutes += prevData.watch_time_minutes;
-							currData.subscribers_gained += prevData.subscribers_gained;
-						}
-					}
-				}
-			}
-
-			// Fetch video views by type
-			const uploadPlaylistId = `UU${youtubeChannel.username.slice(2)}`;
-			const videos = await youtubeDataClient.playlistItems.list({
-				part: ["snippet"],
-				playlistId: uploadPlaylistId,
-			});
-
-			// Fetch the last 10 videos
-			const last10Videos =
-				videos.data.items?.slice(0, 10)?.map((video) => ({
-					id: video?.snippet?.resourceId?.videoId,
-					views: 0,
-					thumbnail:
-						video?.snippet?.thumbnails?.medium?.url ??
-						video?.snippet?.thumbnails?.default?.url,
-					title: video?.snippet?.title,
-					url: `https://www.youtube.com/watch?v=${video?.snippet?.resourceId?.videoId}`,
-				})) || [];
-
-			const videoIds = videos.data.items?.map(
-				(video) => video?.snippet?.resourceId?.videoId,
-			);
-
-			const videoViews = {
-				shorts: 0,
-				long: 0,
-				stories: 0,
-				liveStreams: 0,
-				other: 0,
-			};
-
-			if (videoIds) {
-				const viewTypeResponse = await youtubeAnalytics.reports.query({
-					ids: "channel==MINE",
-					startDate: "2019-01-01",
-					endDate,
-					metrics: "views",
-					dimensions: "video,creatorContentType",
-					filters: `video==${videoIds.join(",")}`,
-				});
-
-				// For last 10 videos we're adding views
-				last10Videos.forEach((video) => {
-					const videoView = viewTypeResponse.data?.rows?.find(
-						(row) => row[0] === video.id,
-					);
-
-					if (videoView) {
-						// eslint-disable-next-line no-param-reassign
-						video.views = Number(videoView[2]);
-					}
-				});
-
-				viewTypeResponse.data?.rows?.forEach((row) => {
-					const viewType = row[1].toLowerCase();
-					const views = Number(row[2]);
-
-					switch (viewType) {
-						case "shorts":
-							videoViews.shorts += views;
-							break;
-						case "videoondemand":
-							videoViews.long += views;
-							break;
-						case "story":
-							videoViews.stories += views;
-							break;
-						case "livestream":
-							videoViews.liveStreams += views;
-							break;
-						default:
-							videoViews.other += views;
-							break;
-					}
-				});
-			}
+			const filledHistoricalData = fillMissingDates(historicalData, today);
+			const accumulatedHistoricalData =
+				accumulateHistoricalData(filledHistoricalData);
 
 			return {
-				historicalData,
+				historicalData: accumulatedHistoricalData,
 				realtimeAnalytics,
 				videoViews,
-				last10Videos,
+				last10Videos: updatedLast10Videos,
 			};
 		}),
+
+	// combinedYouTubeAnalytics: protectedProcedure
+	// 	.input(
+	// 		z.object({
+	// 			profileId: z.string(),
+	// 		}),
+	// 	)
+	// 	.query(async ({ ctx, input }) => {
+	// 		const { profileId } = input;
+	// 		const { db, session } = ctx;
+
+	// 		// Get the youtube channel, and verify the user is apart of the team
+	// 		const youtubeChannel = await fetchYouTubeChannel(db, profileId);
+	// 		await verifyUserTeamMembership(
+	// 			db,
+	// 			session.user.id,
+	// 			youtubeChannel.teamId,
+	// 		);
+
+	// 		const youtubeAnalytics = initializeYouTubeAnalyticsClient(youtubeChannel);
+	// 		const youtubeDataClient = initializeYouTubeDataClient(youtubeChannel);
+
+	// 		const historicalData = await fetchHistoricalData(youtubeAnalytics);
+
+	// 		// Fetch real-time data
+	// 		const realtimeResponse = await youtubeDataClient.channels.list({
+	// 			part: ["statistics"],
+	// 			mine: true,
+	// 		});
+
+	// 		let realtimeAnalytics = {
+	// 			viewCount: 0,
+	// 			subscriberCount: 0,
+	// 		};
+
+	// 		const today = new Date();
+	// 		today.setHours(0, 0, 0, 0);
+	// 		const endDate = today.toISOString().split("T")[0];
+
+	// 		if (realtimeResponse?.data?.items) {
+	// 			const item = realtimeResponse.data.items[0];
+
+	// 			if (!item || !item.statistics) {
+	// 				return {
+	// 					historicalData,
+	// 					realtimeAnalytics,
+	// 					videoViews: {
+	// 						shorts: 0,
+	// 						long: 0,
+	// 						stories: 0,
+	// 						liveStreams: 0,
+	// 						other: 0,
+	// 					},
+	// 					last10Videos: [],
+	// 				};
+	// 			}
+
+	// 			const { viewCount, subscriberCount } = item.statistics;
+	// 			realtimeAnalytics = {
+	// 				viewCount: Number(viewCount),
+	// 				subscriberCount: Number(subscriberCount),
+	// 			};
+
+	// 			if (historicalData.length > 0) {
+	// 				const lastItem = historicalData[historicalData.length - 1];
+
+	// 				if (!lastItem) {
+	// 					return {
+	// 						historicalData,
+	// 						realtimeAnalytics,
+	// 						videoViews: {
+	// 							shorts: 0,
+	// 							long: 0,
+	// 							stories: 0,
+	// 							liveStreams: 0,
+	// 							other: 0,
+	// 						},
+	// 						last10Videos: [],
+	// 					};
+	// 				}
+
+	// 				const lastHistoricalDate = new Date(lastItem.date);
+	// 				const diffDays = Math.floor(
+	// 					(today.getTime() - lastHistoricalDate.getTime()) /
+	// 						(1000 * 60 * 60 * 24),
+	// 				);
+
+	// 				for (let i = 0; i < diffDays - 1; i += 1) {
+	// 					const nextDate = new Date(lastHistoricalDate);
+	// 					nextDate.setDate(lastHistoricalDate.getDate() + i + 1);
+	// 					const nextDateString = nextDate.toISOString().split("T")[0];
+
+	// 					historicalData.push({
+	// 						date: nextDateString,
+	// 						views: 0,
+	// 						watch_time_minutes: 0,
+	// 						average_view_duration: 0,
+	// 						average_view_percentage: 0,
+	// 						subscribers_gained: 0,
+	// 					});
+	// 				}
+
+	// 				historicalData.push({
+	// 					date: today.toISOString().split("T")[0],
+	// 					views: realtimeAnalytics.viewCount,
+	// 					watch_time_minutes: 0,
+	// 					average_view_duration: 0,
+	// 					average_view_percentage: 0,
+	// 					subscribers_gained: realtimeAnalytics.subscriberCount,
+	// 				});
+
+	// 				for (let i = 1; i < historicalData.length - 1; i += 1) {
+	// 					const prevData = historicalData[i - 1];
+	// 					const currData = historicalData[i];
+
+	// 					if (currData && prevData) {
+	// 						currData.views += prevData.views;
+	// 						currData.watch_time_minutes += prevData.watch_time_minutes;
+	// 						currData.subscribers_gained += prevData.subscribers_gained;
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+
+	// 		// Fetch video views by type
+	// 		const uploadPlaylistId = `UU${youtubeChannel.username.slice(2)}`;
+	// 		const videos = await youtubeDataClient.playlistItems.list({
+	// 			part: ["snippet"],
+	// 			playlistId: uploadPlaylistId,
+	// 		});
+
+	// 		// Fetch the last 10 videos
+	// 		const last10Videos =
+	// 			videos.data.items?.slice(0, 10)?.map((video) => ({
+	// 				id: video?.snippet?.resourceId?.videoId,
+	// 				views: 0,
+	// 				thumbnail:
+	// 					video?.snippet?.thumbnails?.medium?.url ??
+	// 					video?.snippet?.thumbnails?.default?.url,
+	// 				title: video?.snippet?.title,
+	// 				url: `https://www.youtube.com/watch?v=${video?.snippet?.resourceId?.videoId}`,
+	// 			})) || [];
+
+	// 		const videoIds = videos.data.items?.map(
+	// 			(video) => video?.snippet?.resourceId?.videoId,
+	// 		);
+
+	// 		const videoViews = {
+	// 			shorts: 0,
+	// 			long: 0,
+	// 			stories: 0,
+	// 			liveStreams: 0,
+	// 			other: 0,
+	// 		};
+
+	// 		if (videoIds) {
+	// 			const viewTypeResponse = await youtubeAnalytics.reports.query({
+	// 				ids: "channel==MINE",
+	// 				startDate: "2019-01-01",
+	// 				endDate,
+	// 				metrics: "views",
+	// 				dimensions: "video,creatorContentType",
+	// 				filters: `video==${videoIds.join(",")}`,
+	// 			});
+
+	// 			// For last 10 videos we're adding views
+	// 			last10Videos.forEach((video) => {
+	// 				const videoView = viewTypeResponse.data?.rows?.find(
+	// 					(row) => row[0] === video.id,
+	// 				);
+
+	// 				if (videoView) {
+	// 					// eslint-disable-next-line no-param-reassign
+	// 					video.views = Number(videoView[2]);
+	// 				}
+	// 			});
+
+	// 			viewTypeResponse.data?.rows?.forEach((row) => {
+	// 				const viewType = row[1].toLowerCase();
+	// 				const views = Number(row[2]);
+
+	// 				switch (viewType) {
+	// 					case "shorts":
+	// 						videoViews.shorts += views;
+	// 						break;
+	// 					case "videoondemand":
+	// 						videoViews.long += views;
+	// 						break;
+	// 					case "story":
+	// 						videoViews.stories += views;
+	// 						break;
+	// 					case "livestream":
+	// 						videoViews.liveStreams += views;
+	// 						break;
+	// 					default:
+	// 						videoViews.other += views;
+	// 						break;
+	// 				}
+	// 			});
+	// 		}
+
+	// 		return {
+	// 			historicalData,
+	// 			realtimeAnalytics,
+	// 			videoViews,
+	// 			last10Videos,
+	// 		};
+	// 	}),
 
 	// Get analyrics for a specific video, including daily estimatedRevenue for the last two weeks, performance over time
 	getSingleVideoAnalytics: protectedProcedure
