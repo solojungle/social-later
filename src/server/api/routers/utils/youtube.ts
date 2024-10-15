@@ -139,31 +139,6 @@ export const convertCSVToObject = (csv: string) => {
 	return resultObject;
 };
 
-// export const createReportingJob = async (
-// 	youtubereporting: youtubereporting_v1.Youtubereporting,
-// 	db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-// 	profileId: string,
-// ) => {
-// 	const response = await youtubereporting.jobs.create({
-// 		requestBody: {
-// 			reportTypeId: "channel_basic_a2",
-// 			name: "Bulk Report",
-// 		},
-// 	});
-
-// 	// Update the social profile with the report id
-// 	await db.socialProfile.update({
-// 		where: {
-// 			id: profileId,
-// 		},
-// 		data: {
-// 			youtubeJobId: response.data.id,
-// 		},
-// 	});
-
-// 	return response;
-// };
-
 export const downloadReports = async (
 	youtubereporting: youtubereporting_v1.Youtubereporting,
 	newReports: any[],
