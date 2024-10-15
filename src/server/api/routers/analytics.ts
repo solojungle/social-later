@@ -6,17 +6,18 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 import {
 	accumulateHistoricalData,
-	fetchAndProcessLast10Videos,
 	fetchAndProcessVideoViews,
 	fetchHistoricalData,
 	fetchHistoricViewsAndSubscribers,
 	fetchRealtimeAnalytics,
 	fetchRealTimeVideoData,
 	fetchVideoMetrics,
+	fetchVideosFromPlaylist,
 	fetchYouTubeChannel,
 	fillMissingDates,
 	initializeYouTubeAnalyticsClient,
 	initializeYouTubeDataClient,
+	processLast10Videos,
 	updateLast10VideosWithViews,
 	verifyUserTeamMembership,
 } from "./utils/youtube";
@@ -184,15 +185,20 @@ export const analyticsRouter = createTRPCRouter({
 			const youtubeAnalytics = initializeYouTubeAnalyticsClient(youtubeChannel);
 			const youtubeDataClient = initializeYouTubeDataClient(youtubeChannel);
 
-			const [historicalData, realtimeAnalytics, last10Videos] =
+			const [historicalData, realtimeAnalytics, allUploadedVideos] =
 				await Promise.all([
 					fetchHistoricalData(youtubeAnalytics),
 					fetchRealtimeAnalytics(youtubeDataClient),
-					fetchAndProcessLast10Videos(youtubeDataClient, youtubeChannel),
+					fetchVideosFromPlaylist({
+						youtubeDataClient,
+						youtubeChannel,
+						maxResults: 50,
+					}),
 				]);
 
-			const videoIds = last10Videos
-				.map((video) => video.id)
+			// Gets the videoIds of the last 50 uploaded videos, and filters out any null values
+			const videoIds = allUploadedVideos?.items
+				?.map((video) => video?.snippet?.resourceId?.videoId)
 				.filter(Boolean) as string[];
 
 			const { videoViews, viewTypeResponse } = await fetchAndProcessVideoViews(
@@ -200,6 +206,7 @@ export const analyticsRouter = createTRPCRouter({
 				videoIds,
 			);
 
+			const last10Videos = processLast10Videos(allUploadedVideos);
 			const updatedLast10Videos = updateLast10VideosWithViews(
 				last10Videos,
 				viewTypeResponse,

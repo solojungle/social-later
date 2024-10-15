@@ -424,18 +424,28 @@ export async function fetchAndProcessVideoViews(
 	return { videoViews, viewTypeResponse };
 }
 
-export async function fetchAndProcessLast10Videos(
-	youtubeDataClient: youtube_v3.Youtube,
-	youtubeChannel: YouTubeChannel,
-): Promise<Last10Video[]> {
+export async function fetchVideosFromPlaylist({
+	youtubeDataClient,
+	youtubeChannel,
+	maxResults = 10,
+}: {
+	youtubeDataClient: youtube_v3.Youtube;
+	youtubeChannel: YouTubeChannel;
+	maxResults?: number | undefined;
+}): Promise<youtube_v3.Schema$PlaylistItemListResponse> {
 	const uploadPlaylistId = getUploadPlaylistId(youtubeChannel.username);
-	const videos = await youtubeDataClient.playlistItems.list({
+	const response = await youtubeDataClient.playlistItems.list({
 		part: ["snippet"],
 		playlistId: uploadPlaylistId,
-		maxResults: 10,
+		maxResults,
 	});
+	return response.data;
+}
 
-	return videos.data.items?.map((video) => {
+export function processLast10Videos(
+	videos: youtube_v3.Schema$PlaylistItemListResponse,
+): Last10Video[] {
+	return videos.items?.map((video) => {
 		const videoId = video?.snippet?.resourceId?.videoId;
 		const mediumThumbnail = video?.snippet?.thumbnails?.medium?.url;
 		const defaultThumbnail = video?.snippet?.thumbnails?.default?.url;
