@@ -6,7 +6,7 @@ import { ComponentProps, ComponentPropsWithoutRef } from "react";
 
 import { formatNumber } from "@/components/graphs/view-comparisons";
 import { Button } from "@/components/ui/button";
-import { api } from "@/trpc/react";
+import { useYouTube } from "@/hooks/use-youtube";
 
 type Props = {
 	id: string;
@@ -39,16 +39,10 @@ function PaginationButton(props: PaginationButtonProps) {
 
 export function MostRecentVideo({ thumbnail, title, views, url, id }: Props) {
 	// Get post from externalYouTubeId
-	const { data: post } = api.post.getFromExternalId.useQuery(
-		{
-			externalPostId: id,
-		},
-		{
-			enabled: !!id,
-			staleTime: 1000 * 60 * 60 * 24, // 24 hours
-		},
-	);
+	const { getPostAnalytics } = useYouTube();
+	const { data: post } = getPostAnalytics({ youtubePostId: id });
 
+	// Video may exist but the post with us may not
 	if (!url) {
 		return null;
 	}

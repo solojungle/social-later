@@ -71,12 +71,12 @@ function CustomActiveDot({ cx, cy }: { cx: number; cy: number }) {
 type AudienceGrowthProps = {
 	metrics:
 		| {
-				date: Date;
+				date: string;
 				views: number;
 				watch_time_minutes: number;
 				subscribers_gained: number;
 
-				[key: string]: number | string | Date; // Add index signature
+				[key: string]: number | string; // Add index signature
 		  }[]
 		| undefined;
 };

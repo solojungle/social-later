@@ -53,6 +53,23 @@ export const useYouTube = () => {
 			isError,
 		};
 	}
+	function getPostAnalytics({ youtubePostId }: { youtubePostId: string }) {
+		const { data, isLoading, isError } = api.post.getFromExternalId.useQuery(
+			{
+				externalPostId: youtubePostId,
+			},
+			{
+				enabled: !!youtubePostId,
+				staleTime: 1000 * 60 * 60 * 24, // 24 hours
+			},
+		);
+
+		return {
+			data,
+			isLoading,
+			isError,
+		};
+	}
 
 	return {
 		uploadVideo,
@@ -60,6 +77,7 @@ export const useYouTube = () => {
 		changeThumbnail,
 		updateThumbnail,
 		getAnalytics,
+		getPostAnalytics,
 		getCombinedAnalytics,
 	};
 };

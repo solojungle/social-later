@@ -320,11 +320,6 @@ type HistoricalDataPoint = {
 	subscribers_gained: number;
 };
 
-type RealtimeAnalytics = {
-	viewCount: number;
-	subscriberCount: number;
-};
-
 type VideoViews = {
 	shorts: number;
 	long: number;
@@ -457,7 +452,7 @@ export async function fetchAndProcessVideoViews(
 export async function fetchAndProcessLast10Videos(
 	youtubeDataClient: youtube_v3.Youtube,
 	youtubeChannel: YouTubeChannel,
-) {
+): Promise<Last10Video[]> {
 	const uploadPlaylistId = getUploadPlaylistId(youtubeChannel.username);
 	const videos = await youtubeDataClient.playlistItems.list({
 		part: ["snippet"],
@@ -481,7 +476,7 @@ export async function fetchAndProcessLast10Videos(
 			title: video?.snippet?.title,
 			url: createVideoUrl(videoId),
 		};
-	});
+	}) as Last10Video[];
 }
 
 export function updateLast10VideosWithViews(

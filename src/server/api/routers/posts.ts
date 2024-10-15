@@ -225,7 +225,7 @@ export const postRouter = createTRPCRouter({
 			});
 
 			if (!post) {
-				throw new Error("Post does not exist");
+				return null;
 			}
 
 			return {
