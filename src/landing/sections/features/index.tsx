@@ -1,4 +1,4 @@
-import { Calendar, CircleCheckIcon, PieChart } from "lucide-react";
+import { ArchiveIcon, Calendar, CircleCheckIcon, PieChart } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Section } from "@/landing/components/styledSection";
@@ -90,6 +90,12 @@ export function FeaturesTabs() {
 						</div>
 						<span>Analytics</span>
 					</StyledTabsTrigger>
+					<StyledTabsTrigger value="vault">
+						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-blue-600 group-data-[state=active]:bg-blue-600">
+							<ArchiveIcon className="h-5 shrink-0" />
+						</div>
+						<span>Vault</span>
+					</StyledTabsTrigger>
 					{/* <StyledTabsTrigger value="listening">
 						<div className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-full duration-200 group-hover:bg-blue-600 group-data-[state=active]:bg-blue-600">
 							<AudioLinesIcon className="h-5 shrink-0" />
@@ -103,17 +109,17 @@ export function FeaturesTabs() {
 						<span>Advocacy</span>
 					</StyledTabsTrigger> */}
 				</TabsList>
-				<TabsContent value="engagement">
+				<TabsContent value="vault">
 					<FeatureTabContent
-						image="/images/browser-preview-min.png"
-						title="Extend your social reach"
-						description="Give your employees a simple way to share curated content across their social networks."
+						image="/images/vault-preview-min.png"
+						title="Store and share your content"
+						description="Keep your content organized and accessible with a centralized content library."
 					>
 						<CheckList
 							content={[
-								"Resolve customer questions faster with AI-enhanced agent replies",
-								"Control a smarter inbox with automated routing and chatbots",
-								"Prioritize your most important messages with AI-powered message classifications",
+								"Store and organize all your content in one place",
+								"Share content with your team or clients with a simple link",
+								"Access your content from anywhere with cloud",
 							]}
 						/>
 					</FeatureTabContent>
