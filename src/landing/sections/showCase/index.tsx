@@ -7,15 +7,14 @@ import { Section } from "@/landing/components/styledSection";
 
 export function ProductShowCase() {
 	return (
-		<Section>
+		<Section variant="transparent">
 			<motion.div
 				initial={{ y: 100, opacity: 0 }}
 				animate={{ y: 0, opacity: 1 }}
 				transition={{ duration: 0.4, delay: 0.3 }}
 				className="relative flex w-full flex-col items-center justify-center"
 			>
-				{/* <div className="relative flex w-full flex-col items-center justify-center"> */}
-				<div className="absolute right-0 top-[-30px] flex rotate-3 items-center space-x-2 text-stone-400">
+				<div className="absolute right-0 top-[-30px] flex rotate-3 items-center space-x-2">
 					<CornerLeftDown className="mt-2 h-4 w-4" />
 					<p className="text-sm">Play with this arcade!</p>
 				</div>

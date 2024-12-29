@@ -2,6 +2,7 @@ import { Faq } from "./sections/faq";
 import { FeaturesTabs } from "./sections/features";
 import Footer from "./sections/footer";
 import { Hero } from "./sections/hero";
+import { HeroBackground } from "./sections/heroBackground";
 import { Integrations } from "./sections/integrations";
 import { NavigationMenu } from "./sections/navigationMenu";
 import { ProductOfferings } from "./sections/offerings";
@@ -15,10 +16,10 @@ export default async function LandingPage() {
 				<NavigationMenu />
 				<Hero />
 				<ProductShowCase />
+				<HeroBackground />
 				<ProductOfferings />
 				<FeaturesTabs />
 				<Integrations />
-				{/* <div className="h-96 w-full bg-stone-200" /> */}
 				<Pricing />
 				<Faq />
 				<Footer />

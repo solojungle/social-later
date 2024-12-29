@@ -14,7 +14,7 @@ export function NavigationMenu() {
 	};
 
 	return (
-		<div className="container w-full">
+		<div className="container z-10 w-full max-w-6xl">
 			<div className="mb-4 flex h-16 w-full items-center justify-between sm:mb-14">
 				<div className="flex items-center">
 					<a href="https://feedfrenzy.co/" className="flex">

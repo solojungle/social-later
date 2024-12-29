@@ -9,8 +9,8 @@ export function DesktopMenu() {
 			<Link
 				href="/login"
 				className={cn(
-					buttonVariants({ variant: "ghost" }),
-					"flex items-center justify-center",
+					buttonVariants({ variant: "link" }),
+					"flex items-center justify-center text-base",
 				)}
 			>
 				<span>Login</span>
