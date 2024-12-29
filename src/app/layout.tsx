@@ -60,7 +60,7 @@ export default async function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className="font-beausite subpixel-antialiased">
-				<TRPCReactProvider cookies={(await cookies()).toString()}>
+				<TRPCReactProvider cookies={cookies().toString()}>
 					<PosthogProvider>
 						<ThemeProvider
 							attribute="class"

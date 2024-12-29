@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 	const code = url.searchParams.get("code");
 
 	// TODO: Currently not using a code_verifier, but it should be used
-	const cookieStore = await cookies();
+	const cookieStore = cookies();
 	const teamId = cookieStore.get("teamId")?.value;
 
 	// You denied the app or your session expired

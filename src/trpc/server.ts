@@ -3,7 +3,7 @@ import {
 	loggerLink,
 	unstable_httpBatchStreamLink,
 } from "@trpc/client";
-import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { cookies } from "next/headers";
 
 import { type AppRouter } from "@/server/api/root";
 
@@ -21,7 +21,7 @@ export const api = createTRPCProxyClient<AppRouter>({
 			url: getUrl(),
 			headers() {
 				return {
-					cookie: (cookies() as unknown as UnsafeUnwrappedCookies).toString(),
+					cookie: cookies().toString(),
 					"x-trpc-source": "rsc",
 				};
 			},
