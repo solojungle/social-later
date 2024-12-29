@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 	const url = req.nextUrl;
 	const code = url.searchParams.get("code");
 	const state = url.searchParams.get("state");
-	const cookieStore = cookies();
+	const cookieStore = await cookies();
 
 	const codeVerifier = cookieStore.get("codeVerifier")?.value;
 	const sessionState = cookieStore.get("state")?.value;

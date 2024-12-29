@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 
 type ToolbarProps = {
-	textareaRef: React.RefObject<HTMLTextAreaElement>;
+	textareaRef: React.RefObject<HTMLTextAreaElement | null>;
 	charCount: number;
 	maxCharCount: number;
 };

@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type EmojiPickerProps = {
-	textareaRef: React.RefObject<HTMLTextAreaElement>;
+	textareaRef: React.RefObject<HTMLTextAreaElement | null>;
 };
 
 export function EmojiPicker({ textareaRef }: EmojiPickerProps) {

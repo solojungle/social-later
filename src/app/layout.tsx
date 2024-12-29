@@ -52,15 +52,17 @@ export const metadata = {
 	},
 };
 
-export default function RootLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default async function RootLayout(
+    {
+        children,
+    }: {
+        children: React.ReactNode;
+    }
+) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body className="font-beausite subpixel-antialiased">
-				<TRPCReactProvider cookies={cookies().toString()}>
+        (<html lang="en" suppressHydrationWarning>
+            <body className="font-beausite subpixel-antialiased">
+				<TRPCReactProvider cookies={(await cookies()).toString()}>
 					<PosthogProvider>
 						<ThemeProvider
 							attribute="class"
@@ -75,6 +77,6 @@ export default function RootLayout({
 					</PosthogProvider>
 				</TRPCReactProvider>
 			</body>
-		</html>
-	);
+        </html>)
+    );
 }

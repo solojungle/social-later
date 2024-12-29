@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { JSX } from "react";
 
 import { InterfaceIcons } from "@/components/ui/icons";
 import {

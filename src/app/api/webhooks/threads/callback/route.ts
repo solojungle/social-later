@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 	// Get the code and state from the URL query
 	const url = req.nextUrl;
 	const code = url.searchParams.get("code");
-	const cookieStore = cookies();
+	const cookieStore = await cookies();
 	const teamId = cookieStore.get("teamId")?.value;
 
 	// You denied the app or your session expired
