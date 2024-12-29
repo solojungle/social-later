@@ -1,4 +1,5 @@
 import { CaptionsPanel } from "./components/captions-panel";
+import { FontPicker } from "./components/font-picker";
 import { SettingsPanel } from "./components/settings-panel";
 import { VideoPreview } from "./components/video-preview";
 
@@ -10,6 +11,7 @@ export function VideoCreatorAndEditor() {
 			</div>
 			<div className="flex flex-1 flex-col md:col-start-1 md:row-start-1 md:border-r">
 				<CaptionsPanel />
+				<FontPicker />
 				<SettingsPanel />
 			</div>
 		</main>
