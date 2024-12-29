@@ -1,4 +1,7 @@
-import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useUserStore } from "@/stores/user";
+import { ArrowRight, SparklesIcon } from "lucide-react";
 
 function ArticleCards() {
 	return (
@@ -57,6 +60,31 @@ function Articles() {
 // 	);
 // }
 
+function Greeting({ className }: { className?: string }) {
+	const { name: userName } = useUserStore();
+
+	return (
+		<div className={cn("flex flex-col", className)}>
+			<h2 className="text-xl font-semibold">Hey {userName}</h2>
+			<p className="text-sm text-muted-foreground">Welcome to FeedFrenzy!</p>
+		</div>
+	);
+}
+
+function QuickStart() {
+	return (
+		<div className="flex flex-col">
+			<h1 className="mb-4 text-lg font-semibold">Quick Start</h1>
+			<div className="flex space-x-2">
+				<Button size="lg" className="flex items-center gap-2">
+					<SparklesIcon className="size-4" />
+					Create Captions
+				</Button>
+			</div>
+		</div>
+	);
+}
+
 function SeeMoreNewsCard() {
 	return (
 		<article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
@@ -80,7 +108,9 @@ function NewsAndUpdates() {
 export const NexusPageContent = () => {
 	return (
 		<div className="h-full !overflow-scroll p-3">
-			<div className="flex flex-col space-y-6">
+			<Greeting className="mb-8" />
+			<div className="flex flex-col space-y-4">
+				<QuickStart />
 				<Articles />
 				<NewsAndUpdates />
 			</div>
