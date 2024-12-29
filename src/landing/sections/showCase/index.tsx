@@ -2,10 +2,21 @@
 
 import { motion } from "framer-motion";
 import { CornerLeftDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Section } from "@/landing/components/styledSection";
 
 export function ProductShowCase() {
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	if (!isMounted) {
+		return null;
+	}
+
 	return (
 		<Section variant="transparent">
 			<motion.div
