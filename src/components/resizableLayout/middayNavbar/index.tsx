@@ -22,6 +22,7 @@ const icons: { [key: string]: (props: { className?: string }) => JSX.Element } =
 		Settings: (props) => <InterfaceIcons.Settings {...props} />,
 		Publish: (props) => <InterfaceIcons.Pages.Publish {...props} />,
 		Analytics: (props) => <InterfaceIcons.Pages.Analytics {...props} />,
+		Creator: (props) => <InterfaceIcons.Pages.Creator {...props} />,
 	};
 
 interface ItemProps {
@@ -79,6 +80,7 @@ export function MainMenu() {
 		{ path: "/publish", name: "Publish" },
 		{ path: "/analytics", name: "Analytics" },
 		{ path: "/vault", name: "Vault" },
+		{ path: "/creator", name: "Creator" },
 		{ path: `/teams/${teamId}/settings`, name: "Settings" },
 	];
 

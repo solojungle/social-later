@@ -1,6 +1,23 @@
-import { ArchiveIcon, BellIcon, CalendarIcon, DownloadIcon, HandshakeIcon, HomeIcon, InboxIcon, Loader2Icon, LogOutIcon, MailIcon, MenuIcon, PaperclipIcon, PieChartIcon, SettingsIcon, UserIcon } from "lucide-react"
+import {
+	ArchiveIcon,
+	BellIcon,
+	CalendarIcon,
+	CaptionsIcon,
+	DownloadIcon,
+	HandshakeIcon,
+	HomeIcon,
+	InboxIcon,
+	Loader2Icon,
+	LogOutIcon,
+	MailIcon,
+	MenuIcon,
+	PaperclipIcon,
+	PieChartIcon,
+	SettingsIcon,
+	UserIcon,
+} from "lucide-react";
 
-type IconProps = React.HTMLAttributes<SVGElement>
+type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const InterfaceIcons = {
 	Pages: {
@@ -8,23 +25,33 @@ export const InterfaceIcons = {
 		Analytics: PieChartIcon,
 		Publish: CalendarIcon,
 		Vault: ArchiveIcon,
+		Creator: CaptionsIcon,
 	},
-	LogoSmall: () => <img className="size-8 min-w-8" src="images/logo.png" alt="Logo Small" />,
+	LogoSmall: () => (
+		<img className="size-8 min-w-8" src="images/logo.png" alt="Logo Small" />
+	),
 	Socials: {
 		YouTube: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-			<img {...props} src="/logos/youtube_logo.webp" alt="YouTube" />),
+			<img {...props} src="/logos/youtube_logo.webp" alt="YouTube" />
+		),
 		Threads: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-			<img {...props} src="/logos/threads_logo.png" alt="Threads" />),
+			<img {...props} src="/logos/threads_logo.png" alt="Threads" />
+		),
 		Twitter: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-			<img {...props} src="/logos/twitter_logo.webp" alt="Twitter" />),
+			<img {...props} src="/logos/twitter_logo.webp" alt="Twitter" />
+		),
 		TikTok: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-			<img {...props} src="/logos/tiktok_logo.png" alt="TikTok" />),
+			<img {...props} src="/logos/tiktok_logo.png" alt="TikTok" />
+		),
 		Instagram: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-			<img {...props} src="/logos/instagram_logo.png" alt="Instagram" />),
+			<img {...props} src="/logos/instagram_logo.png" alt="Instagram" />
+		),
 		Facebook: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-			<img {...props} src="/logos/facebook_logo.png" alt="Facebook" />),
+			<img {...props} src="/logos/facebook_logo.png" alt="Facebook" />
+		),
 		LinkedIn: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-			<img {...props} src="/logos/linkedin_logo.png" alt="LinkedIn" />),
+			<img {...props} src="/logos/linkedin_logo.png" alt="LinkedIn" />
+		),
 	},
 	Settings: SettingsIcon,
 	Archive: ArchiveIcon,
@@ -38,7 +65,4 @@ export const InterfaceIcons = {
 	LogOut: LogOutIcon,
 	PersonalSettings: UserIcon,
 	Menu: MenuIcon,
-}
-
-
-
+};
