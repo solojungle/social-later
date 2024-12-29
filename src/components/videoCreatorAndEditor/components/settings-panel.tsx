@@ -12,6 +12,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { LanguageSelector } from "./language-selector";
 
 export function SettingsPanel() {
 	const [textFormat, setTextFormat] = useState<"none" | "lower" | "upper">(
@@ -20,7 +21,7 @@ export function SettingsPanel() {
 	const [removePunctuation, setRemovePunctuation] = useState(false);
 
 	return (
-		<div className="w-[400px] border-r p-6">
+		<div className="w-full p-6 md:w-[400px]">
 			<h2 className="mb-2 text-xl font-semibold">Advanced Settings</h2>
 			<p className="mb-6 text-sm text-muted-foreground">
 				Customize subtitle generation parameters
@@ -41,7 +42,18 @@ export function SettingsPanel() {
 					</Select>
 				</div>
 
-				<div className="flex items-center justify-between">
+				{/* What the original language of the video is */}
+				<div className="flex flex-col items-start justify-between space-y-2 rounded-sm border border-border p-4">
+					<div className="space-y-0.5">
+						<label className="text-sm font-medium">Original Language</label>
+						<p className="text-xs text-muted-foreground">
+							What the original language of the video is
+						</p>
+					</div>
+					<LanguageSelector />
+				</div>
+
+				<div className="flex items-center justify-between rounded-sm border border-border p-4">
 					<div className="space-y-0.5">
 						<label className="text-sm font-medium">Translate to English</label>
 						<p className="text-xs text-muted-foreground">
@@ -81,7 +93,7 @@ export function SettingsPanel() {
 					</div>
 				</div>
 
-				<div className="flex items-center justify-between">
+				<div className="flex items-center justify-between rounded-sm border border-border p-4">
 					<label className="text-sm font-medium">Remove Punctuation</label>
 					<Switch
 						checked={removePunctuation}

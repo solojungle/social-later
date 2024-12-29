@@ -3,9 +3,9 @@ import { SettingsPanel } from "./components/settings-panel";
 
 export function VideoCreatorAndEditor() {
 	return (
-		<main className="flex flex-1">
+		<main className="flex flex-1 flex-col">
 			<SettingsPanel />
-			<CaptionsPanel />
+			{/* <CaptionsPanel /> */}
 		</main>
 	);
 }
