@@ -53,16 +53,6 @@ export function SettingsPanel() {
 					<LanguageSelector />
 				</div>
 
-				<div className="flex items-center justify-between rounded-sm border border-border p-4">
-					<div className="space-y-0.5">
-						<label className="text-sm font-medium">Translate to English</label>
-						<p className="text-xs text-muted-foreground">
-							Any Language to English
-						</p>
-					</div>
-					<Switch />
-				</div>
-
 				<div className="space-y-2">
 					<label className="text-sm font-medium">Text Formatting</label>
 					<div className="flex gap-2">

@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 
 export function CaptionsPanel() {
 	const sampleCaptions = [
-		"Companies tend to",
-		"overuse AI as a",
-		"buzzword for selling",
-		"their smartphones,",
-		"smart TVs or even",
-		"smart fridges.",
-		"They do this in order",
-		"to make people think",
-		"that the technology in",
-		"their product is more",
-		"advanced than",
+		{ startTime: "00:00", endTime: "00:02", text: "Companies tend to" },
+		{ startTime: "00:02", endTime: "00:04", text: "overuse AI as a" },
+		{ startTime: "00:04", endTime: "00:06", text: "buzzword for selling" },
+		{ startTime: "00:06", endTime: "00:08", text: "their smartphones," },
+		{ startTime: "00:08", endTime: "00:10", text: "smart TVs or even" },
+		{ startTime: "00:10", endTime: "00:12", text: "smart fridges." },
+		{ startTime: "00:12", endTime: "00:14", text: "They do this in order" },
+		{ startTime: "00:14", endTime: "00:16", text: "to make people think" },
+		{ startTime: "00:16", endTime: "00:18", text: "that the technology in" },
+		{ startTime: "00:18", endTime: "00:20", text: "their product is more" },
+		{ startTime: "00:20", endTime: "00:22", text: "advanced than" },
 	];
 
 	return (
@@ -39,8 +39,14 @@ export function CaptionsPanel() {
 				</div>
 				<div className="space-y-2 rounded-lg border p-4">
 					{sampleCaptions.map((caption, index) => (
-						<div key={index} className="rounded-md p-2 text-sm hover:bg-muted">
-							{caption}
+						<div
+							key={`caption-${caption.startTime}`}
+							className="flex items-center rounded-md p-2 text-sm hover:bg-muted"
+						>
+							<span className="mr-4 text-xs text-muted-foreground">
+								{caption.startTime} - {caption.endTime}
+							</span>
+							<span className="">{caption.text}</span>
 						</div>
 					))}
 				</div>
