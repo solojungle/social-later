@@ -58,17 +58,6 @@ export function CaptionsPanel() {
 
 	return (
 		<div className="flex-1">
-			<div className="mb-6 flex justify-between">
-				<Button variant="outline" size="sm">
-					<RefreshCw className="mr-2 h-4 w-4" />
-					Refresh
-				</Button>
-				<Button variant="outline" size="sm">
-					<Download className="mr-2 h-4 w-4" />
-					Export
-				</Button>
-			</div>
-
 			<div className="space-y-2">
 				<div className="flex items-center justify-between">
 					<h3 className="font-medium">Generated Subtitles</h3>
