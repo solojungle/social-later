@@ -12,6 +12,12 @@ export function FontStyles() {
 	const [textFormat, setTextFormat] = useState<"none" | "lower" | "upper">(
 		"none",
 	);
+	const [textShadow, setTextShadow] = useState<
+		"none" | "small" | "medium" | "large"
+	>("none");
+	const [fontSize, setFontSize] = useState<number>(24);
+	const [fontColor, setFontColor] = useState<string>("#000000");
+
 	return (
 		<>
 			<FontPicker />
@@ -60,6 +66,44 @@ export function FontStyles() {
 			</div>
 
 			<Compact color="#68ccca" />
+
+			<div className="space-y-2">
+				<label className="text-sm font-medium">Shadow</label>
+				<div className="flex gap-2">
+					<Button
+						variant={textShadow === "none" ? "default" : "outline"}
+						size="sm"
+						onClick={() => setTextShadow("none")}
+						className="flex-1"
+					>
+						None
+					</Button>
+					<Button
+						variant={textShadow === "small" ? "default" : "outline"}
+						size="sm"
+						onClick={() => setTextShadow("small")}
+						className="flex-1"
+					>
+						S
+					</Button>
+					<Button
+						variant={textShadow === "medium" ? "default" : "outline"}
+						size="sm"
+						onClick={() => setTextShadow("medium")}
+						className="flex-1"
+					>
+						M
+					</Button>
+					<Button
+						variant={textShadow === "large" ? "default" : "outline"}
+						size="sm"
+						onClick={() => setTextShadow("large")}
+						className="flex-1"
+					>
+						L
+					</Button>
+				</div>
+			</div>
 		</>
 	);
 }
