@@ -15,13 +15,10 @@ import { Switch } from "@/components/ui/switch";
 import { LanguageSelector } from "./language-selector";
 
 export function SettingsPanel() {
-	const [textFormat, setTextFormat] = useState<"none" | "lower" | "upper">(
-		"none",
-	);
 	const [removePunctuation, setRemovePunctuation] = useState(false);
 
 	return (
-		<div className="w-full p-6 md:w-[400px]">
+		<div className="w-full md:w-[400px]">
 			<h2 className="mb-2 text-xl font-semibold">Advanced Settings</h2>
 			<p className="mb-6 text-sm text-muted-foreground">
 				Customize subtitle generation parameters
@@ -51,36 +48,6 @@ export function SettingsPanel() {
 						</p>
 					</div>
 					<LanguageSelector />
-				</div>
-
-				<div className="space-y-2">
-					<label className="text-sm font-medium">Text Formatting</label>
-					<div className="flex gap-2">
-						<Button
-							variant={textFormat === "none" ? "default" : "outline"}
-							size="sm"
-							onClick={() => setTextFormat("none")}
-							className="flex-1"
-						>
-							None
-						</Button>
-						<Button
-							variant={textFormat === "lower" ? "default" : "outline"}
-							size="sm"
-							onClick={() => setTextFormat("lower")}
-							className="flex-1"
-						>
-							Lower
-						</Button>
-						<Button
-							variant={textFormat === "upper" ? "default" : "outline"}
-							size="sm"
-							onClick={() => setTextFormat("upper")}
-							className="flex-1"
-						>
-							Upper
-						</Button>
-					</div>
 				</div>
 
 				<div className="flex items-center justify-between rounded-sm border border-border p-4">

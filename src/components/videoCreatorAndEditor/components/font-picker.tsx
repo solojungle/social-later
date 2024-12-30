@@ -38,7 +38,7 @@ export function FontPicker() {
 	const sampleText = "The quick brown fox jumps over the lazy dog";
 
 	return (
-		<div className="p-4">
+		<div className="">
 			<h3 className="mb-2 font-medium">Caption Font</h3>
 			<div className="grid grid-cols-3 gap-4">
 				{fonts.map((font) => (

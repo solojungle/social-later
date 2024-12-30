@@ -57,7 +57,7 @@ export function CaptionsPanel() {
 	};
 
 	return (
-		<div className="flex-1 p-6">
+		<div className="flex-1">
 			<div className="mb-6 flex justify-between">
 				<Button variant="outline" size="sm">
 					<RefreshCw className="mr-2 h-4 w-4" />
