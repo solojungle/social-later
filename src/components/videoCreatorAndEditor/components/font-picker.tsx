@@ -1,12 +1,15 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 "use client";
 
 import { CheckIcon } from "lucide-react";
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { useEditor } from "../context/editor-context";
 
 export function FontPicker() {
-	const [selectedFont, setSelectedFont] = useState("Inter");
+	const { fontFamily, setFontFamily } = useEditor();
 
 	const fonts = [
 		{
@@ -40,20 +43,20 @@ export function FontPicker() {
 	return (
 		<div className="">
 			<h3 className="mb-2 font-medium">Caption Font</h3>
-			<div className="grid grid-cols-3 gap-4">
+			<div className="grid grid-cols-3 gap-1">
 				{fonts.map((font) => (
 					<div
 						key={font.name}
 						className={cn(
 							"relative cursor-pointer rounded-lg border p-4 hover:bg-accent",
-							selectedFont === font.name && "border-primary bg-accent",
+							fontFamily === font.name && "border-primary bg-accent",
 						)}
-						onClick={() => setSelectedFont(font.name)}
+						onClick={() => setFontFamily(font.name)}
 					>
 						<div className="space-y-2">
 							<div className="flex items-center justify-between">
 								<p className="text-sm font-medium">{font.name}</p>
-								{selectedFont === font.name && (
+								{fontFamily === font.name && (
 									<CheckIcon className="h-4 w-4 text-primary" />
 								)}
 							</div>

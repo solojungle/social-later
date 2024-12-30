@@ -4,106 +4,127 @@ import { Compact } from "@uiw/react-color";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-
-import { FontPicker } from "./font-picker";
 import { Slider } from "@/components/ui/slider";
 
+import { useEditor } from "../context/editor-context";
+import { FontPicker } from "./font-picker";
+
 export function FontStyles() {
-	const [textFormat, setTextFormat] = useState<"none" | "lower" | "upper">(
-		"none",
-	);
+	const { selectedCaptionId, updateCaption } = useEditor();
+	const [textFormat, setTextFormat] = useState<
+		"none" | "lowercase" | "uppercase"
+	>("none");
 	const [textShadow, setTextShadow] = useState<
 		"none" | "small" | "medium" | "large"
 	>("none");
 	const [fontSize, setFontSize] = useState<number>(24);
-	const [fontColor, setFontColor] = useState<string>("#000000");
+	const [fontColor, setFontColor] = useState<string>("#FFFFFF");
+
+	const handleFontSizeChange = (value: number[]) => {
+		if (!selectedCaptionId) return;
+		setFontSize(value[0]);
+		updateCaption(selectedCaptionId, { style: { fontSize: value[0] } });
+	};
+
+	const handleColorChange = (color: string) => {
+		if (!selectedCaptionId) return;
+		setFontColor(color);
+		updateCaption(selectedCaptionId, { style: { color } });
+	};
+
+	const handleTextFormatChange = (
+		format: "none" | "lowercase" | "uppercase",
+	) => {
+		if (!selectedCaptionId) return;
+		setTextFormat(format);
+		// Note: text transform is handled in the caption rendering
+		updateCaption(selectedCaptionId, { style: { textTransform: format } });
+	};
+
+	const handleShadowChange = (
+		shadow: "none" | "small" | "medium" | "large",
+	) => {
+		if (!selectedCaptionId) return;
+		setTextShadow(shadow);
+		updateCaption(selectedCaptionId, { style: { shadow } });
+	};
 
 	return (
-		<>
+		<div className="space-y-6">
 			<FontPicker />
+
 			<div className="space-y-2">
-				<label className="text-sm font-medium">Text Formatting</label>
-				<div className="flex gap-2">
+				<label className="text-sm font-medium">Font Size</label>
+				<div className="flex items-center gap-4">
+					<span className="w-12 text-sm text-muted-foreground">
+						{fontSize}px
+					</span>
+					<Slider
+						min={12}
+						max={72}
+						step={1}
+						value={[fontSize]}
+						onValueChange={handleFontSizeChange}
+						disabled={!selectedCaptionId}
+					/>
+				</div>
+			</div>
+
+			<div className="space-y-2">
+				<label className="text-sm font-medium">Font Color</label>
+				<Compact
+					color={fontColor}
+					onChange={(color) => handleColorChange(color.hex)}
+					disabled={!selectedCaptionId}
+				/>
+			</div>
+			<div className="w-full space-y-2">
+				<label className="text-sm font-medium">Text Format</label>
+				<div className="flex w-full gap-2">
 					<Button
-						variant={textFormat === "none" ? "default" : "outline"}
-						size="sm"
-						onClick={() => setTextFormat("none")}
 						className="flex-1"
+						variant={textFormat === "none" ? "default" : "outline"}
+						onClick={() => handleTextFormatChange("none")}
 					>
 						None
 					</Button>
 					<Button
-						variant={textFormat === "lower" ? "default" : "outline"}
-						size="sm"
-						onClick={() => setTextFormat("lower")}
 						className="flex-1"
+						variant={textFormat === "lowercase" ? "default" : "outline"}
+						onClick={() => handleTextFormatChange("lowercase")}
 					>
 						Lower
 					</Button>
 					<Button
-						variant={textFormat === "upper" ? "default" : "outline"}
-						size="sm"
-						onClick={() => setTextFormat("upper")}
 						className="flex-1"
+						variant={textFormat === "uppercase" ? "default" : "outline"}
+						onClick={() => handleTextFormatChange("uppercase")}
 					>
 						Upper
 					</Button>
 				</div>
 			</div>
-			<div className="space-y-2">
-				<label className="text-sm font-medium">Font Size</label>
-				<div className="flex items-center gap-4">
-					<span className="w-12 text-sm text-muted-foreground">12px</span>
-					<Slider
-						min={12}
-						max={72}
-						onChange={(value) => {
-							console.log(value);
-						}}
-					/>
-					<span className="w-12 text-sm text-muted-foreground">64px</span>
-				</div>
-			</div>
-
-			<Compact color="#68ccca" />
 
 			<div className="space-y-2">
 				<label className="text-sm font-medium">Shadow</label>
 				<div className="flex gap-2">
-					<Button
-						variant={textShadow === "none" ? "default" : "outline"}
-						size="sm"
-						onClick={() => setTextShadow("none")}
-						className="flex-1"
-					>
-						None
-					</Button>
-					<Button
-						variant={textShadow === "small" ? "default" : "outline"}
-						size="sm"
-						onClick={() => setTextShadow("small")}
-						className="flex-1"
-					>
-						S
-					</Button>
-					<Button
-						variant={textShadow === "medium" ? "default" : "outline"}
-						size="sm"
-						onClick={() => setTextShadow("medium")}
-						className="flex-1"
-					>
-						M
-					</Button>
-					<Button
-						variant={textShadow === "large" ? "default" : "outline"}
-						size="sm"
-						onClick={() => setTextShadow("large")}
-						className="flex-1"
-					>
-						L
-					</Button>
+					{["none", "small", "medium", "large"].map((size) => (
+						<Button
+							key={size}
+							className="flex-1"
+							variant={textShadow === size ? "default" : "outline"}
+							onClick={() =>
+								handleShadowChange(
+									size as "none" | "small" | "medium" | "large",
+								)
+							}
+							// disabled={!selectedCaptionId}
+						>
+							{size === "none" ? "None" : size.charAt(0).toUpperCase()}
+						</Button>
+					))}
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
