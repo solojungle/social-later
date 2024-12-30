@@ -1,10 +1,37 @@
 "use client";
 
+import { MediaFormField } from "@/components/createPost/mediaFormField";
+import { ThreadsSchema } from "@/components/createPost/tabs/threadsTab/forms/image-form";
+import { Form } from "@/components/ui/form";
+import { FileProgress } from "@/hooks/use-file-upload";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export function VideoPreview() {
+	const posthog = usePostHog();
 	const [videoFile, setVideoFile] = useState<File | null>(null);
 	const [videoUrl, setVideoUrl] = useState<string | null>(null);
+	const utils = api.useUtils();
+	const [loading, setLoading] = useState(false);
+	const [fileProgress, setFileProgress] = useState<FileProgress>({});
+
+	const mediaFileTypes = ["image/jpeg", "image/png", "image/jpg"];
+	const mediaFileExtensions = {
+		"": mediaFileTypes.map((fileType: string) => `.${fileType.split("/")[1]}`),
+	};
+
+	type FormSchemaValues = z.infer<typeof ThreadsSchema>;
+	const form = useForm<FormSchemaValues>({
+		defaultValues: {
+			status: "",
+			image: [],
+		},
+		resolver: zodResolver(ThreadsSchema),
+	});
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -15,37 +42,23 @@ export function VideoPreview() {
 	};
 
 	return (
-		<div className="sticky flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6">
-			{!videoUrl ? (
-				<>
-					<h2 className="mb-4 text-xl font-semibold">
-						Upload a video to get started
-					</h2>
-					<label className="cursor-pointer rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90">
-						Choose Video
-						<input
-							type="file"
-							accept="video/*"
-							onChange={handleFileChange}
-							className="hidden"
-						/>
-					</label>
-				</>
-			) : (
-				<div className="w-full">
-					<video
-						src={videoUrl}
-						controls
-						className="w-full rounded-lg"
-						style={{
-							maxHeight: "400px",
-							objectFit: "contain",
+		<div className="p-6">
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit(() => {})} className="my-2 space-y-4">
+					<MediaFormField
+						valueName="image"
+						form={form}
+						fileProgress={fileProgress}
+						restrictions={{
+							maxFiles: 1,
+							maxSize: 8 * 1024 * 1024,
+							maxSizeInMB: "8MB",
+							accept: mediaFileExtensions,
 						}}
-					>
-						Your browser does not support the video tag.
-					</video>
-				</div>
-			)}
+						isLoading={loading}
+					/>
+				</form>
+			</Form>
 		</div>
 	);
 }
