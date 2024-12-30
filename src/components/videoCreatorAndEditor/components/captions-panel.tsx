@@ -72,7 +72,7 @@ export function CaptionsPanel() {
 							className="group flex items-center rounded-md p-2 text-sm hover:bg-muted"
 						>
 							<div
-								className="flex flex-1 items-center"
+								className="flex flex-1 items-center hover:cursor-pointer"
 								onClick={() => setEditingIndex(index)}
 							>
 								<span className="min-w-24 text-xs text-muted-foreground">

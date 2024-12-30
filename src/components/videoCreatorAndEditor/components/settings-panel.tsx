@@ -19,7 +19,7 @@ export function SettingsPanel() {
 
 	return (
 		<div className="w-full md:w-[400px]">
-			<h2 className="mb-2 text-xl font-semibold">Advanced Settings</h2>
+			<h2 className="font-medium">Advanced Settings</h2>
 			<p className="mb-6 text-sm text-muted-foreground">
 				Customize subtitle generation parameters
 			</p>

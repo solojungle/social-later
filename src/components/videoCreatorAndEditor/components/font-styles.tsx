@@ -47,6 +47,7 @@ export function FontStyles() {
 			<div className="space-y-2">
 				<label className="text-sm font-medium">Font Size</label>
 				<div className="flex items-center gap-4">
+					<span className="w-12 text-sm text-muted-foreground">12px</span>
 					<Slider
 						min={12}
 						max={72}
@@ -54,7 +55,7 @@ export function FontStyles() {
 							console.log(value);
 						}}
 					/>
-					<span className="w-12 text-sm text-muted-foreground">24px</span>
+					<span className="w-12 text-sm text-muted-foreground">64px</span>
 				</div>
 			</div>
 
