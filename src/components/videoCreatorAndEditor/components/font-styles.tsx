@@ -10,7 +10,7 @@ import { useEditor } from "../context/editor-context";
 import { FontPicker } from "./font-picker";
 
 export function FontStyles() {
-	const { selectedCaptionId, updateCaption } = useEditor();
+	const { selectedCaptionId, updateGlobalStyles } = useEditor();
 	const [textFormat, setTextFormat] = useState<
 		"none" | "lowercase" | "uppercase"
 	>("none");
@@ -21,32 +21,28 @@ export function FontStyles() {
 	const [fontColor, setFontColor] = useState<string>("#FFFFFF");
 
 	const handleFontSizeChange = (value: number[]) => {
-		if (!selectedCaptionId) return;
-		setFontSize(value[0]);
-		updateCaption(selectedCaptionId, { style: { fontSize: value[0] } });
+		setFontSize(value[0] ?? 24);
+		updateGlobalStyles({ fontSize });
 	};
 
 	const handleColorChange = (color: string) => {
-		if (!selectedCaptionId) return;
 		setFontColor(color);
-		updateCaption(selectedCaptionId, { style: { color } });
+		updateGlobalStyles({ color });
 	};
 
 	const handleTextFormatChange = (
 		format: "none" | "lowercase" | "uppercase",
 	) => {
-		if (!selectedCaptionId) return;
 		setTextFormat(format);
 		// Note: text transform is handled in the caption rendering
-		updateCaption(selectedCaptionId, { style: { textTransform: format } });
+		updateGlobalStyles({ textTransform: textFormat });
 	};
 
 	const handleShadowChange = (
 		shadow: "none" | "small" | "medium" | "large",
 	) => {
-		if (!selectedCaptionId) return;
 		setTextShadow(shadow);
-		updateCaption(selectedCaptionId, { style: { shadow } });
+		updateGlobalStyles({ shadow });
 	};
 
 	return (
@@ -65,7 +61,6 @@ export function FontStyles() {
 						step={1}
 						value={[fontSize]}
 						onValueChange={handleFontSizeChange}
-						disabled={!selectedCaptionId}
 					/>
 				</div>
 			</div>

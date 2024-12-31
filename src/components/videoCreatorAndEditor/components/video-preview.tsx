@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useEditor } from "../context/editor-context";
-import { Button } from "@/components/ui/button";
 import { Download, Upload, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+
+import { useEditor } from "../context/editor-context";
 
 interface DragState {
 	captionId: string;
