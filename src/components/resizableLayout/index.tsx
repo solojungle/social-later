@@ -54,7 +54,7 @@ export function ResizableLayout({ children }: { children: React.ReactNode }) {
 			</aside>
 
 			<div className={cn("flex-1 transition-all duration-200 ease-in-out")}>
-				<div className="pb-8">
+				<div className="">
 					<div className="flex items-center justify-between border-b border-border p-3">
 						<div className="flex items-center gap-2 sm:gap-x-6">
 							<Button

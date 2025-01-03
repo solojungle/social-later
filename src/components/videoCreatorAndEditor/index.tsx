@@ -8,8 +8,8 @@ import { EditorProvider } from "./context/editor-context";
 export function VideoCreatorAndEditor() {
 	return (
 		<EditorProvider>
-			<main className="flex flex-col md:grid md:grid-cols-3 md:gap-2">
-				<div className="relative flex flex-col md:col-span-2 md:col-start-2">
+			<main className="flex flex-col md:grid md:grid-cols-3">
+				<div className="relative flex flex-col p-4 md:col-span-2 md:col-start-2">
 					<VideoPreview />
 				</div>
 				<div className="flex flex-1 flex-col p-4 md:col-start-1 md:row-start-1 md:border-r">
