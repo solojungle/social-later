@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
 "use client";
 
 import { Compact } from "@uiw/react-color";
@@ -11,7 +13,7 @@ import { FontPicker } from "./font-picker";
 import { FontTemplates } from "./font-templates";
 
 export function FontStyles() {
-	const { selectedCaptionId, updateGlobalStyles } = useEditor();
+	const { updateGlobalStyles } = useEditor();
 	const [textFormat, setTextFormat] = useState<
 		"none" | "lowercase" | "uppercase"
 	>("none");
@@ -72,7 +74,6 @@ export function FontStyles() {
 				<Compact
 					color={fontColor}
 					onChange={(color) => handleColorChange(color.hex)}
-					disabled={!selectedCaptionId}
 				/>
 			</div>
 			<div className="w-full space-y-2">

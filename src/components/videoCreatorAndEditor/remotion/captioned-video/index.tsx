@@ -1,22 +1,17 @@
-import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
+import { createTikTokStyleCaptions } from "@remotion/captions";
 import { getVideoMetadata } from "@remotion/media-utils";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
 	AbsoluteFill,
 	CalculateMetadataFunction,
-	cancelRender,
-	continueRender,
-	delayRender,
 	getStaticFiles,
 	OffthreadVideo,
 	Sequence,
 	useVideoConfig,
-	watchStaticFile,
 } from "remotion";
 import { z } from "zod";
 
 import { TextCaption, useEditor } from "../../context/editor-context";
-import { loadFont } from "./load-font";
 import { SubtitlePage } from "./subtitle-page";
 
 export type SubtitleProp = {
@@ -59,38 +54,8 @@ export const VideoComposition: React.FC<{
 }> = ({ src }) => {
 	const { captions } = useEditor();
 	const [subtitles, setSubtitles] = useState<TextCaption[]>(captions);
-	const [handle] = useState(() => delayRender());
+
 	const { fps } = useVideoConfig();
-
-	const subtitlesFile = src
-		.replace(/.mp4$/, ".json")
-		.replace(/.mkv$/, ".json")
-		.replace(/.mov$/, ".json")
-		.replace(/.webm$/, ".json");
-
-	const fetchSubtitles = useCallback(async () => {
-		try {
-			await loadFont();
-			const res = await fetch(subtitlesFile);
-			const data = (await res.json()) as Caption[];
-			setSubtitles(data);
-			continueRender(handle);
-		} catch (e) {
-			cancelRender(e);
-		}
-	}, [handle, subtitlesFile]);
-
-	useEffect(() => {
-		fetchSubtitles();
-
-		const c = watchStaticFile(subtitlesFile, () => {
-			fetchSubtitles();
-		});
-
-		return () => {
-			c.cancel();
-		};
-	}, [fetchSubtitles, src, subtitlesFile]);
 
 	const { pages } = useMemo(() => {
 		return createTikTokStyleCaptions({
