@@ -37,7 +37,8 @@ export function CaptionsPanel() {
 					</span>
 					{captions.length === 0 && (
 						<p className="text-xs text-muted-foreground">
-							Add captions to your video by clicking the "Add Caption" button.
+							Add captions to your video by clicking the &quot;Add Caption&quot;
+							button.
 						</p>
 					)}
 					{captions.map((caption) => (
@@ -46,6 +47,7 @@ export function CaptionsPanel() {
 							className={`group flex items-center rounded-md p-2 text-sm hover:bg-muted ${
 								selectedCaptionId === caption.id ? "bg-muted" : ""
 							}`}
+							role="presentation"
 							onClick={() => selectCaption(caption.id)}
 						>
 							<div className="flex flex-1 items-center">
@@ -64,6 +66,7 @@ export function CaptionsPanel() {
 									/>
 								) : (
 									<span
+										role="presentation"
 										className="max-w-[200px] cursor-pointer"
 										onClick={() => setEditingId(caption.id)}
 									>

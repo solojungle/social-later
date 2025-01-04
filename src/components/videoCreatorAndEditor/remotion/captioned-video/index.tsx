@@ -1,10 +1,10 @@
+/* eslint-disable react/no-array-index-key */
 import { createTikTokStyleCaptions } from "@remotion/captions";
 import { getVideoMetadata } from "@remotion/media-utils";
 import { useMemo, useState } from "react";
 import {
 	AbsoluteFill,
 	CalculateMetadataFunction,
-	getStaticFiles,
 	OffthreadVideo,
 	Sequence,
 	useVideoConfig,
@@ -35,14 +35,6 @@ export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
 	};
 };
 
-const getFileExists = (file: string) => {
-	const files = getStaticFiles();
-	const fileExists = files.find((f) => {
-		return f.src === file;
-	});
-	return Boolean(fileExists);
-};
-
 // How many captions should be displayed at a time?
 // Try out:
 // - 1500 to display a lot of words at a time
@@ -53,7 +45,7 @@ export const VideoComposition: React.FC<{
 	src: string;
 }> = ({ src }) => {
 	const { captions } = useEditor();
-	const [subtitles, setSubtitles] = useState<TextCaption[]>(captions);
+	const [subtitles] = useState<TextCaption[]>(captions);
 
 	const { fps } = useVideoConfig();
 

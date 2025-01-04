@@ -1,8 +1,9 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
 "use client";
 
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
 	Select,
@@ -12,6 +13,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+
 import { LanguageSelector } from "./language-selector";
 
 export function SettingsPanel() {
