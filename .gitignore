@@ -42,3 +42,5 @@ yarn-error.log*
 *.tsbuildinfo
 
 *storybook.log
+
+yarn.lock
