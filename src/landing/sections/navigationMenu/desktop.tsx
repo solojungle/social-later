@@ -13,7 +13,7 @@ export function DesktopMenu() {
 					"flex items-center justify-center text-base",
 				)}
 			>
-				<span>Login</span>
+				<span className="text-black">Login</span>
 			</Link>
 		</div>
 	);
