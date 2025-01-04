@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 
 import { useEditor } from "../context/editor-context";
 import { FontPicker } from "./font-picker";
+import { FontTemplates } from "./font-templates";
 
 export function FontStyles() {
 	const { selectedCaptionId, updateGlobalStyles } = useEditor();
@@ -47,6 +48,7 @@ export function FontStyles() {
 
 	return (
 		<div className="space-y-6">
+			<FontTemplates />
 			<FontPicker />
 
 			<div className="space-y-2">

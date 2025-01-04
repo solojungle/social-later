@@ -50,7 +50,7 @@ export function CaptionsPanel() {
 						>
 							<div className="flex flex-1 items-center">
 								<span className="min-w-24 text-xs text-muted-foreground">
-									{caption.startTime} - {caption.endTime}
+									{caption.startMs} - {caption.endMs}
 								</span>
 								{editingId === caption.id ? (
 									<input

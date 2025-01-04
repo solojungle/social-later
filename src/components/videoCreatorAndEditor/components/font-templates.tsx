@@ -8,7 +8,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useEditor } from "../context/editor-context";
 
-export function FontPicker() {
+export function FontTemplates() {
 	const { fontFamily, setFontFamily } = useEditor();
 
 	const fonts = [
@@ -21,20 +21,20 @@ export function FontPicker() {
 			className: "font-roboto",
 		},
 		{
-			name: "Helvetica",
-			className: "font-helvetica",
+			name: "Open Sans",
+			className: "font-opensans",
 		},
 		{
 			name: "Montserrat",
 			className: "font-montserrat",
 		},
 		{
-			name: "Verdana",
-			className: "font-verdana",
+			name: "Lato",
+			className: "font-lato",
 		},
 		{
-			name: "Tahoma",
-			className: "font-tahoma",
+			name: "Poppins",
+			className: "font-poppins",
 		},
 	];
 

@@ -2,21 +2,35 @@
 
 import { Player } from "@remotion/player";
 
-import { VideoComposition } from "../remotion/composition";
+import { VideoComposition } from "../remotion/captioned-video";
 
-export function VideoPreview() {
+interface VideoPreviewProps {
+	src: string | null;
+	width?: number;
+	height?: number;
+}
+
+export function VideoPreview({
+	src,
+	width = 1080,
+	height = 720,
+}: VideoPreviewProps) {
+	if (!src) {
+		return null;
+	}
+
 	return (
 		<div>
 			<Player
 				component={VideoComposition}
 				durationInFrames={120}
-				compositionWidth={1080}
-				compositionHeight={720}
-				style={{ width: "100%" }}
+				compositionWidth={width}
+				compositionHeight={height}
+				controls
 				fps={30}
+				style={{ width: "100%" }}
 				inputProps={{
-					videoURL:
-						"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+					src,
 				}}
 			/>
 		</div>

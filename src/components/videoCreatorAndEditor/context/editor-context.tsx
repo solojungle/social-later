@@ -1,13 +1,7 @@
 "use client";
 
+import type { Caption } from "@remotion/captions";
 import { createContext, ReactNode, useContext, useState } from "react";
-
-interface Caption {
-	id: string;
-	startTime: string;
-	endTime: string;
-	text: string;
-}
 
 interface GlobalStyles {
 	fontFamily: string;
@@ -18,16 +12,20 @@ interface GlobalStyles {
 	position: { x: number; y: number };
 }
 
+export interface TextCaption extends Caption {
+	id: string;
+}
+
 interface EditorContextType {
 	videoFile: File | null;
 	videoUrl: string | null;
-	captions: Caption[];
+	captions: TextCaption[];
 	selectedCaptionId: string | null;
 	globalStyles: GlobalStyles;
 	setVideoFile: (file: File | null) => void;
 	setVideoUrl: (url: string | null) => void;
 	addCaption: () => void;
-	updateCaption: (id: string, updates: Partial<Caption>) => void;
+	updateCaption: (id: string, updates: Partial<TextCaption>) => void;
 	updateGlobalStyles: (updates: Partial<GlobalStyles>) => void;
 	deleteCaption: (id: string) => void;
 	selectCaption: (id: string | null) => void;
@@ -55,6 +53,41 @@ const EditorContext = createContext<EditorContextType>({
 	updateGlobalStyles: () => {},
 });
 
+const EXAMPLE_CAPTIONS: TextCaption[] = [
+	{
+		id: "1",
+		text: "Using",
+		startMs: 40,
+		endMs: 300,
+		timestampMs: 200,
+		confidence: null,
+	},
+	{
+		id: "2",
+		text: " Remotion's",
+		startMs: 300,
+		endMs: 900,
+		timestampMs: 440,
+		confidence: null,
+	},
+	{
+		id: "3",
+		text: " TikTok",
+		startMs: 900,
+		endMs: 1260,
+		timestampMs: 1080,
+		confidence: null,
+	},
+	{
+		id: "4",
+		text: " template,",
+		startMs: 1260,
+		endMs: 1950,
+		timestampMs: 1600,
+		confidence: null,
+	},
+];
+
 export function EditorProvider({ children }: { children: ReactNode }) {
 	const [videoFile, setVideoFile] = useState<File | null>(null);
 	const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -66,22 +99,25 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 		textTransform: "none",
 		position: { x: 50, y: 50 },
 	});
-	const [captions, setCaptions] = useState<Caption[]>([]);
+	const [captions, setCaptions] = useState<TextCaption[]>(EXAMPLE_CAPTIONS);
 	const [selectedCaptionId, setSelectedCaptionId] = useState<string | null>(
 		null,
 	);
 
 	const addCaption = () => {
-		const newCaption: Caption = {
-			id: Math.random().toString(36).substr(2, 9),
-			startTime: "00:00",
-			endTime: "00:05",
+		const newCaption: TextCaption = {
+			id: Math.random().toString(36),
 			text: "New Caption",
+			startMs: 0,
+			endMs: 1000,
+			timestampMs: 0,
+			confidence: null,
 		};
+
 		setCaptions([...captions, newCaption]);
 	};
 
-	const updateCaption = (id: string, updates: Partial<Caption>) => {
+	const updateCaption = (id: string, updates: Partial<TextCaption>) => {
 		setCaptions(
 			captions.map((caption) =>
 				caption.id === id ? { ...caption, ...updates } : caption,
