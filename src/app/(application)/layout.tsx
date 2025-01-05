@@ -1,8 +1,8 @@
 import { type Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { AppContent } from "@/components/appContent";
 import { AuthWrapper } from "@/components/protectedPage";
-import { ResizableLayout } from "@/components/resizableLayout";
 import { SiteHeader } from "@/components/siteHeader";
 import { getServerAuthSession } from "@/server/auth";
 
@@ -27,10 +27,10 @@ export default async function ApplicationLayout({
 	const isAuthenticated = !!session;
 
 	return (
-		<div className={`h-screen font-sans ${inter.variable}`}>
+		<div className={`min-h-screen font-sans ${inter.variable}`}>
 			<SiteHeader />
 			<AuthWrapper isAuthenticated={isAuthenticated}>
-				<ResizableLayout>{children}</ResizableLayout>
+				<AppContent>{children}</AppContent>
 			</AuthWrapper>
 		</div>
 	);
