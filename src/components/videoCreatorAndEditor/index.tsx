@@ -5,6 +5,7 @@ import { useQueryState } from "nuqs";
 import { Asset } from "@/schemas/file-schema";
 import { api } from "@/trpc/react";
 
+import { InterfaceIcons } from "../ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { CaptionsPanel } from "./components/captions-panel";
 import { FontStyles } from "./components/font-styles";
@@ -24,15 +25,19 @@ export function VideoCreatorAndEditor() {
 		},
 	);
 
-	// if (isLoading) {
-	// 	return <div>Loading...</div>;
-	// }
+	if (isLoading || !data) {
+		return (
+			<div className="flex h-96 flex-col items-center justify-center">
+				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
 
 	return (
 		<EditorProvider>
 			<main className="flex h-full flex-col p-4 md:grid md:grid-cols-3">
-				<div className="flex items-center justify-center md:col-span-2">
-					{!fileId && isLoading ? (
+				<div className="flex items-start md:col-span-2 md:p-4">
+					{!data && isLoading ? (
 						<div className="flex h-96 items-center justify-center">
 							<div className="text-center">
 								<h3 className="text-lg font-medium">No file selected</h3>
@@ -42,9 +47,7 @@ export function VideoCreatorAndEditor() {
 							</div>
 						</div>
 					) : (
-						<div className="relative flex flex-col p-4 md:col-span-2 md:col-start-2">
-							<VideoPreview file={data as Asset} />
-						</div>
+						<VideoPreview file={data as Asset} />
 					)}
 				</div>
 

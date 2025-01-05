@@ -20,19 +20,17 @@ export function VideoPreview({ file }: VideoPreviewProps) {
 	const { width, height } = file;
 
 	return (
-		<div>
-			<Player
-				component={VideoComposition}
-				durationInFrames={120}
-				compositionWidth={width}
-				compositionHeight={height}
-				controls
-				fps={30}
-				style={{ width: "100%" }}
-				inputProps={{
-					src: file.url,
-				}}
-			/>
-		</div>
+		<Player
+			component={VideoComposition}
+			durationInFrames={120}
+			compositionWidth={width}
+			compositionHeight={height}
+			controls
+			fps={30}
+			style={{ width: "100%" }}
+			inputProps={{
+				src: file.url,
+			}}
+		/>
 	);
 }
