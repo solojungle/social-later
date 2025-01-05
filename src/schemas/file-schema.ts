@@ -1,4 +1,4 @@
-import { FileType } from "@prisma/client";
+import { $Enums, FileType } from "@prisma/client";
 import { z } from "zod";
 
 const ACCEPTED_FILE_TYPES = [
@@ -57,3 +57,19 @@ export function DynamicSizeFileSchema(size: number, acceptedTypes: string[]) {
 }
 
 export type SingleFileValues = z.infer<typeof SingleFileSchema>;
+
+export type Asset = {
+	thumbnail: string;
+	url: string;
+	id: string;
+	name: string;
+	size: number;
+	mime: string;
+	extension: string;
+	type: $Enums.FileType;
+	height: number | null;
+	width: number | null;
+	key: string;
+	createdAt: Date;
+	updatedAt: Date;
+};

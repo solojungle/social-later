@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { Asset } from "@/schemas/file-schema";
 
 import { PagePagination } from "../pagination";
 import { AssetDetails } from "./assetDetails";
@@ -27,13 +28,13 @@ export function formatSizeBytes(sizeBytes: any) {
 }
 
 type Props = {
-	assets: any[];
-	selected: any[];
-	setSelected: any;
+	assets: Asset[];
+	selected: Asset[];
+	setSelected: (assets: Asset[]) => void;
 	pagination: any;
 };
 
-function AssetPreview({ asset }: { asset: any }) {
+function AssetPreview({ asset }: { asset: Asset }) {
 	const [url, setUrl] = useState(asset.thumbnail ?? asset.url);
 
 	return (

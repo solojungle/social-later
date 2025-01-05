@@ -1,9 +1,12 @@
-import { Search, Trash2 } from "lucide-react";
+import { ArrowRightIcon, Search, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { createSerializer, parseAsString } from "nuqs";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { CreatePost } from "@/components/createPost";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Asset } from "@/schemas/file-schema";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { AddAssets } from "../addAssets";
@@ -14,7 +17,12 @@ export function SearchBar({
 	setOpen,
 	searchParams,
 	setSearchParams,
-}: any) {
+}: {
+	selected: Asset[];
+	setOpen: (open: boolean) => void;
+	searchParams: any;
+	setSearchParams: any;
+}) {
 	const { currentProfileId: profileId } = useSocialProfilesStore();
 
 	useHotkeys(
@@ -37,6 +45,10 @@ export function SearchBar({
 			q: value,
 		});
 	};
+
+	const serialize = createSerializer({
+		file: parseAsString,
+	});
 
 	return (
 		<div className="mb-6 flex items-center justify-between">
@@ -66,6 +78,14 @@ export function SearchBar({
 				</Button>
 			</div>
 			<div className="ml-4 flex space-x-2">
+				<div className="flex items-center gap-2">
+					<Button variant="outline" disabled={selected.length > 1} asChild>
+						<Link href={serialize("/creator", { file: selected[0]?.id })}>
+							<span className="mr-1">Move to Captions</span>
+							<ArrowRightIcon className="w-4" />
+						</Link>
+					</Button>
+				</div>
 				<CreatePost
 					profileId={profileId}
 					scheduleDate={new Date()}

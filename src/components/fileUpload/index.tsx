@@ -56,6 +56,40 @@ const splitFileIntoParts = (file: File) => {
 	return partsAsObj;
 };
 
+async function getFileDimensions(
+	file: File,
+): Promise<{ width?: number; height?: number }> {
+	// For images
+	if (file.type.startsWith("image/")) {
+		return new Promise((resolve) => {
+			const img = new Image();
+			img.onload = () => {
+				resolve({
+					width: img.naturalWidth,
+					height: img.naturalHeight,
+				});
+			};
+			img.src = URL.createObjectURL(file);
+		});
+	}
+
+	// For videos
+	if (file.type.startsWith("video/")) {
+		return new Promise((resolve) => {
+			const video = document.createElement("video");
+			video.onloadedmetadata = () => {
+				resolve({
+					width: video.videoWidth,
+					height: video.videoHeight,
+				});
+			};
+			video.src = URL.createObjectURL(file);
+		});
+	}
+
+	return {};
+}
+
 export type FileUpload = {
 	id: string;
 	file: File;
@@ -113,6 +147,9 @@ export async function uploadFile({
 	onProgress,
 }: UploadFileProps) {
 	const { file } = uploadedFile;
+
+	// Get dimensions if possible
+	const fileDimensions = await getFileDimensions(file);
 
 	const filename = file.name.split(".").shift();
 	const extension = file.name.split(".").pop();
@@ -178,6 +215,8 @@ export async function uploadFile({
 			type: determineFileType(file),
 			size: file.size,
 			mime: file.type,
+			width: fileDimensions.width,
+			height: fileDimensions.height,
 		},
 	});
 

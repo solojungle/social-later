@@ -8,6 +8,7 @@ import {
 } from "nuqs";
 import { useState } from "react";
 
+import { Asset } from "@/schemas/file-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
@@ -41,7 +42,8 @@ export function MediaPageContent() {
 	);
 
 	const { id: teamId } = useSelectedTeamStore();
-	const [selected, setSelected] = useState<any[]>([]);
+
+	const [selected, setSelected] = useState<Asset[]>([]);
 	const [open, setOpen] = useState(false);
 
 	const { isLoading, data, isFetching, isPlaceholderData } =

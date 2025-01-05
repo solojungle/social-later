@@ -2,22 +2,22 @@
 
 import { Player } from "@remotion/player";
 
+import { Asset } from "@/schemas/file-schema";
+
 import { VideoComposition } from "../remotion/captioned-video";
 
 interface VideoPreviewProps {
-	src: string | null;
+	file: Asset;
 	width?: number;
 	height?: number;
 }
 
-export function VideoPreview({
-	src,
-	width = 1080,
-	height = 720,
-}: VideoPreviewProps) {
-	if (!src) {
+export function VideoPreview({ file }: VideoPreviewProps) {
+	if (!file?.width || !file?.height) {
 		return null;
 	}
+
+	const { width, height } = file;
 
 	return (
 		<div>
@@ -30,7 +30,7 @@ export function VideoPreview({
 				fps={30}
 				style={{ width: "100%" }}
 				inputProps={{
-					src,
+					src: file.url,
 				}}
 			/>
 		</div>

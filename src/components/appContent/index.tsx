@@ -22,9 +22,9 @@ export function AppContent({ children }: { children: React.ReactNode }) {
 		<div className="flex w-full">
 			<SideBar isMenuOpen={isMenuOpen} />
 
-			<div className="flex-1 transition-all duration-200 ease-in-out">
+			<div className="flex flex-1 flex-col transition-all duration-200 ease-in-out">
 				<TopBar toggleMenu={toggleMenu} />
-				<div className="relative">{children}</div>
+				<div className="relative flex-1">{children}</div>
 			</div>
 		</div>
 	);

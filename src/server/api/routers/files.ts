@@ -27,15 +27,20 @@ export const filesRouter = createTRPCRouter({
 
 	get: protectedProcedure
 		.input(
-			z.object({
-				key: z.string(),
-			}),
+			z.union([
+				z.object({
+					key: z.string(),
+				}),
+				z.object({
+					id: z.string(),
+				}),
+			]),
 		)
 		.query(async ({ ctx, input }) => {
+			const where = "id" in input ? { id: input.id } : { key: input.key };
+
 			const file = await ctx.db.file.findUnique({
-				where: {
-					key: input.key,
-				},
+				where,
 			});
 
 			if (!file) {
