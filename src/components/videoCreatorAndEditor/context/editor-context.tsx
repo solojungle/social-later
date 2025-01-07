@@ -7,6 +7,7 @@ interface GlobalStyles {
 	fontFamily: string;
 	fontSize: number;
 	color: string;
+	highlightColor: string;
 	shadow: string;
 	textTransform: "none" | "uppercase" | "lowercase";
 	position: { x: number; y: number };
@@ -40,6 +41,7 @@ const EditorContext = createContext<EditorContextType>({
 		fontFamily: "Inter",
 		fontSize: 24,
 		color: "#FFFFFF",
+		highlightColor: "#39E508",
 		shadow: "none",
 		textTransform: "none",
 		position: { x: 50, y: 50 },
@@ -95,6 +97,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 		fontFamily: "Inter",
 		fontSize: 24,
 		color: "#FFFFFF",
+		highlightColor: "#39E508",
 		shadow: "none",
 		textTransform: "none",
 		position: { x: 50, y: 50 },

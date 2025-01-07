@@ -33,6 +33,7 @@ const mediaFileTypes = [
 	"image/png",
 	"image/jpg",
 	"video/mp4",
+	"video/quicktime",
 	"video/mov",
 	"video/mpeg",
 ];

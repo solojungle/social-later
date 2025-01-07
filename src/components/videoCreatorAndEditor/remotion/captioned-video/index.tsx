@@ -61,7 +61,7 @@ export const VideoComposition: React.FC<{
 			<AbsoluteFill>
 				<OffthreadVideo
 					style={{
-						objectFit: "cover",
+						objectFit: "contain",
 					}}
 					src={src}
 				/>
@@ -88,7 +88,6 @@ export const VideoComposition: React.FC<{
 					</Sequence>
 				);
 			})}
-			{/* {getFileExists(subtitlesFile) ? null : <NoCaptionFile />} */}
 		</AbsoluteFill>
 	);
 };
