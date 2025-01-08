@@ -56,6 +56,7 @@ export const env = createEnv({
 		THREADS_APP_SECRET: z.string(),
 		META_APP_ID: z.string(),
 		META_APP_SECRET: z.string(),
+		OPENAI_API_KEY: z.string(),
 	},
 
 	/**
@@ -115,6 +116,7 @@ export const env = createEnv({
 		THREADS_APP_SECRET: process.env.THREADS_APP_SECRET,
 		META_APP_ID: process.env.META_APP_ID,
 		META_APP_SECRET: process.env.META_APP_SECRET,
+		OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

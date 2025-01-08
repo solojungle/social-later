@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { RefreshCcw, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -25,8 +25,19 @@ export function CaptionsPanel() {
 	return (
 		<div className="flex-1">
 			<div className="space-y-4">
-				<div className="flex items-start justify-between">
+				<div className="flex">
 					<h3 className="font-medium">Captions</h3>
+				</div>
+				<div className="flex gap-2">
+					<Button
+						onClick={addCaption}
+						variant="outline"
+						className="flex items-center gap-2"
+						size="sm"
+					>
+						<RefreshCcw className="h-4 w-4" />
+						Generate Captions
+					</Button>
 					<Button onClick={addCaption} variant="outline" size="sm">
 						Add Caption
 					</Button>
