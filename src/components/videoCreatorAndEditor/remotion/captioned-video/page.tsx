@@ -20,8 +20,6 @@ const container: React.CSSProperties = {
 	padding: "20px",
 };
 
-const HIGHLIGHT_COLOR = "#39E508";
-
 export const Page: React.FC<{
 	readonly enterProgress: number;
 	readonly page: TikTokPage;
@@ -78,7 +76,9 @@ export const Page: React.FC<{
 								style={{
 									display: "inline",
 									whiteSpace: "pre",
-									color: active ? HIGHLIGHT_COLOR : globalStyles.color,
+									color: active
+										? globalStyles.highlightColor
+										: globalStyles.color,
 								}}
 							>
 								{t.text}

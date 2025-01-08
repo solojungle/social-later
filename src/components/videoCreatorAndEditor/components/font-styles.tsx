@@ -22,7 +22,7 @@ export function FontStyles() {
 	>("none");
 	const [fontSize, setFontSize] = useState<number>(24);
 	const [fontColor, setFontColor] = useState<string>("#FFFFFF");
-
+	const [highlightColor, setHighlightColor] = useState<string>("#FFFFFF");
 	const handleFontSizeChange = (value: number[]) => {
 		setFontSize(value[0] ?? 24);
 		updateGlobalStyles({ fontSize });
@@ -31,6 +31,11 @@ export function FontStyles() {
 	const handleColorChange = (color: string) => {
 		setFontColor(color);
 		updateGlobalStyles({ color });
+	};
+
+	const handleHighlightColorChange = (color: string) => {
+		setHighlightColor(color);
+		updateGlobalStyles({ highlightColor: color });
 	};
 
 	const handleTextFormatChange = (
@@ -69,12 +74,21 @@ export function FontStyles() {
 				</div>
 			</div>
 
-			<div className="space-y-2">
-				<label className="text-sm font-medium">Font Color</label>
-				<Compact
-					color={fontColor}
-					onChange={(color) => handleColorChange(color.hex)}
-				/>
+			<div className="flex gap-2">
+				<div className="space-y-2">
+					<label className="text-sm font-medium">Font Color</label>
+					<Compact
+						color={fontColor}
+						onChange={(color) => handleColorChange(color.hex)}
+					/>
+				</div>
+				<div className="space-y-2">
+					<label className="text-sm font-medium">Highlight Color</label>
+					<Compact
+						color={highlightColor}
+						onChange={(color) => handleHighlightColorChange(color.hex)}
+					/>
+				</div>
 			</div>
 			<div className="w-full space-y-2">
 				<label className="text-sm font-medium">Text Format</label>
