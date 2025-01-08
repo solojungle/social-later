@@ -36,13 +36,18 @@ export function VideoCreatorAndEditor() {
 		async function loadMetadata() {
 			if (data?.url) {
 				const meta = await getVideoMetadata(data.url);
+
+				if (!meta) {
+					return;
+				}
+
 				setMetadata(meta);
 			}
 		}
 		loadMetadata();
 	}, [data?.url]);
 
-	if (isLoading || !data || !metadata) {
+	if (isLoading && fileId) {
 		return (
 			<div className="flex h-96 flex-col items-center justify-center">
 				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
@@ -54,16 +59,17 @@ export function VideoCreatorAndEditor() {
 		<EditorProvider>
 			<main className="flex h-full flex-col p-4 md:grid md:grid-cols-3">
 				<div className="flex max-h-full items-start md:col-span-2 md:p-4">
-					{!data && isLoading ? (
-						<div className="flex h-96 items-center justify-center">
+					{!data && isLoading && (
+						<div className="flex h-full min-h-96 flex-1 items-center justify-center">
 							<div className="text-center">
 								<h3 className="text-lg font-medium">No file selected</h3>
 								<p className="text-sm text-muted-foreground">
-									Please select a file to edit.
+									Please select a file to edit. Or upload a new file.
 								</p>
 							</div>
 						</div>
-					) : (
+					)}
+					{data && metadata && (
 						<VideoPreview
 							src={data.url}
 							width={metadata.width}
