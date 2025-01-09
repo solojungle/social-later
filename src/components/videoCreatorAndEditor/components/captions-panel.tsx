@@ -1,9 +1,11 @@
 "use client";
 
-import { RefreshCcw, Trash2 } from "lucide-react";
+import { Loader2, SparklesIcon, Trash2 } from "lucide-react";
+import { useQueryState } from "nuqs";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { api } from "@/trpc/react";
 
 import { useEditor } from "../context/editor-context";
 
@@ -15,12 +17,32 @@ export function CaptionsPanel() {
 		deleteCaption,
 		selectCaption,
 		selectedCaptionId,
+		setCaptions,
 	} = useEditor();
 	const [editingId, setEditingId] = useState<string | null>(null);
+	const { captionSettings } = useEditor();
+	const { mutateAsync: generateCaptions, isLoading } =
+		api.openai.transcribeVideo.useMutation({
+			onSuccess: (result) => {
+				if (!result) {
+					return;
+				}
+
+				// Add ids to the captions
+				const captionsWithIds = result.map((caption, index) => ({
+					...caption,
+					id: index.toString(),
+				}));
+
+				setCaptions(captionsWithIds);
+			},
+		});
 
 	const handleCaptionEdit = (id: string, newText: string) => {
 		updateCaption(id, { text: newText });
 	};
+
+	const [fileId] = useQueryState("file");
 
 	return (
 		<div className="flex-1">
@@ -30,12 +52,25 @@ export function CaptionsPanel() {
 				</div>
 				<div className="flex gap-2">
 					<Button
-						onClick={addCaption}
+						disabled={!fileId || isLoading}
+						onClick={() =>
+							generateCaptions({
+								model: captionSettings.model,
+								file: {
+									id: fileId ?? "",
+								},
+								language: captionSettings.language,
+							})
+						}
 						variant="outline"
 						className="flex items-center gap-2"
 						size="sm"
 					>
-						<RefreshCcw className="h-4 w-4" />
+						{isLoading ? (
+							<Loader2 className="h-4 w-4 animate-spin" />
+						) : (
+							<SparklesIcon className="h-4 w-4" />
+						)}
 						Generate Captions
 					</Button>
 					<Button onClick={addCaption} variant="outline" size="sm">
@@ -48,8 +83,8 @@ export function CaptionsPanel() {
 					</span>
 					{captions.length === 0 && (
 						<p className="text-xs text-muted-foreground">
-							Add captions to your video by clicking the &quot;Add Caption&quot;
-							button.
+							Add captions by generating or by clicking the &quot;Add
+							Caption&quot; button.
 						</p>
 					)}
 					{captions.map((caption) => (

@@ -13,6 +13,11 @@ interface GlobalStyles {
 	position: { x: number; y: number };
 }
 
+interface CaptionSettings {
+	language: string;
+	model: string;
+}
+
 export interface TextCaption extends Caption {
 	id: string;
 }
@@ -25,11 +30,14 @@ interface EditorContextType {
 	globalStyles: GlobalStyles;
 	setVideoFile: (file: File | null) => void;
 	setVideoUrl: (url: string | null) => void;
+	setCaptions: (captions: TextCaption[]) => void;
 	addCaption: () => void;
 	updateCaption: (id: string, updates: Partial<TextCaption>) => void;
 	updateGlobalStyles: (updates: Partial<GlobalStyles>) => void;
 	deleteCaption: (id: string) => void;
 	selectCaption: (id: string | null) => void;
+	updateCaptionSettings: (updates: Partial<CaptionSettings>) => void;
+	captionSettings: CaptionSettings;
 }
 
 const EditorContext = createContext<EditorContextType>({
@@ -47,48 +55,19 @@ const EditorContext = createContext<EditorContextType>({
 		position: { x: 0, y: 0 },
 	},
 	setVideoFile: () => {},
+	setCaptions: () => {},
 	setVideoUrl: () => {},
 	addCaption: () => {},
 	updateCaption: () => {},
 	deleteCaption: () => {},
 	selectCaption: () => {},
 	updateGlobalStyles: () => {},
+	updateCaptionSettings: () => {},
+	captionSettings: {
+		language: "",
+		model: "",
+	},
 });
-
-const EXAMPLE_CAPTIONS: TextCaption[] = [
-	{
-		id: "1",
-		text: "Using",
-		startMs: 40,
-		endMs: 300,
-		timestampMs: 200,
-		confidence: null,
-	},
-	{
-		id: "2",
-		text: " Remotion's",
-		startMs: 300,
-		endMs: 900,
-		timestampMs: 440,
-		confidence: null,
-	},
-	{
-		id: "3",
-		text: " TikTok",
-		startMs: 900,
-		endMs: 1260,
-		timestampMs: 1080,
-		confidence: null,
-	},
-	{
-		id: "4",
-		text: " template,",
-		startMs: 1260,
-		endMs: 1950,
-		timestampMs: 1600,
-		confidence: null,
-	},
-];
 
 export function EditorProvider({ children }: { children: ReactNode }) {
 	const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -102,7 +81,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 		textTransform: "none",
 		position: { x: 50, y: 50 },
 	});
-	const [captions, setCaptions] = useState<TextCaption[]>(EXAMPLE_CAPTIONS);
+	const [captionSettings, setCaptionSettings] = useState<CaptionSettings>({
+		language: "en",
+		model: "whisper-1",
+	});
+	const [captions, setCaptions] = useState<TextCaption[]>([]);
 	const [selectedCaptionId, setSelectedCaptionId] = useState<string | null>(
 		null,
 	);
@@ -146,15 +129,23 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 		}));
 	};
 
+	const updateCaptionSettings = (updates: Partial<CaptionSettings>) => {
+		setCaptionSettings((prev) => ({
+			...prev,
+			...updates,
+		}));
+	};
+
 	return (
 		<EditorContext.Provider
 			// eslint-disable-next-line react/jsx-no-constructed-context-values
 			value={{
 				videoFile,
 				videoUrl,
-				captions,
 				selectedCaptionId,
 				globalStyles,
+				captions,
+				setCaptions,
 				setVideoFile,
 				setVideoUrl,
 				addCaption,
@@ -162,6 +153,8 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 				deleteCaption,
 				selectCaption,
 				updateGlobalStyles,
+				updateCaptionSettings,
+				captionSettings,
 			}}
 		>
 			{children}
