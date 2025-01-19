@@ -1,4 +1,13 @@
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file  = "/Users/admin/Repos/social-management/bin/lambda/thumbnailCreator.mjs"
+  output_path = "/Users/admin/Repos/social-management/bin/lambda/thumbnailCreator.zip"
+}
+
 resource "aws_lambda_function" "tfer--thumbnailCreator" {
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
   architectures = ["x86_64"]
 
   ephemeral_storage {

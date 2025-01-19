@@ -52,3 +52,5 @@ bun.lockb
 .terraform/*
 generated/aws/lambda/.terraform/*
 **/.terraform/*
+*.backup
+*.lock.hcl
