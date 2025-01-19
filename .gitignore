@@ -48,5 +48,7 @@ bun.lockb
 
 *.zip
 
+# terraform
 .terraform/*
 generated/aws/lambda/.terraform/*
+**/.terraform/*
