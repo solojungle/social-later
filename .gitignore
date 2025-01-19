@@ -47,3 +47,5 @@ yarn.lock
 bun.lockb
 
 *.zip
+
+.terraform/*
