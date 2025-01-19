@@ -40,3 +40,7 @@ If you want to change aws you do the following:
 3. run `terraform init`
 4. run `terraform plan`
 5. run `terraform apply`
+
+### Deploying to AWS
+
+For API Gateway you have to manually click the deploy button in the AWS console.
