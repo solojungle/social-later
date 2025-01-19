@@ -26,3 +26,17 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+## Using Terraform
+
+The generated terraform code is in the `generated` folder.
+
+I used "terraformer" to generate the terraform code.
+
+If you want to change aws you do the following:
+
+1. cd into the correct folder all the way down to the type of resource you want to change
+2. run `terraform state replace-provider registry.terraform.io/-/aws hashicorp/aws`
+3. run `terraform init`
+4. run `terraform plan`
+5. run `terraform apply`
