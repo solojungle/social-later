@@ -1,271 +1,270 @@
-import { z } from "zod";
-
 import { InvitationSchema } from "@/schemas/invitation-schema";
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { sendgrid } from "@/server/services/sendgrid/client";
+import { z } from "zod";
 
 export const invitationRouter = createTRPCRouter({
-	delete: protectedProcedure
-		.input(
-			z.object({
-				teamId: z.string(),
-				invitationId: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { teamId, invitationId } = input;
+  accept: protectedProcedure
+    .input(
+      z.object({
+        inviteCode: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { inviteCode } = input;
 
-			// 1. Grab the information of the user submitting the form
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId,
-					userId: ctx.session.user.id,
-				},
-			});
+      // 1. Grab the invitation
+      const invitation = await ctx.db.invitation.findFirst({
+        where: {
+          expires: {
+            gt: new Date(),
+          },
+          hasAccepted: false,
+          hasExpired: false,
+          token: inviteCode,
+        },
+      });
 
-			// Check if the user is part of the team
-			const isUserMemberOfTeam = isUserPartOfTeam !== null;
-			if (!isUserMemberOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      if (invitation === null) {
+        throw new Error("Invitation has expired or does not exist");
+      }
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // 2. Grab the information of the user submitting the form
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: invitation.teamId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			// 2. Delete the invitation
-			const deletedInvitation = await ctx.db.invitation.delete({
-				where: {
-					id: invitationId,
-				},
-			});
+      // Check if the user is part of the team
+      const isUserMemberOfTeam = isUserPartOfTeam !== null;
+      if (isUserMemberOfTeam) {
+        throw new Error("You are already apart of this team");
+      }
 
-			return deletedInvitation;
-		}),
+      // 3. Create the userOnTeam
+      const userOnTeam = await ctx.db.userOnTeam.create({
+        data: {
+          role: invitation.role,
+          teamId: invitation.teamId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-	getPendingInvitations: protectedProcedure
-		.input(TeamSchema.pick({ id: true }))
-		.query(async ({ ctx, input }) => {
-			const { id: teamId } = input;
+      // 4. Accept the invitation
+      await ctx.db.invitation.update({
+        data: {
+          hasAccepted: true,
+          hasExpired: true,
+        },
+        where: {
+          id: invitation.id,
+        },
+      });
 
-			// 1. Grab the information of the user submitting the form
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId,
-					userId: ctx.session.user.id,
-				},
-			});
+      return userOnTeam;
+    }),
 
-			// Check if the user is part of the team
-			const isUserMemberOfTeam = isUserPartOfTeam !== null;
-			if (!isUserMemberOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+  create: protectedProcedure
+    .input(
+      InvitationSchema.pick({ email: true, role: true }).extend({
+        teamId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { email, role, teamId } = input;
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // 1. Grab the information of the user submitting the form
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			// 2. Grab all the pending invitations for the team
-			const pendingInvitations = await ctx.db.invitation.findMany({
-				where: {
-					teamId,
-					hasExpired: false,
-					expires: {
-						gt: new Date(),
-					},
-				},
-			});
+      // Check if the user is part of the team
+      const isUserMemberOfTeam = isUserPartOfTeam !== null;
+      if (!isUserMemberOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			return pendingInvitations.map((invitation) => ({
-				...invitation,
-				role: invitation.role.toLowerCase(),
-			}));
-		}),
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-	create: protectedProcedure
-		.input(
-			InvitationSchema.pick({ email: true, role: true }).extend({
-				teamId: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { teamId, email, role } = input;
+      // 2. Check if the user being invited is already a member of the team
+      // Check if the user already has an account
+      const isUserAlreadySignedUp = await ctx.db.user.findFirst({
+        where: {
+          email,
+        },
+      });
 
-			// 1. Grab the information of the user submitting the form
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId,
-					userId: ctx.session.user.id,
-				},
-			});
+      if (isUserAlreadySignedUp !== null) {
+        // Check if the user is already a member of the team
+        const isUserAlreadyMember = await ctx.db.userOnTeam.findFirst({
+          where: {
+            teamId,
+            userId: isUserAlreadySignedUp.id,
+          },
+        });
 
-			// Check if the user is part of the team
-			const isUserMemberOfTeam = isUserPartOfTeam !== null;
-			if (!isUserMemberOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+        const isUserAlreadyMemberOfTeam = isUserAlreadyMember !== null;
+        if (isUserAlreadyMemberOfTeam) {
+          throw new Error("User is already a member of this team");
+        }
+      }
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // 3. Check if the user being invited has already been invited to the team
+      const isUserAlreadyInvited = await ctx.db.invitation.findMany({
+        where: {
+          email,
+          hasExpired: false,
+          teamId,
+        },
+      });
 
-			// 2. Check if the user being invited is already a member of the team
-			// Check if the user already has an account
-			const isUserAlreadySignedUp = await ctx.db.user.findFirst({
-				where: {
-					email,
-				},
-			});
+      // First update all existing invitations to be expired
+      const isUserAlreadyInvitedToTeam = isUserAlreadyInvited.length > 0;
+      if (isUserAlreadyInvitedToTeam) {
+        await ctx.db.invitation.updateMany({
+          data: {
+            hasExpired: true,
+          },
+          where: {
+            email,
+            hasExpired: false,
+            teamId,
+          },
+        });
+      }
 
-			if (isUserAlreadySignedUp !== null) {
-				// Check if the user is already a member of the team
-				const isUserAlreadyMember = await ctx.db.userOnTeam.findFirst({
-					where: {
-						teamId,
-						userId: isUserAlreadySignedUp.id,
-					},
-				});
+      // 4. Create the invitation
+      const invitation = await ctx.db.invitation.create({
+        data: {
+          email,
+          expires: new Date(new Date().setDate(new Date().getDate() + 30)), // 30 days
+          invitedById: ctx.session.user.id,
+          role,
+          teamId,
+        },
+      });
 
-				const isUserAlreadyMemberOfTeam = isUserAlreadyMember !== null;
-				if (isUserAlreadyMemberOfTeam) {
-					throw new Error("User is already a member of this team");
-				}
-			}
+      // 5. Send the invitation email
+      await sendgrid.send({
+        from: "from@feedfrenzy.co",
+        personalizations: [
+          {
+            dynamicTemplateData: {
+              button_url: `https://feedfrenzy.co/invites?inviteCode=${invitation.token}`,
+              contact_url: "https://feedfrenzy.co/contact",
+              email,
+              first_name: ctx.session.user.name?.split(" ")[0] || "Someone",
+              sender_email: "from@feedfrenzy.co",
+              sender_name: ctx.session.user.name,
+            },
+            from: {
+              email: "from@feedfrenzy.co",
+              name: "FeedFrenzy",
+            },
+            to: [
+              {
+                email,
+              },
+            ],
+          },
+        ],
+        subject: "You've been invited to join a team on FeedFrenzy!",
+        templateId: "d-6059f7514c6b43d39e30368022544f0b",
+      });
 
-			// 3. Check if the user being invited has already been invited to the team
-			const isUserAlreadyInvited = await ctx.db.invitation.findMany({
-				where: {
-					teamId,
-					email,
-					hasExpired: false,
-				},
-			});
+      // 6. Return the invitation
+      return invitation;
+    }),
 
-			// First update all existing invitations to be expired
-			const isUserAlreadyInvitedToTeam = isUserAlreadyInvited.length > 0;
-			if (isUserAlreadyInvitedToTeam) {
-				await ctx.db.invitation.updateMany({
-					where: {
-						teamId,
-						email,
-						hasExpired: false,
-					},
-					data: {
-						hasExpired: true,
-					},
-				});
-			}
+  delete: protectedProcedure
+    .input(
+      z.object({
+        invitationId: z.string(),
+        teamId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { invitationId, teamId } = input;
 
-			// 4. Create the invitation
-			const invitation = await ctx.db.invitation.create({
-				data: {
-					teamId,
-					email,
-					role,
-					expires: new Date(new Date().setDate(new Date().getDate() + 30)), // 30 days
-					invitedById: ctx.session.user.id,
-				},
-			});
+      // 1. Grab the information of the user submitting the form
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			// 5. Send the invitation email
-			await sendgrid.send({
-				from: "from@feedfrenzy.co",
-				subject: "You've been invited to join a team on FeedFrenzy!",
-				personalizations: [
-					{
-						to: [
-							{
-								email,
-							},
-						],
-						from: {
-							name: "FeedFrenzy",
-							email: "from@feedfrenzy.co",
-						},
-						dynamicTemplateData: {
-							first_name: ctx.session.user.name?.split(" ")[0] || "Someone",
-							button_url: `https://feedfrenzy.co/invites?inviteCode=${invitation.token}`,
-							contact_url: "https://feedfrenzy.co/contact",
-							sender_name: ctx.session.user.name,
-							sender_email: "from@feedfrenzy.co",
-							email,
-						},
-					},
-				],
-				templateId: "d-6059f7514c6b43d39e30368022544f0b",
-			});
+      // Check if the user is part of the team
+      const isUserMemberOfTeam = isUserPartOfTeam !== null;
+      if (!isUserMemberOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			// 6. Return the invitation
-			return invitation;
-		}),
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-	accept: protectedProcedure
-		.input(
-			z.object({
-				inviteCode: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { inviteCode } = input;
+      // 2. Delete the invitation
+      const deletedInvitation = await ctx.db.invitation.delete({
+        where: {
+          id: invitationId,
+        },
+      });
 
-			// 1. Grab the invitation
-			const invitation = await ctx.db.invitation.findFirst({
-				where: {
-					token: inviteCode,
-					hasExpired: false,
-					hasAccepted: false,
-					expires: {
-						gt: new Date(),
-					},
-				},
-			});
+      return deletedInvitation;
+    }),
 
-			if (invitation === null) {
-				throw new Error("Invitation has expired or does not exist");
-			}
+  getPendingInvitations: protectedProcedure
+    .input(TeamSchema.pick({ id: true }))
+    .query(async ({ ctx, input }) => {
+      const { id: teamId } = input;
 
-			// 2. Grab the information of the user submitting the form
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: invitation.teamId,
-					userId: ctx.session.user.id,
-				},
-			});
+      // 1. Grab the information of the user submitting the form
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			// Check if the user is part of the team
-			const isUserMemberOfTeam = isUserPartOfTeam !== null;
-			if (isUserMemberOfTeam) {
-				throw new Error("You are already apart of this team");
-			}
+      // Check if the user is part of the team
+      const isUserMemberOfTeam = isUserPartOfTeam !== null;
+      if (!isUserMemberOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			// 3. Create the userOnTeam
-			const userOnTeam = await ctx.db.userOnTeam.create({
-				data: {
-					teamId: invitation.teamId,
-					userId: ctx.session.user.id,
-					role: invitation.role,
-				},
-			});
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-			// 4. Accept the invitation
-			await ctx.db.invitation.update({
-				where: {
-					id: invitation.id,
-				},
-				data: {
-					hasExpired: true,
-					hasAccepted: true,
-				},
-			});
+      // 2. Grab all the pending invitations for the team
+      const pendingInvitations = await ctx.db.invitation.findMany({
+        where: {
+          expires: {
+            gt: new Date(),
+          },
+          hasExpired: false,
+          teamId,
+        },
+      });
 
-			return userOnTeam;
-		}),
+      return pendingInvitations.map((invitation) => ({
+        ...invitation,
+        role: invitation.role.toLowerCase(),
+      }));
+    }),
 });

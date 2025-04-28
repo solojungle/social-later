@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { TeamAddMembersCard } from "@/components/cards/teams/team-add-members";
 import { MemberManager } from "@/components/memberManager";
 import { Separator } from "@/components/ui/separator";
@@ -9,47 +7,48 @@ import { useInvitationsStore } from "@/stores/invitations";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamMembersStore } from "@/stores/team-members";
 import { api } from "@/trpc/react";
+import { useEffect, useState } from "react";
 
 export default function TeamMembersPage() {
-	const { id: selectedTeamId } = useSelectedTeamStore();
+  const { id: selectedTeamId } = useSelectedTeamStore();
 
-	const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
-	const { data: invitations } = api.invitation.getPendingInvitations.useQuery({
-		id: selectedTeamId,
-	});
+  const { data: invitations } = api.invitation.getPendingInvitations.useQuery({
+    id: selectedTeamId,
+  });
 
-	const { data: members } = api.team.getMembers.useQuery({
-		id: selectedTeamId,
-	});
+  const { data: members } = api.team.getMembers.useQuery({
+    id: selectedTeamId,
+  });
 
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-	useEffect(() => {
-		if (!members || !invitations) return;
-		useTeamMembersStore.setState({ members });
-		useInvitationsStore.setState({ invitations });
-	}, [members, invitations]);
+  useEffect(() => {
+    if (!members || !invitations) return;
+    useTeamMembersStore.setState({ members });
+    useInvitationsStore.setState({ invitations });
+  }, [members, invitations]);
 
-	if (!isClient) {
-		return null; // or a loading spinner
-	}
+  if (!isClient) {
+    return null; // or a loading spinner
+  }
 
-	return (
-		<div className="w-full space-y-6">
-			<div>
-				<h3 className="text-lg font-medium">Members</h3>
-				<p className="text-sm text-muted-foreground">
-					Manage and invite Team Members
-				</p>
-			</div>
-			<Separator />
-			<div className="space-y-14">
-				<TeamAddMembersCard />
-				<MemberManager />
-			</div>
-		</div>
-	);
+  return (
+    <div className="w-full space-y-6">
+      <div>
+        <h3 className="text-lg font-medium">Members</h3>
+        <p className="text-sm text-muted-foreground">
+          Manage and invite Team Members
+        </p>
+      </div>
+      <Separator />
+      <div className="space-y-14">
+        <TeamAddMembersCard />
+        <MemberManager />
+      </div>
+    </div>
+  );
 }

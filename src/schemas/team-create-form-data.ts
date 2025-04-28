@@ -1,11 +1,11 @@
 export interface TeamCreationFormData {
-	name: string;
-	subscription: {
-		id: string;
-		name: string;
-		currency: string;
-		price: number;
-		priceFormatted: string;
-		priceId: string;
-	};
+  name: string;
+  subscription: {
+    currency: string;
+    id: string;
+    name: string;
+    price: number;
+    priceFormatted: string;
+    priceId: string;
+  };
 }

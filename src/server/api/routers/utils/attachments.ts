@@ -1,19 +1,19 @@
 import { db } from "@/server/db";
 
 type AttachmentInput = {
-	teamId: string;
-	fileId: string;
-	postId?: string | undefined;
+  fileId: string;
+  postId?: string | undefined;
+  teamId: string;
 };
 
 export async function createAttachments(input: AttachmentInput[]) {
-	const attachments = await db.attachment.createMany({
-		data: input.map((attachment) => ({
-			teamId: attachment.teamId,
-			fileId: attachment.fileId,
-			postId: attachment.postId,
-		})),
-	});
+  const attachments = await db.attachment.createMany({
+    data: input.map((attachment) => ({
+      fileId: attachment.fileId,
+      postId: attachment.postId,
+      teamId: attachment.teamId,
+    })),
+  });
 
-	return attachments;
+  return attachments;
 }

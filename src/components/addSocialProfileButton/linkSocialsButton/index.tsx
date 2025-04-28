@@ -1,50 +1,49 @@
 "use client";
 
+import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-import { api } from "@/trpc/react";
-
 export function LinkTwitterButton({ teamId }: { teamId: string }) {
-	// Disable the query and refetch on click
-	const generateAuthLink = api.oauth2.generateTwitterOAuth2URL.useQuery(
-		undefined,
-		{
-			enabled: false,
-		},
-	);
+  // Disable the query and refetch on click
+  const generateAuthLink = api.oauth2.generateTwitterOAuth2URL.useQuery(
+    undefined,
+    {
+      enabled: false,
+    },
+  );
 
-	const router = useRouter();
+  const router = useRouter();
 
-	async function handleClick() {
-		const { data } = await generateAuthLink.refetch();
+  async function handleClick() {
+    const { data } = await generateAuthLink.refetch();
 
-		// Set cookies
-		document.cookie = `codeVerifier=${data?.codeVerifier}`;
-		document.cookie = `state=${data?.state}`;
-		document.cookie = `teamId=${teamId}`;
+    // Set cookies
+    document.cookie = `codeVerifier=${data?.codeVerifier}`;
+    document.cookie = `state=${data?.state}`;
+    document.cookie = `teamId=${teamId}`;
 
-		// Redirect to Twitter
-		if (data?.url) {
-			router.push(data.url);
-		}
-	}
+    // Redirect to Twitter
+    if (data?.url) {
+      router.push(data.url);
+    }
+  }
 
-	if (!teamId) {
-		return null;
-	}
+  if (!teamId) {
+    return null;
+  }
 
-	return (
-		<button
-			onClick={handleClick}
-			type="button"
-			className="flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-secondary"
-		>
-			<img
-				src="/logos/twitter_logo.webp"
-				alt="Twitter logo"
-				className="mb-2 h-8 w-8"
-			/>
-			<p className="font-medium">Twitter</p>
-		</button>
-	);
+  return (
+    <button
+      className="flex select-none flex-col items-center justify-center rounded-lg border-2 border-border p-10 transition-colors duration-200 ease-in-out hover:bg-secondary"
+      onClick={handleClick}
+      type="button"
+    >
+      <img
+        alt="Twitter logo"
+        className="mb-2 h-8 w-8"
+        src="/logos/twitter_logo.webp"
+      />
+      <p className="font-medium">Twitter</p>
+    </button>
+  );
 }

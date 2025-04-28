@@ -5,36 +5,36 @@ import { Player } from "@remotion/player";
 import { VideoComposition } from "../remotion/captioned-video";
 
 interface VideoPreviewProps {
-	src: string;
-	width: number;
-	height: number;
-	fps: number;
-	duration: number;
+  duration: number;
+  fps: number;
+  height: number;
+  src: string;
+  width: number;
 }
 
 export function VideoPreview({
-	src,
-	width,
-	height,
-	fps,
-	duration,
+  duration,
+  fps,
+  height,
+  src,
+  width,
 }: VideoPreviewProps) {
-	if (!width || !height || !fps || !duration || !src) {
-		return null;
-	}
+  if (!width || !height || !fps || !duration || !src) {
+    return null;
+  }
 
-	return (
-		<Player
-			component={VideoComposition}
-			durationInFrames={duration}
-			compositionWidth={width}
-			compositionHeight={height}
-			fps={fps}
-			controls
-			style={{ height: "100%", width: "100%" }}
-			inputProps={{
-				src,
-			}}
-		/>
-	);
+  return (
+    <Player
+      component={VideoComposition}
+      compositionHeight={height}
+      compositionWidth={width}
+      controls
+      durationInFrames={duration}
+      fps={fps}
+      inputProps={{
+        src,
+      }}
+      style={{ height: "100%", width: "100%" }}
+    />
+  );
 }

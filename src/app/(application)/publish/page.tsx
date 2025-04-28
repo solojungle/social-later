@@ -12,61 +12,61 @@ import { useUserStore } from "@/stores/user";
 import { PublishPageSkeleton } from "./skeleton";
 
 export default function PublishPage() {
-	const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
-	const { profiles } = useSocialProfilesStore();
-	const { id: userId } = useUserStore();
+  const { id: teamId, stripeSubscriptionStatus } = useSelectedTeamStore();
+  const { profiles } = useSocialProfilesStore();
+  const { id: userId } = useUserStore();
 
-	if (!userId) {
-		return (
-			<div className="flex h-96 flex-col items-center justify-center">
-				<InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
-			</div>
-		);
-	}
+  if (!userId) {
+    return (
+      <div className="flex h-96 flex-col items-center justify-center">
+        <InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
-	if (!teamId || teamId.length === 0) {
-		return (
-			<div className="flex flex-col items-center justify-center">
-				<FeaturePreview
-					title="Create, manage, and plan your social media posts"
-					description="
+  if (!teamId || teamId.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <FeaturePreview
+          description="
 						With publish, you can create, manage, and plan your social media
 						posts. You can also view your calendar to see when your posts are
 						scheduled to go.
 					"
-				>
-					<div className="mb-8">
-						<img
-							alt="Publish preview"
-							src="/images/publish-preview-min.png"
-							className="aspect-video w-full rounded-lg border border-border"
-						/>
-					</div>
-					<div className="flex w-full items-center justify-between gap-2">
-						<CreateTeamButton />
-						<p className="text-xs text-muted-foreground">
-							If you already have a team, accept the invite sent to your email.
-						</p>
-					</div>
-				</FeaturePreview>
-			</div>
-		);
-	}
+          title="Create, manage, and plan your social media posts"
+        >
+          <div className="mb-8">
+            <img
+              alt="Publish preview"
+              className="aspect-video w-full rounded-lg border border-border"
+              src="/images/publish-preview-min.png"
+            />
+          </div>
+          <div className="flex w-full items-center justify-between gap-2">
+            <CreateTeamButton />
+            <p className="text-xs text-muted-foreground">
+              If you already have a team, accept the invite sent to your email.
+            </p>
+          </div>
+        </FeaturePreview>
+      </div>
+    );
+  }
 
-	// Check if the teams subscription is active
-	// If the team subscription is not active, show the upgrade button
-	if (
-		!stripeSubscriptionStatus ||
-		stripeSubscriptionStatus !== "active" ||
-		!teamId
-	) {
-		return <ResumeSubscription teamId={teamId} />;
-	}
+  // Check if the teams subscription is active
+  // If the team subscription is not active, show the upgrade button
+  if (
+    !stripeSubscriptionStatus ||
+    stripeSubscriptionStatus !== "active" ||
+    !teamId
+  ) {
+    return <ResumeSubscription teamId={teamId} />;
+  }
 
-	// If the user hasn't added any social profiles, show the add social profile button
-	if (!profiles || profiles.length === 0) {
-		return <PublishPageSkeleton />;
-	}
+  // If the user hasn't added any social profiles, show the add social profile button
+  if (!profiles || profiles.length === 0) {
+    return <PublishPageSkeleton />;
+  }
 
-	return <PublishPageContent />;
+  return <PublishPageContent />;
 }

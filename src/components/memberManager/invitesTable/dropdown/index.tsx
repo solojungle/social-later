@@ -1,95 +1,94 @@
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useInvitationsStore } from "@/stores/invitations";
+import { api } from "@/trpc/react";
 import { MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import {
-	AlertDialog,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useInvitationsStore } from "@/stores/invitations";
-import { api } from "@/trpc/react";
-
 interface TableCellActionsProps {
-	invitationId: string;
-	teamId: string;
+  invitationId: string;
+  teamId: string;
 }
 
 export function TableCellActions({
-	invitationId,
-	teamId,
+  invitationId,
+  teamId,
 }: TableCellActionsProps) {
-	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-	const { removeInvitation } = useInvitationsStore();
+  const { removeInvitation } = useInvitationsStore();
 
-	const deleteInvite = api.invitation.delete.useMutation({
-		onSuccess(input) {
-			removeInvitation(input.id);
+  const deleteInvite = api.invitation.delete.useMutation({
+    onSuccess(input) {
+      removeInvitation(input.id);
 
-			toast.success("This invite has been deleted.");
-		},
-	});
+      toast.success("This invite has been deleted.");
+    },
+  });
 
-	return (
-		<>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button size="icon" variant="ghost">
-						<span className="sr-only">Actions</span>
-						<MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end">
-					<DropdownMenuItem
-						onSelect={() => setShowDeleteDialog(true)}
-						className="text-destructive"
-					>
-						<Trash2 className="mr-1 h-4 w-4" />
-						<span>Delete invite</span>
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>
-							Are you sure you want to delete this?
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							This action cannot be undone. This invitation will no longer be
-							accessible to the recipient.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<Button
-							variant="destructive"
-							onClick={() => {
-								setShowDeleteDialog(false);
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="ghost">
+            <span className="sr-only">Actions</span>
+            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            className="text-destructive"
+            onSelect={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 className="mr-1 h-4 w-4" />
+            <span>Delete invite</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialog onOpenChange={setShowDeleteDialog} open={showDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to delete this?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This invitation will no longer be
+              accessible to the recipient.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button
+              onClick={() => {
+                setShowDeleteDialog(false);
 
-								deleteInvite.mutate({
-									teamId,
-									invitationId,
-								});
-							}}
-						>
-							Delete
-						</Button>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-		</>
-	);
+                deleteInvite.mutate({
+                  invitationId,
+                  teamId,
+                });
+              }}
+              variant="destructive"
+            >
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 }

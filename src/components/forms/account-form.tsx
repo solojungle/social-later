@@ -3,11 +3,11 @@ import { PersonalNameCard } from "../cards/personal/personal-name";
 import { PersonalUsernameCard } from "../cards/personal/personal-username";
 
 export function AccountForm() {
-	return (
-		<>
-			<PersonalAvatarCard />
-			<PersonalNameCard />
-			<PersonalUsernameCard />
-		</>
-	);
+  return (
+    <>
+      <PersonalAvatarCard />
+      <PersonalNameCard />
+      <PersonalUsernameCard />
+    </>
+  );
 }

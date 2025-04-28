@@ -3,24 +3,24 @@
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { api } from "@/trpc/react";
 
-import { Button } from "../ui/button";
 import { OLDLinkTwitterButton } from ".";
+import { Button } from "../ui/button";
 
 export function OLDLinkTwitterWrapper() {
-	const generateAuthLink = api.oauth2.generateTwitterOAuth2URL.useQuery();
-	const { data } = generateAuthLink;
-	const { id: teamId } = useSelectedTeamStore();
+  const generateAuthLink = api.oauth2.generateTwitterOAuth2URL.useQuery();
+  const { data } = generateAuthLink;
+  const { id: teamId } = useSelectedTeamStore();
 
-	if (!data || !teamId) {
-		return <Button variant="link">Loading...</Button>;
-	}
+  if (!data || !teamId) {
+    return <Button variant="link">Loading...</Button>;
+  }
 
-	return (
-		<OLDLinkTwitterButton
-			teamId={teamId}
-			state={data.state}
-			codeVerifier={data.codeVerifier}
-			url={data.url}
-		/>
-	);
+  return (
+    <OLDLinkTwitterButton
+      codeVerifier={data.codeVerifier}
+      state={data.state}
+      teamId={teamId}
+      url={data.url}
+    />
+  );
 }

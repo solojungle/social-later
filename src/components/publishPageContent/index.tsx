@@ -8,26 +8,26 @@ import { PostsCalendar } from "../calendar";
 import { PostsList } from "../calendar/listView";
 
 export const PublishPageContent = () => {
-	const { id: teamId } = useSelectedTeamStore();
-	const { currentProfileId: profileId } = useSocialProfilesStore();
+  const { id: teamId } = useSelectedTeamStore();
+  const { currentProfileId: profileId } = useSocialProfilesStore();
 
-	const { data: posts } = api.post.getAll.useQuery(
-		{
-			teamId,
-		},
-		{
-			enabled: !!teamId,
-		},
-	);
+  const { data: posts } = api.post.getAll.useQuery(
+    {
+      teamId,
+    },
+    {
+      enabled: !!teamId,
+    },
+  );
 
-	return (
-		<div className="mb-3 flex h-full w-full !overflow-scroll p-3">
-			<div className="w-full md:hidden">
-				<PostsList posts={posts} />
-			</div>
-			<div className="hidden w-full md:flex">
-				<PostsCalendar posts={posts} profileId={profileId} />
-			</div>
-		</div>
-	);
+  return (
+    <div className="mb-3 flex h-full w-full !overflow-scroll p-3">
+      <div className="w-full md:hidden">
+        <PostsList posts={posts} />
+      </div>
+      <div className="hidden w-full md:flex">
+        <PostsCalendar posts={posts} profileId={profileId} />
+      </div>
+    </div>
+  );
 };

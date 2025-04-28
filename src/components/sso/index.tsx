@@ -1,20 +1,20 @@
 import { Button } from "../ui/button";
 
 type ContinueWithBaseProps = {
-	text: string;
-	icon: string;
-	props?: Record<string, any>;
+  icon: string;
+  props?: Record<string, any>;
+  text: string;
 };
 
 export const ContinueWithBase = ({
-	text,
-	icon,
-	props,
+  icon,
+  props,
+  text,
 }: ContinueWithBaseProps) => {
-	return (
-		<Button variant="outline" type="button" {...props}>
-			<img className="h-7 w-7" alt="Single sign on with google" src={icon} />
-			<span className="flex h-8 grow items-center justify-center">{text}</span>
-		</Button>
-	);
+  return (
+    <Button type="button" variant="outline" {...props}>
+      <img alt="Single sign on with google" className="h-7 w-7" src={icon} />
+      <span className="flex h-8 grow items-center justify-center">{text}</span>
+    </Button>
+  );
 };

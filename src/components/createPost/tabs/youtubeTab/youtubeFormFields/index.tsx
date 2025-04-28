@@ -4,46 +4,46 @@ import { DatePickerFormField } from "@/components/createPost/schedulePost/datePi
 import { TitleFormField } from "@/components/createPost/titleFormField";
 
 export const YouTubeFormFields = ({
-	form,
-	fileProgress,
-	loading,
-	scheduleDate,
+  fileProgress,
+  form,
+  loading,
+  scheduleDate,
 }: any) => (
-	<>
-		<TitleFormField maxCharCount={100} form={form} />
-		<DescriptionFormField
-			form={form}
-			valueName="description"
-			maxCharCount={5000}
-		/>
-		<MediaFormField
-			valueName="video"
-			form={form}
-			fileProgress={fileProgress}
-			restrictions={{
-				maxFiles: 1,
-				maxSize: 262144 * 1024 * 1024,
-				maxSizeInMB: "256GB",
-				accept: {
-					"video/*": [".webp", ".mov", ".mp4"],
-				},
-			}}
-			isLoading={loading}
-		/>
-		<MediaFormField
-			valueName="thumbnail"
-			form={form}
-			fileProgress={fileProgress}
-			restrictions={{
-				maxFiles: 1,
-				maxSize: 2 * 1024 * 1024,
-				maxSizeInMB: "2MB",
-				accept: {
-					"image/*": [".jpeg", ".png", ".jpg"],
-				},
-			}}
-			isLoading={loading}
-		/>
-		<DatePickerFormField form={form} defaultDate={scheduleDate} />
-	</>
+  <>
+    <TitleFormField form={form} maxCharCount={100} />
+    <DescriptionFormField
+      form={form}
+      maxCharCount={5000}
+      valueName="description"
+    />
+    <MediaFormField
+      fileProgress={fileProgress}
+      form={form}
+      isLoading={loading}
+      restrictions={{
+        accept: {
+          "video/*": [".webp", ".mov", ".mp4"],
+        },
+        maxFiles: 1,
+        maxSize: 262144 * 1024 * 1024,
+        maxSizeInMB: "256GB",
+      }}
+      valueName="video"
+    />
+    <MediaFormField
+      fileProgress={fileProgress}
+      form={form}
+      isLoading={loading}
+      restrictions={{
+        accept: {
+          "image/*": [".jpeg", ".png", ".jpg"],
+        },
+        maxFiles: 1,
+        maxSize: 2 * 1024 * 1024,
+        maxSizeInMB: "2MB",
+      }}
+      valueName="thumbnail"
+    />
+    <DatePickerFormField defaultDate={scheduleDate} form={form} />
+  </>
 );

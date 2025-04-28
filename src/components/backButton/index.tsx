@@ -6,16 +6,16 @@ import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 
 export default function BackButton() {
-	const router = useRouter();
+  const router = useRouter();
 
-	return (
-		<Button
-			className="sticky self-start"
-			variant="ghost"
-			onClick={() => router.back()}
-		>
-			<ChevronLeft className="h-5 w-5" />
-			<span className="ml-2">Back</span>
-		</Button>
-	);
+  return (
+    <Button
+      className="sticky self-start"
+      onClick={() => router.back()}
+      variant="ghost"
+    >
+      <ChevronLeft className="h-5 w-5" />
+      <span className="ml-2">Back</span>
+    </Button>
+  );
 }

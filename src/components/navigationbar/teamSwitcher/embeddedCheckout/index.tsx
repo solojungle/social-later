@@ -8,37 +8,37 @@ import { useMultiStepEmbeddedCheckout } from "@/hooks/multi-step-checkout";
 import { PlanSelection } from "./planSelection";
 
 type EmbeddedCheckoutProps = {
-	setDialog: (value: boolean) => void;
+  setDialog: (value: boolean) => void;
 };
 
 export function EmbeddedCheckout({ setDialog }: EmbeddedCheckoutProps) {
-	// Pass the pages to the multi-step checkout hook.
-	const { currentStep, nextStep, returnStep, clientSecret } =
-		useMultiStepEmbeddedCheckout();
+  // Pass the pages to the multi-step checkout hook.
+  const { clientSecret, currentStep, nextStep, returnStep } =
+    useMultiStepEmbeddedCheckout();
 
-	function renderCurrentStep() {
-		switch (currentStep) {
-			case 0:
-				return (
-					<PlanSelection
-						key="0"
-						setDialog={setDialog}
-						onNext={nextStep}
-						onBack={returnStep}
-					/>
-				);
-			case 1:
-				return (
-					<EmbeddedStripePayments
-						key="1"
-						onBack={returnStep}
-						clientSecret={clientSecret}
-					/>
-				);
-			default:
-				return null;
-		}
-	}
+  function renderCurrentStep() {
+    switch (currentStep) {
+      case 0:
+        return (
+          <PlanSelection
+            key="0"
+            onBack={returnStep}
+            onNext={nextStep}
+            setDialog={setDialog}
+          />
+        );
+      case 1:
+        return (
+          <EmbeddedStripePayments
+            clientSecret={clientSecret}
+            key="1"
+            onBack={returnStep}
+          />
+        );
+      default:
+        return null;
+    }
+  }
 
-	return renderCurrentStep();
+  return renderCurrentStep();
 }

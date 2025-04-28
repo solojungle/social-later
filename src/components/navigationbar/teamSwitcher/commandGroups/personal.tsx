@@ -2,30 +2,30 @@ import { Button } from "@/components/ui/button";
 import { CommandGroup } from "@/components/ui/command";
 
 type PersonalCommandGroupProps = {
-	setOpen: (open: boolean) => void;
+  setOpen: (open: boolean) => void;
 };
 
 export default function PersonalCommandGroup({
-	setOpen,
+  setOpen,
 }: PersonalCommandGroupProps) {
-	// const { image, name } = useUserStore();
+  // const { image, name } = useUserStore();
 
-	// const { name: selectedTeamName } = useSelectedTeamStore();
+  // const { name: selectedTeamName } = useSelectedTeamStore();
 
-	// const pathName = usePathname();
+  // const pathName = usePathname();
 
-	// const { id } = useParams();
+  // const { id } = useParams();
 
-	// const router = useRouter();
+  // const router = useRouter();
 
-	return (
-		<CommandGroup key="personal" heading="Personal Account">
-			<Button
-				onClick={() => {
-					setOpen(false);
-				}}
-			/>
-			{/* <CommandItem
+  return (
+    <CommandGroup heading="Personal Account" key="personal">
+      <Button
+        onClick={() => {
+          setOpen(false);
+        }}
+      />
+      {/* <CommandItem
 				key={name}
 				onSelect={() => {
 					useSelectedTeamStore.setState({
@@ -63,6 +63,6 @@ export default function PersonalCommandGroup({
 					)}
 				/>
 			</CommandItem> */}
-		</CommandGroup>
-	);
+    </CommandGroup>
+  );
 }

@@ -2,19 +2,19 @@ import React from "react";
 import { Composition } from "remotion";
 
 import {
-	calculateCaptionedVideoMetadata,
-	captionedVideoSchema,
-	VideoComposition,
+  calculateCaptionedVideoMetadata,
+  captionedVideoSchema,
+  VideoComposition,
 } from "./captioned-video";
 
 export const RemotionRoot: React.FC = () => {
-	return (
-		<Composition
-			id="CaptionedVideo"
-			component={VideoComposition}
-			calculateMetadata={calculateCaptionedVideoMetadata}
-			schema={captionedVideoSchema}
-			defaultProps={{ src: "" }}
-		/>
-	);
+  return (
+    <Composition
+      calculateMetadata={calculateCaptionedVideoMetadata}
+      component={VideoComposition}
+      defaultProps={{ src: "" }}
+      id="CaptionedVideo"
+      schema={captionedVideoSchema}
+    />
+  );
 };

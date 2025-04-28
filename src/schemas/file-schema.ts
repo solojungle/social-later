@@ -2,13 +2,13 @@ import { $Enums, FileType } from "@prisma/client";
 import { z } from "zod";
 
 const ACCEPTED_FILE_TYPES = [
-	"image/jpeg",
-	"image/jpg",
-	"video/mp4",
-	"video/quicktime",
-	"image/gif",
-	"image/png",
-	"image/webp",
+  "image/jpeg",
+  "image/jpg",
+  "video/mp4",
+  "video/quicktime",
+  "image/gif",
+  "image/png",
+  "image/webp",
 ];
 
 // const MAX_IMAGE_SIZE = 4; // In MegaBytes
@@ -19,57 +19,57 @@ const ACCEPTED_FILE_TYPES = [
 
 // Use for prisma creation
 export const CreateFileSchema = z.object({
-	name: z.string(),
-	key: z.string(),
-	size: z.number(),
-	mime: z.string(),
-	type: z.nativeEnum(FileType),
-	extension: z.string(),
-	height: z.number().optional(),
-	width: z.number().optional(),
+  extension: z.string(),
+  height: z.number().optional(),
+  key: z.string(),
+  mime: z.string(),
+  name: z.string(),
+  size: z.number(),
+  type: z.nativeEnum(FileType),
+  width: z.number().optional(),
 });
 
 // Use for forms
 export const SingleFileSchema = z
-	.any()
-	.refine((file) => file?.length === 1, "File is required.")
-	.refine(
-		(file) => ACCEPTED_FILE_TYPES.includes(file?.[0]?.type as string),
-		"File type is not supported.",
-	)
-	.refine((file) => file?.[0]?.size ?? 0 <= 3000000, `Max file size is 3MB.`);
+  .any()
+  .refine((file) => file?.length === 1, "File is required.")
+  .refine(
+    (file) => ACCEPTED_FILE_TYPES.includes(file?.[0]?.type as string),
+    "File type is not supported.",
+  )
+  .refine((file) => file?.[0]?.size ?? 0 <= 3000000, `Max file size is 3MB.`);
 
-export function DynamicSizeFileSchema(size: number, acceptedTypes: string[]) {
-	// Convert size to mb
-	const mb = size / (1024 * 1024);
-
-	return z
-		.any()
-		.refine((file) => file?.length === 1, "File is required.")
-		.refine(
-			(file) => acceptedTypes.includes(file?.[0]?.type as string),
-			"File type is not supported.",
-		)
-		.refine(
-			(file) => file?.[0]?.size ?? size >= 0,
-			`Max file size is ${mb}MB.`,
-		);
-}
+export type Asset = {
+  createdAt: Date;
+  extension: string;
+  height: null | number;
+  id: string;
+  key: string;
+  mime: string;
+  name: string;
+  size: number;
+  thumbnail: string;
+  type: $Enums.FileType;
+  updatedAt: Date;
+  url: string;
+  width: null | number;
+};
 
 export type SingleFileValues = z.infer<typeof SingleFileSchema>;
 
-export type Asset = {
-	thumbnail: string;
-	url: string;
-	id: string;
-	name: string;
-	size: number;
-	mime: string;
-	extension: string;
-	type: $Enums.FileType;
-	height: number | null;
-	width: number | null;
-	key: string;
-	createdAt: Date;
-	updatedAt: Date;
-};
+export function DynamicSizeFileSchema(size: number, acceptedTypes: string[]) {
+  // Convert size to mb
+  const mb = size / (1024 * 1024);
+
+  return z
+    .any()
+    .refine((file) => file?.length === 1, "File is required.")
+    .refine(
+      (file) => acceptedTypes.includes(file?.[0]?.type as string),
+      "File type is not supported.",
+    )
+    .refine(
+      (file) => file?.[0]?.size ?? size >= 0,
+      `Max file size is ${mb}MB.`,
+    );
+}

@@ -1,12 +1,11 @@
 "use client";
 
+import { env } from "@/env.mjs";
 import {
-	EmbeddedCheckout,
-	EmbeddedCheckoutProvider,
+  EmbeddedCheckout,
+  EmbeddedCheckoutProvider,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-
-import { env } from "@/env.mjs";
 
 import { Button } from "../ui/button";
 
@@ -14,27 +13,27 @@ import { Button } from "../ui/button";
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 type EmbeddedCheckoutProps = {
-	clientSecret: string;
-	onBack: () => void;
+  clientSecret: string;
+  onBack: () => void;
 };
 
 export function EmbeddedStripePayments({
-	clientSecret,
-	onBack,
+  clientSecret,
+  onBack,
 }: EmbeddedCheckoutProps) {
-	return (
-		<>
-			<div className="flex flex-row space-x-4">
-				<Button type="button" variant="outline" onClick={onBack}>
-					Back
-				</Button>
-			</div>
-			<EmbeddedCheckoutProvider
-				stripe={stripePromise}
-				options={{ clientSecret }}
-			>
-				<EmbeddedCheckout />
-			</EmbeddedCheckoutProvider>
-		</>
-	);
+  return (
+    <>
+      <div className="flex flex-row space-x-4">
+        <Button onClick={onBack} type="button" variant="outline">
+          Back
+        </Button>
+      </div>
+      <EmbeddedCheckoutProvider
+        options={{ clientSecret }}
+        stripe={stripePromise}
+      >
+        <EmbeddedCheckout />
+      </EmbeddedCheckoutProvider>
+    </>
+  );
 }

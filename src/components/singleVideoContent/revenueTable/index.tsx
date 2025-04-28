@@ -1,136 +1,135 @@
-import { InfoIcon } from "lucide-react";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableFooter,
-	TableHead,
-	TableHeader,
-	TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { InfoIcon } from "lucide-react";
 
 const defaultData = [
-	{
-		id: "0uOMuXbsZPU",
-		date: new Date(),
-		views: 0,
-	},
+  {
+    date: new Date(),
+    id: "0uOMuXbsZPU",
+    views: 0,
+  },
 ];
 
-export function formatPrice(amount: number | null, currency: string): string {
-	if (amount === null) return "";
-	return new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency,
-	}).format(amount / 100);
+export function formatPrice(amount: null | number, currency: string): string {
+  if (amount === null) return "";
+  return new Intl.NumberFormat("en-US", {
+    currency,
+    style: "currency",
+  }).format(amount / 100);
 }
 
 export function RevenueTable({ passedData }: any) {
-	const data = passedData || defaultData;
+  const data = passedData || defaultData;
 
-	const last14Days = data.slice(-14);
+  const last14Days = data.slice(-14);
 
-	const dailyAverage = last14Days.reduce(
-		(acc: any, row: any) => {
-			acc.estimatedRevenue += row.views * 2;
-			return acc;
-		},
-		{ estimatedRevenue: 0 },
-	);
+  const dailyAverage = last14Days.reduce(
+    (acc: any, row: any) => {
+      acc.estimatedRevenue += row.views * 2;
+      return acc;
+    },
+    { estimatedRevenue: 0 },
+  );
 
-	const weeklyAverage = last14Days.reduce(
-		(acc: any, row: any) => {
-			acc.estimatedRevenue += row.views * 2;
-			return acc;
-		},
-		{ estimatedRevenue: 0 },
-	);
+  const weeklyAverage = last14Days.reduce(
+    (acc: any, row: any) => {
+      acc.estimatedRevenue += row.views * 2;
+      return acc;
+    },
+    { estimatedRevenue: 0 },
+  );
 
-	return (
-		<Card className="rounded-sm shadow-none">
-			<CardHeader>
-				<CardTitle>Daily Estimated Revenue</CardTitle>
-			</CardHeader>
-			<CardContent className="flex flex-col">
-				<Table>
-					<TableHeader className="text-xs">
-						<TableRow>
-							<TableHead>Date</TableHead>
-							<TableHead>Views</TableHead>
-							<TableHead>
-								<TooltipProvider>
-									<Tooltip delayDuration={0}>
-										<TooltipTrigger>
-											<div className="flex items-center gap-1">
-												<span>Estimated Revenue</span>
-												<InfoIcon className="h-3 w-3" />
-											</div>
-										</TooltipTrigger>
-										<TooltipContent
-											side="top"
-											collisionPadding={{
-												top: 5,
-												right: 5,
-												bottom: 5,
-												left: 5,
-											}}
-										>
-											Estimated Earnings CPM is between $0.25 and $4.00
-										</TooltipContent>
-									</Tooltip>
-								</TooltipProvider>
-							</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody className="text-xs">
-						{last14Days.map((row: any) => {
-							const low = row.views * 0.25;
-							const high = row.views * 4;
+  return (
+    <Card className="rounded-sm shadow-none">
+      <CardHeader>
+        <CardTitle>Daily Estimated Revenue</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col">
+        <Table>
+          <TableHeader className="text-xs">
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Views</TableHead>
+              <TableHead>
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                      <div className="flex items-center gap-1">
+                        <span>Estimated Revenue</span>
+                        <InfoIcon className="h-3 w-3" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      collisionPadding={{
+                        bottom: 5,
+                        left: 5,
+                        right: 5,
+                        top: 5,
+                      }}
+                      side="top"
+                    >
+                      Estimated Earnings CPM is between $0.25 and $4.00
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="text-xs">
+            {last14Days.map((row: any) => {
+              const low = row.views * 0.25;
+              const high = row.views * 4;
 
-							const range = `${formatPrice(low, "USD")} - ${formatPrice(
-								high,
-								"USD",
-							)}`;
+              const range = `${formatPrice(low, "USD")} - ${formatPrice(
+                high,
+                "USD",
+              )}`;
 
-							return (
-								<TableRow key={row.id}>
-									<TableCell>
-										{new Intl.DateTimeFormat("en-US", {
-											year: "2-digit",
-											month: "2-digit",
-											day: "2-digit",
-										}).format(new Date(row.date))}
-									</TableCell>
-									<TableCell>{row.views.toLocaleString()}</TableCell>
-									<TableCell className="text-left">{range}</TableCell>
-								</TableRow>
-							);
-						})}
-					</TableBody>
-					<TableFooter>
-						<TableRow>
-							<TableCell colSpan={2}>Daily Averages</TableCell>
-							<TableCell className="text-left">
-								{formatPrice(dailyAverage.estimatedRevenue, "USD")}
-							</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell colSpan={2}>Weekly Averages</TableCell>
-							<TableCell className="text-left">
-								{formatPrice(weeklyAverage.estimatedRevenue, "USD")}
-							</TableCell>
-						</TableRow>
-					</TableFooter>
-				</Table>
-			</CardContent>
-		</Card>
-	);
+              return (
+                <TableRow key={row.id}>
+                  <TableCell>
+                    {new Intl.DateTimeFormat("en-US", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                    }).format(new Date(row.date))}
+                  </TableCell>
+                  <TableCell>{row.views.toLocaleString()}</TableCell>
+                  <TableCell className="text-left">{range}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={2}>Daily Averages</TableCell>
+              <TableCell className="text-left">
+                {formatPrice(dailyAverage.estimatedRevenue, "USD")}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={2}>Weekly Averages</TableCell>
+              <TableCell className="text-left">
+                {formatPrice(weeklyAverage.estimatedRevenue, "USD")}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </CardContent>
+    </Card>
+  );
 }

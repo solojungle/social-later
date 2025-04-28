@@ -1,16 +1,21 @@
 "use client";
 
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
-
 import { env } from "@/env.mjs";
 import { useSelectedTeamStore } from "@/stores/selected-team";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 
 import { TeamPaymentMethodCard } from "../cards/teams/team-payment-method";
 import { TeamPaymentMethodListView } from "../cards/teams/team-payment-method/listView";
 import { TeamPaymentPlanCard } from "../cards/teams/team-plan";
 
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
+export function BillingForm() {
+  const { id: teamId } = useSelectedTeamStore();
+
+  return !!teamId && <Wrapper teamId={teamId} />;
+}
 
 /**
  * Why was it written this way?
@@ -26,27 +31,21 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
  * 	 SideNote: the reason persist sucks is we lose type safety and it might not work anyway with SSR
  */
 function Wrapper({ teamId }: { teamId: string }) {
-	/** Okay wow, you can just do this... */
-	const options: StripeElementsOptions = {
-		mode: "setup",
-		currency: "usd",
-	};
+  /** Okay wow, you can just do this... */
+  const options: StripeElementsOptions = {
+    currency: "usd",
+    mode: "setup",
+  };
 
-	return (
-		<Elements stripe={stripePromise} options={options}>
-			<div className="hidden sm:flex">
-				{!!teamId && <TeamPaymentMethodCard teamId={teamId} />}
-			</div>
-			<div className="sm:hidden">
-				{!!teamId && <TeamPaymentMethodListView teamId={teamId} />}
-			</div>
-			<TeamPaymentPlanCard />
-		</Elements>
-	);
-}
-
-export function BillingForm() {
-	const { id: teamId } = useSelectedTeamStore();
-
-	return !!teamId && <Wrapper teamId={teamId} />;
+  return (
+    <Elements options={options} stripe={stripePromise}>
+      <div className="hidden sm:flex">
+        {!!teamId && <TeamPaymentMethodCard teamId={teamId} />}
+      </div>
+      <div className="sm:hidden">
+        {!!teamId && <TeamPaymentMethodListView teamId={teamId} />}
+      </div>
+      <TeamPaymentPlanCard />
+    </Elements>
+  );
 }

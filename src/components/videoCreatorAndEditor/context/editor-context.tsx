@@ -1,173 +1,174 @@
 "use client";
 
 import type { Caption } from "@remotion/captions";
+
 import { createContext, ReactNode, useContext, useState } from "react";
 
-interface GlobalStyles {
-	fontFamily: string;
-	fontSize: number;
-	color: string;
-	highlightColor: string;
-	shadow: string;
-	textTransform: "none" | "uppercase" | "lowercase";
-	position: { x: number; y: number };
+export interface TextCaption extends Caption {
+  id: string;
 }
 
 interface CaptionSettings {
-	language: string;
-	model: string;
-}
-
-export interface TextCaption extends Caption {
-	id: string;
+  language: string;
+  model: string;
 }
 
 interface EditorContextType {
-	videoFile: File | null;
-	videoUrl: string | null;
-	captions: TextCaption[];
-	selectedCaptionId: string | null;
-	globalStyles: GlobalStyles;
-	setVideoFile: (file: File | null) => void;
-	setVideoUrl: (url: string | null) => void;
-	setCaptions: (captions: TextCaption[]) => void;
-	addCaption: () => void;
-	updateCaption: (id: string, updates: Partial<TextCaption>) => void;
-	updateGlobalStyles: (updates: Partial<GlobalStyles>) => void;
-	deleteCaption: (id: string) => void;
-	selectCaption: (id: string | null) => void;
-	updateCaptionSettings: (updates: Partial<CaptionSettings>) => void;
-	captionSettings: CaptionSettings;
+  addCaption: () => void;
+  captions: TextCaption[];
+  captionSettings: CaptionSettings;
+  deleteCaption: (id: string) => void;
+  globalStyles: GlobalStyles;
+  selectCaption: (id: null | string) => void;
+  selectedCaptionId: null | string;
+  setCaptions: (captions: TextCaption[]) => void;
+  setVideoFile: (file: File | null) => void;
+  setVideoUrl: (url: null | string) => void;
+  updateCaption: (id: string, updates: Partial<TextCaption>) => void;
+  updateCaptionSettings: (updates: Partial<CaptionSettings>) => void;
+  updateGlobalStyles: (updates: Partial<GlobalStyles>) => void;
+  videoFile: File | null;
+  videoUrl: null | string;
+}
+
+interface GlobalStyles {
+  color: string;
+  fontFamily: string;
+  fontSize: number;
+  highlightColor: string;
+  position: { x: number; y: number };
+  shadow: string;
+  textTransform: "lowercase" | "none" | "uppercase";
 }
 
 const EditorContext = createContext<EditorContextType>({
-	videoFile: null,
-	videoUrl: null,
-	captions: [],
-	selectedCaptionId: null,
-	globalStyles: {
-		fontFamily: "",
-		fontSize: 0,
-		color: "",
-		highlightColor: "",
-		shadow: "none",
-		textTransform: "none",
-		position: { x: 0, y: 0 },
-	},
-	setVideoFile: () => {},
-	setCaptions: () => {},
-	setVideoUrl: () => {},
-	addCaption: () => {},
-	updateCaption: () => {},
-	deleteCaption: () => {},
-	selectCaption: () => {},
-	updateGlobalStyles: () => {},
-	updateCaptionSettings: () => {},
-	captionSettings: {
-		language: "",
-		model: "",
-	},
+  addCaption: () => {},
+  captions: [],
+  captionSettings: {
+    language: "",
+    model: "",
+  },
+  deleteCaption: () => {},
+  globalStyles: {
+    color: "",
+    fontFamily: "",
+    fontSize: 0,
+    highlightColor: "",
+    position: { x: 0, y: 0 },
+    shadow: "none",
+    textTransform: "none",
+  },
+  selectCaption: () => {},
+  selectedCaptionId: null,
+  setCaptions: () => {},
+  setVideoFile: () => {},
+  setVideoUrl: () => {},
+  updateCaption: () => {},
+  updateCaptionSettings: () => {},
+  updateGlobalStyles: () => {},
+  videoFile: null,
+  videoUrl: null,
 });
 
 export function EditorProvider({ children }: { children: ReactNode }) {
-	const [videoFile, setVideoFile] = useState<File | null>(null);
-	const [videoUrl, setVideoUrl] = useState<string | null>(null);
-	const [globalStyles, setGlobalStyles] = useState<GlobalStyles>({
-		fontFamily: "Inter",
-		fontSize: 24,
-		color: "#FFFFFF",
-		highlightColor: "#39E508",
-		shadow: "none",
-		textTransform: "none",
-		position: { x: 50, y: 50 },
-	});
-	const [captionSettings, setCaptionSettings] = useState<CaptionSettings>({
-		language: "en",
-		model: "whisper-1",
-	});
-	const [captions, setCaptions] = useState<TextCaption[]>([]);
-	const [selectedCaptionId, setSelectedCaptionId] = useState<string | null>(
-		null,
-	);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUrl, setVideoUrl] = useState<null | string>(null);
+  const [globalStyles, setGlobalStyles] = useState<GlobalStyles>({
+    color: "#FFFFFF",
+    fontFamily: "Inter",
+    fontSize: 24,
+    highlightColor: "#39E508",
+    position: { x: 50, y: 50 },
+    shadow: "none",
+    textTransform: "none",
+  });
+  const [captionSettings, setCaptionSettings] = useState<CaptionSettings>({
+    language: "en",
+    model: "whisper-1",
+  });
+  const [captions, setCaptions] = useState<TextCaption[]>([]);
+  const [selectedCaptionId, setSelectedCaptionId] = useState<null | string>(
+    null,
+  );
 
-	const addCaption = () => {
-		const newCaption: TextCaption = {
-			id: Math.random().toString(36),
-			text: "New Caption",
-			startMs: 0,
-			endMs: 1000,
-			timestampMs: 0,
-			confidence: null,
-		};
+  const addCaption = () => {
+    const newCaption: TextCaption = {
+      confidence: null,
+      endMs: 1000,
+      id: Math.random().toString(36),
+      startMs: 0,
+      text: "New Caption",
+      timestampMs: 0,
+    };
 
-		setCaptions([...captions, newCaption]);
-	};
+    setCaptions([...captions, newCaption]);
+  };
 
-	const updateCaption = (id: string, updates: Partial<TextCaption>) => {
-		setCaptions(
-			captions.map((caption) =>
-				caption.id === id ? { ...caption, ...updates } : caption,
-			),
-		);
-	};
+  const updateCaption = (id: string, updates: Partial<TextCaption>) => {
+    setCaptions(
+      captions.map((caption) =>
+        caption.id === id ? { ...caption, ...updates } : caption,
+      ),
+    );
+  };
 
-	const deleteCaption = (id: string) => {
-		setCaptions(captions.filter((caption) => caption.id !== id));
-		if (selectedCaptionId === id) {
-			setSelectedCaptionId(null);
-		}
-	};
+  const deleteCaption = (id: string) => {
+    setCaptions(captions.filter((caption) => caption.id !== id));
+    if (selectedCaptionId === id) {
+      setSelectedCaptionId(null);
+    }
+  };
 
-	const selectCaption = (id: string | null) => {
-		setSelectedCaptionId(id);
-	};
+  const selectCaption = (id: null | string) => {
+    setSelectedCaptionId(id);
+  };
 
-	const updateGlobalStyles = (updates: Partial<GlobalStyles>) => {
-		setGlobalStyles((prev) => ({
-			...prev,
-			...updates,
-		}));
-	};
+  const updateGlobalStyles = (updates: Partial<GlobalStyles>) => {
+    setGlobalStyles((prev) => ({
+      ...prev,
+      ...updates,
+    }));
+  };
 
-	const updateCaptionSettings = (updates: Partial<CaptionSettings>) => {
-		setCaptionSettings((prev) => ({
-			...prev,
-			...updates,
-		}));
-	};
+  const updateCaptionSettings = (updates: Partial<CaptionSettings>) => {
+    setCaptionSettings((prev) => ({
+      ...prev,
+      ...updates,
+    }));
+  };
 
-	return (
-		<EditorContext.Provider
-			// eslint-disable-next-line react/jsx-no-constructed-context-values
-			value={{
-				videoFile,
-				videoUrl,
-				selectedCaptionId,
-				globalStyles,
-				captions,
-				setCaptions,
-				setVideoFile,
-				setVideoUrl,
-				addCaption,
-				updateCaption,
-				deleteCaption,
-				selectCaption,
-				updateGlobalStyles,
-				updateCaptionSettings,
-				captionSettings,
-			}}
-		>
-			{children}
-		</EditorContext.Provider>
-	);
+  return (
+    <EditorContext.Provider
+      // eslint-disable-next-line react/jsx-no-constructed-context-values
+      value={{
+        addCaption,
+        captions,
+        captionSettings,
+        deleteCaption,
+        globalStyles,
+        selectCaption,
+        selectedCaptionId,
+        setCaptions,
+        setVideoFile,
+        setVideoUrl,
+        updateCaption,
+        updateCaptionSettings,
+        updateGlobalStyles,
+        videoFile,
+        videoUrl,
+      }}
+    >
+      {children}
+    </EditorContext.Provider>
+  );
 }
 
 export function useEditor() {
-	const context = useContext(EditorContext);
+  const context = useContext(EditorContext);
 
-	if (!context) {
-		throw new Error("useEditor must be used within an EditorProvider");
-	}
+  if (!context) {
+    throw new Error("useEditor must be used within an EditorProvider");
+  }
 
-	return context;
+  return context;
 }

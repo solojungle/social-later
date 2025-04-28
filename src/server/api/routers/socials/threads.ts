@@ -1,312 +1,311 @@
 /* eslint-disable no-await-in-loop */
 
-import { z } from "zod";
-
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { threads } from "@/server/services/threads/client";
+import { z } from "zod";
 
 export const threadsRouter = createTRPCRouter({
-	getPostInsights: protectedProcedure
-		.input(
-			z.object({
-				postId: z.string(),
-			}),
-		)
-		.query(async ({ ctx, input }) => {
-			const { postId } = input;
-			const { db, session } = ctx;
+  createThreadsPost: protectedProcedure
+    .input(
+      z.object({
+        media: z.any(),
+        mediaType: z.enum(["TEXT", "IMAGE", "VIDEO", "CAROUSEL"]),
+        profileId: z.string(),
+        scheduledTime: z.string().optional(),
+        text: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { profileId } = input;
 
-			const post = await db.post.findUnique({
-				where: {
-					id: postId,
-				},
-			});
+      // Make sure the user is apart of the team, and that the account belongs to the team
+      const socialProfile = await ctx.db.socialProfile.findUnique({
+        where: {
+          id: profileId,
+        },
+      });
+      if (!socialProfile) {
+        throw new Error("Social profile does not exist");
+      }
 
-			if (!post) {
-				throw new Error("Post does not exist");
-			}
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: socialProfile.teamId,
+          userId: ctx.session.user.id,
+        },
+      });
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			const isUserPartOfTeam = await db.userOnTeam.findFirst({
-				where: {
-					teamId: post.authorId,
-					userId: session.user.id,
-				},
-			});
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      threads.setAccessToken(socialProfile.accessToken);
 
-			const profile = await db.socialProfile.findUnique({
-				where: {
-					id: post.profileId,
-				},
-			});
+      let containerId = "";
+      switch (input.mediaType) {
+        case "CAROUSEL":
+          // containerId = await threads.createCarouselItemContainer({
+          // 	userId: "me",
+          // 	mediaType: "CAROUSEL",
+          // 	mediaIds: input.mediaIds,
+          // });
+          break;
+        case "IMAGE":
+          containerId = await threads.createMediaContainer({
+            mediaType: "IMAGE",
+            mediaUrl: input.media.url,
+            text: input.text,
+            userId: "me",
+          });
+          break;
+        case "TEXT":
+          containerId = await threads.createMediaContainer({
+            mediaType: "TEXT",
+            text: input.text,
+            userId: "me",
+          });
+          break;
+        case "VIDEO":
+          containerId = await threads.createMediaContainer({
+            mediaType: "VIDEO",
+            mediaUrl: input.media.url,
+            text: input.text,
+            userId: "me",
+          });
+          break;
+        default:
+          throw new Error("Invalid media type");
+      }
 
-			if (!profile || !profile.accessToken) {
-				throw new Error("Social profile does not exist");
-			}
+      const sleep = (ms: number | undefined) =>
+        new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
 
-			threads.setAccessToken(profile?.accessToken);
+      // Wait up to 5 minutes, checking every minute
+      for (let i = 0; i < 5; i += 1) {
+        const { status } = await threads.getMediaContainerStatus(containerId);
+        if (status === "FINISHED") break;
+        await sleep(60000);
+      }
 
-			const insights = await threads.getMediaInsights({
-				mediaId: post.externalPostId,
-				metrics: ["views", "likes", "replies", "reposts", "quotes"],
-			});
+      const result = await threads.publishMediaContainer({
+        creationId: containerId,
+        userId: "me",
+      });
 
-			// Handle cases where insights might be undefined or not an array
-			if (!Array.isArray(insights)) {
-				const defaultInsights = [
-					"views",
-					"likes",
-					"replies",
-					"reposts",
-					"quotes",
-				];
-				const defaultStats = defaultInsights.reduce(
-					(acc: { [key: string]: number }, name) => {
-						acc[name] = 0;
-						return acc;
-					},
-					{},
-				);
-				return defaultStats;
-			}
+      return result;
+    }),
+  getPostInsights: protectedProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { postId } = input;
+      const { db, session } = ctx;
 
-			const stats = insights.reduce((acc: any, insight: any) => {
-				const name: string = insight?.name ?? ""; // Safely access name
-				const values = insight?.values ?? [];
-				const value = values?.[0]?.value ?? 0; // Safely access value
-				if (name) {
-					acc[name] = value; // Add name-value pair to the accumulator object
-				}
-				return acc;
-			}, {});
+      const post = await db.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
 
-			return stats;
-		}),
-	getUserInsights: protectedProcedure
-		.input(
-			z.object({
-				profileId: z.string(),
-			}),
-		)
-		.query(async ({ ctx, input }) => {
-			const { profileId } = input;
-			const { db, session } = ctx;
+      if (!post) {
+        throw new Error("Post does not exist");
+      }
 
-			const socialProfile = await db.socialProfile.findUnique({
-				where: {
-					id: profileId,
-				},
-			});
+      const isUserPartOfTeam = await db.userOnTeam.findFirst({
+        where: {
+          teamId: post.authorId,
+          userId: session.user.id,
+        },
+      });
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			if (!socialProfile || !socialProfile.accessToken) {
-				throw new Error("Social profile does not exist");
-			}
+      const profile = await db.socialProfile.findUnique({
+        where: {
+          id: post.profileId,
+        },
+      });
 
-			const isUserPartOfTeam = await db.userOnTeam.findFirst({
-				where: {
-					teamId: socialProfile.teamId,
-					userId: session.user.id,
-				},
-			});
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      if (!profile || !profile.accessToken) {
+        throw new Error("Social profile does not exist");
+      }
 
-			threads.setAccessToken(socialProfile?.accessToken);
+      threads.setAccessToken(profile?.accessToken);
 
-			// TODO: Revisit total post views
+      const insights = await threads.getMediaInsights({
+        mediaId: post.externalPostId,
+        metrics: ["views", "likes", "replies", "reposts", "quotes"],
+      });
 
-			const userInsights = await threads.getUserInsights({
-				userId: "me",
-				metric: [
-					"views",
-					"likes",
-					"replies",
-					"reposts",
-					"quotes",
-					"followers_count",
-				],
-				options: {},
-			});
+      // Handle cases where insights might be undefined or not an array
+      if (!Array.isArray(insights)) {
+        const defaultInsights = [
+          "views",
+          "likes",
+          "replies",
+          "reposts",
+          "quotes",
+        ];
+        const defaultStats = defaultInsights.reduce(
+          (acc: { [key: string]: number }, name) => {
+            acc[name] = 0;
+            return acc;
+          },
+          {},
+        );
+        return defaultStats;
+      }
 
-			// Handle cases where insights might be undefined or not an array
-			if (!Array.isArray(userInsights)) {
-				const defaultInsights = [
-					"views",
-					"likes",
-					"replies",
-					"reposts",
-					"quotes",
-					"followers_count",
-				];
-				const defaultStats = defaultInsights.reduce(
-					(acc: { [key: string]: number }, name) => {
-						acc[name] = 0;
-						return acc;
-					},
-					{},
-				);
-				return defaultStats;
-			}
+      const stats = insights.reduce((acc: any, insight: any) => {
+        const name: string = insight?.name ?? ""; // Safely access name
+        const values = insight?.values ?? [];
+        const value = values?.[0]?.value ?? 0; // Safely access value
+        if (name) {
+          acc[name] = value; // Add name-value pair to the accumulator object
+        }
+        return acc;
+      }, {});
 
-			const stats = userInsights.reduce((acc: any, insight: any) => {
-				const name: string = insight?.name ?? ""; // Safely access name
-				// every value except views has total_value
-				if (insight?.total_value) {
-					acc[name] = insight?.total_value.value;
-					return acc;
-				}
-				const values = insight?.values ?? [];
-				const value = values?.[0]?.value ?? 0; // Safely access value
-				acc[name] = value; // Add name-value pair to the accumulator object
-				return acc;
-			}, {});
+      return stats;
+    }),
 
-			return stats;
-		}),
+  getUserInsights: protectedProcedure
+    .input(
+      z.object({
+        profileId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { profileId } = input;
+      const { db, session } = ctx;
 
-	last10Posts: protectedProcedure
-		.input(
-			z.object({
-				profileId: z.string(),
-			}),
-		)
-		.query(async ({ ctx, input }) => {
-			const { profileId } = input;
-			const { db, session } = ctx;
+      const socialProfile = await db.socialProfile.findUnique({
+        where: {
+          id: profileId,
+        },
+      });
 
-			const socialProfile = await db.socialProfile.findUnique({
-				where: {
-					id: profileId,
-				},
-			});
+      if (!socialProfile || !socialProfile.accessToken) {
+        throw new Error("Social profile does not exist");
+      }
 
-			if (!socialProfile || !socialProfile.accessToken) {
-				throw new Error("Social profile does not exist");
-			}
+      const isUserPartOfTeam = await db.userOnTeam.findFirst({
+        where: {
+          teamId: socialProfile.teamId,
+          userId: session.user.id,
+        },
+      });
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			const isUserPartOfTeam = await db.userOnTeam.findFirst({
-				where: {
-					teamId: socialProfile.teamId,
-					userId: session.user.id,
-				},
-			});
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      threads.setAccessToken(socialProfile?.accessToken);
 
-			threads.setAccessToken(socialProfile?.accessToken);
+      // TODO: Revisit total post views
 
-			const posts = await threads.getUserThreads({
-				userId: "me",
-				fields: [
-					"id",
-					"text",
-					"media_type",
-					"media_url",
-					"permalink",
-					"is_quote_post",
-					"timestamp",
-					"thumbnail_url",
-				],
-				options: {
-					limit: 10,
-				},
-			});
+      const userInsights = await threads.getUserInsights({
+        metric: [
+          "views",
+          "likes",
+          "replies",
+          "reposts",
+          "quotes",
+          "followers_count",
+        ],
+        options: {},
+        userId: "me",
+      });
 
-			return posts;
-		}),
+      // Handle cases where insights might be undefined or not an array
+      if (!Array.isArray(userInsights)) {
+        const defaultInsights = [
+          "views",
+          "likes",
+          "replies",
+          "reposts",
+          "quotes",
+          "followers_count",
+        ];
+        const defaultStats = defaultInsights.reduce(
+          (acc: { [key: string]: number }, name) => {
+            acc[name] = 0;
+            return acc;
+          },
+          {},
+        );
+        return defaultStats;
+      }
 
-	createThreadsPost: protectedProcedure
-		.input(
-			z.object({
-				profileId: z.string(),
-				mediaType: z.enum(["TEXT", "IMAGE", "VIDEO", "CAROUSEL"]),
-				media: z.any(),
-				text: z.string().optional(),
-				scheduledTime: z.string().optional(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { profileId } = input;
+      const stats = userInsights.reduce((acc: any, insight: any) => {
+        const name: string = insight?.name ?? ""; // Safely access name
+        // every value except views has total_value
+        if (insight?.total_value) {
+          acc[name] = insight?.total_value.value;
+          return acc;
+        }
+        const values = insight?.values ?? [];
+        const value = values?.[0]?.value ?? 0; // Safely access value
+        acc[name] = value; // Add name-value pair to the accumulator object
+        return acc;
+      }, {});
 
-			// Make sure the user is apart of the team, and that the account belongs to the team
-			const socialProfile = await ctx.db.socialProfile.findUnique({
-				where: {
-					id: profileId,
-				},
-			});
-			if (!socialProfile) {
-				throw new Error("Social profile does not exist");
-			}
+      return stats;
+    }),
 
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: socialProfile.teamId,
-					userId: ctx.session.user.id,
-				},
-			});
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+  last10Posts: protectedProcedure
+    .input(
+      z.object({
+        profileId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { profileId } = input;
+      const { db, session } = ctx;
 
-			threads.setAccessToken(socialProfile.accessToken);
+      const socialProfile = await db.socialProfile.findUnique({
+        where: {
+          id: profileId,
+        },
+      });
 
-			let containerId = "";
-			switch (input.mediaType) {
-				case "TEXT":
-					containerId = await threads.createMediaContainer({
-						userId: "me",
-						mediaType: "TEXT",
-						text: input.text,
-					});
-					break;
-				case "IMAGE":
-					containerId = await threads.createMediaContainer({
-						userId: "me",
-						mediaType: "IMAGE",
-						mediaUrl: input.media.url,
-						text: input.text,
-					});
-					break;
-				case "VIDEO":
-					containerId = await threads.createMediaContainer({
-						userId: "me",
-						mediaType: "VIDEO",
-						mediaUrl: input.media.url,
-						text: input.text,
-					});
-					break;
-				case "CAROUSEL":
-					// containerId = await threads.createCarouselItemContainer({
-					// 	userId: "me",
-					// 	mediaType: "CAROUSEL",
-					// 	mediaIds: input.mediaIds,
-					// });
-					break;
-				default:
-					throw new Error("Invalid media type");
-			}
+      if (!socialProfile || !socialProfile.accessToken) {
+        throw new Error("Social profile does not exist");
+      }
 
-			const sleep = (ms: number | undefined) =>
-				new Promise((resolve) => {
-					setTimeout(resolve, ms);
-				});
+      const isUserPartOfTeam = await db.userOnTeam.findFirst({
+        where: {
+          teamId: socialProfile.teamId,
+          userId: session.user.id,
+        },
+      });
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			// Wait up to 5 minutes, checking every minute
-			for (let i = 0; i < 5; i += 1) {
-				const { status } = await threads.getMediaContainerStatus(containerId);
-				if (status === "FINISHED") break;
-				await sleep(60000);
-			}
+      threads.setAccessToken(socialProfile?.accessToken);
 
-			const result = await threads.publishMediaContainer({
-				userId: "me",
-				creationId: containerId,
-			});
+      const posts = await threads.getUserThreads({
+        fields: [
+          "id",
+          "text",
+          "media_type",
+          "media_url",
+          "permalink",
+          "is_quote_post",
+          "timestamp",
+          "thumbnail_url",
+        ],
+        options: {
+          limit: 10,
+        },
+        userId: "me",
+      });
 
-			return result;
-		}),
+      return posts;
+    }),
 });

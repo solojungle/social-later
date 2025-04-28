@@ -1,316 +1,315 @@
-import { StripeSubscriptionStatus } from "@prisma/client";
-import { z } from "zod";
-
 import { TeamSchema } from "@/schemas/team-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { stripe } from "@/server/services/stripe/client";
+import { StripeSubscriptionStatus } from "@prisma/client";
+import { z } from "zod";
 
 export const teamRouter = createTRPCRouter({
-	createViaEmbed: protectedProcedure
-		.input(
-			z.object({
-				customer: z.string(),
-				subscription: z.string(),
-				product: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const team = await ctx.db.team.create({
-				data: {
-					name: crypto.randomUUID(),
-					image: `https://avatar.vercel.sh/${
-						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
-					}.png`,
-					stripeCustomerId: input.customer,
-					stripeSubscriptionId: input.subscription,
-					stripeSubscriptionStatus: "active",
-					members: {
-						create: {
-							user: {
-								connect: {
-									id: ctx.session.user.id,
-								},
-							},
-							role: "OWNER",
-						},
-					},
-				},
-			});
+  // TODO: Infer the id, and userId from their respective schemas
+  addMember: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Check if the user is part of the team
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: input.id,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			// Update stripe customer metadata with the team id
-			await stripe.customers.update(input.customer, {
-				metadata: {
-					teamId: team.id,
-				},
-			});
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			return team;
-		}),
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-	create: protectedProcedure
-		.input(
-			z.object({
-				name: z.string(),
-				stripePriceId: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const customer = await stripe.customers.create({
-				name: input.name,
-			});
+      return ctx.db.team.update({
+        data: {
+          members: {
+            create: {
+              user: {
+                connect: {
+                  id: input.userId,
+                },
+              },
+            },
+          },
+        },
+        where: { id: input.id },
+      });
+    }),
 
-			const subscription = await stripe.subscriptions.create({
-				customer: customer.id,
-				items: [{ price: input.stripePriceId }],
-				payment_behavior: "default_incomplete",
-				payment_settings: {
-					save_default_payment_method: "on_subscription",
-				},
-				expand: ["latest_invoice.payment_intent"],
-			});
+  create: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        stripePriceId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const customer = await stripe.customers.create({
+        name: input.name,
+      });
 
-			const team = await ctx.db.team.create({
-				data: {
-					name: input.name,
-					image: `https://avatar.vercel.sh/${
-						Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
-					}.png`,
-					stripeCustomerId: customer.id,
-					stripeSubscriptionId: subscription.id,
-					stripeSubscriptionStatus: subscription.status,
-					members: {
-						create: {
-							user: {
-								connect: {
-									id: ctx.session.user.id,
-								},
-							},
-							role: "OWNER",
-						},
-					},
-				},
-			});
+      const subscription = await stripe.subscriptions.create({
+        customer: customer.id,
+        expand: ["latest_invoice.payment_intent"],
+        items: [{ price: input.stripePriceId }],
+        payment_behavior: "default_incomplete",
+        payment_settings: {
+          save_default_payment_method: "on_subscription",
+        },
+      });
 
-			// Update stripe customer metadata with the team id
-			await stripe.customers.update(customer.id, {
-				metadata: {
-					teamId: team.id,
-				},
-			});
+      const team = await ctx.db.team.create({
+        data: {
+          image: `https://avatar.vercel.sh/${
+            Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
+          }.png`,
+          members: {
+            create: {
+              role: "OWNER",
+              user: {
+                connect: {
+                  id: ctx.session.user.id,
+                },
+              },
+            },
+          },
+          name: input.name,
+          stripeCustomerId: customer.id,
+          stripeSubscriptionId: subscription.id,
+          stripeSubscriptionStatus: subscription.status,
+        },
+      });
 
-			// Make sure we have a payment intent
-			if (
-				!subscription?.latest_invoice ||
-				typeof subscription?.latest_invoice === "string" ||
-				!subscription?.latest_invoice.payment_intent ||
-				typeof subscription?.latest_invoice.payment_intent === "string"
-			) {
-				throw new Error("No payment intent found");
-			}
+      // Update stripe customer metadata with the team id
+      await stripe.customers.update(customer.id, {
+        metadata: {
+          teamId: team.id,
+        },
+      });
 
-			return {
-				team,
-				clientSecret:
-					subscription?.latest_invoice.payment_intent.client_secret ?? "",
-			};
-		}),
+      // Make sure we have a payment intent
+      if (
+        !subscription?.latest_invoice ||
+        typeof subscription?.latest_invoice === "string" ||
+        !subscription?.latest_invoice.payment_intent ||
+        typeof subscription?.latest_invoice.payment_intent === "string"
+      ) {
+        throw new Error("No payment intent found");
+      }
 
-	delete: protectedProcedure
-		.input(TeamSchema.pick({ id: true }))
-		.mutation(async ({ ctx, input }) => {
-			// Check if the user is part of the team
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: input.id,
-					userId: ctx.session.user.id,
-				},
-			});
+      return {
+        clientSecret:
+          subscription?.latest_invoice.payment_intent.client_secret ?? "",
+        team,
+      };
+    }),
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+  createViaEmbed: protectedProcedure
+    .input(
+      z.object({
+        customer: z.string(),
+        product: z.string(),
+        subscription: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const team = await ctx.db.team.create({
+        data: {
+          image: `https://avatar.vercel.sh/${
+            Math.floor(Math.random() * (1000000 - 0 + 1)) + 0
+          }.png`,
+          members: {
+            create: {
+              role: "OWNER",
+              user: {
+                connect: {
+                  id: ctx.session.user.id,
+                },
+              },
+            },
+          },
+          name: crypto.randomUUID(),
+          stripeCustomerId: input.customer,
+          stripeSubscriptionId: input.subscription,
+          stripeSubscriptionStatus: "active",
+        },
+      });
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // Update stripe customer metadata with the team id
+      await stripe.customers.update(input.customer, {
+        metadata: {
+          teamId: team.id,
+        },
+      });
 
-			const deletedTeam = await ctx.db.team.delete({
-				where: { id: input.id },
-			});
+      return team;
+    }),
 
-			const customerId = deletedTeam.stripeCustomerId;
-			if (!customerId || customerId === "") {
-				throw new Error("No customer id found");
-			}
+  delete: protectedProcedure
+    .input(TeamSchema.pick({ id: true }))
+    .mutation(async ({ ctx, input }) => {
+      // Check if the user is part of the team
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: input.id,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			// Now delete the customer from Stripe
-			await stripe.customers.del(customerId);
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			return deletedTeam;
-		}),
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-	update: protectedProcedure
-		.input(
-			TeamSchema.partial({
-				name: true,
-				url: true,
-				image: true,
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			// Check if the user is part of the team
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: input.id,
-					userId: ctx.session.user.id,
-				},
-			});
+      const deletedTeam = await ctx.db.team.delete({
+        where: { id: input.id },
+      });
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      const customerId = deletedTeam.stripeCustomerId;
+      if (!customerId || customerId === "") {
+        throw new Error("No customer id found");
+      }
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // Now delete the customer from Stripe
+      await stripe.customers.del(customerId);
 
-			return ctx.db.team.update({
-				where: { id: input.id },
-				data: {
-					...input,
-					stripeSubscriptionStatus:
-						input.stripeSubscriptionStatus as StripeSubscriptionStatus,
-				},
-			});
-		}),
+      return deletedTeam;
+    }),
 
-	getMembers: protectedProcedure
-		.input(TeamSchema.pick({ id: true }))
-		.query(async ({ ctx, input }) => {
-			// Check if the user is part of the team
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: input.id,
-					userId: ctx.session.user.id,
-				},
-			});
+  getMembers: protectedProcedure
+    .input(TeamSchema.pick({ id: true }))
+    .query(async ({ ctx, input }) => {
+      // Check if the user is part of the team
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: input.id,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			const data = await ctx.db.team.findUnique({
-				where: { id: input.id },
-				select: {
-					members: {
-						select: {
-							user: {
-								select: {
-									id: true,
-									name: true,
-									email: true,
-									image: true,
-								},
-							},
-							role: true, // Include the role field from UserOnTeam
-						},
-					},
-				},
-			});
+      const data = await ctx.db.team.findUnique({
+        select: {
+          members: {
+            select: {
+              role: true, // Include the role field from UserOnTeam
+              user: {
+                select: {
+                  email: true,
+                  id: true,
+                  image: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+        where: { id: input.id },
+      });
 
-			return data?.members
-				.filter((member) => member.user !== null)
-				.map((member) => {
-					return {
-						...member.user,
-						role: member.role,
-						name: member.user.name ?? "",
-						email: member.user.email ?? "",
-						image: member.user.image ?? "",
-					};
-				});
-		}),
+      return data?.members
+        .filter((member) => member.user !== null)
+        .map((member) => {
+          return {
+            ...member.user,
+            email: member.user.email ?? "",
+            image: member.user.image ?? "",
+            name: member.user.name ?? "",
+            role: member.role,
+          };
+        });
+    }),
 
-	// TODO: Infer the id, and userId from their respective schemas
-	addMember: protectedProcedure
-		.input(
-			z.object({
-				id: z.string(),
-				userId: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			// Check if the user is part of the team
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: input.id,
-					userId: ctx.session.user.id,
-				},
-			});
+  removeMember: protectedProcedure
+    .input(
+      z.object({
+        teamId: z.string(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Check if the user is part of the team
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: input.teamId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-			return ctx.db.team.update({
-				where: { id: input.id },
-				data: {
-					members: {
-						create: {
-							user: {
-								connect: {
-									id: input.userId,
-								},
-							},
-						},
-					},
-				},
-			});
-		}),
+      return ctx.db.userOnTeam.delete({
+        where: {
+          userId_teamId: {
+            teamId: input.teamId,
+            userId: input.userId,
+          },
+        },
+      });
+    }),
 
-	removeMember: protectedProcedure
-		.input(
-			z.object({
-				teamId: z.string(),
-				userId: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			// Check if the user is part of the team
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: input.teamId,
-					userId: ctx.session.user.id,
-				},
-			});
+  update: protectedProcedure
+    .input(
+      TeamSchema.partial({
+        image: true,
+        name: true,
+        url: true,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Check if the user is part of the team
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: input.id,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-			return ctx.db.userOnTeam.delete({
-				where: {
-					userId_teamId: {
-						userId: input.userId,
-						teamId: input.teamId,
-					},
-				},
-			});
-		}),
+      return ctx.db.team.update({
+        data: {
+          ...input,
+          stripeSubscriptionStatus:
+            input.stripeSubscriptionStatus as StripeSubscriptionStatus,
+        },
+        where: { id: input.id },
+      });
+    }),
 });

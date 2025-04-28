@@ -1,83 +1,82 @@
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
+import { knock } from "@/server/services/knock/client";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
-import {
-	createTRPCRouter,
-	protectedProcedure,
-	publicProcedure,
-} from "@/server/api/trpc";
-import { knock } from "@/server/services/knock/client";
-
 const NotificationFileSchema = z.object({
-	name: z.string(),
-	extension: z.string(),
-	mime: z.string(),
-	size: z.number(),
-	url: z.string(),
+  extension: z.string(),
+  mime: z.string(),
+  name: z.string(),
+  size: z.number(),
+  url: z.string(),
 });
 
 export const knockRouter = createTRPCRouter({
-	trigger: protectedProcedure
-		.input(
-			z.object({
-				teamId: z.string(),
-				messageType: z.enum(["join", "upload"]),
-				message: z.string().optional(),
-				files: z.array(NotificationFileSchema).optional(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { teamId } = input;
-			const { session, db } = ctx;
+  createUser: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      try {
+        await knock.users.identify(input.userId);
+      } catch (error: any) {
+        throw new Error(`Failed to create user: ${error.message}`);
+      }
+    }),
 
-			try {
-				// Get all the users in the team
-				const users = await db.userOnTeam.findMany({
-					where: {
-						teamId: input.teamId,
-					},
-				});
+  trigger: protectedProcedure
+    .input(
+      z.object({
+        files: z.array(NotificationFileSchema).optional(),
+        message: z.string().optional(),
+        messageType: z.enum(["join", "upload"]),
+        teamId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { teamId } = input;
+      const { db, session } = ctx;
 
-				const userIds = users.map((user) => user.userId);
+      try {
+        // Get all the users in the team
+        const users = await db.userOnTeam.findMany({
+          where: {
+            teamId: input.teamId,
+          },
+        });
 
-				// Remove the current user from the list
-				const currentUserIndex = userIds.indexOf(session.user.id);
-				if (currentUserIndex !== -1) {
-					userIds.splice(currentUserIndex, 1);
-				}
+        const userIds = users.map((user) => user.userId);
 
-				if (!userIds.length) {
-					// No users to notify
-					return;
-				}
+        // Remove the current user from the list
+        const currentUserIndex = userIds.indexOf(session.user.id);
+        if (currentUserIndex !== -1) {
+          userIds.splice(currentUserIndex, 1);
+        }
 
-				await knock.workflows.trigger("in-app-message", {
-					recipients: userIds,
-					data: {
-						type: input.messageType,
-						message: input.message,
-						files: input.files,
-					},
-					actor: session.user.id,
-					cancellationKey: nanoid(),
-					tenant: teamId,
-				});
-			} catch (error: any) {
-				throw new Error(`Failed to trigger notification: ${error.message}`);
-			}
-		}),
+        if (!userIds.length) {
+          // No users to notify
+          return;
+        }
 
-	createUser: publicProcedure
-		.input(
-			z.object({
-				userId: z.string(),
-			}),
-		)
-		.mutation(async ({ input }) => {
-			try {
-				await knock.users.identify(input.userId);
-			} catch (error: any) {
-				throw new Error(`Failed to create user: ${error.message}`);
-			}
-		}),
+        await knock.workflows.trigger("in-app-message", {
+          actor: session.user.id,
+          cancellationKey: nanoid(),
+          data: {
+            files: input.files,
+            message: input.message,
+            type: input.messageType,
+          },
+          recipients: userIds,
+          tenant: teamId,
+        });
+      } catch (error: any) {
+        throw new Error(`Failed to trigger notification: ${error.message}`);
+      }
+    }),
 });

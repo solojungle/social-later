@@ -1,17 +1,16 @@
+import { TeamMembersSchemaValues } from "@/schemas/user-schema";
 import { create } from "zustand";
 
-import { TeamMembersSchemaValues } from "@/schemas/user-schema";
-
 interface TeamMembersState {
-	members: TeamMembersSchemaValues[];
+  members: TeamMembersSchemaValues[];
 }
 
 interface TeamMembersStore extends TeamMembersState {}
 
 const defaultValues = {
-	members: [],
+  members: [],
 };
 
 export const useTeamMembersStore = create<TeamMembersStore>()(() => ({
-	...defaultValues,
+  ...defaultValues,
 }));

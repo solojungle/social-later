@@ -1,80 +1,78 @@
 import "@/styles/globals.css";
-
-import { cookies } from "next/headers";
-
 import PostHogPageView from "@/components/postHog/page-view";
 import { PosthogProvider } from "@/components/postHog/providers";
 import { ThemeProvider } from "@/components/themeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { env } from "@/env.mjs";
 import { TRPCReactProvider } from "@/trpc/react";
+import { cookies } from "next/headers";
 
 export const metadata = {
-	metadataBase: new URL(env.NEXTAUTH_URL),
-	icons: {
-		appleTouchIcon: "/apple-touch-icon.png",
-		favicon32: "/favicon-32x32.png",
-		favicon16: "/favicon-16x16.png",
-		safariPinnedTab: "/safari-pinned-tab.svg",
-		msapplicationTileColor: "#ffffff",
-		themeColor: "#ffffff",
-	},
-	openGraph: {
-		title: "FeedFrenzy - Social Media Management Platform",
-		description:
-			"Powerful social media management platform for scheduling, analytics, and audience engagement.",
-		siteName: "FeedFrenzy",
-		images: [
-			{
-				url: "/og.png",
-				width: 800,
-				height: 600,
-			},
-		],
-		locale: "en_US",
-		type: "website",
-	},
-	twitter: {
-		card: "summary_large_image",
-		title: "FeedFrenzy - Social Media Management Platform",
-		description:
-			"Powerful social media management platform for scheduling, analytics, and audience engagement.",
-		creator: "@feedfrenzy",
-		site: "@feedfrenzy",
-		images: [
-			{
-				url: "/og.png",
-				width: 800,
-				height: 600,
-				alt: "FeedFrenzy logo",
-			},
-		],
-	},
+  icons: {
+    appleTouchIcon: "/apple-touch-icon.png",
+    favicon16: "/favicon-16x16.png",
+    favicon32: "/favicon-32x32.png",
+    msapplicationTileColor: "#ffffff",
+    safariPinnedTab: "/safari-pinned-tab.svg",
+    themeColor: "#ffffff",
+  },
+  metadataBase: new URL(env.NEXTAUTH_URL),
+  openGraph: {
+    description:
+      "Powerful social media management platform for scheduling, analytics, and audience engagement.",
+    images: [
+      {
+        height: 600,
+        url: "/og.png",
+        width: 800,
+      },
+    ],
+    locale: "en_US",
+    siteName: "FeedFrenzy",
+    title: "FeedFrenzy - Social Media Management Platform",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@feedfrenzy",
+    description:
+      "Powerful social media management platform for scheduling, analytics, and audience engagement.",
+    images: [
+      {
+        alt: "FeedFrenzy logo",
+        height: 600,
+        url: "/og.png",
+        width: 800,
+      },
+    ],
+    site: "@feedfrenzy",
+    title: "FeedFrenzy - Social Media Management Platform",
+  },
 };
 
 export default async function RootLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	return (
-		<html lang="en" suppressHydrationWarning>
-			<body className="font-beausite subpixel-antialiased">
-				<TRPCReactProvider cookies={cookies().toString()}>
-					<PosthogProvider>
-						<ThemeProvider
-							attribute="class"
-							defaultTheme="system"
-							enableSystem
-							disableTransitionOnChange
-						>
-							{children}
-							<PostHogPageView />
-							<Toaster />
-						</ThemeProvider>
-					</PosthogProvider>
-				</TRPCReactProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className="font-beausite subpixel-antialiased">
+        <TRPCReactProvider cookies={cookies().toString()}>
+          <PosthogProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              disableTransitionOnChange
+              enableSystem
+            >
+              {children}
+              <PostHogPageView />
+              <Toaster />
+            </ThemeProvider>
+          </PosthogProvider>
+        </TRPCReactProvider>
+      </body>
+    </html>
+  );
 }

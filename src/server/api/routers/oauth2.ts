@@ -6,63 +6,63 @@ import { client } from "@/server/services/twitter/client";
 import { oauth2Client as yt } from "@/server/services/youtube/client";
 
 export const oauth2Router = createTRPCRouter({
-	generateYoutubeOAuth2URL: protectedProcedure.query(() => {
-		// Generate a url that asks permissions for YouTube scope
-		const scopes = [
-			"https://www.googleapis.com/auth/youtube",
-			"https://www.googleapis.com/auth/youtube.readonly",
-			"https://www.googleapis.com/auth/youtubepartner",
-			"https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
-			"https://www.googleapis.com/auth/yt-analytics.readonly",
-		];
+  generateLinkedinOAuth2URL: protectedProcedure.query(() => {
+    // TODO: add code and codeVerifier to the response
+    const codeVerifier = "";
+    const state = "";
 
-		// TODO: add code and codeVerifier to the response
-		const codeVerifier = "";
-		const state = "";
+    const url = li.generateMemberAuthorizationUrl([
+      "w_member_social",
+      "openid",
+      "profile",
+    ]);
 
-		const url = yt.generateAuthUrl({
-			access_type: "offline",
-			scope: scopes,
-			// https://github.com/googleapis/google-api-python-client/issues/213
-			// The oauth2 server will only ever mint one refresh token at a time
-			// if you request another access token via the flow it will operate
-			// as if you only asked for an access token.
-			prompt: "consent",
-		});
+    return { codeVerifier, state, url };
+  }),
 
-		// Redirect your user to {url}, store {state} and {codeVerifier} into a DB/Redis/memory after user redirection
-		return { url, codeVerifier, state };
-	}),
+  generateThreadsOAuth2URL: protectedProcedure.query(() => {
+    const codeVerifier = "";
+    const state = "";
+    const url = threads.getAuthorizationUrl();
 
-	generateTwitterOAuth2URL: protectedProcedure.query(() => {
-		const { url, codeVerifier, state } = client.generateOAuth2AuthLink(
-			`${env.TWITTER_CALLBACK_URL}/api/webhooks/twitter/callback`,
-			{ scope: ["tweet.read", "tweet.write", "users.read", "offline.access"] },
-		);
+    return { codeVerifier, state, url };
+  }),
 
-		// Redirect your user to {url}, store {state} and {codeVerifier} into a DB/Redis/memory after user redirection
-		return { url, codeVerifier, state };
-	}),
+  generateTwitterOAuth2URL: protectedProcedure.query(() => {
+    const { codeVerifier, state, url } = client.generateOAuth2AuthLink(
+      `${env.TWITTER_CALLBACK_URL}/api/webhooks/twitter/callback`,
+      { scope: ["tweet.read", "tweet.write", "users.read", "offline.access"] },
+    );
 
-	generateLinkedinOAuth2URL: protectedProcedure.query(() => {
-		// TODO: add code and codeVerifier to the response
-		const codeVerifier = "";
-		const state = "";
+    // Redirect your user to {url}, store {state} and {codeVerifier} into a DB/Redis/memory after user redirection
+    return { codeVerifier, state, url };
+  }),
 
-		const url = li.generateMemberAuthorizationUrl([
-			"w_member_social",
-			"openid",
-			"profile",
-		]);
+  generateYoutubeOAuth2URL: protectedProcedure.query(() => {
+    // Generate a url that asks permissions for YouTube scope
+    const scopes = [
+      "https://www.googleapis.com/auth/youtube",
+      "https://www.googleapis.com/auth/youtube.readonly",
+      "https://www.googleapis.com/auth/youtubepartner",
+      "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
+      "https://www.googleapis.com/auth/yt-analytics.readonly",
+    ];
 
-		return { url, codeVerifier, state };
-	}),
+    // TODO: add code and codeVerifier to the response
+    const codeVerifier = "";
+    const state = "";
 
-	generateThreadsOAuth2URL: protectedProcedure.query(() => {
-		const codeVerifier = "";
-		const state = "";
-		const url = threads.getAuthorizationUrl();
+    const url = yt.generateAuthUrl({
+      access_type: "offline",
+      // https://github.com/googleapis/google-api-python-client/issues/213
+      // The oauth2 server will only ever mint one refresh token at a time
+      // if you request another access token via the flow it will operate
+      // as if you only asked for an access token.
+      prompt: "consent",
+      scope: scopes,
+    });
 
-		return { url, codeVerifier, state };
-	}),
+    // Redirect your user to {url}, store {state} and {codeVerifier} into a DB/Redis/memory after user redirection
+    return { codeVerifier, state, url };
+  }),
 });

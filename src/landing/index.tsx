@@ -10,20 +10,20 @@ import { Pricing } from "./sections/pricing";
 import { ProductShowCase } from "./sections/showCase";
 
 export default async function LandingPage() {
-	return (
-		<main className="bg-stone-100 text-black">
-			<div className="flex w-full flex-col justify-center">
-				<NavigationMenu />
-				<Hero />
-				<ProductShowCase />
-				<HeroBackground />
-				<ProductOfferings />
-				<FeaturesTabs />
-				<Integrations />
-				<Pricing />
-				<Faq />
-				<Footer />
-			</div>
-		</main>
-	);
+  return (
+    <main className="bg-stone-100 text-black">
+      <div className="flex w-full flex-col justify-center">
+        <NavigationMenu />
+        <Hero />
+        <ProductShowCase />
+        <HeroBackground />
+        <ProductOfferings />
+        <FeaturesTabs />
+        <Integrations />
+        <Pricing />
+        <Faq />
+        <Footer />
+      </div>
+    </main>
+  );
 }

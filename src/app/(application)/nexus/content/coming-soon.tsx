@@ -1,32 +1,31 @@
-import { ArrowRight, SparklesIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/stores/user";
+import { ArrowRight, SparklesIcon } from "lucide-react";
 
 function ArticleCards() {
-	return (
-		<article className="group relative col-span-1 grid h-[141px] w-full max-w-lg select-none items-end justify-start overflow-hidden rounded-lg border border-border p-5 pb-3 shadow-card hover:bg-primary-foreground/50">
-			<div className="z-10 drop-shadow-md">
-				<h2 className="text-sm font-semibold text-white">Coming soon</h2>
-				<p className="mt-0.5 text-xs text-white">
-					Articles will be added soon to help you get started with FeedFrenzy
-				</p>
-			</div>
-			<div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-4/6 bg-gradient-to-t from-black to-transparent opacity-30" />
-		</article>
-	);
+  return (
+    <article className="group relative col-span-1 grid h-[141px] w-full max-w-lg select-none items-end justify-start overflow-hidden rounded-lg border border-border p-5 pb-3 shadow-card hover:bg-primary-foreground/50">
+      <div className="z-10 drop-shadow-md">
+        <h2 className="text-sm font-semibold text-white">Coming soon</h2>
+        <p className="mt-0.5 text-xs text-white">
+          Articles will be added soon to help you get started with FeedFrenzy
+        </p>
+      </div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-4/6 bg-gradient-to-t from-black to-transparent opacity-30" />
+    </article>
+  );
 }
 
 function Articles() {
-	return (
-		<div className="flex flex-col">
-			<h1 className="mb-4 text-lg font-semibold">Articles</h1>
-			<div className="flex w-full gap-4">
-				<ArticleCards />
-			</div>
-		</div>
-	);
+  return (
+    <div className="flex flex-col">
+      <h1 className="mb-4 text-lg font-semibold">Articles</h1>
+      <div className="flex w-full gap-4">
+        <ArticleCards />
+      </div>
+    </div>
+  );
 }
 
 // function NewsCard() {
@@ -62,59 +61,59 @@ function Articles() {
 // }
 
 function Greeting({ className }: { className?: string }) {
-	const { name: userName } = useUserStore();
+  const { name: userName } = useUserStore();
 
-	return (
-		<div className={cn("flex flex-col", className)}>
-			<h2 className="text-xl font-semibold">Hey {userName}</h2>
-			<p className="text-sm text-muted-foreground">Welcome to FeedFrenzy!</p>
-		</div>
-	);
-}
-
-function QuickStart() {
-	return (
-		<div className="flex flex-col">
-			<h1 className="mb-4 text-lg font-semibold">Quick Start</h1>
-			<div className="flex space-x-2">
-				<Button size="lg" className="flex items-center gap-2">
-					<SparklesIcon className="size-4" />
-					Create Captions
-				</Button>
-			</div>
-		</div>
-	);
-}
-
-function SeeMoreNewsCard() {
-	return (
-		<article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
-			<p className="select-none text-sm font-semibold text-primary">See More</p>
-			<ArrowRight className="ml-1 h-4 w-4 text-primary" />
-		</article>
-	);
+  return (
+    <div className={cn("flex flex-col", className)}>
+      <h2 className="text-xl font-semibold">Hey {userName}</h2>
+      <p className="text-sm text-muted-foreground">Welcome to FeedFrenzy!</p>
+    </div>
+  );
 }
 
 function NewsAndUpdates() {
-	return (
-		<div className="flex flex-col">
-			<h1 className="mb-4 text-lg font-semibold">News & Updates</h1>
-			<div className="flex w-full flex-wrap gap-4">
-				<SeeMoreNewsCard />
-			</div>
-		</div>
-	);
+  return (
+    <div className="flex flex-col">
+      <h1 className="mb-4 text-lg font-semibold">News & Updates</h1>
+      <div className="flex w-full flex-wrap gap-4">
+        <SeeMoreNewsCard />
+      </div>
+    </div>
+  );
+}
+
+function QuickStart() {
+  return (
+    <div className="flex flex-col">
+      <h1 className="mb-4 text-lg font-semibold">Quick Start</h1>
+      <div className="flex space-x-2">
+        <Button className="flex items-center gap-2" size="lg">
+          <SparklesIcon className="size-4" />
+          Create Captions
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function SeeMoreNewsCard() {
+  return (
+    <article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
+      <p className="select-none text-sm font-semibold text-primary">See More</p>
+      <ArrowRight className="ml-1 h-4 w-4 text-primary" />
+    </article>
+  );
 }
 
 export const NexusPageContent = () => {
-	return (
-		<div className="h-full !overflow-scroll p-3">
-			<Greeting className="mb-8" />
-			<div className="flex flex-col space-y-4">
-				<QuickStart />
-				<Articles />
-				<NewsAndUpdates />
-			</div>
-		</div>
-	);
+  return (
+    <div className="h-full !overflow-scroll p-3">
+      <Greeting className="mb-8" />
+      <div className="flex flex-col space-y-4">
+        <QuickStart />
+        <Articles />
+        <NewsAndUpdates />
+      </div>
+    </div>
+  );
 };

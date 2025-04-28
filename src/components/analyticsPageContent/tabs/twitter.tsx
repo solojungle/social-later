@@ -4,15 +4,15 @@ import { DeviceVisits } from "../deviceVisits";
 // import { StatsCard } from "../statsCard";
 
 export interface Increase {
-	daily: number;
-	weekly: number;
-	monthly: number;
-	annually: number;
+  annually: number;
+  daily: number;
+  monthly: number;
+  weekly: number;
 }
 
 export interface Totals {
-	value: number;
-	increase: Increase;
+  increase: Increase;
+  value: number;
 }
 
 // type AudienceGrowthProps = {
@@ -86,21 +86,21 @@ export interface Totals {
 // }
 
 export const TwitterAnalyticsTab = () => {
-	// const { data: resp } = api.metrics.getPostMetrics.useQuery({
-	// 	id: "clvs5cszf000aso19af4tk5jx",
-	// });
+  // const { data: resp } = api.metrics.getPostMetrics.useQuery({
+  // 	id: "clvs5cszf000aso19af4tk5jx",
+  // });
 
-	return (
-		<>
-			{/* <PerformanceSummary values={resp?.totals} /> */}
-			<div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
-				<div className="col-span-2">
-					{/* <AudienceGrowth metrics={resp?.metrics} /> */}
-				</div>
-				<div className="col-span-1">
-					<DeviceVisits />
-				</div>
-			</div>
-		</>
-	);
+  return (
+    <>
+      {/* <PerformanceSummary values={resp?.totals} /> */}
+      <div className="grid grid-cols-1 gap-y-2 lg:grid-cols-3 lg:gap-2">
+        <div className="col-span-2">
+          {/* <AudienceGrowth metrics={resp?.metrics} /> */}
+        </div>
+        <div className="col-span-1">
+          <DeviceVisits />
+        </div>
+      </div>
+    </>
+  );
 };

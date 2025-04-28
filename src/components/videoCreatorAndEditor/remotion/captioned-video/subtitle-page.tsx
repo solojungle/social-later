@@ -1,32 +1,32 @@
 import { TikTokPage } from "@remotion/captions";
 import React from "react";
 import {
-	AbsoluteFill,
-	spring,
-	useCurrentFrame,
-	useVideoConfig,
+  AbsoluteFill,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
 } from "remotion";
 
 import { Page } from "./page";
 
 export const SubtitlePage: React.FC<{ readonly page: TikTokPage }> = ({
-	page,
+  page,
 }) => {
-	const frame = useCurrentFrame();
-	const { fps } = useVideoConfig();
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
 
-	const enter = spring({
-		frame,
-		fps,
-		config: {
-			damping: 200,
-		},
-		durationInFrames: 5,
-	});
+  const enter = spring({
+    config: {
+      damping: 200,
+    },
+    durationInFrames: 5,
+    fps,
+    frame,
+  });
 
-	return (
-		<AbsoluteFill>
-			<Page enterProgress={enter} page={page} />
-		</AbsoluteFill>
-	);
+  return (
+    <AbsoluteFill>
+      <Page enterProgress={enter} page={page} />
+    </AbsoluteFill>
+  );
 };

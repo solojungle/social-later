@@ -4,20 +4,20 @@ import { InvitesTable } from "./invitesTable";
 import { MembersTable } from "./memberTable";
 
 export function MemberManager() {
-	return (
-		<Tabs defaultValue="members" className="w-full ">
-			<TabsList>
-				<TabsTrigger value="members">Team Members</TabsTrigger>
-				<TabsTrigger value="invites">Pending Invitations</TabsTrigger>
-			</TabsList>
-			<TabsContent value="members" className="mb-72">
-				<FacetedFilter />
-				<MembersTable />
-			</TabsContent>
-			<TabsContent value="invites" className="mb-72">
-				<FacetedFilter />
-				<InvitesTable />
-			</TabsContent>
-		</Tabs>
-	);
+  return (
+    <Tabs className="w-full " defaultValue="members">
+      <TabsList>
+        <TabsTrigger value="members">Team Members</TabsTrigger>
+        <TabsTrigger value="invites">Pending Invitations</TabsTrigger>
+      </TabsList>
+      <TabsContent className="mb-72" value="members">
+        <FacetedFilter />
+        <MembersTable />
+      </TabsContent>
+      <TabsContent className="mb-72" value="invites">
+        <FacetedFilter />
+        <InvitesTable />
+      </TabsContent>
+    </Tabs>
+  );
 }

@@ -1,295 +1,294 @@
-import { z } from "zod";
-
 import { env } from "@/env.mjs";
 import { PostsSchema } from "@/schemas/posts-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { z } from "zod";
 
 import { createAttachments } from "./utils/attachments";
 
 export const postRouter = createTRPCRouter({
-	create: protectedProcedure
-		.input(
-			PostsSchema.omit({
-				id: true,
-				attachment: true,
-				status: true,
-				published: true,
-			}).extend({
-				fileIds: z.array(z.string()).optional(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const { fileIds, scheduledFor, ...postData } = input;
+  create: protectedProcedure
+    .input(
+      PostsSchema.omit({
+        attachment: true,
+        id: true,
+        published: true,
+        status: true,
+      }).extend({
+        fileIds: z.array(z.string()).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { fileIds, scheduledFor, ...postData } = input;
 
-			// Determine the status and published flag based on scheduledFor
-			const status = scheduledFor ? "scheduled" : "published";
-			const published = !scheduledFor;
+      // Determine the status and published flag based on scheduledFor
+      const status = scheduledFor ? "scheduled" : "published";
+      const published = !scheduledFor;
 
-			// Create the post
-			const post = await ctx.db.post.create({
-				data: {
-					...postData,
-					status,
-					scheduledFor,
-					published,
-				},
-			});
+      // Create the post
+      const post = await ctx.db.post.create({
+        data: {
+          ...postData,
+          published,
+          scheduledFor,
+          status,
+        },
+      });
 
-			// If there are files, create attachments
-			if (fileIds && fileIds.length > 0) {
-				const files = await ctx.db.file.findMany({
-					where: {
-						id: {
-							in: fileIds,
-						},
-					},
-				});
+      // If there are files, create attachments
+      if (fileIds && fileIds.length > 0) {
+        const files = await ctx.db.file.findMany({
+          where: {
+            id: {
+              in: fileIds,
+            },
+          },
+        });
 
-				if (!files || files.length !== fileIds.length) {
-					throw new Error("One or more files do not exist");
-				}
+        if (!files || files.length !== fileIds.length) {
+          throw new Error("One or more files do not exist");
+        }
 
-				await createAttachments(
-					files.map((file) => ({
-						teamId: post.authorId,
-						postId: post.id,
-						fileId: file.id,
-					})),
-				);
-			}
+        await createAttachments(
+          files.map((file) => ({
+            fileId: file.id,
+            postId: post.id,
+            teamId: post.authorId,
+          })),
+        );
+      }
 
-			return post;
-		}),
+      return post;
+    }),
 
-	updateThumbnail: protectedProcedure
-		.input(
-			z.object({
-				postId: z.string(),
-				thumbnailUrl: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			// Get the post
-			const post = await ctx.db.post.findFirst({
-				where: {
-					id: input.postId,
-				},
-			});
+  delete: protectedProcedure
+    .input(
+      z.object({
+        internalPostId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Get the post
+      const post = await ctx.db.post.findFirst({
+        where: {
+          id: input.internalPostId,
+        },
+      });
 
-			if (!post) {
-				throw new Error("Post does not exist");
-			}
+      if (!post) {
+        throw new Error("Post does not exist");
+      }
 
-			// Check if the user is part of the team
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: post.authorId,
-					userId: ctx.session.user.id,
-				},
-			});
+      // Check if the user is part of the team
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: post.authorId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-			// Update the post
-			return ctx.db.post.update({
-				where: {
-					id: input.postId,
-				},
-				data: {
-					thumbnail: input.thumbnailUrl,
-				},
-			});
-		}),
+      // Delete the post
+      return ctx.db.post.delete({
+        where: {
+          id: input.internalPostId,
+        },
+      });
+    }),
 
-	delete: protectedProcedure
-		.input(
-			z.object({
-				internalPostId: z.string(),
-			}),
-		)
-		.mutation(async ({ ctx, input }) => {
-			// Get the post
-			const post = await ctx.db.post.findFirst({
-				where: {
-					id: input.internalPostId,
-				},
-			});
+  get: protectedProcedure
+    .input(
+      z.object({
+        internalPostId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      // Get the post
+      const post = await ctx.db.post.findFirst({
+        include: {
+          attachment: {
+            include: {
+              file: true,
+            },
+          },
+        },
+        where: {
+          id: input.internalPostId,
+        },
+      });
 
-			if (!post) {
-				throw new Error("Post does not exist");
-			}
+      if (!post) {
+        throw new Error("Post does not exist");
+      }
 
-			// Check if the user is part of the team
-			const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
-				where: {
-					teamId: post.authorId,
-					userId: ctx.session.user.id,
-				},
-			});
+      // Get the file for each attachment
+      const attachmentsWithFiles = await Promise.all(
+        post.attachment.map(async (attachment) => {
+          const file = await ctx.db.file.findFirst({
+            where: { id: attachment.fileId },
+          });
 
-			if (!isUserPartOfTeam) {
-				throw new Error("You are not apart of this team");
-			}
+          if (!file) {
+            throw new Error("File does not exist");
+          }
 
-			// Check if the user is the owner of the team
-			const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
-			if (!isUserOwnerOfTeam) {
-				throw new Error("You are not an owner of this team");
-			}
+          const { extension, key, type } = file;
+          const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
+          const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
 
-			// Delete the post
-			return ctx.db.post.delete({
-				where: {
-					id: input.internalPostId,
-				},
-			});
-		}),
+          return {
+            ...attachment,
+            thumbnail:
+              type === "video"
+                ? `${thumbnailBaseUrl}.jpg`
+                : `${thumbnailBaseUrl}.${extension}`,
+            url: `${baseUrl}.${extension}`,
+          };
+        }),
+      );
 
-	get: protectedProcedure
-		.input(
-			z.object({
-				internalPostId: z.string(),
-			}),
-		)
-		.query(async ({ ctx, input }) => {
-			// Get the post
-			const post = await ctx.db.post.findFirst({
-				where: {
-					id: input.internalPostId,
-				},
-				include: {
-					attachment: {
-						include: {
-							file: true,
-						},
-					},
-				},
-			});
+      return {
+        ...post,
+        attachment: attachmentsWithFiles,
+      };
+    }),
 
-			if (!post) {
-				throw new Error("Post does not exist");
-			}
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        teamId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      // Get posts and their attachments
+      const posts = await ctx.db.post.findMany({
+        include: {
+          attachment: {
+            include: {
+              file: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          authorId: input.teamId,
+        },
+      });
 
-			// Get the file for each attachment
-			const attachmentsWithFiles = await Promise.all(
-				post.attachment.map(async (attachment) => {
-					const file = await ctx.db.file.findFirst({
-						where: { id: attachment.fileId },
-					});
+      // Get the file for each attachment
+      const postsWithFiles = await Promise.all(
+        posts.map(async (post) => {
+          const attachments = await ctx.db.attachment.findMany({
+            include: { file: true },
+            where: { postId: post.id },
+          });
 
-					if (!file) {
-						throw new Error("File does not exist");
-					}
+          const attachmentsWithUrls = attachments.map((attachment) => {
+            if (attachment?.file) {
+              const { extension, key, type } = attachment.file;
+              const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
+              const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
 
-					const { key, extension, type } = file;
-					const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
-					const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
+              return {
+                ...attachment,
+                thumbnail:
+                  type === "video"
+                    ? `${thumbnailBaseUrl}.jpg`
+                    : `${thumbnailBaseUrl}.${extension}`,
+                url: `${baseUrl}.${extension}`,
+              };
+            }
+            return attachment;
+          });
 
-					return {
-						...attachment,
-						url: `${baseUrl}.${extension}`,
-						thumbnail:
-							type === "video"
-								? `${thumbnailBaseUrl}.jpg`
-								: `${thumbnailBaseUrl}.${extension}`,
-					};
-				}),
-			);
+          return {
+            ...post,
+            attachment: attachmentsWithUrls,
+          };
+        }),
+      );
 
-			return {
-				...post,
-				attachment: attachmentsWithFiles,
-			};
-		}),
+      return postsWithFiles;
+    }),
 
-	getFromExternalId: protectedProcedure
-		.input(
-			z.object({
-				externalPostId: z.string(),
-			}),
-		)
-		.query(async ({ ctx, input }) => {
-			// Get the post
-			const post = await ctx.db.post.findFirst({
-				where: {
-					externalPostId: input.externalPostId,
-				},
-			});
+  getFromExternalId: protectedProcedure
+    .input(
+      z.object({
+        externalPostId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      // Get the post
+      const post = await ctx.db.post.findFirst({
+        where: {
+          externalPostId: input.externalPostId,
+        },
+      });
 
-			if (!post) {
-				return null;
-			}
+      if (!post) {
+        return null;
+      }
 
-			return {
-				...post,
-			};
-		}),
+      return {
+        ...post,
+      };
+    }),
 
-	getAll: protectedProcedure
-		.input(
-			z.object({
-				teamId: z.string(),
-			}),
-		)
-		.query(async ({ ctx, input }) => {
-			// Get posts and their attachments
-			const posts = await ctx.db.post.findMany({
-				where: {
-					authorId: input.teamId,
-				},
-				include: {
-					attachment: {
-						include: {
-							file: true,
-						},
-					},
-				},
-				orderBy: {
-					createdAt: "desc",
-				},
-			});
+  updateThumbnail: protectedProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+        thumbnailUrl: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Get the post
+      const post = await ctx.db.post.findFirst({
+        where: {
+          id: input.postId,
+        },
+      });
 
-			// Get the file for each attachment
-			const postsWithFiles = await Promise.all(
-				posts.map(async (post) => {
-					const attachments = await ctx.db.attachment.findMany({
-						where: { postId: post.id },
-						include: { file: true },
-					});
+      if (!post) {
+        throw new Error("Post does not exist");
+      }
 
-					const attachmentsWithUrls = attachments.map((attachment) => {
-						if (attachment?.file) {
-							const { key, extension, type } = attachment.file;
-							const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
-							const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
+      // Check if the user is part of the team
+      const isUserPartOfTeam = await ctx.db.userOnTeam.findFirst({
+        where: {
+          teamId: post.authorId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-							return {
-								...attachment,
-								url: `${baseUrl}.${extension}`,
-								thumbnail:
-									type === "video"
-										? `${thumbnailBaseUrl}.jpg`
-										: `${thumbnailBaseUrl}.${extension}`,
-							};
-						}
-						return attachment;
-					});
+      if (!isUserPartOfTeam) {
+        throw new Error("You are not apart of this team");
+      }
 
-					return {
-						...post,
-						attachment: attachmentsWithUrls,
-					};
-				}),
-			);
+      // Check if the user is the owner of the team
+      const isUserOwnerOfTeam = isUserPartOfTeam.role === "OWNER";
+      if (!isUserOwnerOfTeam) {
+        throw new Error("You are not an owner of this team");
+      }
 
-			return postsWithFiles;
-		}),
+      // Update the post
+      return ctx.db.post.update({
+        data: {
+          thumbnail: input.thumbnailUrl,
+        },
+        where: {
+          id: input.postId,
+        },
+      });
+    }),
 });

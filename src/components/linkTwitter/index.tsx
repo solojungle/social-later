@@ -3,24 +3,24 @@ import Cookies from "js-cookie";
 import { Button } from "../ui/button";
 
 export function OLDLinkTwitterButton({
-	teamId,
-	state,
-	codeVerifier,
-	url,
+  codeVerifier,
+  state,
+  teamId,
+  url,
 }: {
-	teamId: string;
-	state: string;
-	codeVerifier: string;
-	url: string;
+  codeVerifier: string;
+  state: string;
+  teamId: string;
+  url: string;
 }) {
-	// Set the cookies
-	Cookies.set("codeVerifier", codeVerifier);
-	Cookies.set("state", state);
-	Cookies.set("teamId", teamId);
+  // Set the cookies
+  Cookies.set("codeVerifier", codeVerifier);
+  Cookies.set("state", state);
+  Cookies.set("teamId", teamId);
 
-	return (
-		<Button variant="link">
-			<a href={url}>Link twitter</a>
-		</Button>
-	);
+  return (
+    <Button variant="link">
+      <a href={url}>Link twitter</a>
+    </Button>
+  );
 }

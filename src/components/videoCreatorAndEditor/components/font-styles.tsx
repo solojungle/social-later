@@ -2,141 +2,140 @@
 
 "use client";
 
-import { Compact } from "@uiw/react-color";
-import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { Compact } from "@uiw/react-color";
+import { useState } from "react";
 
 import { useEditor } from "../context/editor-context";
 import { FontPicker } from "./font-picker";
 import { FontTemplates } from "./font-templates";
 
 export function FontStyles() {
-	const { updateGlobalStyles } = useEditor();
-	const [textFormat, setTextFormat] = useState<
-		"none" | "lowercase" | "uppercase"
-	>("none");
-	const [textShadow, setTextShadow] = useState<
-		"none" | "small" | "medium" | "large"
-	>("none");
-	const [fontSize, setFontSize] = useState<number>(24);
-	const [fontColor, setFontColor] = useState<string>("#FFFFFF");
-	const [highlightColor, setHighlightColor] = useState<string>("#FFFFFF");
-	const handleFontSizeChange = (value: number[]) => {
-		setFontSize(value[0] ?? 24);
-		updateGlobalStyles({ fontSize });
-	};
+  const { updateGlobalStyles } = useEditor();
+  const [textFormat, setTextFormat] = useState<
+    "lowercase" | "none" | "uppercase"
+  >("none");
+  const [textShadow, setTextShadow] = useState<
+    "large" | "medium" | "none" | "small"
+  >("none");
+  const [fontSize, setFontSize] = useState<number>(24);
+  const [fontColor, setFontColor] = useState<string>("#FFFFFF");
+  const [highlightColor, setHighlightColor] = useState<string>("#FFFFFF");
+  const handleFontSizeChange = (value: number[]) => {
+    setFontSize(value[0] ?? 24);
+    updateGlobalStyles({ fontSize });
+  };
 
-	const handleColorChange = (color: string) => {
-		setFontColor(color);
-		updateGlobalStyles({ color });
-	};
+  const handleColorChange = (color: string) => {
+    setFontColor(color);
+    updateGlobalStyles({ color });
+  };
 
-	const handleHighlightColorChange = (color: string) => {
-		setHighlightColor(color);
-		updateGlobalStyles({ highlightColor: color });
-	};
+  const handleHighlightColorChange = (color: string) => {
+    setHighlightColor(color);
+    updateGlobalStyles({ highlightColor: color });
+  };
 
-	const handleTextFormatChange = (
-		format: "none" | "lowercase" | "uppercase",
-	) => {
-		setTextFormat(format);
-		// Note: text transform is handled in the caption rendering
-		updateGlobalStyles({ textTransform: textFormat });
-	};
+  const handleTextFormatChange = (
+    format: "lowercase" | "none" | "uppercase",
+  ) => {
+    setTextFormat(format);
+    // Note: text transform is handled in the caption rendering
+    updateGlobalStyles({ textTransform: textFormat });
+  };
 
-	const handleShadowChange = (
-		shadow: "none" | "small" | "medium" | "large",
-	) => {
-		setTextShadow(shadow);
-		updateGlobalStyles({ shadow });
-	};
+  const handleShadowChange = (
+    shadow: "large" | "medium" | "none" | "small",
+  ) => {
+    setTextShadow(shadow);
+    updateGlobalStyles({ shadow });
+  };
 
-	return (
-		<div className="space-y-6">
-			<FontTemplates />
-			<FontPicker />
+  return (
+    <div className="space-y-6">
+      <FontTemplates />
+      <FontPicker />
 
-			<div className="space-y-2">
-				<label className="text-sm font-medium">Font Size</label>
-				<div className="flex items-center gap-4">
-					<span className="w-12 text-sm text-muted-foreground">
-						{fontSize}px
-					</span>
-					<Slider
-						min={12}
-						max={72}
-						step={1}
-						value={[fontSize]}
-						onValueChange={handleFontSizeChange}
-					/>
-				</div>
-			</div>
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Font Size</label>
+        <div className="flex items-center gap-4">
+          <span className="w-12 text-sm text-muted-foreground">
+            {fontSize}px
+          </span>
+          <Slider
+            max={72}
+            min={12}
+            onValueChange={handleFontSizeChange}
+            step={1}
+            value={[fontSize]}
+          />
+        </div>
+      </div>
 
-			<div className="flex gap-2">
-				<div className="space-y-2">
-					<label className="text-sm font-medium">Font Color</label>
-					<Compact
-						color={fontColor}
-						onChange={(color) => handleColorChange(color.hex)}
-					/>
-				</div>
-				<div className="space-y-2">
-					<label className="text-sm font-medium">Highlight Color</label>
-					<Compact
-						color={highlightColor}
-						onChange={(color) => handleHighlightColorChange(color.hex)}
-					/>
-				</div>
-			</div>
-			<div className="w-full space-y-2">
-				<label className="text-sm font-medium">Text Format</label>
-				<div className="flex w-full gap-2">
-					<Button
-						className="flex-1"
-						variant={textFormat === "none" ? "default" : "outline"}
-						onClick={() => handleTextFormatChange("none")}
-					>
-						None
-					</Button>
-					<Button
-						className="flex-1"
-						variant={textFormat === "lowercase" ? "default" : "outline"}
-						onClick={() => handleTextFormatChange("lowercase")}
-					>
-						Lower
-					</Button>
-					<Button
-						className="flex-1"
-						variant={textFormat === "uppercase" ? "default" : "outline"}
-						onClick={() => handleTextFormatChange("uppercase")}
-					>
-						Upper
-					</Button>
-				</div>
-			</div>
+      <div className="flex gap-2">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Font Color</label>
+          <Compact
+            color={fontColor}
+            onChange={(color) => handleColorChange(color.hex)}
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Highlight Color</label>
+          <Compact
+            color={highlightColor}
+            onChange={(color) => handleHighlightColorChange(color.hex)}
+          />
+        </div>
+      </div>
+      <div className="w-full space-y-2">
+        <label className="text-sm font-medium">Text Format</label>
+        <div className="flex w-full gap-2">
+          <Button
+            className="flex-1"
+            onClick={() => handleTextFormatChange("none")}
+            variant={textFormat === "none" ? "default" : "outline"}
+          >
+            None
+          </Button>
+          <Button
+            className="flex-1"
+            onClick={() => handleTextFormatChange("lowercase")}
+            variant={textFormat === "lowercase" ? "default" : "outline"}
+          >
+            Lower
+          </Button>
+          <Button
+            className="flex-1"
+            onClick={() => handleTextFormatChange("uppercase")}
+            variant={textFormat === "uppercase" ? "default" : "outline"}
+          >
+            Upper
+          </Button>
+        </div>
+      </div>
 
-			<div className="space-y-2">
-				<label className="text-sm font-medium">Shadow</label>
-				<div className="flex gap-2">
-					{["none", "small", "medium", "large"].map((size) => (
-						<Button
-							key={size}
-							className="flex-1"
-							variant={textShadow === size ? "default" : "outline"}
-							onClick={() =>
-								handleShadowChange(
-									size as "none" | "small" | "medium" | "large",
-								)
-							}
-							// disabled={!selectedCaptionId}
-						>
-							{size === "none" ? "None" : size.charAt(0).toUpperCase()}
-						</Button>
-					))}
-				</div>
-			</div>
-		</div>
-	);
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Shadow</label>
+        <div className="flex gap-2">
+          {["none", "small", "medium", "large"].map((size) => (
+            <Button
+              className="flex-1"
+              key={size}
+              onClick={() =>
+                handleShadowChange(
+                  size as "large" | "medium" | "none" | "small",
+                )
+              }
+              variant={textShadow === size ? "default" : "outline"}
+              // disabled={!selectedCaptionId}
+            >
+              {size === "none" ? "None" : size.charAt(0).toUpperCase()}
+            </Button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -1,118 +1,117 @@
 "use client";
 
+import { InterfaceIcons } from "@/components/ui/icons";
+import { useTeamStore } from "@/stores/teams";
+import { api } from "@/trpc/react";
 import { CheckCircle2, XCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useEffect, useRef } from "react";
 
-import { InterfaceIcons } from "@/components/ui/icons";
-import { useTeamStore } from "@/stores/teams";
-import { api } from "@/trpc/react";
-
 type SuccessPageContentProps = {
-	customer: string;
-	subscription: string;
-	product: string;
+  customer: string;
+  product: string;
+  subscription: string;
 };
 
-function SuccessPageContent({
-	customer,
-	subscription,
-	product,
-}: SuccessPageContentProps) {
-	const hasCreatedTeam = useRef(false);
-	const { addTeam } = useTeamStore();
-	const router = useRouter();
+export function CheckoutPageContent() {
+  const [sessionId] = useQueryState("sessionId", {
+    defaultValue: "",
+  });
 
-	const {
-		mutateAsync: createTeamViaEmbed,
-		isLoading,
-		isError,
-	} = api.team.createViaEmbed.useMutation({
-		onSuccess: (data: any) => {
-			addTeam({
-				...data.team,
-			});
+  if (!sessionId) {
+    return <ErrorPageContent />;
+  }
 
-			router.push("/publish");
-		},
-	});
+  const {
+    data: checkout,
+    isError,
+    isFetching,
+  } = api.stripe.getCheckoutSessionStatus.useQuery(
+    {
+      sessionId,
+    },
+    {
+      enabled: !!sessionId,
+    },
+  );
 
-	useEffect(() => {
-		if (!hasCreatedTeam.current) {
-			createTeamViaEmbed({
-				customer,
-				subscription,
-				product,
-			});
-			hasCreatedTeam.current = true;
-		}
-	}, [customer, subscription, product, createTeamViaEmbed]);
+  if (isFetching) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center">
+        <InterfaceIcons.Loading className="mb-6 h-16 w-16 animate-spin text-muted-foreground" />
+        <h1 className="text-center text-lg font-extralight text-muted-foreground">
+          Getting payment status...
+        </h1>
+      </div>
+    );
+  }
 
-	return (
-		<div className="flex h-screen flex-col items-center  justify-center text-center text-lg">
-			<CheckCircle2 className="mb-6 h-16 w-16 text-green-500" />
-			<h1>Thank you for your purchase!</h1>
-			<div>{isLoading ? <p>Creating your team...</p> : null}</div>
-			<div>
-				{isError ? <p>Failed to create team, please contact support!</p> : null}
-			</div>
-		</div>
-	);
+  if (isError || !checkout || !checkout.customer || !checkout.subscription) {
+    return <ErrorPageContent />;
+  }
+
+  return (
+    <SuccessPageContent
+      customer={checkout.customer}
+      product={checkout.product}
+      subscription={checkout.subscription}
+    />
+  );
 }
 
 function ErrorPageContent() {
-	return (
-		<div className="flex h-screen flex-col items-center justify-center text-center text-lg">
-			<XCircleIcon className="mb-6 h-16 w-16 text-red-500" />
-			<h1>Something went wrong</h1>
-			<p>Sorry, we could not process your payment. Please try again.</p>
-		</div>
-	);
+  return (
+    <div className="flex h-screen flex-col items-center justify-center text-center text-lg">
+      <XCircleIcon className="mb-6 h-16 w-16 text-red-500" />
+      <h1>Something went wrong</h1>
+      <p>Sorry, we could not process your payment. Please try again.</p>
+    </div>
+  );
 }
 
-export function CheckoutPageContent() {
-	const [sessionId] = useQueryState("sessionId", {
-		defaultValue: "",
-	});
+function SuccessPageContent({
+  customer,
+  product,
+  subscription,
+}: SuccessPageContentProps) {
+  const hasCreatedTeam = useRef(false);
+  const { addTeam } = useTeamStore();
+  const router = useRouter();
 
-	if (!sessionId) {
-		return <ErrorPageContent />;
-	}
+  const {
+    isError,
+    isLoading,
+    mutateAsync: createTeamViaEmbed,
+  } = api.team.createViaEmbed.useMutation({
+    onSuccess: (data: any) => {
+      addTeam({
+        ...data.team,
+      });
 
-	const {
-		data: checkout,
-		isFetching,
-		isError,
-	} = api.stripe.getCheckoutSessionStatus.useQuery(
-		{
-			sessionId,
-		},
-		{
-			enabled: !!sessionId,
-		},
-	);
+      router.push("/publish");
+    },
+  });
 
-	if (isFetching) {
-		return (
-			<div className="flex h-screen flex-col items-center justify-center">
-				<InterfaceIcons.Loading className="mb-6 h-16 w-16 animate-spin text-muted-foreground" />
-				<h1 className="text-center text-lg font-extralight text-muted-foreground">
-					Getting payment status...
-				</h1>
-			</div>
-		);
-	}
+  useEffect(() => {
+    if (!hasCreatedTeam.current) {
+      createTeamViaEmbed({
+        customer,
+        product,
+        subscription,
+      });
+      hasCreatedTeam.current = true;
+    }
+  }, [customer, subscription, product, createTeamViaEmbed]);
 
-	if (isError || !checkout || !checkout.customer || !checkout.subscription) {
-		return <ErrorPageContent />;
-	}
-
-	return (
-		<SuccessPageContent
-			customer={checkout.customer}
-			subscription={checkout.subscription}
-			product={checkout.product}
-		/>
-	);
+  return (
+    <div className="flex h-screen flex-col items-center  justify-center text-center text-lg">
+      <CheckCircle2 className="mb-6 h-16 w-16 text-green-500" />
+      <h1>Thank you for your purchase!</h1>
+      <div>{isLoading ? <p>Creating your team...</p> : null}</div>
+      <div>
+        {isError ? <p>Failed to create team, please contact support!</p> : null}
+      </div>
+    </div>
+  );
 }
