@@ -8,14 +8,11 @@ RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.ke
 
 WORKDIR /app
 
-# Copy Bun dependencies
-COPY bun.lockb package.json ./
-
-# Install dependencies using Bun
-RUN bun install --frozen-lockfile
-
-# Copy rest of the code
+# Copy entire app codebase first (including prisma/)
 COPY . .
+
+# Then install dependencies
+RUN bun install --frozen-lockfile
 
 # Entrypoint via Doppler
 ENTRYPOINT ["doppler", "run", "--"]
