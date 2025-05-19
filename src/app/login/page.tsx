@@ -49,30 +49,33 @@ export default async function AuthenticationPage() {
         </div>
         <div className="flex h-full flex-col lg:p-8">
           <BackButton />
-          <div className="mx-auto flex h-full w-full grow flex-col justify-center space-y-6 sm:w-[350px]">
-            <div className="mb-8 flex flex-col space-y-2 text-start">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Welcome back. Sign into your account below.
-              </h1>
+          <div className="flex h-full w-full grow items-center">
+            <div className="mx-auto flex grow flex-col space-y-6 rounded-md border border-border bg-card p-5 sm:w-[500px]">
+              <div className="flex flex-col space-y-2 text-start">
+                <h1 className="text-2xl font-semibold tracking-tight">
+                  Welcome back.
+                </h1>
+                <p>Login to your account below.</p>
+              </div>
+              <UserAuthForm />
+              <p className="px-8 text-center text-xs text-muted-foreground">
+                <span>By clicking continue, you agree to our </span>
+                <Link
+                  className="underline underline-offset-4 hover:text-primary"
+                  href="/terms"
+                >
+                  Terms of Service
+                </Link>
+                <span> and </span>
+                <Link
+                  className="underline underline-offset-4 hover:text-primary"
+                  href="/privacy"
+                >
+                  Privacy Policy
+                </Link>
+                .
+              </p>
             </div>
-            <UserAuthForm />
-            <p className="px-8 text-center text-xs text-muted-foreground">
-              <span>By clicking continue, you agree to our </span>
-              <Link
-                className="underline underline-offset-4 hover:text-primary"
-                href="/terms"
-              >
-                Terms of Service
-              </Link>
-              <span> and </span>
-              <Link
-                className="underline underline-offset-4 hover:text-primary"
-                href="/privacy"
-              >
-                Privacy Policy
-              </Link>
-              .
-            </p>
           </div>
         </div>
       </div>
