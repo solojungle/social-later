@@ -21,4 +21,4 @@ COPY . .
 ENTRYPOINT ["doppler", "run", "--"]
 
 # If you're running a Bun dev server or a Node.js-compatible script
-CMD ["sh", "-c", "bun run db:deploy && bun run dev"]
+CMD ["sh", "-c", "bun run db:push && bun run dev"]

@@ -44,3 +44,15 @@ If you want to change aws you do the following:
 ### Deploying to AWS
 
 For API Gateway you have to manually click the deploy button in the AWS console.
+
+### Run app locally
+
+`npm run docker:dev`
+
+### Make a .env file
+
+```
+DOPPLER_TOKEN=dp.st.your-token-here
+DOPPLER_PROJECT=social-management-app
+DOPPLER_CONFIG=dev
+```
