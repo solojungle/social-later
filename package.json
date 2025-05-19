@@ -13,6 +13,7 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "dev": "doppler run --command=\"NODE_OPTIONS='--inspect' next dev\"",
+    "docker:dev": "docker compose up --build",
     "postinstall": "prisma generate",
     "lint": "doppler run -- next lint",
     "start": "next start",
