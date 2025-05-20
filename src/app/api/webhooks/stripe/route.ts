@@ -1,64 +1,34 @@
-/* eslint-disable indent */
-
-import { env } from "@/env.mjs";
-import { db } from "@/server/db";
 import { stripe } from "@/server/services/stripe/client";
-import { NextRequest } from "next/server";
-import Stripe from "stripe";
+import { processEvent, tryCatch } from "@/server/services/stripe/utils";
+import { waitUntil } from "@vercel/functions";
+import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const sig = req.headers.get("stripe-signature");
-  if (sig === null) {
-    return new Response("Bad request", {
-      status: 400,
-    });
-  }
-
+export async function POST(req: Request) {
   const body = await req.text();
+  const signature = (await headers()).get("Stripe-Signature");
 
-  let event;
+  if (!signature) return NextResponse.json({}, { status: 400 });
 
-  try {
-    event = stripe.webhooks.constructEvent(
+  async function doEventProcessing() {
+    if (typeof signature !== "string") {
+      throw new Error("[STRIPE HOOK] Header isn't a string???");
+    }
+
+    const event = stripe.webhooks.constructEvent(
       body,
-      sig,
-      env.STRIPE_WEBHOOK_SECRET,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!,
     );
-  } catch (err) {
-    return new Response("Bad request", {
-      status: 400,
-    });
+
+    waitUntil(processEvent(event));
   }
 
-  if (!event.type.startsWith("customer.subscription")) {
-    return new Response("OK", {
-      status: 200,
-    });
+  const { error } = await tryCatch(doEventProcessing());
+
+  if (error) {
+    console.error("[STRIPE HOOK] Error processing event", error);
   }
 
-  const subscription = event.data.object as Stripe.Subscription;
-
-  // Handle the event
-  switch (event.type) {
-    case "customer.subscription.deleted":
-    case "customer.subscription.paused":
-    case "customer.subscription.resumed":
-    case "customer.subscription.updated":
-      // Update the teams subscription in your database.
-      await db.team.update({
-        data: {
-          stripeSubscriptionStatus: subscription.status,
-        },
-        where: {
-          stripeSubscriptionId: subscription.id,
-        },
-      });
-      break;
-    default:
-      break;
-  }
-
-  return new Response("OK", {
-    status: 200,
-  });
+  return NextResponse.json({ received: true });
 }
