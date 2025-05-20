@@ -23,6 +23,7 @@ module.exports = {
     "react/require-default-props": "off",
     "react/jsx-props-no-spreading": "off",
     "@next/next/no-img-element": "off",
+    "react/no-array-index-key": "off",
     "no-restricted-syntax": [
       "error",
       "ForInStatement",

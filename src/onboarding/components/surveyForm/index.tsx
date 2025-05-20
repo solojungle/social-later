@@ -104,11 +104,11 @@ function MultipleChoiceField({ choices, form }: any) {
               defaultValue={field.value}
               onValueChange={field.onChange}
             >
-              {choices.map((choice: any) => (
+              {choices.map((choice: any, index) => (
                 <label
                   className="flex w-full cursor-pointer items-center rounded-lg border border-border bg-background p-4 shadow-sm transition duration-75 ease-out [&:has([data-state=checked])]:border-primary"
                   htmlFor={choices.id}
-                  key={choices.id}
+                  key={index}
                 >
                   <RadioGroupItem value={choice} />
                   <span className="ml-4">{choice}</span>
