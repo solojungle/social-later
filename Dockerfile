@@ -1,6 +1,14 @@
 # Use official Node.js Alpine image
 FROM node:23.11-alpine
 
+# Install bash first (needed for Bun installer)
+RUN apk add --no-cache bash curl unzip
+
+# Installer Bun (to run seed)
+RUN apk add --no-cache curl unzip
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="${PATH}:/root/.bun/bin"
+
 # Install Doppler CLI
 RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.key' -O /etc/apk/keys/cli@doppler-8004D9FF50437357.rsa.pub && \
   echo 'https://packages.doppler.com/public/cli/alpine/any-version/main' | tee -a /etc/apk/repositories && \
@@ -25,4 +33,4 @@ RUN npx prisma generate
 ENTRYPOINT ["doppler", "run", "--"]
 
 # Start command (adjust if needed)
-CMD ["sh", "-c", "npx prisma db push && npm run dev"]
+CMD ["sh", "-c", "npx prisma db push && npx prisma db seed && npm run dev"]
