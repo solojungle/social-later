@@ -1,5 +1,7 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamMembersStore } from "@/stores/team-members";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -13,6 +15,9 @@ import { AddTeamMemberModal } from "./modal";
 
 export function AddTeamMember() {
   const { members } = useTeamMembersStore();
+  const { id: teamId } = useSelectedTeamStore();
+
+  const hasTeam = !!teamId && teamId !== "";
 
   const displayedMembers = members.slice(0, 3);
 
@@ -42,12 +47,30 @@ export function AddTeamMember() {
       </div>
       <TooltipProvider>
         <Tooltip delayDuration={0}>
-          <TooltipTrigger>
+          <TooltipTrigger
+            className={cn(!hasTeam && "cursor-not-allowed")}
+            disabled={!hasTeam}
+          >
             {/* TODO: Fix Tooltip hover bug */}
             <AddTeamMemberModal />
           </TooltipTrigger>
-          <TooltipContent side="bottom">
-            <p>Add team member</p>
+          <TooltipContent
+            className="w-48"
+            collisionPadding={{
+              bottom: 15,
+              left: 15,
+              right: 15,
+              top: 15,
+            }}
+            side="bottom"
+          >
+            {hasTeam && <p>Add team member</p>}
+            {!hasTeam && (
+              <p>
+                You need to create a team first. Go to the team settings page to
+                create a team.
+              </p>
+            )}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
