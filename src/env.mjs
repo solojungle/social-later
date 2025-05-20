@@ -51,6 +51,7 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NODE_ENV: process.env.NODE_ENV,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    REDIS_URL: process.env.REDIS_URL,
     SECRET_KNOCK_KEY: process.env.SECRET_KNOCK_KEY,
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
@@ -107,6 +108,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     OPENAI_API_KEY: z.string(),
+    REDIS_URL: z.string(),
     SECRET_KNOCK_KEY: z.string(),
     SENDGRID_API_KEY: z.string(),
     STRIPE_SECRET_KEY: z.string(),
