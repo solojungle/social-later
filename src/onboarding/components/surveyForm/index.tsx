@@ -106,7 +106,7 @@ function MultipleChoiceField({ choices, form }: any) {
             >
               {choices.map((choice: any, index) => (
                 <label
-                  className="flex w-full cursor-pointer items-center rounded-lg border border-border bg-background p-4 shadow-sm transition duration-75 ease-out [&:has([data-state=checked])]:border-primary"
+                  className="flex w-full cursor-pointer items-center rounded-lg border border-border bg-background p-4 shadow-sm transition duration-75 ease-out hover:border-secondary hover:bg-secondary [&:has([data-state=checked])]:border-primary"
                   htmlFor={choices.id}
                   key={index}
                 >
