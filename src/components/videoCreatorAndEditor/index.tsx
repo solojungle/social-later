@@ -56,10 +56,10 @@ export function VideoCreatorAndEditor() {
 
   return (
     <EditorProvider>
-      <main className="flex h-full flex-col p-4 md:grid md:grid-cols-3">
+      <main className="flex h-full flex-col gap-2 p-4 md:grid md:grid-cols-3">
         <div className="flex max-h-full items-start md:col-span-2 md:p-4">
           {!data && isLoading && (
-            <div className="flex h-full min-h-96 flex-1 items-center justify-center">
+            <div className="flex h-full min-h-96 flex-1 items-center justify-center border">
               <div className="text-center">
                 <h3 className="text-lg font-medium">No file selected</h3>
                 <p className="text-sm text-muted-foreground">
@@ -69,13 +69,15 @@ export function VideoCreatorAndEditor() {
             </div>
           )}
           {data && metadata && (
-            <VideoPreview
-              duration={Math.floor(metadata.durationInSeconds * fps)}
-              fps={fps}
-              height={metadata.height}
-              src={data.url}
-              width={metadata.width}
-            />
+            <div className="flex h-full min-h-96 flex-1 items-center justify-center border">
+              <VideoPreview
+                duration={Math.floor(metadata.durationInSeconds * fps)}
+                fps={fps}
+                height={metadata.height}
+                src={data.url}
+                width={metadata.width}
+              />
+            </div>
           )}
         </div>
 
