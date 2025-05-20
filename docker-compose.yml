@@ -21,10 +21,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - .:/app                      # Live reload: Mount code
+      - /app/node_modules           # Prevent host from overwriting container deps
     ports:
       - '3000:3000'
     stdin_open: true
-    tty: true  # Keeps the container running for debugging
+    tty: true
     depends_on:
       postgres_db:
         condition: service_healthy
@@ -36,4 +39,3 @@ services:
       - DOPPLER_CONFIG=${DOPPLER_CONFIG}
 networks:
   prisma-network:
-    name: prisma-network
