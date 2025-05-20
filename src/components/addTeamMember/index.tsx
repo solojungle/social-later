@@ -55,7 +55,7 @@ export function AddTeamMember() {
             <AddTeamMemberModal />
           </TooltipTrigger>
           <TooltipContent
-            className="w-48"
+            className="max-w-48"
             collisionPadding={{
               bottom: 15,
               left: 15,
