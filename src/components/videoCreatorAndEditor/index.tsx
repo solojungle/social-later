@@ -56,8 +56,8 @@ export function VideoCreatorAndEditor() {
 
   return (
     <EditorProvider>
-      <main className="flex h-full flex-col gap-2 p-4 md:grid md:grid-cols-3">
-        <div className="flex max-h-full items-start md:col-span-2 md:p-4">
+      <main className="relative flex h-full flex-col gap-2 p-4 lg:grid lg:grid-cols-3">
+        <div className="flex items-start md:col-span-2 md:p-4">
           {!data && isLoading && (
             <div className="flex h-full min-h-96 flex-1 items-center justify-center border">
               <div className="text-center">
@@ -69,7 +69,7 @@ export function VideoCreatorAndEditor() {
             </div>
           )}
           {data && metadata && (
-            <div className="flex h-full min-h-96 flex-1 items-center justify-center border">
+            <div className="flex h-full max-h-screen min-h-96 flex-1 items-center justify-center border">
               <VideoPreview
                 duration={Math.floor(metadata.durationInSeconds * fps)}
                 fps={fps}
@@ -81,25 +81,24 @@ export function VideoCreatorAndEditor() {
           )}
         </div>
 
-        <Tabs
-          className="w-full md:col-start-1 md:row-start-1"
-          defaultValue="captions"
-        >
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="captions">Captions</TabsTrigger>
-            <TabsTrigger value="font">Font</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
-          <TabsContent value="captions">
-            <CaptionsPanel />
-          </TabsContent>
-          <TabsContent value="font">
-            <FontStyles />
-          </TabsContent>
-          <TabsContent value="settings">
-            <SettingsPanel />
-          </TabsContent>
-        </Tabs>
+        <div className="max-h-[calc(100vh-6rem)] overflow-y-auto border bg-background p-4 md:col-start-1 md:row-start-1">
+          <Tabs defaultValue="captions">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="captions">Captions</TabsTrigger>
+              <TabsTrigger value="font">Font</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+            </TabsList>
+            <TabsContent value="captions">
+              <CaptionsPanel />
+            </TabsContent>
+            <TabsContent value="font">
+              <FontStyles />
+            </TabsContent>
+            <TabsContent value="settings">
+              <SettingsPanel />
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
     </EditorProvider>
   );

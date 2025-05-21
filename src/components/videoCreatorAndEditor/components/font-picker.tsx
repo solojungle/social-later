@@ -43,7 +43,7 @@ export function FontPicker() {
   return (
     <div className="">
       <h3 className="mb-2 font-medium">Caption Font</h3>
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-2 gap-1">
         {fonts.map((font) => (
           <div
             className={cn(

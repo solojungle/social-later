@@ -79,6 +79,7 @@ export function FontStyles() {
           <Compact
             color={fontColor}
             onChange={(color) => handleColorChange(color.hex)}
+            style={{ width: "100%" }}
           />
         </div>
         <div className="space-y-2">
@@ -86,6 +87,7 @@ export function FontStyles() {
           <Compact
             color={highlightColor}
             onChange={(color) => handleHighlightColorChange(color.hex)}
+            style={{ width: "100%" }}
           />
         </div>
       </div>
