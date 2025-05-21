@@ -1,7 +1,8 @@
+// import { openAiWhisperApiToCaptions } from "@remotion/openai-whisper";
+import { z } from "zod";
+
 import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { openAiWhisperApiToCaptions } from "@remotion/openai-whisper";
-import { z } from "zod";
 
 import { client } from "../../services/openai/client";
 
@@ -52,8 +53,8 @@ export const openaiRouter = createTRPCRouter({
         timestamp_granularities: ["word"],
       });
 
-      const { captions } = openAiWhisperApiToCaptions({ transcription });
+      // const { captions } = openAiWhisperApiToCaptions({ transcription });
 
-      return captions;
+      return transcription;
     }),
 });

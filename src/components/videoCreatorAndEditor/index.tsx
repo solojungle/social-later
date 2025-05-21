@@ -1,8 +1,9 @@
 "use client";
 
-import { api } from "@/trpc/react";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
+
+import { api } from "@/trpc/react";
 
 import { InterfaceIcons } from "../ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -46,7 +47,7 @@ export function VideoCreatorAndEditor() {
   if (isLoading && fileId) {
     return (
       <div className="flex h-96 flex-col items-center justify-center">
-        <InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+        <InterfaceIcons.Loading className="size-16 animate-spin text-muted-foreground" />
       </div>
     );
   }

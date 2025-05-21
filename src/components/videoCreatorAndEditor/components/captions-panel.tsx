@@ -1,11 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useEditorStore } from "@/stores/editor";
-import { api } from "@/trpc/react";
 import { Loader2, SparklesIcon, Trash2 } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useEditorStore } from "@/stores/editor";
+import { api } from "@/trpc/react";
 
 export function CaptionsPanel() {
   const {
@@ -20,6 +22,7 @@ export function CaptionsPanel() {
     updateCaption,
   } = useEditorStore();
   const [editingId, setEditingId] = useState<null | string>(null);
+  const [editingTimeId, setEditingTimeId] = useState<null | string>(null);
   const { isLoading, mutateAsync: generateCaptions } =
     api.openai.transcribeVideo.useMutation({
       onSuccess: (result) => {
@@ -41,6 +44,17 @@ export function CaptionsPanel() {
     updateCaption(id, { text: newText });
   };
 
+  const handleTimeEdit = (
+    id: string,
+    type: "endMs" | "startMs",
+    value: string,
+  ) => {
+    const timeInMs = parseFloat(value) * 1000;
+    if (!Number.isNaN(timeInMs)) {
+      updateCaption(id, { [type]: timeInMs });
+    }
+  };
+
   const [fileId] = useQueryState("file");
 
   const formatTime = (ms: number) => {
@@ -48,6 +62,10 @@ export function CaptionsPanel() {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
+  const formatTimeForInput = (ms: number) => {
+    return (ms / 1000).toFixed(1);
   };
 
   return (
@@ -72,9 +90,9 @@ export function CaptionsPanel() {
             variant="outline"
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
-              <SparklesIcon className="h-4 w-4" />
+              <SparklesIcon className="size-4" />
             )}
             Generate
           </Button>
@@ -108,10 +126,45 @@ export function CaptionsPanel() {
             onClick={() => selectCaption(caption.id)}
             role="presentation"
           >
-            <div className="flex flex-1 items-center">
-              <span className="min-w-24 text-xs text-muted-foreground">
-                {formatTime(caption.startMs)} - {formatTime(caption.endMs)}
-              </span>
+            <div className="flex flex-1 items-center gap-2">
+              {editingTimeId === caption.id ? (
+                <div className="flex items-center gap-1">
+                  <Input
+                    className="w-20"
+                    defaultValue={formatTimeForInput(caption.startMs)}
+                    onBlur={(e) => {
+                      handleTimeEdit(caption.id, "startMs", e.target.value);
+                      setEditingTimeId(null);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    step="0.1"
+                    type="number"
+                  />
+                  <span>-</span>
+                  <Input
+                    className="w-20"
+                    defaultValue={formatTimeForInput(caption.endMs)}
+                    onBlur={(e) => {
+                      handleTimeEdit(caption.id, "endMs", e.target.value);
+                      setEditingTimeId(null);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    step="0.1"
+                    type="number"
+                  />
+                </div>
+              ) : (
+                <button
+                  className="min-w-24 cursor-pointer text-xs text-muted-foreground hover:text-foreground"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingTimeId(caption.id);
+                  }}
+                  type="button"
+                >
+                  {formatTime(caption.startMs)} - {formatTime(caption.endMs)}
+                </button>
+              )}
               {editingId === caption.id ? (
                 <input
                   className="flex-1 bg-transparent outline-none"
@@ -141,7 +194,7 @@ export function CaptionsPanel() {
               size="icon"
               variant="ghost"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
             </Button>
           </div>
         ))}
