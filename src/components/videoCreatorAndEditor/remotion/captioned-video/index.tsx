@@ -48,8 +48,17 @@ export const VideoComposition: React.FC<{
   const { fps } = useVideoConfig();
 
   const { pages } = useMemo(() => {
+    if (!captions) {
+      return { pages: [] };
+    }
+
     return createTikTokStyleCaptions({
-      captions: captions ?? [],
+      captions: captions.map((caption) => ({
+        ...caption,
+        endMs: Math.round(caption.endMs),
+        startMs: Math.round(caption.startMs),
+        timestampMs: Math.round(caption.timestampMs),
+      })),
       combineTokensWithinMilliseconds: SWITCH_CAPTIONS_EVERY_MS,
     });
   }, [captions]);
@@ -69,12 +78,17 @@ export const VideoComposition: React.FC<{
       <AbsoluteFill style={{ zIndex: 2 }}>
         {pages.map((page, index) => {
           const nextPage = pages[index + 1] ?? null;
-          const subtitleStartFrame = (page.startMs / 1000) * fps;
-          const subtitleEndFrame = Math.min(
-            nextPage ? (nextPage.startMs / 1000) * fps : Infinity,
-            subtitleStartFrame + SWITCH_CAPTIONS_EVERY_MS,
+          const subtitleStartFrame = Math.floor(
+            (Math.round(page.startMs) / 1000) * fps,
+          );
+          const subtitleEndFrame = Math.floor(
+            nextPage
+              ? (Math.round(nextPage.startMs) / 1000) * fps
+              : (Math.round(page.startMs) / 1000) * fps +
+                  (SWITCH_CAPTIONS_EVERY_MS / 1000) * fps,
           );
           const durationInFrames = subtitleEndFrame - subtitleStartFrame;
+
           if (durationInFrames <= 0) {
             return null;
           }

@@ -32,7 +32,7 @@ export const Page: React.FC<{
   const { globalStyles } = useEditor();
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
-  const timeInMs = (frame / fps) * 1000;
+  const timeInMs = Math.round((frame / fps) * 1000);
 
   const fittedText = fitText({
     fontFamily: globalStyles.fontFamily,
@@ -73,21 +73,23 @@ export const Page: React.FC<{
           }}
         >
           {page.tokens.map((t) => {
-            const startRelativeToSequence = t.fromMs - page.startMs;
-            const endRelativeToSequence = t.toMs - page.startMs;
-
-            const active =
-              startRelativeToSequence <= timeInMs &&
-              endRelativeToSequence > timeInMs;
+            const startRelativeToSequence = Math.round(t.fromMs - page.startMs);
+            const endRelativeToSequence = Math.round(t.toMs - page.startMs);
+            const isActive =
+              timeInMs >= startRelativeToSequence &&
+              timeInMs < endRelativeToSequence;
 
             return (
               <span
                 key={t.fromMs}
                 style={{
-                  color: active
+                  color: isActive
                     ? globalStyles.highlightColor
                     : globalStyles.color,
                   display: "inline",
+                  opacity: timeInMs >= startRelativeToSequence ? 1 : 0,
+                  transition:
+                    "color 0.1s ease-in-out, opacity 0.1s ease-in-out",
                   whiteSpace: "pre",
                 }}
               >

@@ -103,13 +103,14 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   );
 
   const addCaption = () => {
+    const roundedTime = Math.round(currentTime);
     const newCaption: TextCaption = {
       confidence: null,
-      endMs: currentTime + 1000,
+      endMs: roundedTime + 1000,
       id: Math.random().toString(36),
-      startMs: currentTime,
+      startMs: roundedTime,
       text: "New Caption",
-      timestampMs: currentTime,
+      timestampMs: roundedTime,
     };
 
     setCaptions([...captions, newCaption]);
