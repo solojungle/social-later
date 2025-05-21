@@ -17,11 +17,13 @@ interface EditorContextType {
   addCaption: () => void;
   captions: TextCaption[];
   captionSettings: CaptionSettings;
+  currentTime: number;
   deleteCaption: (id: string) => void;
   globalStyles: GlobalStyles;
   selectCaption: (id: null | string) => void;
   selectedCaptionId: null | string;
   setCaptions: (captions: TextCaption[]) => void;
+  setCurrentTime: (time: number) => void;
   setVideoFile: (file: File | null) => void;
   setVideoUrl: (url: null | string) => void;
   updateCaption: (id: string, updates: Partial<TextCaption>) => void;
@@ -48,6 +50,7 @@ const EditorContext = createContext<EditorContextType>({
     language: "",
     model: "",
   },
+  currentTime: 0,
   deleteCaption: () => {},
   globalStyles: {
     color: "",
@@ -61,6 +64,7 @@ const EditorContext = createContext<EditorContextType>({
   selectCaption: () => {},
   selectedCaptionId: null,
   setCaptions: () => {},
+  setCurrentTime: () => {},
   setVideoFile: () => {},
   setVideoUrl: () => {},
   updateCaption: () => {},
@@ -73,6 +77,7 @@ const EditorContext = createContext<EditorContextType>({
 export function EditorProvider({ children }: { children: ReactNode }) {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<null | string>(null);
+  const [currentTime, setCurrentTime] = useState(0);
   const [globalStyles, setGlobalStyles] = useState<GlobalStyles>({
     color: "#FFFFFF",
     fontFamily: "Inter",
@@ -94,11 +99,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const addCaption = () => {
     const newCaption: TextCaption = {
       confidence: null,
-      endMs: 1000,
+      endMs: currentTime + 1000,
       id: Math.random().toString(36),
-      startMs: 0,
+      startMs: currentTime,
       text: "New Caption",
-      timestampMs: 0,
+      timestampMs: currentTime,
     };
 
     setCaptions([...captions, newCaption]);
@@ -144,11 +149,13 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         addCaption,
         captions,
         captionSettings,
+        currentTime,
         deleteCaption,
         globalStyles,
         selectCaption,
         selectedCaptionId,
         setCaptions,
+        setCurrentTime,
         setVideoFile,
         setVideoUrl,
         updateCaption,

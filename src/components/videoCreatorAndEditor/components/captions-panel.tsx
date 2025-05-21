@@ -12,6 +12,7 @@ export function CaptionsPanel() {
   const {
     addCaption,
     captions,
+    currentTime,
     deleteCaption,
     selectCaption,
     selectedCaptionId,
@@ -43,10 +44,17 @@ export function CaptionsPanel() {
 
   const [fileId] = useQueryState("file");
 
+  const formatTime = (ms: number) => {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
   return (
     <div className="flex-1">
       <div className="space-y-4">
-        <div className="flex">
+        <div className="flex items-center justify-between">
           <h3 className="font-medium">Captions</h3>
         </div>
         <div className="flex gap-2">
@@ -72,8 +80,13 @@ export function CaptionsPanel() {
             )}
             Generate Captions
           </Button>
-          <Button onClick={addCaption} size="sm" variant="outline">
-            Add Caption
+          <Button
+            onClick={addCaption}
+            size="sm"
+            title={`Add caption at ${formatTime(currentTime)}`}
+            variant="outline"
+          >
+            Add Caption at {formatTime(currentTime)}
           </Button>
         </div>
         <div className="space-y-2 rounded-lg border p-4">
@@ -97,7 +110,7 @@ export function CaptionsPanel() {
             >
               <div className="flex flex-1 items-center">
                 <span className="min-w-24 text-xs text-muted-foreground">
-                  {caption.startMs} - {caption.endMs}
+                  {formatTime(caption.startMs)} - {formatTime(caption.endMs)}
                 </span>
                 {editingId === caption.id ? (
                   <input
