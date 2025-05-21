@@ -2,6 +2,7 @@
 
 import type { Caption } from "@remotion/captions";
 
+import { PlayerRef } from "@remotion/player";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export interface TextCaption extends Caption {
@@ -20,10 +21,12 @@ interface EditorContextType {
   currentTime: number;
   deleteCaption: (id: string) => void;
   globalStyles: GlobalStyles;
+  playerRef: null | PlayerRef;
   selectCaption: (id: null | string) => void;
   selectedCaptionId: null | string;
   setCaptions: (captions: TextCaption[]) => void;
   setCurrentTime: (time: number) => void;
+  setPlayerRef: (ref: null | PlayerRef) => void;
   setVideoFile: (file: File | null) => void;
   setVideoUrl: (url: null | string) => void;
   updateCaption: (id: string, updates: Partial<TextCaption>) => void;
@@ -61,10 +64,12 @@ const EditorContext = createContext<EditorContextType>({
     shadow: "none",
     textTransform: "none",
   },
+  playerRef: null,
   selectCaption: () => {},
   selectedCaptionId: null,
   setCaptions: () => {},
   setCurrentTime: () => {},
+  setPlayerRef: () => {},
   setVideoFile: () => {},
   setVideoUrl: () => {},
   updateCaption: () => {},
@@ -78,6 +83,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<null | string>(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const [playerRef, setPlayerRef] = useState<null | PlayerRef>(null);
   const [globalStyles, setGlobalStyles] = useState<GlobalStyles>({
     color: "#FFFFFF",
     fontFamily: "Inter",
@@ -126,6 +132,13 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const selectCaption = (id: null | string) => {
     setSelectedCaptionId(id);
+    if (id && playerRef) {
+      const caption = captions.find((c) => c.id === id);
+      if (caption) {
+        const frame = (caption.startMs / 1000) * 30; // 30 fps
+        playerRef.seekTo(frame);
+      }
+    }
   };
 
   const updateGlobalStyles = (updates: Partial<GlobalStyles>) => {
@@ -152,10 +165,12 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         currentTime,
         deleteCaption,
         globalStyles,
+        playerRef,
         selectCaption,
         selectedCaptionId,
         setCaptions,
         setCurrentTime,
+        setPlayerRef,
         setVideoFile,
         setVideoUrl,
         updateCaption,

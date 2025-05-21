@@ -22,7 +22,11 @@ export function VideoPreview({
   width,
 }: VideoPreviewProps) {
   const playerRef = useRef<PlayerRef>(null);
-  const { setCurrentTime } = useEditor();
+  const { setCurrentTime, setPlayerRef } = useEditor();
+
+  useEffect(() => {
+    setPlayerRef(playerRef.current);
+  }, [setPlayerRef]);
 
   useEffect(() => {
     const interval = setInterval(() => {
