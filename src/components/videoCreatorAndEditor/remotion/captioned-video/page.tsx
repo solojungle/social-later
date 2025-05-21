@@ -13,11 +13,16 @@ import { useEditor } from "../../context/editor-context";
 
 const container: React.CSSProperties = {
   alignItems: "center",
-  bottom: 100,
+  bottom: "10%",
+  display: "flex",
   height: "auto",
   justifyContent: "center",
+  left: 0,
   padding: "20px",
-  top: undefined,
+  position: "absolute",
+  right: 0,
+  top: "auto",
+  width: "100%",
 };
 
 export const Page: React.FC<{
@@ -33,7 +38,7 @@ export const Page: React.FC<{
     fontFamily: globalStyles.fontFamily,
     text: page.text,
     textTransform: globalStyles.textTransform,
-    withinWidth: width * 0.7,
+    withinWidth: width * 0.8,
   });
 
   const fontSize = Math.min(globalStyles.fontSize, fittedText.fontSize);
@@ -42,16 +47,21 @@ export const Page: React.FC<{
     <AbsoluteFill style={container}>
       <div
         style={{
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          borderRadius: "8px",
           color: globalStyles.color,
           fontFamily: globalStyles.fontFamily,
           fontSize,
+          padding: "12px 24px",
           paintOrder: "stroke",
+          textAlign: "center",
+          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
           textTransform: globalStyles.textTransform,
           transform: makeTransform([
             scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
             translateY(interpolate(enterProgress, [0, 1], [50, 0])),
           ]),
-          WebkitTextStroke: "3px black",
+          WebkitTextStroke: "1px black",
         }}
       >
         <span

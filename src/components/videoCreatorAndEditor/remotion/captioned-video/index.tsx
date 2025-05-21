@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import { createTikTokStyleCaptions } from "@remotion/captions";
 import { getVideoMetadata } from "@remotion/media-utils";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   AbsoluteFill,
   CalculateMetadataFunction,
@@ -11,7 +11,7 @@ import {
 } from "remotion";
 import { z } from "zod";
 
-import { TextCaption, useEditor } from "../../context/editor-context";
+import { useEditor } from "../../context/editor-context";
 import { SubtitlePage } from "./subtitle-page";
 
 export type SubtitleProp = {
@@ -45,49 +45,51 @@ export const VideoComposition: React.FC<{
   src: string;
 }> = ({ src }) => {
   const { captions } = useEditor();
-  const [subtitles] = useState<TextCaption[]>(captions);
-
   const { fps } = useVideoConfig();
 
   const { pages } = useMemo(() => {
     return createTikTokStyleCaptions({
-      captions: subtitles ?? [],
+      captions: captions ?? [],
       combineTokensWithinMilliseconds: SWITCH_CAPTIONS_EVERY_MS,
     });
-  }, [subtitles]);
+  }, [captions]);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: "white" }}>
-      <AbsoluteFill>
+    <AbsoluteFill style={{ backgroundColor: "black" }}>
+      <AbsoluteFill style={{ zIndex: 1 }}>
         <OffthreadVideo
           src={src}
           style={{
+            height: "100%",
             objectFit: "contain",
+            width: "100%",
           }}
         />
       </AbsoluteFill>
-      {pages.map((page, index) => {
-        const nextPage = pages[index + 1] ?? null;
-        const subtitleStartFrame = (page.startMs / 1000) * fps;
-        const subtitleEndFrame = Math.min(
-          nextPage ? (nextPage.startMs / 1000) * fps : Infinity,
-          subtitleStartFrame + SWITCH_CAPTIONS_EVERY_MS,
-        );
-        const durationInFrames = subtitleEndFrame - subtitleStartFrame;
-        if (durationInFrames <= 0) {
-          return null;
-        }
+      <AbsoluteFill style={{ zIndex: 2 }}>
+        {pages.map((page, index) => {
+          const nextPage = pages[index + 1] ?? null;
+          const subtitleStartFrame = (page.startMs / 1000) * fps;
+          const subtitleEndFrame = Math.min(
+            nextPage ? (nextPage.startMs / 1000) * fps : Infinity,
+            subtitleStartFrame + SWITCH_CAPTIONS_EVERY_MS,
+          );
+          const durationInFrames = subtitleEndFrame - subtitleStartFrame;
+          if (durationInFrames <= 0) {
+            return null;
+          }
 
-        return (
-          <Sequence
-            durationInFrames={durationInFrames}
-            from={subtitleStartFrame}
-            key={index}
-          >
-            <SubtitlePage key={index} page={page} />
-          </Sequence>
-        );
-      })}
+          return (
+            <Sequence
+              durationInFrames={durationInFrames}
+              from={subtitleStartFrame}
+              key={index}
+            >
+              <SubtitlePage key={index} page={page} />
+            </Sequence>
+          );
+        })}
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
