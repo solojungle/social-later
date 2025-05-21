@@ -11,11 +11,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { useEditorStore } from "@/stores/editor";
 import { useState } from "react";
 
 import { LanguageSelector } from "./language-selector";
 
 export function SettingsPanel() {
+  const { captionSettings, updateCaptionSettings } = useEditorStore();
   const [removePunctuation, setRemovePunctuation] = useState(false);
 
   return (
@@ -28,7 +30,10 @@ export function SettingsPanel() {
       <div className="space-y-6">
         <div className="space-y-2">
           <label className="text-sm font-medium">Model</label>
-          <Select defaultValue="whisper-base">
+          <Select
+            defaultValue={captionSettings.model}
+            onValueChange={(value) => updateCaptionSettings({ model: value })}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select model" />
             </SelectTrigger>

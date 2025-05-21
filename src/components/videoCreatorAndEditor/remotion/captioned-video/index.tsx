@@ -1,4 +1,5 @@
 /* eslint-disable react/no-array-index-key */
+import { useEditorStore } from "@/stores/editor";
 import { createTikTokStyleCaptions } from "@remotion/captions";
 import { getVideoMetadata } from "@remotion/media-utils";
 import { useMemo } from "react";
@@ -11,7 +12,6 @@ import {
 } from "remotion";
 import { z } from "zod";
 
-import { useEditor } from "../../context/editor-context";
 import { SubtitlePage } from "./subtitle-page";
 
 export type SubtitleProp = {
@@ -44,7 +44,7 @@ const SWITCH_CAPTIONS_EVERY_MS = 1200;
 export const VideoComposition: React.FC<{
   src: string;
 }> = ({ src }) => {
-  const { captions } = useEditor();
+  const { captions } = useEditorStore();
   const { fps } = useVideoConfig();
 
   const { pages } = useMemo(() => {
@@ -55,9 +55,9 @@ export const VideoComposition: React.FC<{
     return createTikTokStyleCaptions({
       captions: captions.map((caption) => ({
         ...caption,
-        endMs: Math.round(caption.endMs),
-        startMs: Math.round(caption.startMs),
-        timestampMs: Math.round(caption.timestampMs),
+        endMs: Math.round(caption.endMs ?? 0),
+        startMs: Math.round(caption.startMs ?? 0),
+        timestampMs: Math.round(caption.timestampMs ?? 0),
       })),
       combineTokensWithinMilliseconds: SWITCH_CAPTIONS_EVERY_MS,
     });
@@ -76,33 +76,17 @@ export const VideoComposition: React.FC<{
         />
       </AbsoluteFill>
       <AbsoluteFill style={{ zIndex: 2 }}>
-        {pages.map((page, index) => {
-          const nextPage = pages[index + 1] ?? null;
-          const subtitleStartFrame = Math.floor(
-            (Math.round(page.startMs) / 1000) * fps,
-          );
-          const subtitleEndFrame = Math.floor(
-            nextPage
-              ? (Math.round(nextPage.startMs) / 1000) * fps
-              : (Math.round(page.startMs) / 1000) * fps +
-                  (SWITCH_CAPTIONS_EVERY_MS / 1000) * fps,
-          );
-          const durationInFrames = subtitleEndFrame - subtitleStartFrame;
-
-          if (durationInFrames <= 0) {
-            return null;
-          }
-
-          return (
-            <Sequence
-              durationInFrames={durationInFrames}
-              from={subtitleStartFrame}
-              key={index}
-            >
-              <SubtitlePage key={index} page={page} />
-            </Sequence>
-          );
-        })}
+        {pages.map((page) => (
+          <Sequence
+            durationInFrames={Math.ceil(
+              SWITCH_CAPTIONS_EVERY_MS / (1000 / fps),
+            )}
+            from={Math.floor(page.startMs / (1000 / fps))}
+            key={page.startMs}
+          >
+            <SubtitlePage page={page} />
+          </Sequence>
+        ))}
       </AbsoluteFill>
     </AbsoluteFill>
   );

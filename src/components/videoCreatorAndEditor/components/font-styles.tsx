@@ -4,15 +4,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useEditorStore } from "@/stores/editor";
 import { Compact } from "@uiw/react-color";
 import { useState } from "react";
 
-import { useEditor } from "../context/editor-context";
 import { FontPicker } from "./font-picker";
 import { FontTemplates } from "./font-templates";
 
 export function FontStyles() {
-  const { updateGlobalStyles } = useEditor();
+  const { updateGlobalStyles } = useEditorStore();
   const [textFormat, setTextFormat] = useState<
     "lowercase" | "none" | "uppercase"
   >("none");
@@ -22,6 +22,7 @@ export function FontStyles() {
   const [fontSize, setFontSize] = useState<number>(24);
   const [fontColor, setFontColor] = useState<string>("#FFFFFF");
   const [highlightColor, setHighlightColor] = useState<string>("#FFFFFF");
+
   const handleFontSizeChange = (value: number[]) => {
     setFontSize(value[0] ?? 24);
     updateGlobalStyles({ fontSize });
@@ -131,7 +132,6 @@ export function FontStyles() {
                 )
               }
               variant={textShadow === size ? "default" : "outline"}
-              // disabled={!selectedCaptionId}
             >
               {size === "none" ? "None" : size.charAt(0).toUpperCase()}
             </Button>

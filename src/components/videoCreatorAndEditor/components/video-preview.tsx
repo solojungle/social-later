@@ -1,9 +1,9 @@
 "use client";
 
+import { useEditorStore } from "@/stores/editor";
 import { Player, PlayerRef } from "@remotion/player";
 import { useEffect, useRef } from "react";
 
-import { useEditor } from "../context/editor-context";
 import { VideoComposition } from "../remotion/captioned-video";
 
 interface VideoPreviewProps {
@@ -22,7 +22,7 @@ export function VideoPreview({
   width,
 }: VideoPreviewProps) {
   const playerRef = useRef<PlayerRef>(null);
-  const { setCurrentTime, setPlayerRef } = useEditor();
+  const { setCurrentTime, setPlayerRef } = useEditorStore();
 
   useEffect(() => {
     setPlayerRef(playerRef.current);

@@ -1,15 +1,9 @@
+import { useEditorStore } from "@/stores/editor";
 import { makeTransform, scale, translateY } from "@remotion/animation-utils";
 import { TikTokPage } from "@remotion/captions";
 import { fitText } from "@remotion/layout-utils";
 import React from "react";
-import {
-  AbsoluteFill,
-  interpolate,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
-
-import { useEditor } from "../../context/editor-context";
+import { AbsoluteFill, interpolate, useVideoConfig } from "remotion";
 
 const getShadowStyle = (shadow: string) => {
   switch (shadow) {
@@ -44,10 +38,10 @@ export const Page: React.FC<{
   readonly enterProgress: number;
   readonly page: TikTokPage;
 }> = ({ enterProgress, page }) => {
-  const { globalStyles } = useEditor();
-  const frame = useCurrentFrame();
-  const { fps, width } = useVideoConfig();
-  const timeInMs = Math.round((frame / fps) * 1000);
+  const { globalStyles } = useEditorStore();
+  // const frame = useCurrentFrame();
+  const { width } = useVideoConfig();
+  // const timeInMs = Math.round((frame / fps) * 1000);
 
   const fittedText = fitText({
     fontFamily: globalStyles.fontFamily,
@@ -58,60 +52,23 @@ export const Page: React.FC<{
 
   const fontSize = Math.min(globalStyles.fontSize, fittedText.fontSize);
 
+  const transform = makeTransform([
+    scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
+    translateY(interpolate(enterProgress, [0, 1], [20, 0])),
+  ]);
+
   return (
     <AbsoluteFill style={container}>
       <div
         style={{
-          borderRadius: "8px",
           color: globalStyles.color,
           fontFamily: globalStyles.fontFamily,
           fontSize,
-          padding: "12px 24px",
-          paintOrder: "stroke",
-          textAlign: "center",
           textShadow: getShadowStyle(globalStyles.shadow),
-          textTransform: globalStyles.textTransform,
-          transform: makeTransform([
-            scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
-            translateY(interpolate(enterProgress, [0, 1], [50, 0])),
-          ]),
-          WebkitTextStroke: "1px black",
+          transform,
         }}
       >
-        <span
-          style={{
-            transform: makeTransform([
-              scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
-              translateY(interpolate(enterProgress, [0, 1], [50, 0])),
-            ]),
-          }}
-        >
-          {page.tokens.map((t) => {
-            const startRelativeToSequence = Math.round(t.fromMs - page.startMs);
-            const endRelativeToSequence = Math.round(t.toMs - page.startMs);
-            const isActive =
-              timeInMs >= startRelativeToSequence &&
-              timeInMs < endRelativeToSequence;
-
-            return (
-              <span
-                key={t.fromMs}
-                style={{
-                  color: isActive
-                    ? globalStyles.highlightColor
-                    : globalStyles.color,
-                  display: "inline",
-                  opacity: timeInMs >= startRelativeToSequence ? 1 : 0,
-                  transition:
-                    "color 0.1s ease-in-out, opacity 0.1s ease-in-out",
-                  whiteSpace: "pre",
-                }}
-              >
-                {t.text}
-              </span>
-            );
-          })}
-        </span>
+        {page.text}
       </div>
     </AbsoluteFill>
   );

@@ -4,12 +4,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useEditorStore } from "@/stores/editor";
 import { CheckIcon } from "lucide-react";
 
-import { useEditor } from "../context/editor-context";
-
 export function FontPicker() {
-  const { globalStyles, updateGlobalStyles } = useEditor();
+  const { globalStyles, updateGlobalStyles } = useEditorStore();
 
   const fonts = [
     {
