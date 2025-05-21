@@ -39,8 +39,8 @@ interface Word {
 }
 
 const textSettings: CaptionSettings = {
-  currentWordBackgroundColor: "red",
-  currentWordColor: "cyan",
+  currentWordBackgroundColor: "rgba(0, 0, 0, 0.7)",
+  currentWordColor: "white",
   fadeInAnimation: true,
   fontFamily: "Mulish",
   fontSize: 80,
@@ -50,7 +50,7 @@ const textSettings: CaptionSettings = {
   shadowColor: "black",
   stream: false,
   textAlign: "center",
-  textBoxWidthInPercent: 70,
+  textBoxWidthInPercent: 80,
   textColor: "white",
 };
 
@@ -73,7 +73,16 @@ const scene = makeScene2D("scene", function* (view) {
 
   const rootLayout = new Layout({ size: "100%" });
   const imageLayout = new Layout({ ref: imageContainer, size: "100%" });
-  const textLayout = new Layout({ ref: textContainer, size: "100%" });
+  const textLayout = new Layout({
+    alignItems: "center",
+    justifyContent: "center",
+    layout: true,
+    padding: 20,
+    position: [0, 300],
+    ref: textContainer,
+    size: "100%",
+    zIndex: 100,
+  });
   const mainAudio = new Audio({ play: true, src: audioUrl });
   const backgroundAudio = new Audio({
     play: true,
@@ -139,11 +148,18 @@ function* displayWords(
     if (settings.stream) {
       let nextWordStart = 0;
       const textContainer = new Txt({
+        fill: settings.textColor,
+        fontFamily: settings.fontFamily,
+        fontSize: settings.fontSize,
+        fontWeight: settings.fontWeight,
+        position: [0, 0],
         ref: textRef,
+        shadowBlur: settings.shadowBlur,
+        shadowColor: settings.shadowColor,
         textAlign: settings.textAlign,
         textWrap: true,
         width: `${settings.textBoxWidthInPercent}%`,
-        zIndex: 2,
+        zIndex: 100,
       });
       const containerRef = container();
       if (!containerRef) continue;
@@ -207,11 +223,18 @@ function* displayWords(
       }
     } else {
       const textContainer = new Txt({
+        fill: settings.textColor,
+        fontFamily: settings.fontFamily,
+        fontSize: settings.fontSize,
+        fontWeight: settings.fontWeight,
+        position: [0, 0],
         ref: textRef,
+        shadowBlur: settings.shadowBlur,
+        shadowColor: settings.shadowColor,
         textAlign: settings.textAlign,
         textWrap: true,
         width: `${settings.textBoxWidthInPercent}%`,
-        zIndex: 2,
+        zIndex: 100,
       });
       const containerRef = container();
       if (!containerRef) continue;

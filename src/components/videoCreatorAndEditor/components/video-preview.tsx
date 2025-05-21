@@ -1,7 +1,10 @@
 "use client";
 
-import { useEditorStore } from "@/stores/editor";
 import { useEffect, useRef, useState } from "react";
+
+import { useEditorStore } from "@/stores/editor";
+
+import { RemotionPlayer } from "../2ndtry";
 
 interface VideoPreviewProps {
   duration: number;
@@ -52,26 +55,29 @@ export function VideoPreview({
 
   return (
     <div className="relative" style={{ height: "100%", width: "100%" }}>
-      <video
-        className="h-full w-full"
-        controls
-        ref={videoRef}
-        src={src}
-        style={{ objectFit: "contain" }}
-      >
-        <track default kind="captions" label="English" src="" srcLang="en" />
-      </video>
-      {currentCaption && (
-        <div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-lg bg-black/70 px-4 py-2 text-center text-white"
-          style={{
-            maxWidth: "80%",
-            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          {currentCaption}
-        </div>
-      )}
+      <RemotionPlayer />
     </div>
+    // <div className="relative" style={{ height: "100%", width: "100%" }}>
+    //   <video
+    //     className="h-full w-full"
+    //     controls
+    //     ref={videoRef}
+    //     src={src}
+    //     style={{ objectFit: "contain" }}
+    //   >
+    //     <track default kind="captions" label="English" src="" srcLang="en" />
+    //   </video>
+    //   {currentCaption && (
+    //     <div
+    //       className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-lg bg-black/70 px-4 py-2 text-center text-white"
+    //       style={{
+    //         maxWidth: "80%",
+    //         textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+    //       }}
+    //     >
+    //       {currentCaption}
+    //     </div>
+    //   )}
+    // </div>
   );
 }
