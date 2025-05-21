@@ -1,10 +1,10 @@
-import type { Caption } from "@remotion/captions";
-
-import { PlayerRef } from "@remotion/player";
 import { create } from "zustand";
 
-export interface TextCaption extends Caption {
+interface Caption {
+  endMs: number;
   id: string;
+  startMs: number;
+  text: string;
 }
 
 interface CaptionSettings {
@@ -14,116 +14,92 @@ interface CaptionSettings {
 
 interface EditorStore {
   addCaption: () => void;
-  captions: TextCaption[];
+  captions: Caption[];
   captionSettings: CaptionSettings;
   currentTime: number;
   deleteCaption: (id: string) => void;
   globalStyles: GlobalStyles;
-  playerRef: null | PlayerRef;
-  selectCaption: (id: null | string) => void;
-
+  playerRef: HTMLVideoElement | null;
+  selectCaption: (id: string) => void;
   selectedCaptionId: null | string;
-  setCaptions: (captions: TextCaption[]) => void;
+  setCaptions: (captions: Caption[]) => void;
   setCurrentTime: (time: number) => void;
-  setPlayerRef: (ref: null | PlayerRef) => void;
-  // Actions
-  setVideoFile: (file: File | null) => void;
-  setVideoUrl: (url: null | string) => void;
-  updateCaption: (id: string, updates: Partial<TextCaption>) => void;
-  updateCaptionSettings: (updates: Partial<CaptionSettings>) => void;
-  updateGlobalStyles: (updates: Partial<GlobalStyles>) => void;
-  // State
-  videoFile: File | null;
-  videoUrl: null | string;
+  setPlayerRef: (ref: HTMLVideoElement | null) => void;
+  updateCaption: (id: string, updates: Partial<Caption>) => void;
+  updateCaptionSettings: (settings: Partial<CaptionSettings>) => void;
+  updateGlobalStyles: (styles: Partial<GlobalStyles>) => void;
 }
 
 interface GlobalStyles {
   color: string;
   fontFamily: string;
   fontSize: number;
-  highlightColor: string;
-  position: { x: number; y: number };
   shadow: string;
-  textTransform: "lowercase" | "none" | "uppercase";
+  textTransform: string;
 }
 
-export const useEditorStore = create<EditorStore>((set, get) => ({
-  addCaption: () => {
-    const { captions, currentTime } = get();
-    const roundedTime = Math.round(currentTime);
-    const newCaption: TextCaption = {
-      confidence: null,
-      endMs: roundedTime + 1000,
-      id: Math.random().toString(36),
-      startMs: roundedTime,
-      text: "New Caption",
-      timestampMs: roundedTime,
-    };
-    set({ captions: [...captions, newCaption] });
-  },
+export const useEditorStore = create<EditorStore>((set) => ({
+  addCaption: () =>
+    set((state) => {
+      const newCaption: Caption = {
+        endMs: state.currentTime + 2000,
+        id: Math.random().toString(36).substring(7),
+        startMs: state.currentTime,
+        text: "New Caption",
+      };
+      return { captions: [...state.captions, newCaption] };
+    }),
   captions: [],
   captionSettings: {
     language: "en",
-    model: "whisper-1",
+    model: "whisper-base",
   },
   currentTime: 0,
   deleteCaption: (id) =>
     set((state) => ({
       captions: state.captions.filter((caption) => caption.id !== id),
-      selectedCaptionId:
-        state.selectedCaptionId === id ? null : state.selectedCaptionId,
     })),
   globalStyles: {
-    color: "#FFFFFF",
+    color: "#ffffff",
     fontFamily: "Inter",
-    fontSize: 24,
-    highlightColor: "#39E508",
-    position: { x: 50, y: 50 },
-    shadow: "none",
+    fontSize: 48,
+    shadow: "medium",
     textTransform: "none",
   },
   playerRef: null,
   selectCaption: (id) => {
-    set({ selectedCaptionId: id });
-    const { captions, playerRef } = get();
-    if (id && playerRef) {
-      const caption = captions.find((c) => c.id === id);
-      if (caption) {
-        const frame = (caption.startMs / 1000) * 30; // 30 fps
-        playerRef.seekTo(frame);
+    let startMs: null | number = null;
+    set((state) => {
+      const selectedCaption = state.captions.find((c) => c.id === id);
+      if (selectedCaption) {
+        startMs = selectedCaption.startMs;
+      }
+      return { selectedCaptionId: id };
+    });
+    // Seek after state update
+    if (startMs !== null) {
+      const player = useEditorStore.getState().playerRef;
+      if (player) {
+        player.currentTime = startMs / 1000;
       }
     }
   },
-
   selectedCaptionId: null,
   setCaptions: (captions) => set({ captions }),
   setCurrentTime: (time) => set({ currentTime: time }),
   setPlayerRef: (ref) => set({ playerRef: ref }),
-
-  // Actions
-  setVideoFile: (file) => set({ videoFile: file }),
-
-  setVideoUrl: (url) => set({ videoUrl: url }),
-
   updateCaption: (id, updates) =>
     set((state) => ({
       captions: state.captions.map((caption) =>
         caption.id === id ? { ...caption, ...updates } : caption,
       ),
     })),
-
-  updateCaptionSettings: (updates) =>
+  updateCaptionSettings: (settings) =>
     set((state) => ({
-      captionSettings: { ...state.captionSettings, ...updates },
+      captionSettings: { ...state.captionSettings, ...settings },
     })),
-
-  updateGlobalStyles: (updates) =>
+  updateGlobalStyles: (styles) =>
     set((state) => ({
-      globalStyles: { ...state.globalStyles, ...updates },
+      globalStyles: { ...state.globalStyles, ...styles },
     })),
-
-  // Initial state
-  videoFile: null,
-
-  videoUrl: null,
 }));

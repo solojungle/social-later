@@ -1,7 +1,6 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { getVideoMetadata } from "@remotion/media-utils";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 
@@ -31,18 +30,17 @@ export function VideoCreatorAndEditor() {
   );
 
   useEffect(() => {
-    async function loadMetadata() {
-      if (data?.url) {
-        const meta = await getVideoMetadata(data.url);
-
-        if (!meta) {
-          return;
-        }
-
-        setMetadata(meta);
-      }
+    if (data?.url) {
+      const video = document.createElement("video");
+      video.src = data.url;
+      video.onloadedmetadata = () => {
+        setMetadata({
+          durationInSeconds: video.duration,
+          height: video.videoHeight,
+          width: video.videoWidth,
+        });
+      };
     }
-    loadMetadata();
   }, [data?.url]);
 
   if (isLoading && fileId) {

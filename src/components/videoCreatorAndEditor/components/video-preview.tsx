@@ -1,10 +1,7 @@
 "use client";
 
 import { useEditorStore } from "@/stores/editor";
-import { Player, PlayerRef } from "@remotion/player";
-import { useEffect, useRef } from "react";
-
-import { VideoComposition } from "../remotion/captioned-video";
+import { useEffect, useRef, useState } from "react";
 
 interface VideoPreviewProps {
   duration: number;
@@ -21,42 +18,60 @@ export function VideoPreview({
   src,
   width,
 }: VideoPreviewProps) {
-  const playerRef = useRef<PlayerRef>(null);
-  const { setCurrentTime, setPlayerRef } = useEditorStore();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { captions, setCurrentTime, setPlayerRef } = useEditorStore();
+  const [currentCaption, setCurrentCaption] = useState<string>("");
 
   useEffect(() => {
-    setPlayerRef(playerRef.current);
+    setPlayerRef(videoRef.current);
   }, [setPlayerRef]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (playerRef.current) {
-        const currentFrame = playerRef.current.getCurrentFrame();
-        const currentTimeMs = (currentFrame / fps) * 1000;
-        setCurrentTime(currentTimeMs);
-      }
-    }, 100); // Update every 100ms for smooth tracking
+    const video = videoRef.current;
+    if (!video) return;
 
-    return () => clearInterval(interval);
-  }, [fps, setCurrentTime]);
+    const handleTimeUpdate = () => {
+      const currentTimeMs = video.currentTime * 1000;
+      setCurrentTime(currentTimeMs);
+
+      // Find the current caption
+      const activeCaption = captions.find(
+        (caption) =>
+          currentTimeMs >= caption.startMs && currentTimeMs <= caption.endMs,
+      );
+      setCurrentCaption(activeCaption?.text ?? "");
+    };
+
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.removeEventListener("timeupdate", handleTimeUpdate);
+  }, [captions, setCurrentTime]);
 
   if (!width || !height || !fps || !duration || !src) {
     return null;
   }
 
   return (
-    <Player
-      component={VideoComposition}
-      compositionHeight={height}
-      compositionWidth={width}
-      controls
-      durationInFrames={duration}
-      fps={fps}
-      inputProps={{
-        src,
-      }}
-      ref={playerRef}
-      style={{ height: "100%", width: "100%" }}
-    />
+    <div className="relative" style={{ height: "100%", width: "100%" }}>
+      <video
+        className="h-full w-full"
+        controls
+        ref={videoRef}
+        src={src}
+        style={{ objectFit: "contain" }}
+      >
+        <track default kind="captions" label="English" src="" srcLang="en" />
+      </video>
+      {currentCaption && (
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-lg bg-black/70 px-4 py-2 text-center text-white"
+          style={{
+            maxWidth: "80%",
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          {currentCaption}
+        </div>
+      )}
+    </div>
   );
 }
