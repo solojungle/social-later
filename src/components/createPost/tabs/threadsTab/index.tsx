@@ -1,11 +1,13 @@
 "use client";
 
+import { TypeIcon } from "lucide-react";
+
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
 import { useUserStore } from "@/stores/user";
-import { ImageIcon, TypeIcon, VideoIcon } from "lucide-react";
 
 import { returnNumberOfColumns } from "../../mediaFormField";
 import { ThreadsImageForm } from "./forms/image-form";
@@ -41,19 +43,19 @@ export function ThreadsTab({
           <TabsTrigger key={tab} value={tab}>
             {tab === "text" && (
               <>
-                <TypeIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                <TypeIcon className="mr-2 size-4 text-muted-foreground" />
                 Status
               </>
             )}
             {tab === "image" && (
               <>
-                <ImageIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                <InterfaceIcons.Image className="mr-2 size-4 text-muted-foreground" />
                 Image
               </>
             )}
             {tab === "video" && (
               <>
-                <VideoIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                <InterfaceIcons.Video className="mr-2 size-4 text-muted-foreground" />
                 Video
               </>
             )}

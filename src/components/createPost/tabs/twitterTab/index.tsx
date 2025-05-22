@@ -1,13 +1,15 @@
 "use client";
 
-import { Form } from "@/components/ui/form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DynamicPostFormSchema } from "@/schemas/posts-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon, TypeIcon } from "lucide-react";
+import { TypeIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { Form } from "@/components/ui/form";
+import { InterfaceIcons } from "@/components/ui/icons";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DynamicPostFormSchema } from "@/schemas/posts-schema";
 
 import { MediaFormField } from "../../mediaFormField";
 import { DatePickerFormField } from "../../schedulePost/datePicker";
@@ -252,11 +254,11 @@ export function TwitterTab({
     <Tabs className="w-full" defaultValue="status">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="status">
-          <TypeIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+          <TypeIcon className="mr-2 size-4 text-muted-foreground" />
           Status
         </TabsTrigger>
         <TabsTrigger value="photo">
-          <ImageIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+          <InterfaceIcons.Image className="mr-2 size-4 text-muted-foreground" />
           Media
         </TabsTrigger>
       </TabsList>

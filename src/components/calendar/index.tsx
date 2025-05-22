@@ -1,7 +1,6 @@
 "use client";
 
 import { FileType } from "@prisma/client";
-import { ImageIcon, VideoIcon } from "lucide-react";
 import { parseAsInteger, useQueryStates } from "nuqs";
 import { useState } from "react";
 
@@ -111,9 +110,9 @@ function StyledMediaPost({
               {(post.attachment &&
                 post.attachment[0]?.file.type === FileType.video) ||
               post.socialType === "youtube" ? (
-                <VideoIcon className="size-4 text-secondary-foreground" />
+                <InterfaceIcons.Video className="size-4 text-secondary-foreground" />
               ) : (
-                <ImageIcon className="size-4 text-secondary-foreground" />
+                <InterfaceIcons.Image className="size-4 text-secondary-foreground" />
               )}
             </div>
             <img

@@ -11,6 +11,7 @@ import {
   FolderIcon,
   HandshakeIcon,
   HomeIcon,
+  ImageIcon,
   InboxIcon,
   InfoIcon,
   ListStartIcon,
@@ -27,6 +28,7 @@ import {
   SparklesIcon,
   Trash2Icon,
   UserIcon,
+  VideoIcon,
 } from "lucide-react";
 
 type IconProps = React.HTMLAttributes<SVGElement>;
@@ -90,4 +92,6 @@ export const InterfaceIcons = {
   Info: InfoIcon,
   More: MoreHorizontalIcon,
   Hyperlink: PaperclipIcon,
+  Video: VideoIcon,
+  Image: ImageIcon,
 };

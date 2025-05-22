@@ -1,9 +1,9 @@
 "use client";
 
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { ImageIcon } from "lucide-react";
 
 import { BaseYouTubeForm } from "./form/base-form";
 import { WithSelectedForm } from "./withSelectedForm";
@@ -25,7 +25,7 @@ export function YouTubeTab({
     <Tabs className="w-full" defaultValue="video">
       <TabsList className="grid w-full grid-cols-1">
         <TabsTrigger value="video">
-          <ImageIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+          <InterfaceIcons.Video className="mr-2 size-4 text-muted-foreground" />
           Video
         </TabsTrigger>
       </TabsList>

@@ -1,11 +1,12 @@
 "use client";
 
+import { FileType } from "@prisma/client";
+import { useState } from "react";
+
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
-import { FileType } from "@prisma/client";
-import { ImageIcon, VideoIcon } from "lucide-react";
-import { useState } from "react";
 
 import { EditPostSheetContent } from "../editPostSheetContent";
 
@@ -85,9 +86,9 @@ function UpcomingPostItem({
             />
             <div className="absolute right-0 top-0 rounded-bl-sm bg-secondary p-1">
               {postAttachment?.file.type === FileType.video ? (
-                <VideoIcon className="h-3 w-3 text-secondary-foreground" />
+                <InterfaceIcons.Video className="size-3 text-secondary-foreground" />
               ) : (
-                <ImageIcon className="h-3 w-3 text-secondary-foreground" />
+                <InterfaceIcons.Image className="size-3 text-secondary-foreground" />
               )}
             </div>
           </div>
