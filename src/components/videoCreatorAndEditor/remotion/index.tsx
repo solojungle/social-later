@@ -19,7 +19,7 @@ export function RemotionPlayer({ src }: { src: string }) {
     if (playerRef.current) {
       setPlayerRef(playerRef.current);
     }
-  }, [playerRef.current, setPlayerRef]);
+  }, [setPlayerRef]);
 
   // Handle seeking when a caption is selected
   useEffect(() => {
@@ -30,26 +30,9 @@ export function RemotionPlayer({ src }: { src: string }) {
         const seconds = selectedCaption.startMs / 1000;
         const frame = Math.floor(seconds * metadata.fps) + 1;
 
-        console.log("Seeking to caption:", {
-          captionId: selectedCaption.id,
-          captionText: selectedCaption.text,
-          fps: metadata.fps,
-          frame,
-          seconds,
-          startMs: selectedCaption.startMs,
-        });
-
         // Seek to the frame and pause
         playerRef.current.seekTo(frame);
         playerRef.current.pause();
-
-        // Log the current frame after seeking
-        setTimeout(() => {
-          console.log(
-            "Current frame after seeking:",
-            playerRef.current.getCurrentFrame(),
-          );
-        }, 100);
       }
     }
   }, [selectedCaptionId, captions, metadata?.fps]);

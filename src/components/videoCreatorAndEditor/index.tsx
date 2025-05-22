@@ -34,7 +34,7 @@ export function VideoCreatorAndEditor() {
 
   return (
     <main className="relative flex h-full flex-col gap-2 p-4 lg:grid lg:grid-cols-3">
-      <div className="flex items-start md:col-span-2 md:p-4">
+      <div className="flex items-start md:col-span-2">
         {!data && isLoading && (
           <div className="flex h-full min-h-96 flex-1 items-center justify-center border">
             <div className="text-center">
@@ -46,7 +46,7 @@ export function VideoCreatorAndEditor() {
           </div>
         )}
         {data && (
-          <div className="flex h-full max-h-screen min-h-96 flex-1 flex-col items-center justify-center border">
+          <div className="flex h-full max-h-[calc(100vh-6rem)] min-h-96 flex-1 flex-col items-center justify-center border bg-background">
             <RemotionPlayer src={data.url} />
           </div>
         )}
