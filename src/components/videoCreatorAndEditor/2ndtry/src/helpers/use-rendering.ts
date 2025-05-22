@@ -1,30 +1,31 @@
-import { z } from "zod";
 import { useCallback, useMemo, useState } from "react";
-import { getProgress, renderVideo } from "../lambda/api";
+import { z } from "zod";
+
 import { CompositionProps } from "../../types/constants";
+import { getProgress, renderVideo } from "../lambda/api";
 
 export type State =
+  | {
+      bucketName: string;
+      progress: number;
+      renderId: string;
+      status: "rendering";
+    }
+  | {
+      error: Error;
+      renderId: null | string;
+      status: "error";
+    }
+  | {
+      size: number;
+      status: "done";
+      url: string;
+    }
   | {
       status: "init";
     }
   | {
       status: "invoking";
-    }
-  | {
-      renderId: string;
-      bucketName: string;
-      progress: number;
-      status: "rendering";
-    }
-  | {
-      renderId: string | null;
-      status: "error";
-      error: Error;
-    }
-  | {
-      url: string;
-      size: number;
-      status: "done";
     };
 
 const wait = async (milliSeconds: number) => {
@@ -48,56 +49,59 @@ export const useRendering = (
       status: "invoking",
     });
     try {
-      const { renderId, bucketName } = await renderVideo({ id, inputProps });
+      const { bucketName, renderId } = await renderVideo({ id, inputProps });
       setState({
-        status: "rendering",
+        bucketName,
         progress: 0,
-        renderId: renderId,
-        bucketName: bucketName,
+        renderId,
+        status: "rendering",
       });
 
       let pending = true;
 
       while (pending) {
+        // eslint-disable-next-line no-await-in-loop
         const result = await getProgress({
+          bucketName,
           id: renderId,
-          bucketName: bucketName,
         });
+        // eslint-disable-next-line default-case
         switch (result.type) {
-          case "error": {
+          case "done": {
             setState({
-              status: "error",
-              renderId: renderId,
-              error: new Error(result.message),
+              size: result.size,
+              status: "done",
+              url: result.url,
             });
             pending = false;
             break;
           }
-          case "done": {
+          case "error": {
             setState({
-              size: result.size,
-              url: result.url,
-              status: "done",
+              error: new Error(result.message),
+              renderId,
+              status: "error",
             });
             pending = false;
             break;
           }
           case "progress": {
             setState({
-              status: "rendering",
-              bucketName: bucketName,
+              bucketName,
               progress: result.progress,
-              renderId: renderId,
+              renderId,
+              status: "rendering",
             });
+            // eslint-disable-next-line no-await-in-loop
             await wait(1000);
           }
         }
       }
     } catch (err) {
       setState({
-        status: "error",
         error: err as Error,
         renderId: null,
+        status: "error",
       });
     }
   }, [id, inputProps]);

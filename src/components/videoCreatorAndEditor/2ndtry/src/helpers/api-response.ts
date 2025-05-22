@@ -3,12 +3,12 @@ import { z, ZodType } from "zod";
 
 export type ApiResponse<Res> =
   | {
-      type: "error";
-      message: string;
+      data: Res;
+      type: "success";
     }
   | {
-      type: "success";
-      data: Res;
+      message: string;
+      type: "error";
     };
 
 export const executeApi =
@@ -22,12 +22,12 @@ export const executeApi =
       const parsed = schema.parse(payload);
       const data = await handler(req, parsed);
       return NextResponse.json({
+        data,
         type: "success",
-        data: data,
       });
     } catch (err) {
       return NextResponse.json(
-        { type: "error", message: (err as Error).message },
+        { message: (err as Error).message, type: "error" },
         {
           status: 500,
         },

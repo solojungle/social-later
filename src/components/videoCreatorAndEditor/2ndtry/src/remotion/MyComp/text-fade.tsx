@@ -14,12 +14,12 @@ export const TextFade: React.FC<{
   const frame = useCurrentFrame();
 
   const progress = spring({
-    fps,
-    frame,
     config: {
       damping: 200,
     },
     durationInFrames: 80,
+    fps,
+    frame,
   });
 
   const rightStop = interpolate(progress, [0, 1], [200, 0]);
@@ -37,7 +37,7 @@ export const TextFade: React.FC<{
 
   return (
     <AbsoluteFill>
-      <AbsoluteFill className="justify-center items-center">
+      <AbsoluteFill className="items-center justify-center">
         <div style={content}>{children}</div>
       </AbsoluteFill>
     </AbsoluteFill>
