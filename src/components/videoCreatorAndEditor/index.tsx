@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 
 import { InterfaceIcons } from "../ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { RemotionPlayer } from "./2ndtry";
+import { RemotionPlayer } from "./remotion";
 import { CaptionsPanel } from "./components/captions-panel";
 import { FontStyles } from "./components/font-styles";
 import { SettingsPanel } from "./components/settings-panel";

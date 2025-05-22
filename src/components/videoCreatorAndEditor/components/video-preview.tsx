@@ -1,4 +1,4 @@
-import { RemotionPlayer } from "../2ndtry";
+import { RemotionPlayer } from "../remotion";
 
 interface VideoPreviewProps {
   src: string;
