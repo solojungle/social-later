@@ -24,7 +24,6 @@ import { api } from "@/trpc/react";
 interface CaptionItemProps {
   caption: Caption;
   formatTime: (ms: number) => string;
-  formatTimeForInput: (ms: number) => string;
   isSelected: boolean;
   onCaptionEdit: (id: string, text: string) => void;
   onDelete: (id: string) => void;
@@ -76,7 +75,7 @@ export function CaptionsPanel() {
     type: "durationMs" | "startMs",
     value: string,
   ) => {
-    const timeInMs = parseFloat(value) * 1000;
+    const timeInMs = parseInt(value, 10);
     if (!Number.isNaN(timeInMs)) {
       updateCaption(id, { [type]: timeInMs });
     }
@@ -88,7 +87,8 @@ export function CaptionsPanel() {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    const milliseconds = ms % 1000;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`;
   };
 
   const formatTimeForInput = (ms: number) => {
@@ -150,7 +150,6 @@ export function CaptionsPanel() {
 function CaptionItem({
   caption,
   formatTime,
-  formatTimeForInput,
   isSelected,
   onCaptionEdit,
   onDelete,
@@ -162,15 +161,11 @@ function CaptionItem({
   const handleSaveCaption = () => {
     if (!editingCaption) return;
     onCaptionEdit(editingCaption.id, editingCaption.text);
-    onTimeEdit(
-      editingCaption.id,
-      "startMs",
-      formatTimeForInput(editingCaption.startMs),
-    );
+    onTimeEdit(editingCaption.id, "startMs", editingCaption.startMs.toString());
     onTimeEdit(
       editingCaption.id,
       "durationMs",
-      formatTimeForInput(editingCaption.durationMs),
+      editingCaption.durationMs.toString(),
     );
     setEditingCaption(null);
   };
@@ -219,18 +214,19 @@ function CaptionItem({
                       </div>
                       <div className="relative">
                         <Input
-                          className="font-mono"
-                          onChange={(e) =>
+                          className="font-mono [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9]/g, "");
                             setEditingCaption({
                               ...editingCaption,
-                              startMs: parseFloat(e.target.value) * 1000,
-                            })
-                          }
-                          placeholder="0:00"
-                          value={formatTimeForInput(editingCaption.startMs)}
+                              startMs: value ? Number(value) : 0,
+                            });
+                          }}
+                          placeholder="0"
+                          value={editingCaption.startMs}
                         />
                         <div className="absolute right-3 top-2.5 text-xs text-muted-foreground">
-                          MM:SS
+                          ms
                         </div>
                       </div>
                     </div>
@@ -241,18 +237,22 @@ function CaptionItem({
                       </div>
                       <div className="relative">
                         <Input
-                          className="font-mono"
-                          onChange={(e) =>
+                          className="font-mono [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9]/g, "");
+                            const endTime = value ? Number(value) : 0;
                             setEditingCaption({
                               ...editingCaption,
-                              durationMs: parseFloat(e.target.value) * 1000,
-                            })
+                              durationMs: endTime - editingCaption.startMs,
+                            });
+                          }}
+                          placeholder="0"
+                          value={
+                            editingCaption.startMs + editingCaption.durationMs
                           }
-                          placeholder="0:00"
-                          value={formatTimeForInput(editingCaption.durationMs)}
                         />
                         <div className="absolute right-3 top-2.5 text-xs text-muted-foreground">
-                          MM:SS
+                          ms
                         </div>
                       </div>
                     </div>
