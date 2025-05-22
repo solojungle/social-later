@@ -1,60 +1,71 @@
-import { fontFamily, loadFont } from "@remotion/google-fonts/Inter";
+import { TikTokPage } from "@remotion/captions";
+import { loadFont } from "@remotion/google-fonts/Inter";
 import React from "react";
-import {
-  AbsoluteFill,
-  Sequence,
-  spring,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
-import { z } from "zod";
+import { AbsoluteFill, OffthreadVideo, useVideoConfig } from "remotion";
 
-import { CompositionProps } from "../../../types/constants";
-import { NextLogo } from "./next-logo";
-import { Rings } from "./rings";
-import { TextFade } from "./text-fade";
+import { CaptionText } from "./caption-text";
 
 loadFont("normal", {
   subsets: ["latin"],
   weights: ["400", "700"],
 });
-export const Main = ({ title }: z.infer<typeof CompositionProps>) => {
-  const frame = useCurrentFrame();
+
+const pages: TikTokPage[] = [
+  {
+    durationMs: 1000,
+    startMs: 0,
+    text: "Hello",
+    tokens: [],
+  },
+  {
+    durationMs: 1000,
+    startMs: 1000,
+    text: "World",
+    tokens: [],
+  },
+];
+
+export const Main: React.FC<{
+  src: string;
+}> = ({ src }) => {
   const { fps } = useVideoConfig();
 
-  const transitionStart = 2 * fps;
-  const transitionDuration = 1 * fps;
-
-  const logoOut = spring({
-    config: {
-      damping: 200,
-    },
-    delay: transitionStart,
-    durationInFrames: transitionDuration,
-    fps,
-    frame,
-  });
-
   return (
-    <AbsoluteFill className="bg-white">
-      <Sequence durationInFrames={transitionStart + transitionDuration}>
-        <Rings outProgress={logoOut} />
-        <AbsoluteFill className="items-center justify-center">
-          <NextLogo outProgress={logoOut} />
-        </AbsoluteFill>
-      </Sequence>
-      <Sequence from={transitionStart + transitionDuration / 2}>
-        <TextFade>
-          <h1
-            className="text-[70px] font-bold"
-            style={{
-              fontFamily,
-            }}
-          >
-            {title}
-          </h1>
-        </TextFade>
-      </Sequence>
+    <AbsoluteFill style={{ backgroundColor: "black" }}>
+      <AbsoluteFill style={{ zIndex: 1 }}>
+        <OffthreadVideo
+          src={src}
+          style={{
+            height: "100%",
+            objectFit: "contain",
+            width: "100%",
+          }}
+        />
+      </AbsoluteFill>
+      <AbsoluteFill style={{ zIndex: 2 }}>
+        {pages.map((page, index) => {
+          const nextPage = pages[index + 1] ?? null;
+          const subtitleStartFrame = (page.startMs / 1000) * fps;
+          const subtitleEndFrame = nextPage
+            ? (nextPage.startMs / 1000) * fps
+            : subtitleStartFrame + (page.durationMs / 1000) * fps;
+          const durationInFrames = subtitleEndFrame - subtitleStartFrame;
+          if (durationInFrames <= 0) {
+            return null;
+          }
+
+          return (
+            <CaptionText
+              key={page.startMs}
+              metadata={{
+                duration: durationInFrames,
+                from: subtitleStartFrame,
+              }}
+              page={page}
+            />
+          );
+        })}
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };

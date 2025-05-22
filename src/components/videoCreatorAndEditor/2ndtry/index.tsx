@@ -1,28 +1,48 @@
+/* eslint-disable tailwindcss/no-custom-classname */
+
 "use client";
 
+import { parseMedia } from "@remotion/media-parser";
 import { Player } from "@remotion/player";
-import React, { useMemo, useState } from "react";
-import { z } from "zod";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { RenderControls } from "./src/components/render-controls";
 import { Main } from "./src/remotion/MyComp/main";
-import {
-  CompositionProps,
-  defaultMyCompProps,
-  DURATION_IN_FRAMES,
-  VIDEO_FPS,
-  VIDEO_HEIGHT,
-  VIDEO_WIDTH,
-} from "./types/constants";
 
-export function RemotionPlayer() {
-  const [text, setText] = useState<string>(defaultMyCompProps.title);
+export function RemotionPlayer({ src }: { src: string }) {
+  const [text, setText] = useState<string>("");
+  const [metadata, setMetadata] = useState<any>(null);
 
-  const inputProps: z.infer<typeof CompositionProps> = useMemo(() => {
+  useEffect(() => {
+    const loadMetadata = async () => {
+      if (!src) return;
+      try {
+        const result = await parseMedia({
+          fields: {
+            dimensions: true,
+            fps: true,
+            slowDurationInSeconds: true,
+          },
+          src,
+        });
+        setMetadata(result);
+      } catch (error) {
+        console.error("Error loading video metadata:", error);
+      }
+    };
+    loadMetadata().catch(console.error);
+  }, [src]);
+
+  const inputProps = useMemo(() => {
     return {
+      src,
       title: text,
     };
-  }, [text]);
+  }, [text, src]);
+
+  if (!metadata) {
+    return null;
+  }
 
   return (
     <div>
@@ -31,11 +51,13 @@ export function RemotionPlayer() {
           <Player
             autoPlay
             component={Main}
-            compositionHeight={VIDEO_HEIGHT}
-            compositionWidth={VIDEO_WIDTH}
+            compositionHeight={metadata.dimensions.height}
+            compositionWidth={metadata.dimensions.width}
             controls
-            durationInFrames={DURATION_IN_FRAMES}
-            fps={VIDEO_FPS}
+            durationInFrames={Math.round(
+              metadata.slowDurationInSeconds * metadata.fps,
+            )}
+            fps={metadata.fps}
             inputProps={inputProps}
             loop
             style={{

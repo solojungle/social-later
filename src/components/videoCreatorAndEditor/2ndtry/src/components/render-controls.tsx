@@ -1,6 +1,3 @@
-import { z } from "zod";
-
-import { COMP_NAME, CompositionProps } from "../../types/constants";
 import { useRendering } from "../helpers/use-rendering";
 import { AlignEnd } from "./align-end";
 import { Button } from "./button";
@@ -12,11 +9,14 @@ import { ProgressBar } from "./progress-bar";
 import { Spacing } from "./spacing";
 
 export const RenderControls: React.FC<{
-  inputProps: z.infer<typeof CompositionProps>;
+  inputProps: any;
   setText: React.Dispatch<React.SetStateAction<string>>;
   text: string;
 }> = ({ inputProps, setText, text }) => {
-  const { renderMedia, state, undo } = useRendering(COMP_NAME, inputProps);
+  const { renderMedia, state, undo } = useRendering(
+    "CaptionedVideo",
+    inputProps,
+  );
 
   return (
     <InputContainer>
