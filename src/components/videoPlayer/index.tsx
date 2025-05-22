@@ -70,7 +70,7 @@ export function Player({
       <MediaProvider>
         <Poster
           alt={posterAlt}
-          className="absolute inset-0 block h-full w-full rounded-md object-cover opacity-0 transition-opacity data-[visible]:opacity-100"
+          className="absolute inset-0 block size-full rounded-md object-cover opacity-0 transition-opacity data-[visible]:opacity-100"
           src={poster}
         />
       </MediaProvider>

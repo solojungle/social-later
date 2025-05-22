@@ -91,10 +91,6 @@ export function CaptionsPanel() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`;
   };
 
-  const formatTimeForInput = (ms: number) => {
-    return (ms / 1000).toFixed(1);
-  };
-
   return (
     <Card className="w-full rounded-none p-0 shadow-none">
       <CardHeader className="border-b p-4">
@@ -132,7 +128,6 @@ export function CaptionsPanel() {
             <CaptionItem
               caption={caption}
               formatTime={formatTime}
-              formatTimeForInput={formatTimeForInput}
               isSelected={selectedCaptionId === caption.id}
               key={caption.id}
               onCaptionEdit={handleCaptionEdit}
