@@ -4,6 +4,7 @@ import { useQueryState } from "nuqs";
 
 import { api } from "@/trpc/react";
 
+import { Button } from "../ui/button";
 import { InterfaceIcons } from "../ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { CaptionsPanel } from "./components/captions-panel";
@@ -51,7 +52,11 @@ export function VideoCreatorAndEditor() {
         )}
       </div>
 
-      <div className="max-h-[calc(100vh-6rem)] overflow-y-auto border bg-background p-4 md:col-start-1 md:row-start-1">
+      <div className="flex max-h-[calc(100vh-6rem)] flex-col gap-2 overflow-y-auto border bg-background p-4 md:col-start-1 md:row-start-1">
+        <Button>
+          <InterfaceIcons.Render className="mr-2 size-4" />
+          Render video
+        </Button>
         <Tabs defaultValue="captions">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="captions">Captions</TabsTrigger>

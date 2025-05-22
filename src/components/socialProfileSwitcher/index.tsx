@@ -1,5 +1,10 @@
 "use client";
 
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import { PlusIcon } from "lucide-react";
+import * as React from "react";
+import { useEffect, useState } from "react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,12 +29,9 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { CaretSortIcon } from "@radix-ui/react-icons";
-import { CheckIcon, PlusIcon } from "lucide-react";
-import * as React from "react";
-import { useEffect, useState } from "react";
 
 import { ProfileCards } from "../addSocialProfileButton";
+import { InterfaceIcons } from "../ui/icons";
 
 type ChannelIconProps = {
   type: string;
@@ -77,7 +79,7 @@ const ChannelServiceIcon: React.FC<ChannelIconProps> = ({ type }) => (
 );
 
 const ProfileAvatar: React.FC<{ profile: SocialProfile }> = ({ profile }) => (
-  <Avatar className="relative mr-2 h-7 w-7 !rounded-sm">
+  <Avatar className="relative mr-2 size-7 !rounded-sm">
     <ChannelServiceIcon type={profile.type} />
     <AvatarImage
       className="!rounded-sm border border-border bg-background"
@@ -114,7 +116,7 @@ const SocialProfilesCommandGroup: React.FC<CommandGroupProps> = ({
           >
             {profile.name || profile.username}
           </span>
-          <CheckIcon
+          <InterfaceIcons.Selected
             className={cn(
               "ml-auto h-4 w-4",
               currentProfileId === profile.id ? "opacity-100" : "opacity-0",
@@ -163,7 +165,7 @@ const SocialProfileSwitcherPopoverTrigger: React.FC<
           >
             {selectedProfile.name || selectedProfile.username}
           </span>
-          <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+          <CaretSortIcon className="ml-auto size-4 shrink-0 opacity-50" />
         </div>
       </Button>
     </PopoverTrigger>
@@ -205,7 +207,7 @@ export const SocialProfileSwitcher: React.FC<PopoverTriggerProps> = ({
                     setShowNewProfileDialog(true);
                   }}
                 >
-                  <PlusIcon className="mr-2 h-4 w-4" />
+                  <PlusIcon className="mr-2 size-4" />
                   Add profile
                 </CommandItem>
               </CommandGroup>

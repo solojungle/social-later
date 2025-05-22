@@ -3,9 +3,9 @@
 
 "use client";
 
+import { InterfaceIcons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/stores/editor";
-import { CheckIcon } from "lucide-react";
 
 export function FontPicker() {
   const { globalStyles, updateGlobalStyles } = useEditorStore();
@@ -57,7 +57,7 @@ export function FontPicker() {
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium">{font.name}</p>
                 {globalStyles.fontFamily === font.name && (
-                  <CheckIcon className="h-4 w-4 text-primary" />
+                  <InterfaceIcons.Selected className="size-4 text-primary" />
                 )}
               </div>
               <p

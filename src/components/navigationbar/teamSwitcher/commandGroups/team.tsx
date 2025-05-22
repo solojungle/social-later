@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CommandGroup, CommandItem } from "@/components/ui/command";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamStore } from "@/stores/teams";
-import { CheckIcon } from "lucide-react";
 
 type PersonalCommandGroupProps = {
   setOpen: (open: boolean) => void;
@@ -49,14 +49,14 @@ export default function TeamCommandGroup({
             // );
           }}
         >
-          <Avatar className="mr-2 h-5 w-5">
+          <Avatar className="mr-2 size-5">
             <AvatarImage alt={team.name} src={team.image} />
             <AvatarFallback>{team.name?.[0] ?? ""}</AvatarFallback>
           </Avatar>
           <span className="overflow-hidden truncate" title={team.name}>
             {team.name}
           </span>
-          <CheckIcon
+          <InterfaceIcons.Selected
             className={cn(
               "ml-auto h-4 w-4",
               selectedTeamName === team.name ? "opacity-100" : "opacity-0",

@@ -6,11 +6,9 @@ import { parseMedia } from "@remotion/media-parser";
 import { Player } from "@remotion/player";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { RenderControls } from "./src/components/render-controls";
 import { Main } from "./src/remotion/MyComp/main";
 
 export function RemotionPlayer({ src }: { src: string }) {
-  const [text, setText] = useState<string>("");
   const [metadata, setMetadata] = useState<any>(null);
 
   useEffect(() => {
@@ -36,35 +34,31 @@ export function RemotionPlayer({ src }: { src: string }) {
   const inputProps = useMemo(() => {
     return {
       src,
-      title: text,
     };
-  }, [text, src]);
+  }, [src]);
 
   if (!metadata) {
     return null;
   }
 
   return (
-    <>
-      <RenderControls inputProps={inputProps} setText={setText} text={text} />
-      <Player
-        autoPlay
-        component={Main}
-        compositionHeight={metadata.dimensions.height}
-        compositionWidth={metadata.dimensions.width}
-        controls
-        durationInFrames={Math.round(
-          metadata.slowDurationInSeconds * metadata.fps,
-        )}
-        fps={metadata.fps}
-        inputProps={inputProps}
-        loop
-        style={{
-          // Can't use tailwind class for width since player's default styles take presedence over tailwind's,
-          // but not over inline styles
-          width: "100%",
-        }}
-      />
-    </>
+    <Player
+      autoPlay
+      component={Main}
+      compositionHeight={metadata.dimensions.height}
+      compositionWidth={metadata.dimensions.width}
+      controls
+      durationInFrames={Math.round(
+        metadata.slowDurationInSeconds * metadata.fps,
+      )}
+      fps={metadata.fps}
+      inputProps={inputProps}
+      loop
+      style={{
+        // Can't use tailwind class for width since player's default styles take presedence over tailwind's,
+        // but not over inline styles
+        width: "100%",
+      }}
+    />
   );
 }
