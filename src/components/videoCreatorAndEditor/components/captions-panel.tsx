@@ -1,11 +1,23 @@
 "use client";
 
+import { Clock, Edit2, Save, Trash2 } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Caption, useEditorStore } from "@/stores/editor";
 import { api } from "@/trpc/react";
 
@@ -17,32 +29,6 @@ interface CaptionItemProps {
   onCaptionEdit: (id: string, text: string) => void;
   onDelete: (id: string) => void;
   onSelect: (id: string) => void;
-  onTimeEdit: (
-    id: string,
-    type: "durationMs" | "startMs",
-    value: string,
-  ) => void;
-}
-
-interface CaptionListProps {
-  captions: Caption[];
-  formatTime: (ms: number) => string;
-  formatTimeForInput: (ms: number) => string;
-  onCaptionEdit: (id: string, text: string) => void;
-  onDelete: (id: string) => void;
-  onSelect: (id: string) => void;
-  onTimeEdit: (
-    id: string,
-    type: "durationMs" | "startMs",
-    value: string,
-  ) => void;
-  selectedCaptionId: null | string;
-}
-
-interface TimeEditInputsProps {
-  caption: Caption;
-  formatTimeForInput: (ms: number) => string;
-  onBlur: () => void;
   onTimeEdit: (
     id: string,
     type: "durationMs" | "startMs",
@@ -110,38 +96,54 @@ export function CaptionsPanel() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="font-medium">Captions</h2>
-        <div className="flex gap-2">
-          <GenerateCaptionsButton
-            captionSettings={captionSettings}
-            fileId={fileId ?? ""}
-            generateCaptions={generateCaptions}
-            isLoading={isLoading}
-          />
-          <Button
-            onClick={addCaption}
-            size="sm"
-            title={`Add caption at ${formatTime(currentTime)}`}
-            variant="outline"
-          >
-            Add Caption at {formatTime(currentTime)}
-          </Button>
+    <Card className="w-full rounded-none p-0 shadow-none">
+      <CardHeader className="border-b p-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-left text-sm font-medium ">
+            {captions.length} caption{captions.length !== 1 ? "s" : ""}
+          </CardTitle>
+          <div className="flex gap-2">
+            <GenerateCaptionsButton
+              captionSettings={captionSettings}
+              fileId={fileId ?? ""}
+              generateCaptions={generateCaptions}
+              isLoading={isLoading}
+            />
+            <Button
+              onClick={addCaption}
+              size="sm"
+              title={`Add caption at ${formatTime(currentTime)}`}
+              variant="outline"
+            >
+              Add Caption at {formatTime(currentTime)}
+            </Button>
+          </div>
         </div>
-      </div>
-
-      <CaptionList
-        captions={captions}
-        formatTime={formatTime}
-        formatTimeForInput={formatTimeForInput}
-        onCaptionEdit={handleCaptionEdit}
-        onDelete={deleteCaption}
-        onSelect={selectCaption}
-        onTimeEdit={handleTimeEdit}
-        selectedCaptionId={selectedCaptionId}
-      />
-    </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="divide-y">
+          {captions.length === 0 && (
+            <p className="p-4 text-xs text-muted-foreground">
+              Add captions by generating or by clicking the &quot;Add
+              Caption&quot; button.
+            </p>
+          )}
+          {captions.map((caption) => (
+            <CaptionItem
+              caption={caption}
+              formatTime={formatTime}
+              formatTimeForInput={formatTimeForInput}
+              isSelected={selectedCaptionId === caption.id}
+              key={caption.id}
+              onCaptionEdit={handleCaptionEdit}
+              onDelete={deleteCaption}
+              onSelect={selectCaption}
+              onTimeEdit={handleTimeEdit}
+            />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -155,107 +157,165 @@ function CaptionItem({
   onSelect,
   onTimeEdit,
 }: CaptionItemProps) {
-  const [editingId, setEditingId] = useState<null | string>(null);
-  const [editingTimeId, setEditingTimeId] = useState<null | string>(null);
+  const [editingCaption, setEditingCaption] = useState<Caption | null>(null);
+
+  const handleSaveCaption = () => {
+    if (!editingCaption) return;
+    onCaptionEdit(editingCaption.id, editingCaption.text);
+    onTimeEdit(
+      editingCaption.id,
+      "startMs",
+      formatTimeForInput(editingCaption.startMs),
+    );
+    onTimeEdit(
+      editingCaption.id,
+      "durationMs",
+      formatTimeForInput(editingCaption.durationMs),
+    );
+    setEditingCaption(null);
+  };
 
   return (
     <div
-      className={`group flex items-center rounded-md p-2 text-sm hover:bg-muted ${
+      className={`p-4 transition-colors hover:bg-muted ${
         isSelected ? "bg-muted" : ""
       }`}
       onClick={() => onSelect(caption.id)}
       role="presentation"
     >
-      <div className="flex flex-1 items-center gap-2">
-        {editingTimeId === caption.id && (
-          <TimeEditInputs
-            caption={caption}
-            formatTimeForInput={formatTimeForInput}
-            onBlur={() => setEditingTimeId(null)}
-            onTimeEdit={onTimeEdit}
-          />
-        )}
-        {editingTimeId !== caption.id && (
-          <button
-            className="min-w-24 cursor-pointer text-xs text-muted-foreground hover:text-foreground"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditingTimeId(caption.id);
-            }}
-            type="button"
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="mb-1 flex items-center gap-1">
+            <span className="font-mono text-xs text-muted-foreground">
+              {formatTime(caption.startMs)} -{" "}
+              {formatTime(caption.startMs + caption.durationMs)}
+            </span>
+          </div>
+          <p className="line-clamp-3 text-sm">{caption.text}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                onClick={() => setEditingCaption(caption)}
+                size="icon"
+                variant="ghost"
+              >
+                <Edit2 className="size-4" />
+                <span className="sr-only">Edit caption</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Caption</DialogTitle>
+              </DialogHeader>
+              {editingCaption && (
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <Clock className="mr-2 size-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Start Time</span>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          className="font-mono"
+                          onChange={(e) =>
+                            setEditingCaption({
+                              ...editingCaption,
+                              startMs: parseFloat(e.target.value) * 1000,
+                            })
+                          }
+                          placeholder="0:00"
+                          value={formatTimeForInput(editingCaption.startMs)}
+                        />
+                        <div className="absolute right-3 top-2.5 text-xs text-muted-foreground">
+                          MM:SS
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <Clock className="mr-2 size-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">End Time</span>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          className="font-mono"
+                          onChange={(e) =>
+                            setEditingCaption({
+                              ...editingCaption,
+                              durationMs: parseFloat(e.target.value) * 1000,
+                            })
+                          }
+                          placeholder="0:00"
+                          value={formatTimeForInput(editingCaption.durationMs)}
+                        />
+                        <div className="absolute right-3 top-2.5 text-xs text-muted-foreground">
+                          MM:SS
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      className="text-sm font-medium"
+                      htmlFor="caption-text"
+                    >
+                      Caption Text
+                    </Label>
+                    <Textarea
+                      aria-labelledby="caption-text"
+                      className="min-h-36"
+                      id="caption-text"
+                      name="caption-text"
+                      onChange={(e) =>
+                        setEditingCaption({
+                          ...editingCaption,
+                          text: e.target.value,
+                        })
+                      }
+                      rows={3}
+                      value={editingCaption.text}
+                    />
+                  </div>
+                  <div className="flex justify-between">
+                    <Button
+                      onClick={() => onDelete(editingCaption.id)}
+                      size="sm"
+                      variant="destructive"
+                    >
+                      <Trash2 className="mr-2 size-4" />
+                      Delete
+                    </Button>
+                    <div className="flex gap-2">
+                      <DialogClose asChild>
+                        <Button size="sm" variant="outline">
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                      <DialogClose asChild>
+                        <Button onClick={handleSaveCaption} size="sm">
+                          <Save className="mr-2 size-4" />
+                          Save
+                        </Button>
+                      </DialogClose>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
+          <Button
+            onClick={() => onDelete(caption.id)}
+            size="icon"
+            variant="ghost"
           >
-            {formatTime(caption.startMs)} -{" "}
-            {formatTime(caption.startMs + caption.durationMs)}
-          </button>
-        )}
-        {editingId === caption.id && (
-          <input
-            className="flex-1 bg-transparent outline-none"
-            onBlur={() => setEditingId(null)}
-            onChange={(e) => onCaptionEdit(caption.id, e.target.value)}
-            type="text"
-            value={caption.text}
-          />
-        )}
-        {editingId !== caption.id && (
-          <span
-            className="max-w-[200px] cursor-pointer"
-            onClick={() => setEditingId(caption.id)}
-            role="presentation"
-          >
-            {caption.text}
-          </span>
-        )}
+            <Trash2 className="size-4" />
+            <span className="sr-only">Delete caption</span>
+          </Button>
+        </div>
       </div>
-      <Button
-        className="opacity-0 group-hover:opacity-100"
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete(caption.id);
-        }}
-        size="icon"
-        variant="ghost"
-      >
-        <InterfaceIcons.Destructive className="size-4" />
-      </Button>
-    </div>
-  );
-}
-
-function CaptionList({
-  captions,
-  formatTime,
-  formatTimeForInput,
-  onCaptionEdit,
-  onDelete,
-  onSelect,
-  onTimeEdit,
-  selectedCaptionId,
-}: CaptionListProps) {
-  return (
-    <div className="space-y-2 rounded-lg border p-4">
-      <span className="self-end text-sm text-muted-foreground">
-        {captions.length} captions
-      </span>
-      {captions.length === 0 && (
-        <p className="text-xs text-muted-foreground">
-          Add captions by generating or by clicking the &quot;Add Caption&quot;
-          button.
-        </p>
-      )}
-      {captions.map((caption) => (
-        <CaptionItem
-          caption={caption}
-          formatTime={formatTime}
-          formatTimeForInput={formatTimeForInput}
-          isSelected={selectedCaptionId === caption.id}
-          key={caption.id}
-          onCaptionEdit={onCaptionEdit}
-          onDelete={onDelete}
-          onSelect={onSelect}
-          onTimeEdit={onTimeEdit}
-        />
-      ))}
     </div>
   );
 }
@@ -302,40 +362,5 @@ function GenerateCaptionsButton({
       )}
       Generate
     </Button>
-  );
-}
-
-function TimeEditInputs({
-  caption,
-  formatTimeForInput,
-  onBlur,
-  onTimeEdit,
-}: TimeEditInputsProps) {
-  return (
-    <div className="flex items-center gap-1">
-      <Input
-        className="w-20"
-        defaultValue={formatTimeForInput(caption.startMs)}
-        onBlur={(e) => {
-          onTimeEdit(caption.id, "startMs", e.target.value);
-          onBlur();
-        }}
-        onClick={(e) => e.stopPropagation()}
-        step="0.1"
-        type="number"
-      />
-      <span>-</span>
-      <Input
-        className="w-20"
-        defaultValue={formatTimeForInput(caption.durationMs)}
-        onBlur={(e) => {
-          onTimeEdit(caption.id, "durationMs", e.target.value);
-          onBlur();
-        }}
-        onClick={(e) => e.stopPropagation()}
-        step="0.1"
-        type="number"
-      />
-    </div>
   );
 }
