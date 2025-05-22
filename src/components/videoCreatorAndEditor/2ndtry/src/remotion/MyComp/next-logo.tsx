@@ -12,33 +12,33 @@ export const NextLogo: React.FC<{
   const frame = useCurrentFrame();
 
   const evolve1 = spring({
+    config: {
+      damping: 200,
+    },
     fps,
     frame,
-    config: {
-      damping: 200,
-    },
   });
   const evolve2 = spring({
-    fps,
-    frame: frame - 15,
     config: {
       damping: 200,
     },
+    fps,
+    frame: frame - 15,
   });
   const evolve3 = spring({
-    fps,
-    frame: frame - 30,
     config: {
       damping: 200,
       mass: 3,
     },
     durationInFrames: 30,
+    fps,
+    frame: frame - 30,
   });
 
   const style: React.CSSProperties = useMemo(() => {
     return {
-      height: 140,
       borderRadius: 70,
+      height: 140,
       scale: String(1 - outProgress),
     };
   }, [outProgress]);
@@ -55,43 +55,43 @@ export const NextLogo: React.FC<{
   );
 
   return (
-    <svg style={style} fill="none" viewBox="0 0 180 180">
+    <svg fill="none" style={style} viewBox="0 0 180 180">
       <mask
+        className="[mask-type:alpha]"
         height="180"
         id="mask"
-        className="[mask-type:alpha]"
         width="180"
         x="0"
         y="0"
       >
-        <circle cx="90" cy="90" fill="black" r="90"></circle>
+        <circle cx="90" cy="90" fill="black" r="90" />
       </mask>
-      <mask id="n-mask" className="[mask-type:alpha]">
-        <path d={nStroke} fill="black"></path>
+      <mask className="[mask-type:alpha]" id="n-mask">
+        <path d={nStroke} fill="black" />
       </mask>
       <g mask="url(#mask)">
-        <circle cx="90" cy="90" fill="black" r="90"></circle>
-        <g stroke="url(#gradient0)" mask="url(#n-mask)">
+        <circle cx="90" cy="90" fill="black" r="90" />
+        <g mask="url(#n-mask)" stroke="url(#gradient0)">
           <path
-            strokeWidth="12.1136"
             d={firstPath}
             strokeDasharray={evolution1.strokeDasharray}
             strokeDashoffset={evolution1.strokeDashoffset}
-          ></path>
+            strokeWidth="12.1136"
+          />
           <path
-            strokeWidth={12.1136}
             d={secondPath}
             strokeDasharray={evolution2.strokeDasharray}
             strokeDashoffset={evolution2.strokeDashoffset}
-          ></path>
+            strokeWidth={12.1136}
+          />
         </g>
         <path
-          stroke="url(#gradient1)"
           d={thirdPath}
+          stroke="url(#gradient1)"
           strokeDasharray={evolution3.strokeDasharray}
           strokeDashoffset={evolution3.strokeDashoffset}
           strokeWidth="12"
-        ></path>
+        />
       </g>
       <defs>
         <linearGradient
@@ -102,8 +102,8 @@ export const NextLogo: React.FC<{
           y1="116.5"
           y2="160.5"
         >
-          <stop stopColor="white"></stop>
-          <stop offset="1" stopColor="white" stopOpacity="0"></stop>
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
         </linearGradient>
         <linearGradient
           gradientUnits="userSpaceOnUse"
@@ -113,8 +113,8 @@ export const NextLogo: React.FC<{
           y1="54"
           y2="106.875"
         >
-          <stop stopColor="white"></stop>
-          <stop offset="1" stopColor="white" stopOpacity="0"></stop>
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
         </linearGradient>
       </defs>
     </svg>
