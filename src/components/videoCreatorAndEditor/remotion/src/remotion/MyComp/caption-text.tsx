@@ -58,7 +58,11 @@ export const CaptionText: React.FC<{
             color: globalStyles.color,
             fontFamily: globalStyles.fontFamily,
             fontSize,
+            margin: "0 auto",
+            maxWidth: width * 0.8,
+            textAlign: "center",
             textShadow: getShadowStyle(globalStyles.shadow),
+            width: "100%",
           }}
         >
           {page.text}

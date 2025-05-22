@@ -45,30 +45,26 @@ export function RemotionPlayer({ src }: { src: string }) {
   }
 
   return (
-    <div>
-      <div className="m-auto mb-5 max-w-screen-md">
-        <div className="rounded-geist mb-10 mt-16 overflow-hidden shadow-[0_0_200px_rgba(0,0,0,0.15)]">
-          <Player
-            autoPlay
-            component={Main}
-            compositionHeight={metadata.dimensions.height}
-            compositionWidth={metadata.dimensions.width}
-            controls
-            durationInFrames={Math.round(
-              metadata.slowDurationInSeconds * metadata.fps,
-            )}
-            fps={metadata.fps}
-            inputProps={inputProps}
-            loop
-            style={{
-              // Can't use tailwind class for width since player's default styles take presedence over tailwind's,
-              // but not over inline styles
-              width: "100%",
-            }}
-          />
-        </div>
-        <RenderControls inputProps={inputProps} setText={setText} text={text} />
-      </div>
-    </div>
+    <>
+      <RenderControls inputProps={inputProps} setText={setText} text={text} />
+      <Player
+        autoPlay
+        component={Main}
+        compositionHeight={metadata.dimensions.height}
+        compositionWidth={metadata.dimensions.width}
+        controls
+        durationInFrames={Math.round(
+          metadata.slowDurationInSeconds * metadata.fps,
+        )}
+        fps={metadata.fps}
+        inputProps={inputProps}
+        loop
+        style={{
+          // Can't use tailwind class for width since player's default styles take presedence over tailwind's,
+          // but not over inline styles
+          width: "100%",
+        }}
+      />
+    </>
   );
 }

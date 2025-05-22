@@ -6,19 +6,13 @@ import { api } from "@/trpc/react";
 
 import { InterfaceIcons } from "../ui/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { RemotionPlayer } from "./remotion";
 import { CaptionsPanel } from "./components/captions-panel";
 import { FontStyles } from "./components/font-styles";
 import { SettingsPanel } from "./components/settings-panel";
+import { RemotionPlayer } from "./remotion";
 
 export function VideoCreatorAndEditor() {
   const [fileId] = useQueryState("file");
-  // const [metadata, setMetadata] = useState<{
-  //   durationInSeconds: number;
-  //   height: number;
-  //   width: number;
-  // }>();
-  // const fps = 30;
 
   const { data, isLoading } = api.file.get.useQuery(
     {
@@ -28,20 +22,6 @@ export function VideoCreatorAndEditor() {
       enabled: !!fileId,
     },
   );
-
-  // useEffect(() => {
-  //   if (data?.url) {
-  //     const video = document.createElement("video");
-  //     video.src = data.url;
-  //     video.onloadedmetadata = () => {
-  //       setMetadata({
-  //         durationInSeconds: video.duration,
-  //         height: video.videoHeight,
-  //         width: video.videoWidth,
-  //       });
-  //     };
-  //   }
-  // }, [data?.url]);
 
   if (isLoading && fileId) {
     return (
@@ -64,22 +44,9 @@ export function VideoCreatorAndEditor() {
             </div>
           </div>
         )}
-        {/* {data && metadata && (
-          <div className="flex h-full max-h-screen min-h-96 flex-1 items-center justify-center border">
-            <VideoPreview
-              duration={Math.floor(metadata.durationInSeconds * fps)}
-              fps={fps}
-              height={metadata.height}
-              src={data.url}
-              width={metadata.width}
-            />
-          </div>
-        )} */}
         {data && (
-          <div className="flex h-full max-h-screen min-h-96 flex-1 items-center justify-center border">
-            <div className="relative" style={{ height: "100%", width: "100%" }}>
-              <RemotionPlayer src={data.url} />
-            </div>
+          <div className="flex h-full max-h-screen min-h-96 flex-1 flex-col items-center justify-center border">
+            <RemotionPlayer src={data.url} />
           </div>
         )}
       </div>
