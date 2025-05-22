@@ -5,8 +5,6 @@ import React, { useMemo, useState } from "react";
 import { z } from "zod";
 
 import { RenderControls } from "./src/components/render-controls";
-import { Spacing } from "./src/components/spacing";
-import { Tips } from "./src/components/tips";
 import { Main } from "./src/remotion/MyComp/main";
 import {
   CompositionProps,
@@ -48,11 +46,6 @@ export function RemotionPlayer() {
           />
         </div>
         <RenderControls inputProps={inputProps} setText={setText} text={text} />
-        <Spacing />
-        <Spacing />
-        <Spacing />
-        <Spacing />
-        <Tips />
       </div>
     </div>
   );
