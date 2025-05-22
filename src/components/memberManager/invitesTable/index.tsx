@@ -1,12 +1,14 @@
 "use client";
 
+import { Mail } from "lucide-react";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useInvitationsStore } from "@/stores/invitations";
 import { useSelectedTeamStore } from "@/stores/selected-team";
-import { Mail, MoreHorizontal } from "lucide-react";
 
 import { TableCellActions } from "./dropdown";
 
@@ -23,7 +25,7 @@ export function InvitesTable() {
           <span className="text-muted-foreground">Select all</span>
         </div>
         <Button size="icon" variant="ghost">
-          <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          <InterfaceIcons.More className="size-4 text-muted-foreground" />
         </Button>
       </div>
       {invitations.length === 0 ? (
@@ -43,7 +45,7 @@ export function InvitesTable() {
                   <div className="flex items-center justify-between pr-5">
                     <div className="flex items-center">
                       <Checkbox className="ml-2 mr-4" />
-                      <Avatar className="mr-4 h-8 w-8">
+                      <Avatar className="mr-4 size-8">
                         <AvatarFallback>
                           {t.email.split(" ").map((name: string) => name[0])}
                         </AvatarFallback>
@@ -51,7 +53,7 @@ export function InvitesTable() {
                       <div className="flex flex-col">
                         <div className="flex items-center">
                           <span className="mr-2 font-medium">Pending</span>
-                          <Mail className="h-4 w-4 text-muted-foreground" />
+                          <Mail className="size-4 text-muted-foreground" />
                         </div>
                         <span className="w-28 truncate font-normal text-muted-foreground sm:w-full">
                           {t.email.toLowerCase()}

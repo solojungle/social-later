@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
+
 import { VideoPerformanceGraph } from "@/components/graphs/video-performance";
 import { useYouTube } from "@/hooks/use-youtube";
 import { api } from "@/trpc/react";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 import { Button } from "../ui/button";
 import { InterfaceIcons } from "../ui/icons";
@@ -35,7 +35,7 @@ export function SingleVideoAnalyticsContent({ postId }: any) {
   if (isLoading || isFetching || isAnalyticsLoading) {
     return (
       <div className="flex h-96 flex-col items-center justify-center">
-        <InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+        <InterfaceIcons.Loading className="size-16 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -46,7 +46,7 @@ export function SingleVideoAnalyticsContent({ postId }: any) {
         <div className="space-y-2">
           <Link href="/analytics">
             <Button className="w-full" variant="outline">
-              <ArrowLeft className="mr-2 h-4" />
+              <InterfaceIcons.Back className="mr-2 size-4" />
               <span>Overview Analytics</span>
             </Button>
           </Link>

@@ -18,6 +18,7 @@ import {
   LogOutIcon,
   MailIcon,
   MenuIcon,
+  MoreHorizontalIcon,
   PaperclipIcon,
   PieChartIcon,
   PlusIcon,
@@ -87,4 +88,5 @@ export const InterfaceIcons = {
   Search: SearchIcon,
   Directories: FolderIcon,
   Info: InfoIcon,
+  More: MoreHorizontalIcon,
 };

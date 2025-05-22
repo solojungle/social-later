@@ -1,4 +1,3 @@
-import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -49,7 +48,7 @@ export function TableCellActions({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost">
             <span className="sr-only">Actions</span>
-            <MoreHorizontal className="size-4 text-muted-foreground" />
+            <InterfaceIcons.More className="size-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

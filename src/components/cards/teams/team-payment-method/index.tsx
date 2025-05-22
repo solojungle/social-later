@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, MoreHorizontal } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -80,7 +80,7 @@ export function OptionsMenu({
       <DropdownMenuTrigger asChild disabled={isDisabled}>
         <Button className={className} size="icon" variant="outline">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="size-4 text-muted-foreground" />
+          <InterfaceIcons.More className="size-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

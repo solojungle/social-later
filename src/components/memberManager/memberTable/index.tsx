@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,11 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
-import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
 
 import { RemoveUserAlertDialog } from "./removeUser";
 import { UpdateRoleDialog } from "./updateRole";
@@ -31,7 +32,7 @@ export function MembersTable() {
           <span className="text-muted-foreground">Select all</span>
         </div>
         <Button size="icon" variant="ghost">
-          <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          <InterfaceIcons.More className="size-4 text-muted-foreground" />
         </Button>
       </div>
       <TableBody>
@@ -45,7 +46,7 @@ export function MembersTable() {
                       className="ml-2 mr-4"
                       disabled={t.email === userEmail}
                     />
-                    <Avatar className="mr-4 h-8 w-8">
+                    <Avatar className="mr-4 size-8">
                       <AvatarImage alt="label" src={t.image} />
                       <AvatarFallback>
                         {t.name.split(" ").map((name: string) => name[0])}
@@ -92,7 +93,7 @@ export function OptionsMenu({
       <DropdownMenuTrigger asChild disabled={isDisabled}>
         <Button size="icon" variant="outline">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          <InterfaceIcons.More className="size-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
