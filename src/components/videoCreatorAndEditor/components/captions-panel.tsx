@@ -1,10 +1,10 @@
 "use client";
 
-import { Loader2, SparklesIcon, Trash2 } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { useEditorStore } from "@/stores/editor";
 import { api } from "@/trpc/react";
@@ -90,9 +90,9 @@ export function CaptionsPanel() {
             variant="outline"
           >
             {isLoading ? (
-              <Loader2 className="size-4 animate-spin" />
+              <InterfaceIcons.Loading className="size-4 animate-spin" />
             ) : (
-              <SparklesIcon className="size-4" />
+              <InterfaceIcons.ArtificialIntelligence className="size-4" />
             )}
             Generate
           </Button>
@@ -194,7 +194,7 @@ export function CaptionsPanel() {
               size="icon"
               variant="ghost"
             >
-              <Trash2 className="size-4" />
+              <InterfaceIcons.Destructive className="size-4" />
             </Button>
           </div>
         ))}

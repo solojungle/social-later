@@ -1,7 +1,9 @@
+import { ArrowRight } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/stores/user";
-import { ArrowRight, SparklesIcon } from "lucide-react";
 
 function ArticleCards() {
   return (
@@ -88,7 +90,7 @@ function QuickStart() {
       <h1 className="mb-4 text-lg font-semibold">Quick Start</h1>
       <div className="flex space-x-2">
         <Button className="flex items-center gap-2" size="lg">
-          <SparklesIcon className="size-4" />
+          <InterfaceIcons.ArtificialIntelligence className="size-4" />
           Create Captions
         </Button>
       </div>
@@ -100,7 +102,7 @@ function SeeMoreNewsCard() {
   return (
     <article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
       <p className="select-none text-sm font-semibold text-primary">See More</p>
-      <ArrowRight className="ml-1 h-4 w-4 text-primary" />
+      <ArrowRight className="ml-1 size-4 text-primary" />
     </article>
   );
 }

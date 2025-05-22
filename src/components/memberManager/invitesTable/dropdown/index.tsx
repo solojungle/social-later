@@ -1,3 +1,7 @@
+import { MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -14,11 +18,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { useInvitationsStore } from "@/stores/invitations";
 import { api } from "@/trpc/react";
-import { MoreHorizontal, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 
 interface TableCellActionsProps {
   invitationId: string;
@@ -47,7 +49,7 @@ export function TableCellActions({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost">
             <span className="sr-only">Actions</span>
-            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+            <MoreHorizontal className="size-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -55,7 +57,7 @@ export function TableCellActions({
             className="text-destructive"
             onSelect={() => setShowDeleteDialog(true)}
           >
-            <Trash2 className="mr-1 h-4 w-4" />
+            <InterfaceIcons.Destructive className="mr-1 size-4" />
             <span>Delete invite</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

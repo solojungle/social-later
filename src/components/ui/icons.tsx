@@ -16,6 +16,8 @@ import {
   PaperclipIcon,
   PieChartIcon,
   SettingsIcon,
+  SparklesIcon,
+  Trash2Icon,
   UserIcon,
 } from "lucide-react";
 
@@ -69,4 +71,6 @@ export const InterfaceIcons = {
   Menu: MenuIcon,
   Render: ListStartIcon,
   Selected: CheckIcon,
+  ArtificialIntelligence: SparklesIcon,
+  Destructive: Trash2Icon,
 };

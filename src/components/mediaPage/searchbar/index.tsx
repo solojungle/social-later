@@ -1,12 +1,14 @@
-import { CreatePost } from "@/components/createPost";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Asset } from "@/schemas/file-schema";
-import { useSocialProfilesStore } from "@/stores/social-profiles";
-import { ArrowRightIcon, Search, Trash2 } from "lucide-react";
+import { ArrowRightIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { createSerializer, parseAsString } from "nuqs";
 import { useHotkeys } from "react-hotkeys-hook";
+
+import { CreatePost } from "@/components/createPost";
+import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
+import { Input } from "@/components/ui/input";
+import { Asset } from "@/schemas/file-schema";
+import { useSocialProfilesStore } from "@/stores/social-profiles";
 
 import { AddAssets } from "../addAssets";
 import { FiltersList } from "./filtersList";
@@ -53,7 +55,7 @@ export function SearchBar({
     <div className="mb-6 flex items-center justify-between">
       <div className="flex space-x-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="pointer-events-none absolute left-2 top-2.5 size-4 text-muted-foreground" />
           <Input
             autoCapitalize="none"
             autoComplete="off"
@@ -73,7 +75,7 @@ export function SearchBar({
           size="icon"
           variant="outline"
         >
-          <Trash2 className="w-4" />
+          <InterfaceIcons.Destructive className="size-4" />
         </Button>
       </div>
       <div className="ml-4 flex space-x-2">
