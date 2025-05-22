@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Folder } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -55,7 +54,7 @@ export function AddAssets() {
       <SheetTrigger asChild>
         <Button>
           <InterfaceIcons.CreateOrAdd className="mr-1 size-5" />
-          <Folder className="size-5 lg:invisible" />
+          <InterfaceIcons.Directories className="size-5 lg:invisible" />
           <span className="sr-only line-clamp-1 lg:not-sr-only">
             Add Assets
           </span>

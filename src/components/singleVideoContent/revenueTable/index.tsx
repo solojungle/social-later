@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { InterfaceIcons } from "@/components/ui/icons";
 import {
   Table,
   TableBody,
@@ -14,7 +15,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { InfoIcon } from "lucide-react";
 
 const defaultData = [
   {
@@ -70,7 +70,7 @@ export function RevenueTable({ passedData }: any) {
                     <TooltipTrigger>
                       <div className="flex items-center gap-1">
                         <span>Estimated Revenue</span>
-                        <InfoIcon className="h-3 w-3" />
+                        <InterfaceIcons.Info className="size-3" />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent

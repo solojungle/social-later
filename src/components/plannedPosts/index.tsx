@@ -1,6 +1,5 @@
-import { Search } from "lucide-react";
-
 import { Badge } from "../ui/badge";
+import { InterfaceIcons } from "../ui/icons";
 import { Input } from "../ui/input";
 
 interface PostsProps {
@@ -18,7 +17,7 @@ export function PlannedPosts({ posts = [] }: PostsProps) {
   return (
     <div className="p-5">
       <div className="relative mb-4">
-        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <InterfaceIcons.Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
         <Input className="pl-8" placeholder="Search posts..." />
       </div>
       <Posts posts={posts} />
@@ -56,7 +55,7 @@ function Posts({ posts }: PostsProps) {
           <div className="flex items-center py-2" key={post.id}>
             <img
               alt="Post media"
-              className="mr-4 h-16 w-16 rounded-xl"
+              className="mr-4 size-16 rounded-xl"
               src="https://picsum.photos/200"
             />
             <div className="flex w-full flex-col">

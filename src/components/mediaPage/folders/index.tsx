@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Folder } from "lucide-react";
+import { InterfaceIcons } from "@/components/ui/icons";
 
 type Props = {
   folders: { count: number; id: number; name: string }[];
@@ -16,7 +16,7 @@ export function Folders({ folders }: Props) {
             key={folder.id}
           >
             <Checkbox className="mr-4" />
-            <Folder className="mr-4 h-6 w-6" />
+            <InterfaceIcons.Directories className="mr-4 size-6" />
             <div>
               <div className="font-medium">{folder.name}</div>
               <div className="text-muted-foreground">{folder.count} assets</div>

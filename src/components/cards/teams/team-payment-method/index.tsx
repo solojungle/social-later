@@ -1,5 +1,9 @@
 "use client";
 
+import { CheckCircle2, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import { getPaymentMethodIcon } from "@/components/ccicon";
 import {
   AlertDialog,
@@ -35,9 +39,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { api } from "@/trpc/react";
-import { CheckCircle2, InfoIcon, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 
 import { SettingsCardBase } from "../../settings-card-base";
 import { AddPaymentDialogTrigger } from "./dialogTrigger";
@@ -79,7 +80,7 @@ export function OptionsMenu({
       <DropdownMenuTrigger asChild disabled={isDisabled}>
         <Button className={className} size="icon" variant="outline">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+          <MoreHorizontal className="size-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -92,7 +93,7 @@ export function OptionsMenu({
           }}
         >
           {loading && (
-            <InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin text-muted-foreground" />
+            <InterfaceIcons.Loading className="mr-2 size-4 animate-spin text-muted-foreground" />
           )}
           Set default
         </DropdownMenuItem>
@@ -127,7 +128,7 @@ export function TeamPaymentMethodCard({ teamId }: { teamId: string }) {
       <SettingsCardBase
         content={
           <div className="flex w-full flex-col items-center justify-center">
-            <InterfaceIcons.Loading className="h-16 w-16 animate-spin text-muted-foreground" />
+            <InterfaceIcons.Loading className="size-16 animate-spin text-muted-foreground" />
             <span className="mt-4 text-xs text-muted-foreground">
               Loading payment methods...
             </span>
@@ -167,7 +168,7 @@ export function TeamPaymentMethodCard({ teamId }: { teamId: string }) {
                   <TooltipTrigger>
                     <TableHead className="flex items-center gap-1 uppercase">
                       Default
-                      <InfoIcon className="h-3 w-3" />
+                      <InterfaceIcons.Info className="size-3" />
                     </TableHead>
                   </TooltipTrigger>
                   <TooltipContent
@@ -197,7 +198,7 @@ export function TeamPaymentMethodCard({ teamId }: { teamId: string }) {
                   <TableCell className="capitalize">{card.type}</TableCell>
                   <TableCell>•••• {card.last4}</TableCell>
                   <TableCell>{`${card.expMonth}/${card.expYear}`}</TableCell>
-                  <TableCell className="w-[0]">
+                  <TableCell className="w-0">
                     <OptionsMenu
                       isDefault={card.isDefault}
                       isLastPaymentMethod={data.length === 1}
@@ -259,7 +260,7 @@ function DeleteAlert({ onOpenChange, open, paymentMethodId, teamId }: any) {
             variant="destructive"
           >
             {loading && (
-              <InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin text-white" />
+              <InterfaceIcons.Loading className="mr-2 size-4 animate-spin text-white" />
             )}
             Delete
           </AlertDialogAction>

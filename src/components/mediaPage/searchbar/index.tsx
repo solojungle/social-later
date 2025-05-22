@@ -1,4 +1,3 @@
-import { Search } from "lucide-react";
 import Link from "next/link";
 import { createSerializer, parseAsString } from "nuqs";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -55,7 +54,7 @@ export function SearchBar({
     <div className="mb-6 flex items-center justify-between">
       <div className="flex space-x-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-2 top-2.5 size-4 text-muted-foreground" />
+          <InterfaceIcons.Search className="pointer-events-none absolute left-2 top-2.5 size-4 text-muted-foreground" />
           <Input
             autoCapitalize="none"
             autoComplete="off"

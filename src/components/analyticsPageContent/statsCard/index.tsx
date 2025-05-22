@@ -1,11 +1,13 @@
 "use client";
 
+import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
+
+import { InterfaceIcons } from "@/components/ui/icons";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ArrowDownRight, ArrowUpRight, InfoIcon, Minus } from "lucide-react";
 
 export const StatsCard = ({
   increasedBy,
@@ -27,17 +29,17 @@ export const StatsCard = ({
     // Make positive percentages green
     colorClass = "text-green-600";
     // Use ArrowUpRight for positive percentages
-    arrowIcon = <ArrowUpRight className="h-4 w-4 text-green-600" />;
+    arrowIcon = <ArrowUpRight className="size-4 text-green-600" />;
   } else if (percentage < 0) {
     // Make negative percentages red
     colorClass = "text-red-600";
     // Use ArrowDownRight for negative percentages
-    arrowIcon = <ArrowDownRight className="h-4 w-4 text-red-600" />;
+    arrowIcon = <ArrowDownRight className="size-4 text-red-600" />;
   } else {
     // Make neutral percentages blue
     colorClass = "text-blue-600";
     // Use ArrowDownRight for neutral percentages
-    arrowIcon = <Minus className="h-4 w-4 text-blue-600" />;
+    arrowIcon = <Minus className="size-4 text-blue-600" />;
   }
 
   return (
@@ -45,7 +47,7 @@ export const StatsCard = ({
       <Tooltip delayDuration={0}>
         <TooltipTrigger className="mb-1 flex max-w-fit items-center gap-1 text-muted-foreground">
           <h2 className="text-xs">{title}</h2>
-          <InfoIcon className="h-3 w-3" />
+          <InterfaceIcons.Info className="size-3" />
         </TooltipTrigger>
         <TooltipContent className="flex w-40 items-center gap-4" side="top">
           <p className="text-xs">{tooltip}</p>

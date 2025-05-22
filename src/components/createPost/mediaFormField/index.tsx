@@ -1,4 +1,9 @@
 /* eslint-disable react/no-array-index-key */
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { UploadCloudIcon } from "lucide-react";
+import React from "react";
+import { FileRejection, useDropzone } from "react-dropzone";
+
 import {
   FormControl,
   FormField,
@@ -11,13 +16,10 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { InfoIcon, UploadCloudIcon } from "lucide-react";
-import React from "react";
-import { FileRejection, useDropzone } from "react-dropzone";
 
 export type FileGalleryProps = {
   fileProgress: { [key: string]: { [key: number]: number } };
@@ -73,7 +75,7 @@ export function FileGallery({
       <div className="flex space-x-2">
         {new Array(restrictions.maxFiles).fill(null).map(() => (
           <div
-            className="h-32 w-32 rounded-md border bg-muted"
+            className="size-32 rounded-md border bg-muted"
             key={Math.random()}
           />
         ))}
@@ -95,13 +97,13 @@ export function FileGallery({
             onClick={() => onRemoveFile(file.id)}
             type="button"
           >
-            <Cross2Icon className="h-5 w-5" />
+            <Cross2Icon className="size-5" />
             <span className="sr-only">Close</span>
           </button>
-          <div className="absolute z-10 h-32 w-32 rounded-md bg-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+          <div className="absolute z-10 size-32 rounded-md bg-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
           {file.preview.length === 0 ? (
-            <div className="flex h-32 w-32 flex-col items-center justify-center rounded-md border border-border">
+            <div className="flex size-32 flex-col items-center justify-center rounded-md border border-border">
               <span className="flex w-32 justify-start overflow-hidden truncate px-1 text-sm">
                 {file.file.name}
               </span>
@@ -112,7 +114,7 @@ export function FileGallery({
           ) : (
             <img
               alt="Uploaded file"
-              className="h-32 w-32 rounded-md border border-border object-cover"
+              className="size-32 rounded-md border border-border object-cover"
               key={file.id}
               src={file.preview as unknown as string}
             />
@@ -260,7 +262,7 @@ export function MediaFormField({
               >
                 <Input {...getInputProps()} type="file" />
                 <div className="mb-3 flex items-center justify-center rounded-full border border-border bg-primary-foreground p-2">
-                  <UploadCloudIcon className="h-8 w-8 text-primary" />
+                  <UploadCloudIcon className="size-8 text-primary" />
                 </div>
                 <span className="text-sm text-primary">
                   Click to upload, or drag and drop
@@ -319,7 +321,7 @@ function HoverCardSection({ restrictions }: HoverCardSectionProps) {
     <HoverCard openDelay={200}>
       <HoverCardTrigger className="absolute right-3 top-3 flex cursor-pointer items-center text-xs text-muted-foreground">
         Specifications
-        <InfoIcon className="ml-1 h-4 w-4" />
+        <InterfaceIcons.Info className="ml-1 size-4" />
       </HoverCardTrigger>
       <HoverCardContent className="text-xs" collisionPadding={{ right: 15 }}>
         <ul>
