@@ -89,4 +89,5 @@ export const InterfaceIcons = {
   Directories: FolderIcon,
   Info: InfoIcon,
   More: MoreHorizontalIcon,
+  Hyperlink: PaperclipIcon,
 };

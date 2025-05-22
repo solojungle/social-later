@@ -1,3 +1,5 @@
+import { useRef, useState } from "react";
+
 import { EmojiPicker } from "@/components/emojiPicker";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,14 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { PaperclipIcon } from "lucide-react";
-import { useRef, useState } from "react";
 
 type StatusFormFieldProps = {
   form: any;
@@ -87,7 +88,7 @@ function Toolbar({ charCount, maxCharCount, textareaRef }: ToolbarProps) {
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <Button size="icon" type="button" variant="ghost">
-              <PaperclipIcon className="h-5 w-5 text-muted-foreground" />
+              <InterfaceIcons.Hyperlink className="size-5 text-muted-foreground" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
