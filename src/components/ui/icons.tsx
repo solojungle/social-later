@@ -1,4 +1,5 @@
 import {
+  AlertTriangleIcon,
   ArchiveIcon,
   BellIcon,
   CalendarIcon,
@@ -17,6 +18,7 @@ import {
   MenuIcon,
   PaperclipIcon,
   PieChartIcon,
+  PlusIcon,
   SettingsIcon,
   SparklesIcon,
   Trash2Icon,
@@ -77,4 +79,6 @@ export const InterfaceIcons = {
   Destructive: Trash2Icon,
   Next: ChevronRightIcon,
   Back: ChevronLeftIcon,
+  Alert: AlertTriangleIcon,
+  CreateOrAdd: PlusIcon,
 };

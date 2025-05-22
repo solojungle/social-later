@@ -1,10 +1,19 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Folder } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
 import { MediaFormField } from "@/components/createPost/mediaFormField";
 import { CancelSubmitBar } from "@/components/createPost/tabs/cancelSubmitBar";
 import { FileUpload, OnProgress, uploadFile } from "@/components/fileUpload";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { InterfaceIcons } from "@/components/ui/icons";
 import {
   Sheet,
   SheetContent,
@@ -18,13 +27,6 @@ import { fileSchema } from "@/schemas/new-file-schema";
 import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Folder, PlusIcon } from "lucide-react";
-import { usePostHog } from "posthog-js/react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 
 // These are the restrictions for the media files that can be uploaded
 const mediaFileTypes = [
@@ -52,8 +54,8 @@ export function AddAssets() {
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
         <Button>
-          <PlusIcon className="mr-1 h-5 w-5" />
-          <Folder className="h-5 w-5 lg:invisible" />
+          <InterfaceIcons.CreateOrAdd className="mr-1 size-5" />
+          <Folder className="size-5 lg:invisible" />
           <span className="sr-only line-clamp-1 lg:not-sr-only">
             Add Assets
           </span>

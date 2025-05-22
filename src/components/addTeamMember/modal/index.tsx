@@ -1,5 +1,11 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserRole } from "@prisma/client";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,12 +35,6 @@ import { useSelectedTeamStore } from "@/stores/selected-team";
 import { useTeamMembersStore } from "@/stores/team-members";
 import { useUserStore } from "@/stores/user";
 import { api } from "@/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { UserRole } from "@prisma/client";
-import { PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import {
   Select,
@@ -49,10 +49,10 @@ export function AddTeamMemberModal() {
     <Dialog>
       <DialogTrigger
         asChild
-        className="inline-flex h-9 w-9 items-center justify-center whitespace-nowrap rounded-md border text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex size-9 items-center justify-center whitespace-nowrap rounded-md border text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
       >
         <div>
-          <PlusIcon className="h-4 w-4" />
+          <InterfaceIcons.CreateOrAdd className="size-4" />
         </div>
       </DialogTrigger>
       <DialogContent>
@@ -166,7 +166,7 @@ function Content() {
           </DialogClose>
           <Button disabled={loading} type="submit">
             {loading && (
-              <InterfaceIcons.Loading className="mr-2 h-4 w-4 animate-spin" />
+              <InterfaceIcons.Loading className="mr-2 size-4 animate-spin" />
             )}
             Invite
           </Button>

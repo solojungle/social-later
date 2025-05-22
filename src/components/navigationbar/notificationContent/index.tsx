@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { AlertTriangle } from "lucide-react";
 
 const notifs = [
   {
@@ -53,7 +53,7 @@ export function NotificationContent({
             return (
               <li className="flex items-start justify-center py-2" key={e.id}>
                 <div>
-                  <AlertTriangle className="h-10 w-10" />
+                  <InterfaceIcons.Alert className="size-10" />
                 </div>
                 <div className="ml-3 flex flex-col text-xs">
                   <span className="mb-1">{e.message}</span>

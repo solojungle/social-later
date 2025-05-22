@@ -1,7 +1,6 @@
 "use client";
 
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { PlusIcon } from "lucide-react";
 import * as React from "react";
 import { useEffect, useState } from "react";
 
@@ -207,7 +206,7 @@ export const SocialProfileSwitcher: React.FC<PopoverTriggerProps> = ({
                     setShowNewProfileDialog(true);
                   }}
                 >
-                  <PlusIcon className="mr-2 size-4" />
+                  <InterfaceIcons.CreateOrAdd className="mr-2 size-4" />
                   Add profile
                 </CommandItem>
               </CommandGroup>
