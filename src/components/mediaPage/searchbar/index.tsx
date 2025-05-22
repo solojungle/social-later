@@ -1,4 +1,4 @@
-import { ArrowRightIcon, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { createSerializer, parseAsString } from "nuqs";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -83,7 +83,7 @@ export function SearchBar({
           <Button asChild disabled={selected.length > 1} variant="outline">
             <Link href={serialize("/creator", { file: selected[0]?.id })}>
               <span className="mr-1">Move to Captions</span>
-              <ArrowRightIcon className="w-4" />
+              <InterfaceIcons.Next className="w-4" />
             </Link>
           </Button>
         </div>

@@ -1,6 +1,7 @@
-import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { InterfaceIcons } from "@/components/ui/icons";
 
 function ArticleCards() {
   return (
@@ -85,7 +86,7 @@ function SeeMoreNewsCard() {
   return (
     <article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
       <p className="select-none text-sm font-semibold text-primary">See More</p>
-      <ArrowRight className="ml-1 h-4 w-4 text-primary" />
+      <InterfaceIcons.Next className="ml-1 size-4 text-primary" />
     </article>
   );
 }

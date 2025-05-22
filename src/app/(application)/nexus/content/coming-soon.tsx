@@ -1,5 +1,3 @@
-import { ArrowRight } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { InterfaceIcons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
@@ -102,7 +100,7 @@ function SeeMoreNewsCard() {
   return (
     <article className="flex h-60 w-64 items-center justify-center rounded-lg border border-border bg-primary-foreground/10 transition-all duration-150 hover:border-primary hover:bg-primary-foreground/50 hover:shadow-md">
       <p className="select-none text-sm font-semibold text-primary">See More</p>
-      <ArrowRight className="ml-1 size-4 text-primary" />
+      <InterfaceIcons.Next className="ml-1 size-4 text-primary" />
     </article>
   );
 }
