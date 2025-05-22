@@ -1,14 +1,16 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
 import { FileType } from "@prisma/client";
-import { ChevronLeft, ChevronRight, ImageIcon, VideoIcon } from "lucide-react";
+import { ImageIcon, VideoIcon } from "lucide-react";
 import { parseAsInteger, useQueryStates } from "nuqs";
 import { useState } from "react";
 
+import { cn } from "@/lib/utils";
+import { PostWithAttachmentsSchemaValues } from "@/schemas/posts-schema";
+
 import { CreatePost } from "../createPost";
 import { Button } from "../ui/button";
+import { InterfaceIcons } from "../ui/icons";
 import { Sheet, SheetTrigger } from "../ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { EditPostSheetContent } from "./editPostSheetContent";
@@ -109,9 +111,9 @@ function StyledMediaPost({
               {(post.attachment &&
                 post.attachment[0]?.file.type === FileType.video) ||
               post.socialType === "youtube" ? (
-                <VideoIcon className="h-4 w-4 text-secondary-foreground" />
+                <VideoIcon className="size-4 text-secondary-foreground" />
               ) : (
-                <ImageIcon className="h-4 w-4 text-secondary-foreground" />
+                <ImageIcon className="size-4 text-secondary-foreground" />
               )}
             </div>
             <img
@@ -162,7 +164,7 @@ function StyledStatus({ status }: { status: string }) {
     return (
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-green-500" />
+          <span className="ml-auto size-2 shrink-0 rounded-full bg-green-500" />
         </TooltipTrigger>
         <TooltipContent>Published</TooltipContent>
       </Tooltip>
@@ -172,7 +174,7 @@ function StyledStatus({ status }: { status: string }) {
     return (
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-yellow-500" />
+          <span className="ml-auto size-2 shrink-0 rounded-full bg-yellow-500" />
         </TooltipTrigger>
         <TooltipContent>Pending</TooltipContent>
       </Tooltip>
@@ -182,7 +184,7 @@ function StyledStatus({ status }: { status: string }) {
     return (
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-red-500" />
+          <span className="ml-auto size-2 shrink-0 rounded-full bg-red-500" />
         </TooltipTrigger>
         <TooltipContent>Rejected</TooltipContent>
       </Tooltip>
@@ -216,7 +218,7 @@ const CalendarDay = ({
       } flex flex-col`}
     >
       <time
-        className={`m-1 mb-4 flex h-5 w-5 items-center justify-center rounded-full  text-xs text-muted-foreground ${
+        className={`m-1 mb-4 flex size-5 items-center justify-center rounded-full text-xs  text-muted-foreground ${
           isToday
             ? "bg-primary font-semibold text-primary-foreground"
             : "font-light"
@@ -273,8 +275,8 @@ export function PostsCalendar({ className, posts = [], profileId }: any) {
         day: isCurrentMonth
           ? day
           : day <= 0
-          ? new Date(params.year, params.month, 0).getDate() + day
-          : day - daysInMonth,
+            ? new Date(params.year, params.month, 0).getDate() + day
+            : day - daysInMonth,
         isDisabled: !isCurrentMonth,
         isOtherMonth: !isCurrentMonth,
         isPrevious: currentDate <= new Date(),
@@ -295,7 +297,7 @@ export function PostsCalendar({ className, posts = [], profileId }: any) {
     <div className={cn("flex h-full w-full flex-col", className)}>
       <div className="flex items-center space-x-4 rounded-t border border-b-0 p-2">
         <Button onClick={() => changeMonth(-1)} variant="ghost">
-          <ChevronLeft className="h-5 w-5" />
+          <InterfaceIcons.Back className="size-5" />
         </Button>
         <span className="flex w-36 justify-center font-semibold">
           {new Date(params.year, params.month).toLocaleString("default", {
@@ -304,7 +306,7 @@ export function PostsCalendar({ className, posts = [], profileId }: any) {
           , {params.year}
         </span>
         <Button onClick={() => changeMonth(1)} variant="ghost">
-          <ChevronRight className="h-5 w-5" />
+          <InterfaceIcons.Next className="size-5" />
         </Button>
       </div>
       <div className="flex flex-auto flex-col pb-24">

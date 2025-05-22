@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
+
+import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
 
 export function PagePagination({ loading, onChange, page, total }: any) {
   return (
@@ -18,40 +18,40 @@ export function PagePagination({ loading, onChange, page, total }: any) {
         </div>
         <div className="flex items-center space-x-2">
           <Button
-            className="hidden h-8 w-8 p-0 lg:flex"
+            className="hidden size-8 p-0 lg:flex"
             disabled={page === 1 || loading}
             onClick={() => onChange(1)}
             variant="outline"
           >
             <span className="sr-only">Go to first page</span>
-            <DoubleArrowLeftIcon className="h-4 w-4" />
+            <DoubleArrowLeftIcon className="size-4" />
           </Button>
           <Button
-            className="h-8 w-8 p-0"
+            className="size-8 p-0"
             disabled={page === 1 || loading}
             onClick={() => onChange(page - 1)}
             variant="outline"
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeftIcon className="h-4 w-4" />
+            <InterfaceIcons.Back className="size-4" />
           </Button>
           <Button
-            className="h-8 w-8 p-0"
+            className="size-8 p-0"
             disabled={page + 1 > total || loading}
             onClick={async () => onChange(page + 1)}
             variant="outline"
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRightIcon className="h-4 w-4" />
+            <InterfaceIcons.Next className="size-4" />
           </Button>
           <Button
-            className="hidden h-8 w-8 p-0 lg:flex"
+            className="hidden size-8 p-0 lg:flex"
             disabled={page === total || loading}
             onClick={async () => onChange(total)}
             variant="outline"
           >
             <span className="sr-only">Go to last page</span>
-            <DoubleArrowRightIcon className="h-4 w-4" />
+            <DoubleArrowRightIcon className="size-4" />
           </Button>
         </div>
       </div>

@@ -3,9 +3,9 @@
 
 import AddSocialProfile from "@/components/addSocialProfileButton";
 import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function PublishPageSkeleton() {
   // Add a blur effect to the background
@@ -23,7 +23,7 @@ function CalendarSkeleton() {
     <div className="pointer-events-none flex h-screen flex-col p-3 opacity-20 blur-[3px]">
       <div className="flex items-center space-x-4 rounded-t border border-b-0 p-2">
         <Button variant="ghost">
-          <ChevronLeft className="h-5 w-5" />
+          <InterfaceIcons.Back className="size-5" />
         </Button>
         <span className="flex w-36 justify-center font-semibold">
           {new Date().toLocaleString("default", {
@@ -31,7 +31,7 @@ function CalendarSkeleton() {
           })}
         </span>
         <Button variant="ghost">
-          <ChevronRight className="h-5 w-5" />
+          <InterfaceIcons.Next className="size-5" />
         </Button>
       </div>
       <div className="flex flex-auto flex-col pb-24">

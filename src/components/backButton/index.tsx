@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "../ui/button";
+import { InterfaceIcons } from "../ui/icons";
 
 export default function BackButton() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function BackButton() {
       onClick={() => router.back()}
       variant="ghost"
     >
-      <ChevronLeft className="h-5 w-5" />
+      <InterfaceIcons.Back className="size-5" />
       <span className="ml-2">Back</span>
     </Button>
   );

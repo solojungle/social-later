@@ -4,6 +4,8 @@ import {
   CalendarIcon,
   CaptionsIcon,
   CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   DownloadIcon,
   HandshakeIcon,
   HomeIcon,
@@ -73,4 +75,6 @@ export const InterfaceIcons = {
   Selected: CheckIcon,
   ArtificialIntelligence: SparklesIcon,
   Destructive: Trash2Icon,
+  Next: ChevronRightIcon,
+  Back: ChevronLeftIcon,
 };
