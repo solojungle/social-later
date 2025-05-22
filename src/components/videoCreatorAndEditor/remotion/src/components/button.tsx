@@ -25,6 +25,7 @@ const ButtonForward: React.ForwardRefRenderFunction<
       disabled={disabled}
       onClick={onClick}
       ref={ref}
+      type="button"
     >
       {loading && (
         <>

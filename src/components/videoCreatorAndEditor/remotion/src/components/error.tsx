@@ -6,6 +6,7 @@ export const ErrorComp: React.FC<{
   return (
     <div className="text-geist-error font-geist py-geist-half">
       <svg
+        className="mr-1.5 inline h-5 align-text-bottom"
         fill="none"
         shapeRendering="geometricPrecision"
         stroke="currentColor"
@@ -13,11 +14,10 @@ export const ErrorComp: React.FC<{
         strokeLinejoin="round"
         strokeWidth="2"
         viewBox="0 0 24 24"
-        className="h-5 align-text-bottom mr-1.5 inline"
       >
-        <circle cx="12" cy="12" r="10" fill="var(--geist-fill)"></circle>
-        <path d="M12 8v4" stroke="currentColor"></path>
-        <path d="M12 16h.01" stroke="currentColor"></path>
+        <circle cx="12" cy="12" fill="var(--geist-fill)" r="10" />
+        <path d="M12 8v4" stroke="currentColor" />
+        <path d="M12 16h.01" stroke="currentColor" />
       </svg>
       <strong>Error:</strong> {message}
     </div>
