@@ -34,9 +34,11 @@ export const Main: React.FC<{
         {captions.map((page, index) => {
           const nextPage = captions[index + 1] ?? null;
           const subtitleStartFrame = (page.startMs / 1000) * fps;
+          const captionEndFrame =
+            subtitleStartFrame + (page.durationMs / 1000) * fps;
           const subtitleEndFrame = nextPage
-            ? (nextPage.startMs / 1000) * fps
-            : subtitleStartFrame + (page.durationMs / 1000) * fps;
+            ? Math.min(captionEndFrame, (nextPage.startMs / 1000) * fps)
+            : captionEndFrame;
           const durationInFrames = subtitleEndFrame - subtitleStartFrame;
           if (durationInFrames <= 0) {
             return null;
