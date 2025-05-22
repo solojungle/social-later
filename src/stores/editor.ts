@@ -1,11 +1,18 @@
+import { TikTokToken } from "@remotion/captions";
 import { create } from "zustand";
 
-interface Caption {
-  endMs: number;
+export type Caption = {
+  durationMs: number;
   id: string;
   startMs: number;
   text: string;
-}
+  tokens: TikTokToken[];
+};
+export type CaptionToken = {
+  fromMs: number;
+  text: string;
+  toMs: number;
+};
 
 interface CaptionSettings {
   language: string;
@@ -38,18 +45,162 @@ interface GlobalStyles {
   textTransform: string;
 }
 
+const defaultCaptions: Caption[] = [
+  {
+    durationMs: 500,
+    id: "1",
+    startMs: 0,
+    text: "Hey!",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "2",
+    startMs: 500,
+    text: "Watch this",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "3",
+    startMs: 1000,
+    text: "Quick tip",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "4",
+    startMs: 1500,
+    text: "You won't believe",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "5",
+    startMs: 2000,
+    text: "What happens next",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "6",
+    startMs: 2500,
+    text: "Mind blown",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "7",
+    startMs: 3000,
+    text: "No way!",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "8",
+    startMs: 3500,
+    text: "Check this out",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "9",
+    startMs: 4000,
+    text: "Crazy right?",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "10",
+    startMs: 4500,
+    text: "Wait for it",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "11",
+    startMs: 5000,
+    text: "Almost there",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "12",
+    startMs: 5500,
+    text: "Here it comes",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "13",
+    startMs: 6000,
+    text: "Boom!",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "14",
+    startMs: 6500,
+    text: "Did you see that?",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "15",
+    startMs: 7000,
+    text: "So cool",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "16",
+    startMs: 7500,
+    text: "Want more?",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "17",
+    startMs: 8000,
+    text: "Follow for more",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "18",
+    startMs: 8500,
+    text: "Like & share",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "19",
+    startMs: 9000,
+    text: "Thanks!",
+    tokens: [],
+  },
+  {
+    durationMs: 500,
+    id: "20",
+    startMs: 9500,
+    text: "Bye! 👋",
+    tokens: [],
+  },
+];
+
 export const useEditorStore = create<EditorStore>((set) => ({
   addCaption: () =>
     set((state) => {
       const newCaption: Caption = {
-        endMs: state.currentTime + 2000,
+        durationMs: 2000,
         id: Math.random().toString(36).substring(7),
         startMs: state.currentTime,
         text: "New Caption",
+        tokens: [],
       };
       return { captions: [...state.captions, newCaption] };
     }),
-  captions: [],
+  captions: defaultCaptions,
   captionSettings: {
     language: "en",
     model: "whisper-base",
