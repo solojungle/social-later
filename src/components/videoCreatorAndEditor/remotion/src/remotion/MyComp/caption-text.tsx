@@ -62,6 +62,7 @@ export const CaptionText: React.FC<{
             maxWidth: width * 0.8,
             textAlign: "center",
             textShadow: getShadowStyle(globalStyles.shadow),
+            textTransform: globalStyles.textTransform as TextTransform,
             width: "100%",
           }}
         >

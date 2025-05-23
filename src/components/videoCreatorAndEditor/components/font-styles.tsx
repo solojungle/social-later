@@ -23,8 +23,9 @@ export function FontStyles() {
   const [fontColor, setFontColor] = useState<string>("#FFFFFF");
 
   const handleFontSizeChange = (value: number[]) => {
-    setFontSize(value[0] ?? 24);
-    updateGlobalStyles({ fontSize });
+    const newSize = value[0] ?? 24;
+    setFontSize(newSize);
+    updateGlobalStyles({ fontSize: newSize });
   };
 
   const handleColorChange = (color: string) => {
@@ -37,7 +38,7 @@ export function FontStyles() {
   ) => {
     setTextFormat(format);
     // Note: text transform is handled in the caption rendering
-    updateGlobalStyles({ textTransform: textFormat });
+    updateGlobalStyles({ textTransform: format });
   };
 
   const handleShadowChange = (
