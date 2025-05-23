@@ -3,7 +3,7 @@
 "use client";
 
 import { Compact } from "@uiw/react-color";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -19,8 +19,15 @@ export function FontStyles() {
   const [textShadow, setTextShadow] = useState<
     "large" | "medium" | "none" | "small"
   >("none");
-  const [fontSize, setFontSize] = useState<number>(24);
+  const [fontSize, setFontSize] = useState<number>(54);
   const [fontColor, setFontColor] = useState<string>("#FFFFFF");
+
+  useEffect(() => {
+    updateGlobalStyles({
+      fontFamily: "Bebas Neue",
+      fontSize: 54,
+    });
+  }, [updateGlobalStyles]);
 
   const handleFontSizeChange = (value: number[]) => {
     const newSize = value[0] ?? 24;

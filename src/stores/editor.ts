@@ -198,12 +198,14 @@ export const useEditorStore = create<EditorStore>((set) => ({
         text: "New Caption",
         tokens: [],
       };
-      return { captions: [...state.captions, newCaption] };
+      return {
+        captions: [...state.captions, newCaption],
+      };
     }),
   captions: defaultCaptions,
   captionSettings: {
     language: "en",
-    model: "whisper-base",
+    model: "whisper-1",
   },
   currentTime: 0,
   deleteCaption: (id) =>
@@ -211,10 +213,10 @@ export const useEditorStore = create<EditorStore>((set) => ({
       captions: state.captions.filter((caption) => caption.id !== id),
     })),
   globalStyles: {
-    color: "#ffffff",
-    fontFamily: "Inter",
-    fontSize: 48,
-    shadow: "medium",
+    color: "#FFFFFF",
+    fontFamily: "Bebas Neue",
+    fontSize: 54,
+    shadow: "none",
     textTransform: "none",
   },
   playerRef: null,
