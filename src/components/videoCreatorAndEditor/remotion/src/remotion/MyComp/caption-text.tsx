@@ -21,8 +21,7 @@ const getShadowStyle = (shadow: string) => {
 };
 
 const container: React.CSSProperties = {
-  alignItems: "center",
-  bottom: "10%",
+  alignItems: "flex-start",
   display: "flex",
   height: "auto",
   justifyContent: "center",
@@ -30,14 +29,15 @@ const container: React.CSSProperties = {
   padding: "20px",
   position: "absolute",
   right: 0,
-  top: "auto",
+  top: "5%",
   width: "100%",
 };
 
 export const CaptionText: React.FC<{
+  readonly alignment?: "center" | "left";
   readonly metadata: any;
   readonly page: TikTokPage;
-}> = ({ metadata, page }) => {
+}> = ({ alignment = "center", metadata, page }) => {
   const { globalStyles } = useEditorStore();
   const { width } = useVideoConfig();
 
@@ -45,13 +45,19 @@ export const CaptionText: React.FC<{
     fontFamily: globalStyles.fontFamily,
     text: page.text,
     textTransform: globalStyles.textTransform as TextTransform,
-    withinWidth: width * 0.8,
+    withinWidth: width * 0.7,
   });
 
   const fontSize = Math.min(globalStyles.fontSize, fittedText.fontSize);
 
+  const containerStyle: React.CSSProperties = {
+    ...container,
+    justifyContent: alignment === "center" ? "center" : "flex-start",
+    paddingLeft: alignment === "left" ? "10%" : "20px",
+  };
+
   return (
-    <AbsoluteFill style={container}>
+    <AbsoluteFill style={containerStyle}>
       <Sequence durationInFrames={metadata.duration} from={metadata.from}>
         <div
           style={{
@@ -59,8 +65,8 @@ export const CaptionText: React.FC<{
             fontFamily: globalStyles.fontFamily,
             fontSize,
             margin: "0 auto",
-            maxWidth: width * 0.8,
-            textAlign: "center",
+            maxWidth: width * 0.7,
+            textAlign: alignment,
             textShadow: getShadowStyle(globalStyles.shadow),
             textTransform: globalStyles.textTransform as TextTransform,
             width: "100%",

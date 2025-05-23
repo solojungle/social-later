@@ -1,7 +1,6 @@
 "use client";
 
 import { Clock, Edit2, Save, Trash2 } from "lucide-react";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -14,12 +13,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { InterfaceIcons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Caption, useEditorStore } from "@/stores/editor";
-import { api } from "@/trpc/react";
 
 interface CaptionItemProps {
   caption: Caption;
@@ -39,32 +36,12 @@ export function CaptionsPanel() {
   const {
     addCaption,
     captions,
-    captionSettings,
     currentTime,
     deleteCaption,
     selectCaption,
     selectedCaptionId,
-    setCaptions,
     updateCaption,
   } = useEditorStore();
-  const { isLoading, mutateAsync: generateCaptions } =
-    api.openai.transcribeVideo.useMutation({
-      onSuccess: (result) => {
-        if (!result) {
-          return;
-        }
-
-        // Add ids to the captions
-        const captionsWithIds = result.map(
-          (caption: Caption, index: number) => ({
-            ...caption,
-            id: index.toString(),
-          }),
-        );
-
-        setCaptions(captionsWithIds);
-      },
-    });
 
   const handleCaptionEdit = (id: string, newText: string) => {
     updateCaption(id, { text: newText });
@@ -81,8 +58,6 @@ export function CaptionsPanel() {
     }
   };
 
-  const [fileId] = useQueryState("file");
-
   const formatTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -98,22 +73,15 @@ export function CaptionsPanel() {
           <CardTitle className="text-left text-sm font-medium ">
             {captions.length} caption{captions.length !== 1 ? "s" : ""}
           </CardTitle>
-          <div className="flex gap-2">
-            <GenerateCaptionsButton
-              captionSettings={captionSettings}
-              fileId={fileId ?? ""}
-              generateCaptions={generateCaptions}
-              isLoading={isLoading}
-            />
-            <Button
-              onClick={addCaption}
-              size="sm"
-              title={`Add caption at ${formatTime(currentTime)}`}
-              variant="outline"
-            >
-              Add Caption at {formatTime(currentTime)}
-            </Button>
-          </div>
+
+          <Button
+            onClick={addCaption}
+            size="sm"
+            title={`Add caption at ${formatTime(currentTime)}`}
+            variant="outline"
+          >
+            Add Caption at {formatTime(currentTime)}
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="p-0">
@@ -312,50 +280,5 @@ function CaptionItem({
         </div>
       </div>
     </div>
-  );
-}
-
-function GenerateCaptionsButton({
-  captionSettings,
-  fileId,
-  generateCaptions,
-  isLoading,
-}: {
-  captionSettings: {
-    language: string;
-    model: string;
-  };
-  fileId: string;
-  generateCaptions: (data: {
-    file: { id: string };
-    language: string;
-    model: string;
-  }) => void;
-  isLoading: boolean;
-}) {
-  return (
-    <Button
-      className="gap-2"
-      disabled={isLoading}
-      onClick={() => {
-        if (!fileId) {
-          return;
-        }
-        generateCaptions({
-          file: { id: fileId },
-          language: captionSettings.language,
-          model: captionSettings.model,
-        });
-      }}
-      size="sm"
-      variant="outline"
-    >
-      {isLoading ? (
-        <InterfaceIcons.Loading className="size-4 animate-spin" />
-      ) : (
-        <InterfaceIcons.ArtificialIntelligence className="size-4" />
-      )}
-      Generate
-    </Button>
   );
 }

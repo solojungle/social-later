@@ -2,6 +2,11 @@
 
 "use client";
 
+import { useQueryState } from "nuqs";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { InterfaceIcons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -11,14 +16,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useEditorStore } from "@/stores/editor";
-import { useState } from "react";
+import { Caption, useEditorStore } from "@/stores/editor";
+import { api } from "@/trpc/react";
 
 import { LanguageSelector } from "./language-selector";
 
 export function SettingsPanel() {
-  const { captionSettings, updateCaptionSettings } = useEditorStore();
+  const { captionSettings, setCaptions, updateCaptionSettings } =
+    useEditorStore();
   const [removePunctuation, setRemovePunctuation] = useState(false);
+  const [fileId] = useQueryState("file");
+  const { isLoading, mutateAsync: generateCaptions } =
+    api.openai.transcribeVideo.useMutation({
+      onSuccess: (result) => {
+        if (!result) {
+          return;
+        }
+
+        // Add ids to the captions
+        const captionsWithIds = result.map(
+          (caption: Caption, index: number) => ({
+            ...caption,
+            id: index.toString(),
+          }),
+        );
+
+        setCaptions(captionsWithIds);
+      },
+    });
 
   return (
     <div className="w-full md:w-[400px]">
@@ -29,6 +54,15 @@ export function SettingsPanel() {
 
       <div className="space-y-6">
         <div className="space-y-2">
+          <label className="text-sm font-medium">Generate captions</label>
+          <GenerateCaptionsButton
+            captionSettings={captionSettings}
+            fileId={fileId ?? ""}
+            generateCaptions={generateCaptions}
+            isLoading={isLoading}
+          />
+        </div>
+        <div className="space-y-2">
           <label className="text-sm font-medium">Model</label>
           <Select
             defaultValue={captionSettings.model}
@@ -38,9 +72,13 @@ export function SettingsPanel() {
               <SelectValue placeholder="Select model" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="whisper-base">Whisper Base</SelectItem>
-              <SelectItem value="whisper-small">Whisper Small</SelectItem>
-              <SelectItem value="whisper-medium">Whisper Medium</SelectItem>
+              <SelectItem value="whisper-1">whisper-1</SelectItem>
+              <SelectItem value="gpt-4o-mini-transcribe">
+                gpt-4o-mini-transcribe
+              </SelectItem>
+              <SelectItem value="gpt-4o-transcribe">
+                gpt-4o-transcribe
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -76,5 +114,50 @@ export function SettingsPanel() {
         </div>
       </div>
     </div>
+  );
+}
+
+function GenerateCaptionsButton({
+  captionSettings,
+  fileId,
+  generateCaptions,
+  isLoading,
+}: {
+  captionSettings: {
+    language: string;
+    model: string;
+  };
+  fileId: string;
+  generateCaptions: (data: {
+    file: { id: string };
+    language: string;
+    model: string;
+  }) => void;
+  isLoading: boolean;
+}) {
+  return (
+    <Button
+      className="w-full gap-2"
+      disabled={isLoading}
+      onClick={() => {
+        if (!fileId) {
+          return;
+        }
+        generateCaptions({
+          file: { id: fileId },
+          language: captionSettings.language,
+          model: captionSettings.model,
+        });
+      }}
+      size="sm"
+      variant="outline"
+    >
+      {isLoading ? (
+        <InterfaceIcons.Loading className="size-4 animate-spin" />
+      ) : (
+        <InterfaceIcons.ArtificialIntelligence className="size-4" />
+      )}
+      Generate captions
+    </Button>
   );
 }
