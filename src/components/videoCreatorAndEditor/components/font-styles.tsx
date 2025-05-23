@@ -2,13 +2,13 @@
 
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { useEditorStore } from "@/stores/editor";
 import { Compact } from "@uiw/react-color";
 import { useState } from "react";
 
-import { FontPicker } from "./font-picker";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { useEditorStore } from "@/stores/editor";
+
 import { FontTemplates } from "./font-templates";
 
 export function FontStyles() {
@@ -21,7 +21,6 @@ export function FontStyles() {
   >("none");
   const [fontSize, setFontSize] = useState<number>(24);
   const [fontColor, setFontColor] = useState<string>("#FFFFFF");
-  const [highlightColor, setHighlightColor] = useState<string>("#FFFFFF");
 
   const handleFontSizeChange = (value: number[]) => {
     setFontSize(value[0] ?? 24);
@@ -31,11 +30,6 @@ export function FontStyles() {
   const handleColorChange = (color: string) => {
     setFontColor(color);
     updateGlobalStyles({ color });
-  };
-
-  const handleHighlightColorChange = (color: string) => {
-    setHighlightColor(color);
-    updateGlobalStyles({ highlightColor: color });
   };
 
   const handleTextFormatChange = (
@@ -56,7 +50,6 @@ export function FontStyles() {
   return (
     <div className="space-y-6">
       <FontTemplates />
-      <FontPicker />
 
       <div className="space-y-2">
         <label className="text-sm font-medium">Font Size</label>
@@ -80,14 +73,6 @@ export function FontStyles() {
           <Compact
             color={fontColor}
             onChange={(color) => handleColorChange(color.hex)}
-            style={{ width: "100%" }}
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Highlight Color</label>
-          <Compact
-            color={highlightColor}
-            onChange={(color) => handleHighlightColorChange(color.hex)}
             style={{ width: "100%" }}
           />
         </div>
