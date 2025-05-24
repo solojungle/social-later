@@ -54,3 +54,5 @@ generated/aws/lambda/.terraform/*
 **/.terraform/*
 *.backup
 *.lock.hcl
+
+volume/

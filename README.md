@@ -56,3 +56,17 @@ DOPPLER_TOKEN=dp.st.your-token-here
 DOPPLER_PROJECT=social-management-app
 DOPPLER_CONFIG=dev
 ```
+
+
+### LocalCloud
+
+You need to
+
+`brew install terraform-local`
+
+Run through the steps above for terraform but with
+
+`tflocal <commands>`
+
+To view aws locally
+`https://app.localstack.cloud`
