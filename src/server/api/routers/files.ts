@@ -1,7 +1,9 @@
-import { env } from "@/env.mjs";
+import { z } from "zod";
+
 import { CreateFileSchema } from "@/schemas/file-schema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { z } from "zod";
+
+import { getS3ThumbnailUrl, getS3Url } from "./utils/aws";
 
 export const filesRouter = createTRPCRouter({
   create: protectedProcedure
@@ -19,8 +21,8 @@ export const filesRouter = createTRPCRouter({
 
       return {
         ...file,
-        thumbnail: `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${file.key}.${file.extension}`,
-        url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
+        thumbnail: `${getS3ThumbnailUrl(file.key)}.${file.extension}`,
+        url: `${getS3Url(file.key)}.${file.extension}`,
       };
     }),
 
@@ -74,8 +76,8 @@ export const filesRouter = createTRPCRouter({
 
       return {
         ...file,
-        thumbnail: `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${file.key}.${file.extension}`,
-        url: `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
+        thumbnail: `${getS3ThumbnailUrl(file.key)}.${file.extension}`,
+        url: `${getS3Url(file.key)}.${file.extension}`,
       };
     }),
 });

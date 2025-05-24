@@ -1,15 +1,16 @@
-import { env } from "@/env.mjs";
-import { TweetSchema } from "@/schemas/posts-schema";
-import { TeamSchema } from "@/schemas/team-schema";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { client, v1client } from "@/server/services/twitter/client";
-import { getYTClientAuth } from "@/server/services/youtube/client";
 import { youtube } from "@googleapis/youtube";
 import { SocialType } from "@prisma/client";
 import { Readable } from "stream";
 import { TwitterApi } from "twitter-api-v2";
 import { z } from "zod";
 
+import { TweetSchema } from "@/schemas/posts-schema";
+import { TeamSchema } from "@/schemas/team-schema";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { client, v1client } from "@/server/services/twitter/client";
+import { getYTClientAuth } from "@/server/services/youtube/client";
+
+import { getS3Url } from "./utils/aws";
 import {
   cleanReports,
   downloadReports,
@@ -96,9 +97,7 @@ async function uploadMediaToTwitter({
   // Get all the files from AWS
   const buffers = await Promise.all(
     files.map(async (file: any) => {
-      const response = await fetch(
-        `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`,
-      );
+      const response = await fetch(`${getS3Url(file.key)}.${file.extension}`);
       return Buffer.from(await response.arrayBuffer());
     }),
   );

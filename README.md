@@ -63,6 +63,7 @@ DOPPLER_CONFIG=dev
 You need to
 
 `brew install terraform-local`
+`brew install awscli-local`
 
 Run through the steps above for terraform but with
 

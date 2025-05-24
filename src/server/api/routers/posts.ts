@@ -1,9 +1,10 @@
-import { env } from "@/env.mjs";
-import { PostsSchema } from "@/schemas/posts-schema";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 
+import { PostsSchema } from "@/schemas/posts-schema";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+
 import { createAttachments } from "./utils/attachments";
+import { getS3ThumbnailUrl, getS3Url } from "./utils/aws";
 
 export const postRouter = createTRPCRouter({
   create: protectedProcedure
@@ -141,8 +142,8 @@ export const postRouter = createTRPCRouter({
           }
 
           const { extension, key, type } = file;
-          const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
-          const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
+          const baseUrl = getS3Url(key);
+          const thumbnailBaseUrl = getS3ThumbnailUrl(key);
 
           return {
             ...attachment,
@@ -196,8 +197,8 @@ export const postRouter = createTRPCRouter({
           const attachmentsWithUrls = attachments.map((attachment) => {
             if (attachment?.file) {
               const { extension, key, type } = attachment.file;
-              const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
-              const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
+              const baseUrl = getS3Url(key);
+              const thumbnailBaseUrl = getS3ThumbnailUrl(key);
 
               return {
                 ...attachment,

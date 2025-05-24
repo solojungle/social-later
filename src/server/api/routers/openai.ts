@@ -1,10 +1,10 @@
 // import { openAiWhisperApiToCaptions } from "@remotion/openai-whisper";
 import { z } from "zod";
 
-import { env } from "@/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 import { client } from "../../services/openai/client";
+import { getS3Url } from "./utils/aws";
 
 export const openaiRouter = createTRPCRouter({
   transcribeVideo: protectedProcedure
@@ -39,7 +39,7 @@ export const openaiRouter = createTRPCRouter({
         return null;
       }
 
-      const fileUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${file.key}.${file.extension}`;
+      const fileUrl = `${getS3Url(file.key)}.${file.extension}`;
 
       const response = await fetch(fileUrl);
 

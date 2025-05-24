@@ -1,10 +1,10 @@
-import { env } from "@/env.mjs";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { FileType, Prisma } from "@prisma/client";
 import { z } from "zod";
 
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+
 import { createAttachments } from "./utils/attachments";
-import { deleteS3Object } from "./utils/aws";
+import { deleteS3Object, getS3ThumbnailUrl, getS3Url } from "./utils/aws";
 
 // Define supported file types and sort fields
 const FileTypeFilter = z.enum(["image", "video", "all"]);
@@ -166,8 +166,8 @@ export const attachmentsRouter = createTRPCRouter({
       const attachmentsWithUrls = attachments.map((attachment) => {
         if (attachment?.file) {
           const { extension, key, type } = attachment.file;
-          const baseUrl = `https://${env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
-          const thumbnailBaseUrl = `https://${env.AWS_BUCKET_NAME}-thumbnails.s3.amazonaws.com/${key}`;
+          const baseUrl = getS3Url(key);
+          const thumbnailBaseUrl = getS3ThumbnailUrl(key);
 
           return {
             ...attachment,
