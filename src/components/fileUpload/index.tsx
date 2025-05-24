@@ -3,6 +3,8 @@
 import { FileType } from "@prisma/client";
 import axios from "axios";
 
+import { env } from "@/env.mjs";
+
 // Determine which type of file it is, image, video, gif
 function determineFileType(file: File) {
   if (file.type.includes("video")) {
@@ -172,9 +174,15 @@ export async function uploadFile({
   for (const { partNumber, url } of signedUrls) {
     const filePart = parts[partNumber] as File;
 
+    // If we are in development (w/ localstack), we need to replace the host.docker.internal with the local address
+    let presignedUrl = url;
+    if (env.NODE_ENV === "development") {
+      presignedUrl = url.replace("host.docker.internal", "localhost");
+    }
+
     uploadPromises.push(
       axios
-        .put(url, filePart.slice(), {
+        .put(presignedUrl, filePart.slice(), {
           headers: {
             "Content-Type": file.type,
           },

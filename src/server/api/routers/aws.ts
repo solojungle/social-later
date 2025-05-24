@@ -1,10 +1,11 @@
-import { env } from "@/env.mjs";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { s3 } from "@/server/services/aws/client";
 import { PutObjectCommand, UploadPartCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+
+import { env } from "@/env.mjs";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { s3 } from "@/server/services/aws/client";
 
 import { deleteS3Object } from "./utils/aws";
 
@@ -54,44 +55,55 @@ export const awsRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const { filePartTotal, key } = input;
 
-      const uploadId = (
-        await s3.createMultipartUpload({
-          Bucket: env.AWS_BUCKET_NAME,
-          Key: key,
-        })
-      ).UploadId;
+      try {
+        const uploadId = (
+          await s3.createMultipartUpload({
+            Bucket: env.AWS_BUCKET_NAME,
+            Key: key,
+          })
+        ).UploadId;
 
-      if (!uploadId) {
+        if (!uploadId) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Could not get UploadId from S3 response",
+          });
+        }
+
+        const urls: Promise<{ partNumber: number; url: string }>[] = [];
+
+        for (let i = 1; i <= filePartTotal; i += 1) {
+          const uploadPartCommand = new UploadPartCommand({
+            Bucket: env.AWS_BUCKET_NAME,
+            Key: key,
+            PartNumber: i,
+            UploadId: uploadId,
+          });
+
+          const url = getSignedUrl(s3, uploadPartCommand).then(
+            (presignedUrl) => ({
+              partNumber: i,
+              url: presignedUrl,
+            }),
+          );
+
+          urls.push(url);
+        }
+
+        return {
+          uploadId,
+          urls: await Promise.all(urls),
+        };
+      } catch (err) {
+        console.error(
+          "Error in createMultipartUpload:",
+          JSON.stringify(err, null, 2),
+        );
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Could not create multipart upload",
         });
       }
-
-      const urls: Promise<{ partNumber: number; url: string }>[] = [];
-
-      for (let i = 1; i <= filePartTotal; i += 1) {
-        const uploadPartCommand = new UploadPartCommand({
-          Bucket: env.AWS_BUCKET_NAME,
-          Key: key,
-          PartNumber: i,
-          UploadId: uploadId,
-        });
-
-        const url = getSignedUrl(s3, uploadPartCommand).then(
-          (presignedUrl) => ({
-            partNumber: i,
-            url: presignedUrl,
-          }),
-        );
-
-        urls.push(url);
-      }
-
-      return {
-        uploadId,
-        urls: await Promise.all(urls),
-      };
     }),
 
   getStandardUploadPresignedUrl: protectedProcedure
