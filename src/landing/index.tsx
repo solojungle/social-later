@@ -16,7 +16,10 @@ export default async function LandingPage() {
         <NavigationMenu />
         <Hero />
         <ProductShowCase />
-        <HeroBackground />
+        <HeroBackground
+          alt="Hero background"
+          src="/backgrounds/image-mesh-gradient-3.jpg"
+        />
         <ProductOfferings />
         <FeaturesTabs />
         <Integrations />
