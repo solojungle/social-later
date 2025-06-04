@@ -1,18 +1,28 @@
+import Link from "next/link";
+
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 export function DesktopMenu() {
   return (
-    <div className="hidden space-x-4 md:flex">
+    <div className="hidden space-x-2 md:flex">
       <Link
         className={cn(
-          buttonVariants({ variant: "link" }),
-          "flex items-center justify-center text-base",
+          buttonVariants({ variant: "outline" }),
+          "flex items-center justify-center",
         )}
         href="/login"
       >
-        <span className="text-black">Login</span>
+        <span className="">Login</span>
+      </Link>
+      <Link
+        className={cn(
+          buttonVariants({ variant: "default" }),
+          "flex items-center justify-center",
+        )}
+        href="/login"
+      >
+        <span className="">Get started</span>
       </Link>
     </div>
   );
