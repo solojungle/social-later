@@ -1,10 +1,11 @@
-import { Countdown } from "@/components/countdown";
-import { Button } from "@/components/ui/button";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import Confetti from "react-confetti";
 import { useTimeout } from "react-use";
 import { useWindowSize } from "usehooks-ts";
+
+import { Countdown } from "@/components/countdown";
+import { Button } from "@/components/ui/button";
 
 export function SuccessPage({ callbackUrl }: { callbackUrl?: string }) {
   const { height = 0, width = 0 } = useWindowSize({
@@ -33,7 +34,7 @@ export function SuccessPage({ callbackUrl }: { callbackUrl?: string }) {
       />
 
       <div className="mb-4 flex flex-col md:mx-auto md:max-w-[540px] md:pt-[48px] lg:pt-[64px] xl:pt-[88px]">
-        <CheckCircledIcon className="mb-4 h-24 w-24 self-center text-success" />
+        <CheckCircledIcon className="mb-4 size-24 self-center text-success" />
         <div className="mb-1 text-sm font-semibold uppercase">
           Congratulations!
         </div>
@@ -47,7 +48,7 @@ export function SuccessPage({ callbackUrl }: { callbackUrl?: string }) {
         <Link href={redirectUrl}>
           <Button className="group relative h-[64px] w-full justify-between self-center rounded-[8px] border border-gray-100 bg-primary text-lg font-semibold text-primary-foreground transition ease-in-out md:max-w-[540px]">
             Access FeedFrenzy
-            <div className="flex h-5 w-5 items-center justify-center rounded-lg border border-border bg-primary p-5 text-primary-foreground">
+            <div className="flex size-5 items-center justify-center rounded-lg border border-border bg-primary p-5 text-primary-foreground">
               <Countdown url={redirectUrl} />
             </div>
           </Button>

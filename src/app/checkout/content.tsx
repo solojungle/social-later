@@ -1,12 +1,13 @@
 "use client";
 
-import { InterfaceIcons } from "@/components/ui/icons";
-import { useTeamStore } from "@/stores/teams";
-import { api } from "@/trpc/react";
 import { CheckCircle2, XCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useEffect, useRef } from "react";
+
+import { InterfaceIcons } from "@/components/ui/icons";
+import { useTeamStore } from "@/stores/teams";
+import { api } from "@/trpc/react";
 
 type SuccessPageContentProps = {
   customer: string;
@@ -39,7 +40,7 @@ export function CheckoutPageContent() {
   if (isFetching) {
     return (
       <div className="flex h-screen flex-col items-center justify-center">
-        <InterfaceIcons.Loading className="mb-6 h-16 w-16 animate-spin text-muted-foreground" />
+        <InterfaceIcons.Loading className="mb-6 size-16 animate-spin text-muted-foreground" />
         <h1 className="text-center text-lg font-extralight text-muted-foreground">
           Getting payment status...
         </h1>
@@ -63,7 +64,7 @@ export function CheckoutPageContent() {
 function ErrorPageContent() {
   return (
     <div className="flex h-screen flex-col items-center justify-center text-center text-lg">
-      <XCircleIcon className="mb-6 h-16 w-16 text-red-500" />
+      <XCircleIcon className="mb-6 size-16 text-red-500" />
       <h1>Something went wrong</h1>
       <p>Sorry, we could not process your payment. Please try again.</p>
     </div>
@@ -106,7 +107,7 @@ function SuccessPageContent({
 
   return (
     <div className="flex h-screen flex-col items-center  justify-center text-center text-lg">
-      <CheckCircle2 className="mb-6 h-16 w-16 text-green-500" />
+      <CheckCircle2 className="mb-6 size-16 text-green-500" />
       <h1>Thank you for your purchase!</h1>
       <div>{isLoading ? <p>Creating your team...</p> : null}</div>
       <div>

@@ -1,9 +1,10 @@
-import BackButton from "@/components/backButton";
-import { UserAuthForm } from "@/components/forms/user-auth-form";
-import { getServerAuthSession } from "@/server/auth";
 import { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+
+import BackButton from "@/components/backButton";
+import { UserAuthForm } from "@/components/forms/user-auth-form";
+import { getServerAuthSession } from "@/server/auth";
 
 export const metadata: Metadata = {
   description: "Sign in to your account to continue.",
@@ -31,7 +32,7 @@ export default async function AuthenticationPage() {
           <div className="relative z-20 flex items-center text-lg font-medium">
             <img
               alt="logo"
-              className="mr-2 h-8 w-8 rounded-lg"
+              className="mr-2 size-8 rounded-lg"
               src="/images/logo.png"
             />
             <span>FeedFrenzy</span>
@@ -49,7 +50,7 @@ export default async function AuthenticationPage() {
         </div>
         <div className="flex h-full flex-col lg:p-8">
           <BackButton />
-          <div className="flex h-full w-full grow items-center">
+          <div className="flex size-full grow items-center">
             <div className="mx-auto flex grow flex-col space-y-6 rounded-md border border-border bg-card p-5 sm:w-[500px]">
               <div className="flex flex-col space-y-2 text-start">
                 <h1 className="text-2xl font-semibold tracking-tight">

@@ -1,8 +1,9 @@
-import { stripe } from "@/server/services/stripe/client";
-import { processEvent, tryCatch } from "@/server/services/stripe/utils";
 import { waitUntil } from "@vercel/functions";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+
+import { stripe } from "@/server/services/stripe/client";
+import { processEvent, tryCatch } from "@/server/services/stripe/utils";
 
 export async function POST(req: Request) {
   const body = await req.text();
